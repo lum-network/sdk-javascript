@@ -8,27 +8,28 @@ This SDK basically provides an easy access to all the available Sandblock Chain 
 
 **Most commonly used features:**
 
-- Core cryptographic tools and functions
-- Client service:
-    - Connection to a blockchain node (http and socket mode)
-    - Transaction broadcast
-    - Blockchain RPCs
-- Accounts and wallets:
-    - Accounts seed and encrypted mnemonic generation
-    - Unlock accounts from private keys, keystore and mnemonic
-    - Wallet balance
-- Transactions
-    - Payload generation
-    - Signature
+-   Core cryptographic tools and functions
+-   Client service:
+    -   Connection to a blockchain node (http and socket mode)
+    -   Transaction broadcast
+    -   Blockchain RPCs
+-   Accounts and wallets:
+    -   Accounts seed and encrypted mnemonic generation
+    -   Unlock accounts from private keys, keystore and mnemonic
+    -   Wallet balance
+-   Transactions
+    -   Payload generation
+    -   Signature
 
 ## Documentation
 
 The SDK code should be documented enough for developers to explore and use it easily. Therefore the documentation might not cover all the capabilities of the SDK. Feel free to contribute if you wish to improve the code documentation and/or the provided samples.
 
 The [Documentation](./DOCUMENTATION.md) contains:
-- Installation instructions
-- Basic usage
-- Code samples
+
+-   Installation instructions
+-   Basic usage
+-   Code samples
 
 ## Contributing
 
