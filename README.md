@@ -6,7 +6,7 @@ This Javascript SDK enables browsers and NodeJS clients to interact with the San
 
 This SDK basically provides an easy access to all the available Sandblock Chain RPCs as well as the payload generation and the cryptographic features to properly consume those RPCs.
 
-**Most comonly used features:**
+**Most commonly used features:**
 
 - Core cryptographic tools and functions
 - Client service:
@@ -23,7 +23,7 @@ This SDK basically provides an easy access to all the available Sandblock Chain 
 
 ## Documentation
 
-The SDK code should be documented enough for developers to explore it and use it easily. Therefore the documentation might not cover all the capabilities of the SDK. Feel free to contribute if you wish to improve the code documentation and/or the provided samples.
+The SDK code should be documented enough for developers to explore and use it easily. Therefore the documentation might not cover all the capabilities of the SDK. Feel free to contribute if you wish to improve the code documentation and/or the provided samples.
 
 The [Documentation](./DOCUMENTATION.md) contains:
 - Installation instructions
