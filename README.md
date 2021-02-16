@@ -1,10 +1,10 @@
-# Sandblock Chain - Javascript SDK
+# Lum Network - Javascript SDK
 
-This Javascript SDK enables browsers and NodeJS clients to interact with the Sandblock Chain.
+This Javascript SDK enables browsers and NodeJS clients to interact with the Lum Network.
 
 ## SDK Features
 
-This SDK basically provides an easy access to all the available Sandblock Chain RPCs as well as the payload generation and the cryptographic features to properly consume those RPCs.
+This SDK basically provides an easy access to all the available Lum Network blockchain RPCs as well as the payload generation and the cryptographic features to properly consume those RPCs.
 
 **Most commonly used features:**
 

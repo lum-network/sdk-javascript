@@ -1,7 +1,19 @@
 {
-    "name": "@sandblock-chain/sdk-javascript",
-    "version": "1.0.0",
+    "name": "@lum-network/sdk-javascript",
+    "version": "0.1.0",
     "license": "Apache-2.0",
+    "description": "Javascript SDK library for NodeJS and Web browsers to interact with the Lum Network.",
+    "homepage": "https://github.com/lum-network/sdk-javascript#readme",
+    "bugs": {
+        "url": "https://github.com/lum-network/sdk-javascript/issues"
+    },
+    "author": {
+        "name": "Lum Network"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/lum-network/sdk-javascript.git"
+    },
     "main": "lib/index.js",
     "typings": "lib/index.d.ts",
     "files": [
@@ -9,12 +21,14 @@
     ],
     "scripts": {
         "test": "cross-env NODE_ENV=test jest",
-        "build": "yarn clean && yarn build:types && yarn build:js",
+        "build": "yarn clean && yarn build:types && yarn build:js && yarn build:docs",
         "build:types": "tsc --emitDeclarationOnly",
         "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
+        "build:docs": "rimraf docs/lib && typedoc --excludeExternals --excludeNotDocumented --readme none --out docs/lib --hideBreadcrumbs --disableSources",
         "clean": "rimraf lib",
         "lint": "eslint '**/*.{ts,js}'",
-        "format": "prettier --write '**/*.{js,jsx,ts,tsx,css,json,md,html,yml}'"
+        "format": "prettier --write '**/*.{js,jsx,ts,tsx,css,json,md,html,yml}'",
+        "bump": "npm version"
     },
     "dependencies": {},
     "optionalDependencies": {},
@@ -33,6 +47,8 @@
         "prettier": "^2.2.1",
         "rimraf": "^3.0.2",
         "ts-jest": "^26.5.0",
+        "typedoc": "^0.20.25",
+        "typedoc-plugin-markdown": "^3.5.0",
         "typescript": "^4.1.3"
     }
 }

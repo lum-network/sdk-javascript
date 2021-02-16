@@ -1,0 +1,52 @@
+name: CD
+
+on:
+  push:
+    tags:
+      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  build:
+    name: Release & Publish
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+        redis-version: [5]
+
+    env:
+      CLOUDSDK_CORE_PROJECT: dev
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Run code formatter
+        run: yarn format
+      - name: Run code linter
+        run: yarn lint
+      - name: Run unit tests
+        run: yarn test
+
+      - name: Run build lib, types and docs
+        run: yarn build
+      - name: Copy LICENSE
+        run: cp LICENSE lib/LICENSE
+      - name: Copy README
+        run: cp README.md lib/README.md
+      - name: Copy sanitized package.json
+        run: cp package.json lib/package.json
+      - name: Publish package to NPM
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
