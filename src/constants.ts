@@ -8,3 +8,8 @@ export const LumAddressPrefix = 'lum';
  * https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
  */
 export const HDPath = "m/44'/837'/0'/0/";
+
+/**
+ * Private Key length
+ */
+export const PrivateKeyLength = 32;

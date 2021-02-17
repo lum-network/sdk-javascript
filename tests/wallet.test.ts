@@ -1,4 +1,4 @@
-import { LumWallet, LumUtils } from '../src';
+import { LumWallet, LumUtils, LumConstants } from '../src';
 // import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing';
 
 describe('LumWallet', () => {
@@ -12,9 +12,22 @@ describe('LumWallet', () => {
         const w2 = await LumWallet.fromPrivateKey(LumUtils.keyFromHex(privateKey));
         const w3 = await LumWallet.fromKeyStore(keystore, 'lumiere');
 
+        expect(LumUtils.isAddressValid(w1.address)).toBe(true);
+        expect(LumUtils.isAddressValid(w1.address, LumConstants.LumAddressPrefix)).toBe(true);
+        expect(LumUtils.isAddressValid(w1.address, undefined)).toBe(true);
+        expect(LumUtils.isAddressValid(w1.address, 'cosmos')).toBe(false);
         expect(w1).toEqual(w2);
         expect(w1).toEqual(w3);
         expect(w2).toEqual(w3);
+
+        const randomPrivateKey = LumUtils.generatePrivateKey();
+        expect(randomPrivateKey).toHaveLength(LumConstants.PrivateKeyLength);
+        expect(LumWallet.fromPrivateKey(randomPrivateKey)).resolves.toBeInstanceOf(LumWallet);
+
+        expect(LumUtils.generateMnemonic(12).split(' ')).toHaveLength(12);
+        expect(LumUtils.generateMnemonic(24).split(' ')).toHaveLength(24);
+        expect(LumWallet.fromMnemonic(LumUtils.generateMnemonic(12))).resolves.toBeInstanceOf(LumWallet);
+        expect(LumWallet.fromMnemonic(LumUtils.generateMnemonic(24))).resolves.toBeInstanceOf(LumWallet);
 
         // const wallet1 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic);
         // const w = await LumWallet.fromMnemonic(mnemonic, "m/44'/118'/0'/0/0", 'cosmos');
