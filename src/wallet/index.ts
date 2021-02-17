@@ -1,5 +1,5 @@
-import * as utils from './utils';
-import * as constants from './constants';
+import * as utils from '../utils';
+import * as constants from '../constants';
 
 export class LumWallet {
     private readonly privateKey: Uint8Array;
@@ -17,7 +17,7 @@ export class LumWallet {
         return new LumWallet(privateKey, publicKey, addressPrefix);
     };
 
-    static fromMnemonic = async (mnemonic: string, hdPath = utils.getLumHdPath(0), addressPrefix = constants.LumAddressPrefix) => {
+    static fromMnemonic = async (mnemonic: string, hdPath = constants.getLumHdPath(0), addressPrefix = constants.LumAddressPrefix) => {
         const privateKey = await utils.getPrivateKeyFromMnemonic(mnemonic, hdPath);
         return LumWallet.fromPrivateKey(privateKey, addressPrefix);
     };

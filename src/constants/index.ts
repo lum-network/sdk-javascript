@@ -9,6 +9,10 @@ export const LumAddressPrefix = 'lum';
  */
 export const HDPath = "m/44'/837'/0'/0/";
 
+export const getLumHdPath = (accountIndex = 0): string => {
+    return HDPath + accountIndex.toString();
+};
+
 /**
  * Private Key length
  */
