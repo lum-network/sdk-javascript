@@ -14,10 +14,6 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x]
-        redis-version: [5]
-
-    env:
-      CLOUDSDK_CORE_PROJECT: dev
 
     steps:
       - name: Checkout code
