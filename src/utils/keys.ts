@@ -1,3 +1,5 @@
+import { PubKey } from '@cosmjs/proto-signing/build/codec/cosmos/crypto/secp256k1/keys';
+import { Any } from '@cosmjs/proto-signing/build/codec/google/protobuf/any';
 import { Secp256k1, sha256, ripemd160, EnglishMnemonic, Bip39, Slip10, Slip10Curve, stringToPath, Random } from '@cosmjs/crypto';
 
 import { Bech32 } from './encoding';
@@ -47,4 +49,12 @@ export const isAddressValid = (address: string, prefix: string | undefined = Lum
     } catch (err) {
         return false;
     }
+};
+
+export const publicKeyToProto = (publicKey: Uint8Array): Any => {
+    const pubkeyProto = PubKey.fromPartial({ key: publicKey });
+    return Any.fromPartial({
+        typeUrl: '/cosmos.crypto.secp256k1.PubKey',
+        value: Uint8Array.from(PubKey.encode(pubkeyProto).finish()),
+    });
 };
