@@ -1012,6 +1012,11 @@
     readonly-date "^1.0.0"
     xstream "^11.14.0"
 
+"@cosmjs/utils@^0.23.2":
+  version "0.23.2"
+  resolved "https://registry.yarnpkg.com/@cosmjs/utils/-/utils-0.23.2.tgz#6b7365fbb2c05e12de03e6a10499bc2cfa62b072"
+  integrity sha512-B5GKDDZjkc6l5fBiXe+CAZYsHd+O6fx4N80xyvGIMdEDzw9NbEBdTjUlGfOH2PdaHjLPfrgUg2KslWLCGWRdjw==
+
 "@cosmjs/utils@^0.24.0-alpha.25":
   version "0.24.0-alpha.25"
   resolved "https://registry.yarnpkg.com/@cosmjs/utils/-/utils-0.24.0-alpha.25.tgz#25871033bb61dd21ec13a9fe042e80a64c165195"

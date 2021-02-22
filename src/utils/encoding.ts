@@ -3,6 +3,8 @@ import { Bech32, toHex, fromHex, toBase64, fromBase64 } from '@cosmjs/encoding';
 import { sha256 } from '@cosmjs/crypto';
 import SHA3 = require('crypto-js/sha3');
 
+import { isUint8Array } from './commons';
+
 export const sha3 = (hex: string): string => {
     const hexEncoded = hexEncoding.parse(hex);
     return SHA3(hexEncoded).toString();
@@ -24,11 +26,11 @@ export const keyFromHex = (hexKey: string): Uint8Array => {
 };
 
 export const toJSON = (data: unknown): unknown => {
-    if (data instanceof Uint8Array) {
+    if (isUint8Array(data)) {
         // Force uppercase hex format
         return toHex(data).toUpperCase();
     } else if (data instanceof Date) {
-        // Required otherwise custom Date class with nanosecond will be stringified as objects instead of datetime
+        // Otherwise custom Date class with nanosecond will be stringified as objects instead of datetime
         // Note: Nanoseconds data will be lost in the process
         return data.toISOString();
     } else if (Array.isArray(data)) {

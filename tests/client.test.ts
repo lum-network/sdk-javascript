@@ -5,6 +5,7 @@ describe('LumClient', () => {
         const w1 = await LumWallet.fromMnemonic('noodle hope lounge dismiss erase elephant seek crawl check equal city chest', LumConstants.getLumHdPath(0), 'cosmos');
         const w2 = await LumWallet.fromMnemonic('sick hollow lizard train motion eternal mixture rude section tray nice awful', LumConstants.getLumHdPath(0), 'cosmos');
 
+        //https://stargate.cosmos.network/testnet
         const clt = await LumClient.connect('http://localhost:26657');
         console.log('wallet address', w1.address);
         console.log('getChainId', await clt.getChainId());

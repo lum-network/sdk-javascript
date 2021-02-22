@@ -6,3 +6,4 @@ export * from './Description';
 export * from './Commission';
 export * from './CommissionRates';
 export * from './SignDoc';
+export * from './Log';

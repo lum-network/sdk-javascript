@@ -41,6 +41,7 @@
         "@cosmjs/proto-signing": "^0.24.0-alpha.25",
         "@cosmjs/stargate": "^0.24.0-alpha.25",
         "@cosmjs/tendermint-rpc": "^0.24.0-alpha.25",
+        "@cosmjs/utils": "^0.23.2",
         "@types/uuid": "^8.3.0",
         "crypto-browserify": "^3.12.0",
         "crypto-js": "^4.0.0",
