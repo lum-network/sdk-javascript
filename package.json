@@ -28,7 +28,11 @@
         "clean": "rimraf lib",
         "lint": "eslint '**/*.{ts,js}'",
         "format": "prettier --write '**/*.{js,jsx,ts,tsx,css,json,md,html,yml}'",
-        "bump": "npm version"
+        "bump": "npm version",
+        "preget-proto": "rm -rf proto",
+        "get-proto": "REF=v0.40.0 sh ./scripts/get-proto.sh",
+        "define-proto": "sh ./scripts/define-proto.sh",
+        "postdefine-proto": "prettier --write \"src/codec/**/*.ts\""
     },
     "dependencies": {
         "@cosmjs/crypto": "^0.24.0-alpha.25",
@@ -59,6 +63,7 @@
         "prettier": "^2.2.1",
         "rimraf": "^3.0.2",
         "ts-jest": "^26.5.0",
+        "ts-proto": "^1.67.0",
         "typedoc": "^0.20.25",
         "typedoc-plugin-markdown": "^3.5.0",
         "typescript": "^4.1.3"

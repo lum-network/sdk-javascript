@@ -1,8 +1,8 @@
 import { Registry, GeneratedType } from '@cosmjs/proto-signing';
 
-import { MsgSend, MsgMultiSend } from '@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx';
-import { MsgFundCommunityPool, MsgSetWithdrawAddress, MsgWithdrawDelegatorReward, MsgWithdrawValidatorCommission } from '@cosmjs/stargate/build/codec/cosmos/distribution/v1beta1/tx';
-import { MsgBeginRedelegate, MsgCreateValidator, MsgDelegate, MsgEditValidator, MsgUndelegate } from '@cosmjs/stargate/build/codec/cosmos/staking/v1beta1/tx';
+import { MsgSend, MsgMultiSend } from '../codec/cosmos/bank/v1beta1/tx';
+import { MsgFundCommunityPool, MsgSetWithdrawAddress, MsgWithdrawDelegatorReward, MsgWithdrawValidatorCommission } from '../codec/cosmos/distribution/v1beta1/tx';
+import { MsgBeginRedelegate, MsgCreateValidator, MsgDelegate, MsgEditValidator, MsgUndelegate } from '../codec/cosmos/staking/v1beta1/tx';
 
 const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/cosmos.bank.v1beta1.MsgSend', MsgSend as GeneratedType],

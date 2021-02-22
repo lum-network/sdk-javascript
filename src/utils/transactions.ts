@@ -3,7 +3,7 @@ import { Int53 } from '@cosmjs/math';
 import { Secp256k1, Secp256k1Signature } from '@cosmjs/crypto';
 import { makeAuthInfoBytes, makeSignBytes } from '@cosmjs/proto-signing';
 
-import { TxRaw } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx';
+import { TxRaw } from '../codec/cosmos/tx/v1beta1/tx';
 
 import { sha256 } from './encoding';
 import { Message } from '../messages';
