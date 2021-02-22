@@ -5,7 +5,8 @@ describe('LumClient', () => {
         const w1 = await LumWallet.fromMnemonic('noodle hope lounge dismiss erase elephant seek crawl check equal city chest', LumConstants.getLumHdPath(0), 'cosmos');
         const w2 = await LumWallet.fromMnemonic('sick hollow lizard train motion eternal mixture rude section tray nice awful', LumConstants.getLumHdPath(0), 'cosmos');
 
-        //https://stargate.cosmos.network/testnet
+        // Can connect to Cosmos testnet for compatibility checks:
+        // https://stargate.cosmos.network/testnet
         const clt = await LumClient.connect('http://localhost:26657');
         console.log('wallet address', w1.address);
         console.log('getChainId', await clt.getChainId());
@@ -34,9 +35,10 @@ describe('LumClient', () => {
             ],
             gas: '180000', // 180k
         });
-        console.log('-------->', res);
-
+        console.log('signAndBroadcastTx', res);
         console.log('getBalance(w1)', await clt.getBalance(w1.address, 'token'));
         console.log('getBalance(w2)', await clt.getBalance(w2.address, 'token'));
+
+        // WIP - needs to be automated through CICD
     });
 });

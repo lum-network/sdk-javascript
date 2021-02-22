@@ -16,9 +16,10 @@ describe('LumWallet', () => {
         expect(LumUtils.isAddressValid(w1.address, LumConstants.LumAddressPrefix)).toBe(true);
         expect(LumUtils.isAddressValid(w1.address, undefined)).toBe(true);
         expect(LumUtils.isAddressValid(w1.address, 'cosmos')).toBe(false);
-        expect(w1).toEqual(w2);
-        expect(w1).toEqual(w3);
-        expect(w2).toEqual(w3);
+        expect(w1.address).toEqual(w2.address);
+        expect(w1.publicKey).toEqual(w2.publicKey);
+        expect(w1.address).toEqual(w3.address);
+        expect(w1.publicKey).toEqual(w3.publicKey);
 
         const randomPrivateKey = LumUtils.generatePrivateKey();
         expect(randomPrivateKey).toHaveLength(LumConstants.PrivateKeyLength);
@@ -28,8 +29,5 @@ describe('LumWallet', () => {
         expect(LumUtils.generateMnemonic(24).split(' ')).toHaveLength(24);
         expect(LumWallet.fromMnemonic(LumUtils.generateMnemonic(12))).resolves.toBeInstanceOf(LumWallet);
         expect(LumWallet.fromMnemonic(LumUtils.generateMnemonic(24))).resolves.toBeInstanceOf(LumWallet);
-
-        // const wallet1 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic);
-        // const w = await LumWallet.fromMnemonic(mnemonic, "m/44'/118'/0'/0/0", 'cosmos');
     });
 });
