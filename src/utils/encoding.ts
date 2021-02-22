@@ -1,7 +1,7 @@
 import * as hexEncoding from 'crypto-js/enc-hex';
 import { Bech32, toHex, fromHex, toBase64, fromBase64 } from '@cosmjs/encoding';
 import { sha256 } from '@cosmjs/crypto';
-import SHA3 = require('crypto-js/sha3');
+import SHA3 from 'crypto-js/sha3';
 
 import { isUint8Array } from './commons';
 
