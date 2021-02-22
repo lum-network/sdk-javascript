@@ -26,4 +26,8 @@ export class LumWallet {
         const privateKey = utils.getPrivateKeyFromKeystore(keystore, password);
         return LumWallet.fromPrivateKey(privateKey, addressPrefix);
     };
+
+    signTransaction = async (hashedMessage: Uint8Array): Promise<Uint8Array> => {
+        return utils.generateSignature(hashedMessage, this.privateKey);
+    };
 }

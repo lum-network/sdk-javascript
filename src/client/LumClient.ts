@@ -1,7 +1,5 @@
-import { Uint53, Int53 } from '@cosmjs/math';
-import { Secp256k1 } from '@cosmjs/crypto';
+import { Uint53 } from '@cosmjs/math';
 import { Client as TendermintClient, adaptor34 as TendermintAdaptor, toRfc3339WithNanoseconds, broadcastTxCommitSuccess } from '@cosmjs/tendermint-rpc';
-import { EncodeObject, Registry, GeneratedType, makeAuthInfoBytes, makeSignDoc, makeSignBytes, encodePubkey } from '@cosmjs/proto-signing';
 import {
     QueryClient as StargateQueryClient,
     setupAuthExtension as StargateSetupAuthExtension,
@@ -14,30 +12,10 @@ import {
 } from '@cosmjs/stargate';
 import { TxMsgData } from '@cosmjs/stargate/build/codec/cosmos/base/abci/v1beta1/abci';
 
-import { MsgSend, MsgMultiSend } from '@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx';
-import { MsgFundCommunityPool, MsgSetWithdrawAddress, MsgWithdrawDelegatorReward, MsgWithdrawValidatorCommission } from '@cosmjs/stargate/build/codec/cosmos/distribution/v1beta1/tx';
-import { MsgBeginRedelegate, MsgCreateValidator, MsgDelegate, MsgEditValidator, MsgUndelegate } from '@cosmjs/stargate/build/codec/cosmos/staking/v1beta1/tx';
-import { TxRaw } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx';
-
-import { toHex, sha256, publicKeyToProto } from '../utils';
 import { LumWallet } from '../wallet';
+import { Message } from '../messages';
+import { toHex, sha256, generateAuthInfo, generateSignDoc, generateSignDocBytes, generateTxBytes } from '../utils';
 import { Block, Account, Coin, IndexedTx, SearchTxFilter, SearchByHeightQuery, SearchBySentFromOrToQuery, SearchByTagsQuery, BroadcastTxResponse, Fee } from '../types';
-
-const registryTypes: Iterable<[string, GeneratedType]> = [
-    ['/cosmos.bank.v1beta1.MsgSend', MsgSend as GeneratedType],
-    ['/cosmos.bank.v1beta1.MsgMultiSend', MsgMultiSend as GeneratedType],
-    ['/cosmos.distribution.v1beta1.MsgFundCommunityPool', MsgFundCommunityPool as GeneratedType],
-    ['/cosmos.distribution.v1beta1.MsgSetWithdrawAddress', MsgSetWithdrawAddress as GeneratedType],
-    ['/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward', MsgWithdrawDelegatorReward as GeneratedType],
-    ['/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission', MsgWithdrawValidatorCommission as GeneratedType],
-    ['/cosmos.staking.v1beta1.MsgBeginRedelegate', MsgBeginRedelegate as GeneratedType],
-    ['/cosmos.staking.v1beta1.MsgCreateValidator', MsgCreateValidator as GeneratedType],
-    ['/cosmos.staking.v1beta1.MsgDelegate', MsgDelegate as GeneratedType],
-    ['/cosmos.staking.v1beta1.MsgEditValidator', MsgEditValidator as GeneratedType],
-    ['/cosmos.staking.v1beta1.MsgUndelegate', MsgUndelegate as GeneratedType],
-];
-
-const registry = new Registry(registryTypes);
 
 export class LumClient {
     private readonly tmClient: TendermintClient;
@@ -179,39 +157,20 @@ export class LumClient {
         });
     };
 
-    signTx = async (wallet: LumWallet, messages: readonly EncodeObject[], fee: Fee, memo?: string): Promise<Uint8Array> => {
+    signTx = async (wallet: LumWallet, messages: Message[], fee: Fee, memo?: string): Promise<Uint8Array> => {
         const seq = await this.getSequence(wallet.address);
         if (!seq) {
             throw new Error('Account not found');
         }
         const { accountNumber, sequence } = seq;
         const chainId = await this.getChainId();
-        const pubkeyAny = publicKeyToProto(wallet.publicKey);
-        const txBody = {
-            messages: messages,
-            memo: memo,
-        };
-        const txBodyBytes = registry.encode({
-            typeUrl: '/cosmos.tx.v1beta1.TxBody',
-            value: txBody,
-        });
-        const gasLimit = Int53.fromString(fee.gas).toNumber();
 
-        const authInfoBytes = makeAuthInfoBytes([pubkeyAny], fee.amount, gasLimit, sequence);
-        const signDoc = makeSignDoc(txBodyBytes, authInfoBytes, chainId, accountNumber);
-
-        const signBytes = makeSignBytes(signDoc);
+        const authInfo = generateAuthInfo(wallet.publicKey, fee, sequence);
+        const signDoc = generateSignDoc(messages, memo, authInfo, chainId, accountNumber);
+        const signBytes = generateSignDocBytes(signDoc);
         const hashedMessage = sha256(signBytes);
-        // @ts-ignore
-        const signature = await Secp256k1.createSignature(hashedMessage, wallet.privateKey);
-        const signatureBytes = new Uint8Array([...signature.r(32), ...signature.s(32)]);
-
-        const txRaw = TxRaw.fromPartial({
-            bodyBytes: signDoc.bodyBytes,
-            authInfoBytes: signDoc.authInfoBytes,
-            signatures: [signatureBytes],
-        });
-        return Uint8Array.from(TxRaw.encode(txRaw).finish());
+        const signature = await wallet.signTransaction(hashedMessage);
+        return generateTxBytes(signDoc, signature);
     };
 
     broadcastTx = async (tx: Uint8Array): Promise<BroadcastTxResponse> => {
@@ -233,7 +192,7 @@ export class LumClient {
         };
     };
 
-    signAndBroadcastTx = async (wallet: LumWallet, messages: readonly EncodeObject[], fee: Fee, memo?: string): Promise<BroadcastTxResponse> => {
+    signAndBroadcastTx = async (wallet: LumWallet, messages: Message[], fee: Fee, memo?: string): Promise<BroadcastTxResponse> => {
         const signedTx = await this.signTx(wallet, messages, fee, memo);
         return this.broadcastTx(signedTx);
     };
