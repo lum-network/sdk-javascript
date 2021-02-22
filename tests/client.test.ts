@@ -9,13 +9,16 @@ describe('LumClient', () => {
         console.log('wallet address', w1.address);
         console.log('getChainId', await clt.getChainId());
         console.log('getBlockHeight', await clt.getBlockHeight());
+
+        console.log('getBlock', await clt.getBlock());
+
         console.log('getAccount', await clt.getAccount(w1.address));
         console.log('getAccountUnverified', await clt.getAccountUnverified(w1.address));
-        console.log('getSequence', await clt.getSequence(w1.address));
-        console.log('getBlock', await clt.getBlock());
+
         console.log('getBalance', await clt.getBalance(w1.address, 'token'));
         console.log('getBalancesUnverified', await clt.getBalancesUnverified(w1.address));
-        const txs = await clt.searchTx({ sentFromOrTo: w1.address });
+
+        const txs = await clt.searchTx([LumUtils.searchTxFrom(w1.address), LumUtils.searchTxTo(w1.address)]);
         console.log('getTx', await clt.getTx(txs[0].hash));
         console.log('searchTxs', txs);
 

@@ -1,25 +1,22 @@
-import { Uint53 } from '@cosmjs/math';
-import { Client as TendermintClient, adaptor34 as TendermintAdaptor, toRfc3339WithNanoseconds, broadcastTxCommitSuccess } from '@cosmjs/tendermint-rpc';
+import { Uint64 } from '@cosmjs/math';
+import { Client as TendermintClient, adaptor34 as TendermintAdaptor } from '@cosmjs/tendermint-rpc';
 import {
     QueryClient as StargateQueryClient,
     setupAuthExtension as StargateSetupAuthExtension,
     setupBankExtension as StargateSetupBankExtension,
-    accountFromProto,
     coinFromProto,
     AuthExtension,
     BankExtension,
-    SequenceResponse,
 } from '@cosmjs/stargate';
-import { TxMsgData } from '@cosmjs/stargate/build/codec/cosmos/base/abci/v1beta1/abci';
 
 import { LumWallet } from '../wallet';
 import { Message } from '../messages';
-import { toHex, sha256, generateAuthInfo, generateSignDoc, generateSignDocBytes, generateTxBytes } from '../utils';
-import { Block, Account, Coin, IndexedTx, SearchTxFilter, SearchByHeightQuery, SearchBySentFromOrToQuery, SearchByTagsQuery, BroadcastTxResponse, Fee } from '../types';
+import { sha256, generateAuthInfo, generateSignDoc, generateSignDocBytes, generateTxBytes } from '../utils';
+import { BroadcastTxCommitResponse, ValidatorsResponse, TxResponse, TxSearchParams, BlockResponse, Account, Coin, Fee } from '../types';
 
 export class LumClient {
-    private readonly tmClient: TendermintClient;
-    private readonly queryClient: StargateQueryClient & AuthExtension & BankExtension;
+    readonly tmClient: TendermintClient;
+    readonly queryClient: StargateQueryClient & AuthExtension & BankExtension;
     private chainId?: string;
 
     constructor(tmClient: TendermintClient) {
@@ -53,42 +50,32 @@ export class LumClient {
         return status.syncInfo.latestBlockHeight;
     };
 
-    getAccount = async (searchAddress: string): Promise<Account | null> => {
-        const account = await this.queryClient.auth.account(searchAddress);
-        return account ? accountFromProto(account) : null;
+    getBlock = async (height?: number): Promise<BlockResponse> => {
+        const response = await this.tmClient.block(height);
+        return response;
     };
 
-    getAccountUnverified = async (searchAddress: string): Promise<Account | null> => {
-        const account = await this.queryClient.auth.unverified.account(searchAddress);
-        return account ? accountFromProto(account) : null;
-    };
-
-    getSequence = async (address: string): Promise<SequenceResponse | null> => {
-        const account = await this.getAccount(address);
-        if (account) {
-            return {
-                accountNumber: account.accountNumber,
-                sequence: account.sequence,
-            };
-        } else {
+    getAccount = async (address: string): Promise<Account | null> => {
+        const account = await this.queryClient.auth.account(address);
+        if (!account) {
             return null;
         }
+        return {
+            address: account.address,
+            accountNumber: Uint64.fromString(account.accountNumber.toString()).toNumber(),
+            sequence: Uint64.fromString(account.sequence.toString()).toNumber(),
+        };
     };
 
-    getBlock = async (height?: number): Promise<Block> => {
-        const response = await this.tmClient.block(height);
+    getAccountUnverified = async (address: string): Promise<Account | null> => {
+        const account = await this.queryClient.auth.unverified.account(address);
+        if (!account) {
+            return null;
+        }
         return {
-            id: toHex(response.blockId.hash).toUpperCase(),
-            header: {
-                version: {
-                    block: new Uint53(response.block.header.version.block).toString(),
-                    app: new Uint53(response.block.header.version.app).toString(),
-                },
-                height: response.block.header.height,
-                chainId: response.block.header.chainId,
-                time: toRfc3339WithNanoseconds(response.block.header.time),
-            },
-            txs: response.block.txs,
+            address: account.address,
+            accountNumber: Uint64.fromString(account.accountNumber.toString()).toNumber(),
+            sequence: Uint64.fromString(account.sequence.toString()).toNumber(),
         };
     };
 
@@ -102,67 +89,43 @@ export class LumClient {
         return balances.map(coinFromProto);
     };
 
-    getTx = async (id: string): Promise<IndexedTx | null> => {
-        const results = await this.txsQuery(`tx.hash='${id}'`);
-        if (results.length === 1 && results[0] !== null && results[0] !== void 0) {
-            return results[0];
-        }
-        return null;
+    getValidators = async (blockHeight?: number): Promise<ValidatorsResponse> => {
+        const results = await this.tmClient.validators(blockHeight);
+        return results;
     };
 
-    searchTx = async (query: SearchByHeightQuery | SearchBySentFromOrToQuery | SearchByTagsQuery, filter: SearchTxFilter = {}): Promise<IndexedTx[]> => {
-        const minHeight = filter.minHeight || 0;
-        const maxHeight = filter.maxHeight || Number.MAX_SAFE_INTEGER;
-
-        if (maxHeight < minHeight) {
-            return [];
-        }
-
-        function withFilters(originalQuery: string) {
-            return `${originalQuery} AND tx.height>=${minHeight} AND tx.height<=${maxHeight}`;
-        }
-
-        let txs;
-        if ((query as SearchByHeightQuery).height !== undefined) {
-            const q = query as SearchByHeightQuery;
-            txs = q.height >= minHeight && q.height <= maxHeight ? await this.txsQuery(`tx.height=${q.height}`) : [];
-        } else if ((query as SearchBySentFromOrToQuery).sentFromOrTo !== undefined) {
-            const q = query as SearchBySentFromOrToQuery;
-            const sentQuery = withFilters(`message.module='bank' AND transfer.sender='${q.sentFromOrTo}'`);
-            const receivedQuery = withFilters(`message.module='bank' AND transfer.recipient='${q.sentFromOrTo}'`);
-            const [sent, received] = await Promise.all([sentQuery, receivedQuery].map((rawQuery) => this.txsQuery(rawQuery)));
-            const sentHashes = sent.map((t) => t.hash);
-            txs = [...sent, ...received.filter((t) => !sentHashes.includes(t.hash))];
-        } else if ((query as SearchByTagsQuery).tags !== undefined) {
-            const q = query as SearchByTagsQuery;
-            const rawQuery = withFilters(q.tags.map((t) => `${t.key}='${t.value}'`).join(' AND '));
-            txs = await this.txsQuery(rawQuery);
-        } else {
-            throw new Error('Unknown query type');
-        }
-
-        return txs.filter((tx) => tx.height >= minHeight && tx.height <= maxHeight);
+    getTx = async (hash: Uint8Array, includeProof?: boolean): Promise<TxResponse | null> => {
+        const result = await this.tmClient.tx({ hash: hash, prove: includeProof });
+        return result;
     };
 
-    private txsQuery = async (query: string): Promise<IndexedTx[]> => {
-        const results = await this.tmClient.txSearchAll({ query: query });
-        return results.txs.map((tx) => {
-            return {
-                height: tx.height,
-                hash: toHex(tx.hash).toUpperCase(),
-                code: tx.result.code,
-                rawLog: tx.result.log || '',
-                tx: tx.tx,
-            };
-        });
+    searchTx = async (queries: string[], page = 1, perPage = 30, includeProof?: boolean): Promise<TxResponse[]> => {
+        const results = await Promise.all(queries.map((q) => this.txsQuery({ query: q, page: page, per_page: perPage, prove: includeProof })));
+        const seenHashes: Uint8Array[] = [];
+        const uniqueResults: TxResponse[] = [];
+        for (let r = 0; r < results.length; r++) {
+            for (let t = 0; t < results[r].length; t++) {
+                const tx = results[r][t];
+                if (!seenHashes.includes(tx.hash)) {
+                    seenHashes.push(tx.hash);
+                    uniqueResults.push(results[r][t]);
+                }
+            }
+        }
+        return uniqueResults.sort((a, b) => a.height - b.height);
+    };
+
+    private txsQuery = async (params: TxSearchParams): Promise<TxResponse[]> => {
+        const results = await this.tmClient.txSearch(params);
+        return results.txs as TxResponse[];
     };
 
     signTx = async (wallet: LumWallet, messages: Message[], fee: Fee, memo?: string): Promise<Uint8Array> => {
-        const seq = await this.getSequence(wallet.address);
-        if (!seq) {
+        const account = await this.getAccount(wallet.address);
+        if (!account) {
             throw new Error('Account not found');
         }
-        const { accountNumber, sequence } = seq;
+        const { accountNumber, sequence } = account;
         const chainId = await this.getChainId();
 
         const authInfo = generateAuthInfo(wallet.publicKey, fee, sequence);
@@ -173,26 +136,12 @@ export class LumClient {
         return generateTxBytes(signDoc, signature);
     };
 
-    broadcastTx = async (tx: Uint8Array): Promise<BroadcastTxResponse> => {
+    broadcastTx = async (tx: Uint8Array): Promise<BroadcastTxCommitResponse> => {
         const response = await this.tmClient.broadcastTxCommit({ tx });
-        if (broadcastTxCommitSuccess(response)) {
-            return {
-                height: response.height,
-                transactionHash: toHex(response.hash).toUpperCase(),
-                rawLog: response.deliverTx && response.deliverTx.log,
-                data: response.deliverTx && response.deliverTx.data && TxMsgData.decode(response.deliverTx).data,
-            };
-        }
-        return {
-            code: response.checkTx.code !== 0 ? response.checkTx.code : response.deliverTx && response.deliverTx.code,
-            height: response.height,
-            transactionHash: toHex(response.hash).toUpperCase(),
-            rawLog: response.checkTx.log,
-            data: response.deliverTx && response.deliverTx.data && TxMsgData.decode(response.deliverTx).data,
-        };
+        return response;
     };
 
-    signAndBroadcastTx = async (wallet: LumWallet, messages: Message[], fee: Fee, memo?: string): Promise<BroadcastTxResponse> => {
+    signAndBroadcastTx = async (wallet: LumWallet, messages: Message[], fee: Fee, memo?: string): Promise<BroadcastTxCommitResponse> => {
         const signedTx = await this.signTx(wallet, messages, fee, memo);
         return this.broadcastTx(signedTx);
     };

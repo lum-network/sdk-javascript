@@ -1,3 +1,5 @@
-import { Account } from '@cosmjs/stargate';
-
-export type { Account };
+export interface Account {
+    readonly address: string;
+    readonly accountNumber: number;
+    readonly sequence: number;
+}
