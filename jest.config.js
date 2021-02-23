@@ -10,6 +10,7 @@ module.exports = {
     globals: {
         'ts-jest': {
             diagnostics: false,
+            tsconfig: 'tsconfig.spec.json',
         },
     },
     testTimeout: 10000,

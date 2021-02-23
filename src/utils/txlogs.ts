@@ -1,7 +1,7 @@
 import { isNonNullObject } from './commons';
 import { Log, LogEvent, LogAttribute } from '../types';
 
-const parseAttribute = (input: unknown): LogAttribute => {
+export const parseAttribute = (input: unknown): LogAttribute => {
     if (!isNonNullObject(input)) throw new Error('Attribute must be a non-null object');
     const { key, value } = input as { key: unknown; value: unknown };
     if (typeof key !== 'string' || !key) throw new Error("Attribute's key must be a non-empty string");
@@ -15,7 +15,7 @@ const parseAttribute = (input: unknown): LogAttribute => {
     };
 };
 
-const parseEvent = (input: unknown): LogEvent => {
+export const parseEvent = (input: unknown): LogEvent => {
     if (!isNonNullObject(input)) throw new Error('Event must be a non-null object');
     const { type, attributes } = input as { type: unknown; attributes: unknown };
     if (typeof type !== 'string' || type === '') {
@@ -28,7 +28,7 @@ const parseEvent = (input: unknown): LogEvent => {
     };
 };
 
-const parseLog = (input: unknown): Log => {
+export const parseLog = (input: unknown): Log => {
     if (!isNonNullObject(input)) throw new Error('Log must be a non-null object');
     const { msg_index, log, events } = input as { msg_index: unknown; log: unknown; events: unknown };
     if (typeof msg_index !== 'number') throw new Error("Log's msg_index must be a number");
@@ -41,7 +41,7 @@ const parseLog = (input: unknown): Log => {
     };
 };
 
-const parseLogs = (input: unknown): readonly Log[] => {
+export const parseLogs = (input: unknown): readonly Log[] => {
     if (!Array.isArray(input)) throw new Error('Logs must be an array');
     return input.map(parseLog);
 };

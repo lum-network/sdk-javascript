@@ -5,5 +5,5 @@ export * from './keys';
 export * from './transactions';
 export * from './broadcast';
 export * from './search';
-export * from './logs';
+export * from './txlogs';
 export * from './registry';

@@ -1,4 +1,5 @@
 # Lum Network - Javascript SDK
+
 [![npm version](https://badge.fury.io/js/%40lum-network%2Fsdk-javascript.svg)](https://badge.fury.io/js/%40lum-network%2Fsdk-javascript)
 
 This Javascript SDK enables browsers and NodeJS clients to interact with the Lum Network.
