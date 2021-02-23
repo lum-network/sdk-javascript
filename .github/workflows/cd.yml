@@ -37,11 +37,11 @@ jobs:
       - name: Run build lib, types and docs
         run: yarn build
       - name: Copy LICENSE
-        run: cp LICENSE lib/LICENSE
+        run: cp LICENSE build/LICENSE
       - name: Copy README
-        run: cp README.md lib/README.md
+        run: cp README.md build/README.md
       - name: Copy sanitized package.json
-        run: cp package.json lib/package.json
+        run: cp package.json build/package.json
       - name: Publish package to NPM
         run: npm publish
         env:

@@ -1,5 +1,4 @@
 import { LumWallet, LumUtils, LumConstants } from '../src';
-// import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing';
 
 describe('LumWallet', () => {
     it('Should be identical from mnemonic, privatekey and keystore recovery', async () => {

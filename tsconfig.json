@@ -1,13 +1,12 @@
 {
     "compilerOptions": {
         "rootDir": ".",
-        "outDir": "lib",
+        "outDir": "build",
         "resolveJsonModule": true,
         "allowUnreachableCode": false,
         "allowUnusedLabels": false,
         "declaration": true,
         "esModuleInterop": true,
-        "emitDeclarationOnly": true,
         "isolatedModules": true,
         "forceConsistentCasingInFileNames": true,
         "lib": ["es2018"],

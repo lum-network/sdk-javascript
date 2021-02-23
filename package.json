@@ -14,18 +14,17 @@
         "type": "git",
         "url": "https://github.com/lum-network/sdk-javascript.git"
     },
-    "main": "lib/index.js",
-    "typings": "lib/index.d.ts",
+    "main": "build/index.js",
+    "typings": "build/index.d.ts",
     "files": [
-        "lib/*"
+        "build/*"
     ],
     "scripts": {
         "test": "cross-env NODE_ENV=test jest",
-        "build": "yarn clean && yarn build:types && yarn build:js && yarn build:docs",
-        "build:types": "tsc --emitDeclarationOnly",
-        "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
-        "build:docs": "rimraf docs/lib && typedoc --excludeExternals --excludeNotDocumented --readme none --out docs/lib --hideBreadcrumbs --disableSources",
-        "clean": "rimraf lib",
+        "build": "yarn clean && yarn build:lib && yarn build:docs",
+        "build:lib": "tsc",
+        "build:docs": "rimraf docs/lib && typedoc --excludeExternals --readme none --out docs/lib --hideBreadcrumbs --disableSources",
+        "clean": "rimraf build",
         "lint": "eslint '**/*.{ts,js}'",
         "format": "prettier --write '**/*.{js,jsx,ts,tsx,css,json,md,html,yml}'",
         "bump": "npm version",
