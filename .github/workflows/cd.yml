@@ -34,17 +34,19 @@ jobs:
       - name: Run unit tests
         run: yarn test
 
-      - name: Run build lib, types and docs
-        run: yarn build
+      - name: Run clean
+        run: yarn clean
+      - name: Run build lib and types
+        run: yarn build:lib
       - name: Copy LICENSE
         run: cp LICENSE build/LICENSE
       - name: Copy README
         run: cp README.md build/README.md
-      - name: Copy sanitized package.json
+      - name: Copy package.json
         run: cp package.json build/package.json
 
       - name: Publish package to NPM
-        run: npm publish
+        run: npm publish ./build
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
 

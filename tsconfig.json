@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
-        "rootDir": ".",
-        "outDir": "build",
+        "rootDir": "./src",
+        "outDir": "build/build",
         "resolveJsonModule": true,
         "allowUnreachableCode": false,
         "allowUnusedLabels": false,
@@ -26,6 +26,5 @@
         "out": "docs",
         "exclude": []
     },
-    "include": ["src/**/*.ts", "test/**/*.ts"],
-    "exclude": ["node_modules"]
+    "exclude": ["build", "node_modules", "**/*.spec.ts", "tests/**"]
 }
