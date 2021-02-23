@@ -1,12 +1,12 @@
 {
     "compilerOptions": {
         "rootDir": ".",
-        "outDir": "lib",
+        "outDir": "build",
         "resolveJsonModule": true,
         "allowUnreachableCode": false,
         "allowUnusedLabels": false,
         "declaration": true,
-        "emitDeclarationOnly": true,
+        "esModuleInterop": true,
         "isolatedModules": true,
         "forceConsistentCasingInFileNames": true,
         "lib": ["es2018"],
@@ -17,7 +17,14 @@
         "pretty": true,
         "sourceMap": true,
         "strict": true,
-        "target": "es2018"
+        "target": "es2018",
+        "experimentalDecorators": true
+    },
+    "typedocOptions": {
+        "entryPoints": ["src/index.ts"],
+        // "mode": "file",
+        "out": "docs",
+        "exclude": []
     },
     "include": ["src/**/*.ts", "test/**/*.ts"],
     "exclude": ["node_modules"]

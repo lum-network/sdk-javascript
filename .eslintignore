@@ -1,2 +1,6 @@
+build/
+docs/
 node_modules/
-lib/
+proto/
+scripts/
+*.d.ts

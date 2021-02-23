@@ -14,23 +14,39 @@
         "type": "git",
         "url": "https://github.com/lum-network/sdk-javascript.git"
     },
-    "main": "lib/index.js",
-    "typings": "lib/index.d.ts",
+    "main": "build/index.js",
+    "typings": "build/index.d.ts",
     "files": [
-        "lib/*"
+        "build/*"
     ],
     "scripts": {
         "test": "cross-env NODE_ENV=test jest",
-        "build": "yarn clean && yarn build:types && yarn build:js && yarn build:docs",
-        "build:types": "tsc --emitDeclarationOnly",
-        "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
-        "build:docs": "rimraf docs/lib && typedoc --excludeExternals --excludeNotDocumented --readme none --out docs/lib --hideBreadcrumbs --disableSources",
-        "clean": "rimraf lib",
+        "build": "yarn clean && yarn build:lib && yarn build:docs",
+        "build:lib": "tsc",
+        "build:docs": "rimraf docs/lib && typedoc --excludeExternals --readme none --out docs/lib --hideBreadcrumbs --disableSources",
+        "clean": "rimraf build",
         "lint": "eslint '**/*.{ts,js}'",
         "format": "prettier --write '**/*.{js,jsx,ts,tsx,css,json,md,html,yml}'",
-        "bump": "npm version"
+        "bump": "npm version",
+        "preget-proto": "rm -rf proto",
+        "get-proto": "REF=v0.40.0 sh ./scripts/get-proto.sh",
+        "define-proto": "sh ./scripts/define-proto.sh",
+        "postdefine-proto": "prettier --write \"src/codec/**/*.ts\""
     },
-    "dependencies": {},
+    "dependencies": {
+        "@cosmjs/crypto": "^0.24.0-alpha.25",
+        "@cosmjs/encoding": "^0.24.0-alpha.25",
+        "@cosmjs/math": "^0.24.0-alpha.25",
+        "@cosmjs/proto-signing": "^0.24.0-alpha.25",
+        "@cosmjs/stargate": "^0.24.0-alpha.25",
+        "@cosmjs/tendermint-rpc": "^0.24.0-alpha.25",
+        "@cosmjs/utils": "^0.23.2",
+        "@types/uuid": "^8.3.0",
+        "crypto-browserify": "^3.12.0",
+        "crypto-js": "^4.0.0",
+        "long": "^4.0.0",
+        "uuid": "^8.3.2"
+    },
     "optionalDependencies": {},
     "devDependencies": {
         "@babel/cli": "^7.8.3",
@@ -39,6 +55,7 @@
         "@babel/plugin-transform-runtime": "^7.12.10",
         "@babel/preset-env": "^7.8.3",
         "@babel/preset-typescript": "^7.8.3",
+        "@types/crypto-js": "^4.0.1",
         "@types/jest": "^26.0.20",
         "cross-env": "^7.0.3",
         "eslint": "^7.19.0",
@@ -47,6 +64,7 @@
         "prettier": "^2.2.1",
         "rimraf": "^3.0.2",
         "ts-jest": "^26.5.0",
+        "ts-proto": "^1.67.0",
         "typedoc": "^0.20.25",
         "typedoc-plugin-markdown": "^3.5.0",
         "typescript": "^4.1.3"

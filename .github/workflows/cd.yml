@@ -14,10 +14,6 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x]
-        redis-version: [5]
-
-    env:
-      CLOUDSDK_CORE_PROJECT: dev
 
     steps:
       - name: Checkout code
@@ -41,12 +37,24 @@ jobs:
       - name: Run build lib, types and docs
         run: yarn build
       - name: Copy LICENSE
-        run: cp LICENSE lib/LICENSE
+        run: cp LICENSE build/LICENSE
       - name: Copy README
-        run: cp README.md lib/README.md
+        run: cp README.md build/README.md
       - name: Copy sanitized package.json
-        run: cp package.json lib/package.json
+        run: cp package.json build/package.json
+
       - name: Publish package to NPM
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false

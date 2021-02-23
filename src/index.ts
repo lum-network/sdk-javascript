@@ -1,10 +1,8 @@
-const foobar = (input: string): string => {
-    if (input === 'foo') {
-        return 'bar';
-    } else if (input === 'bar') {
-        return 'foo';
-    }
-    return 'foobar';
-};
+import * as LumUtils from './utils';
+import * as LumConstants from './constants';
+import * as LumTypes from './types';
+import * as LumMessages from './messages';
+import { LumWallet } from './wallet';
+import { LumClient } from './client';
 
-export { foobar };
+export { LumWallet, LumClient, LumTypes, LumUtils, LumConstants, LumMessages };
