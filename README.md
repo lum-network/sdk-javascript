@@ -1,4 +1,5 @@
 # Lum Network - Javascript SDK
+[![npm version](https://badge.fury.io/js/%40lum-network%2Fsdk-javascript.svg)](https://badge.fury.io/js/%40lum-network%2Fsdk-javascript)
 
 This Javascript SDK enables browsers and NodeJS clients to interact with the Lum Network.
 
@@ -61,7 +62,7 @@ This SDK provides an easy access to all the available Lum Network blockchain RPC
 
 The SDK is based on the [CosmJS](https://github.com/cosmos/cosmjs) implementation and heavily relies on it.
 
-It is intented to be used standalone, without having to import specific CosmJS packages which can be tricky and messy.
+It is intented to be used standalone, without having to import specific CosmJS packages which can get make implementations tricky and messy.
 
 Therefore all codecs, types, functions are features from the CosmJS SDK are either re-implemented by this SDK or re-exporter for simplicity purposes.
 
