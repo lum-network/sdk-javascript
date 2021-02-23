@@ -5,11 +5,22 @@ import SHA3 from 'crypto-js/sha3';
 
 import { isUint8Array } from './commons';
 
+/**
+ * Sha3 hash
+ *
+ * @param hex hex bytes to hash
+ */
 export const sha3 = (hex: string): string => {
     const hexEncoded = hexEncoding.parse(hex);
     return SHA3(hexEncoded).toString();
 };
 
+/**
+ * Convert a Uint8Array key into its hexadecimal version
+ *
+ * @param key (should be secp256k1 but works with anything though)
+ * @param xPrefix whether or not to prefix the returned hex value by "0x"
+ */
 export const keyToHex = (key: Uint8Array, xPrefix = false): string => {
     const hexKey = toHex(key);
     if (xPrefix) {
@@ -18,6 +29,11 @@ export const keyToHex = (key: Uint8Array, xPrefix = false): string => {
     return hexKey;
 };
 
+/**
+ * Convert an hex key into its Uint8Array verison
+ *
+ * @param hexKey hexadecimal key to convert
+ */
 export const keyFromHex = (hexKey: string): Uint8Array => {
     if (hexKey.startsWith('0x')) {
         return fromHex(hexKey.substr(2));
@@ -25,6 +41,16 @@ export const keyFromHex = (hexKey: string): Uint8Array => {
     return fromHex(hexKey);
 };
 
+/**
+ * Converts the provided data recursively in order to obtain a json usable version by removing
+ * complex types and making it serializable
+ *
+ * - Uint8Array will be converted to HEX
+ * - Date will be converted to ISO string
+ * - Anything else will not be touched
+ *
+ * @param data data to convert (can be anything)
+ */
 export const toJSON = (data: unknown): unknown => {
     if (isUint8Array(data)) {
         // Force uppercase hex format

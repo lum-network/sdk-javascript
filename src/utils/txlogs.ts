@@ -46,6 +46,11 @@ export const parseLogs = (input: unknown): readonly Log[] => {
     return input.map(parseLog);
 };
 
+/**
+ * Parse raw transaction logs into human readable format
+ *
+ * @param input transaction log (for tx returned by the client you can use tx.result.log)
+ */
 export const parseRawLogs = (input = '[]'): readonly Log[] => {
     const logsToParse = JSON.parse(input).map(({ events }: { events: readonly unknown[] }, i: number) => ({
         msg_index: i,

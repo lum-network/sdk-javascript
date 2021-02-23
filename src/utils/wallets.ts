@@ -28,6 +28,12 @@ export interface KeyStore {
     };
 }
 
+/**
+ * Generate a KeyStore using a privateKey and a password
+ *
+ * @param privateKey private key to encrypt in the keystore
+ * @param password keystore password
+ */
 export const generateKeyStore = (privateKey: Uint8Array, password: string): KeyStore => {
     const salt = cryp.randomBytes(32);
     const iv = cryp.randomBytes(16);
@@ -71,6 +77,12 @@ export const generateKeyStore = (privateKey: Uint8Array, password: string): KeyS
     };
 };
 
+/**
+ * Decyphers the private key from the provided KeyStore
+ *
+ * @param keystore keystore data (either stringified or loaded)
+ * @param password keystore password
+ */
 export const getPrivateKeyFromKeystore = (keystore: string | KeyStore, password: string): Uint8Array => {
     const store: KeyStore = typeof keystore === 'string' ? JSON.parse(keystore) : keystore;
     if (store.crypto.kdfparams.prf !== 'hmac-sha256') {
@@ -100,6 +112,7 @@ export const getPrivateKeyFromKeystore = (keystore: string | KeyStore, password:
  * Generate a random mnemonic of 12 or 24 words
  *
  * @see https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki#generating-the-mnemonic
+ *
  * @param words The number of words requested
  */
 export const generateMnemonic = (words: 12 | 24 = 12): string => {
