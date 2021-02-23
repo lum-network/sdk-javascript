@@ -30,7 +30,7 @@ describe('LumClient', () => {
         //     ],
         //     gas: '180000', // 180k
         // });
-        // console.log('signAndBroadcastTx', res);
+        // console.log('signAndBroadcastTx', LumUtils.broadcastTxCommitSuccess(res), res);
         // console.log('getBalance(w1)', await clt.getBalance(w1.address, 'token'));
         // console.log('getBalance(w2)', await clt.getBalance(w2.address, 'token'));
         // WIP - needs to be automated through CICD

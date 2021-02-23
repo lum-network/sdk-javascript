@@ -1,4 +1,9 @@
 /**
+ * Lum Coin denomination
+ */
+export const LumDenom = 'lum';
+
+/**
  * Lum Network address prefix
  */
 export const LumAddressPrefix = 'lum';
