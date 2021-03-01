@@ -1,12 +1,16 @@
 import { Uint64 } from '@cosmjs/math';
-import { Client as TendermintClient, adaptor34 as TendermintAdaptor } from '@cosmjs/tendermint-rpc';
+import { Client as TendermintClient, adaptor34 as TendermintAdaptor, StatusResponse } from '@cosmjs/tendermint-rpc';
 import {
     QueryClient as StargateQueryClient,
     setupAuthExtension as StargateSetupAuthExtension,
     setupBankExtension as StargateSetupBankExtension,
+    setupDistributionExtension as StargateDistributionExtension,
+    setupStakingExtension as StargateStakingExtension,
     coinFromProto,
     AuthExtension,
     BankExtension,
+    StakingExtension,
+    DistributionExtension,
 } from '@cosmjs/stargate';
 
 import { LumWallet } from '../wallet';
@@ -16,7 +20,7 @@ import { BroadcastTxCommitResponse, ValidatorsResponse, TxResponse, TxSearchPara
 
 export class LumClient {
     readonly tmClient: TendermintClient;
-    readonly queryClient: StargateQueryClient & AuthExtension & BankExtension;
+    readonly queryClient: StargateQueryClient & AuthExtension & BankExtension & DistributionExtension & StakingExtension;
     private chainId?: string;
 
     /**
@@ -26,7 +30,7 @@ export class LumClient {
      */
     constructor(tmClient: TendermintClient) {
         this.tmClient = tmClient;
-        this.queryClient = StargateQueryClient.withExtensions(tmClient, StargateSetupAuthExtension, StargateSetupBankExtension);
+        this.queryClient = StargateQueryClient.withExtensions(tmClient, StargateSetupAuthExtension, StargateSetupBankExtension, StargateDistributionExtension, StargateStakingExtension);
     }
 
     /**
@@ -46,6 +50,14 @@ export class LumClient {
     disconnect() {
         this.tmClient.disconnect();
     }
+
+    /**
+     * Get the connected node status information
+     */
+    status = async (): Promise<StatusResponse> => {
+        const status = await this.tmClient.status();
+        return status;
+    };
 
     /**
      * Get the chain id
@@ -126,13 +138,42 @@ export class LumClient {
     };
 
     /**
+     * Get an account balance without verifying their existence
+     *
+     * @param address wallet address
+     * @param searchDenom Coin denomination (ex: lum)
+     */
+    getBalanceUnverified = async (address: string, searchDenom: string): Promise<Coin | null> => {
+        const balance = await this.queryClient.bank.unverified.balance(address, searchDenom);
+        return balance ? coinFromProto(balance) : null;
+    };
+
+    /**
      * Get all account balances without verifying their existence
      *
      * @param address wallet address
      */
-    getBalancesUnverified = async (address: string): Promise<Coin[]> => {
+    getAllBalancesUnverified = async (address: string): Promise<Coin[]> => {
         const balances = await this.queryClient.bank.unverified.allBalances(address);
         return balances.map(coinFromProto);
+    };
+
+    /**
+     * Get coin supply
+     *
+     * @param searchDenom Coin denomination (ex: lum)
+     */
+    getSupply = async (searchDenom: string): Promise<Coin | null> => {
+        const supply = await this.queryClient.bank.unverified.supplyOf(searchDenom);
+        return supply ? coinFromProto(supply) : null;
+    };
+
+    /**
+     * Get all coins supplies
+     */
+    getAllSupplies = async (): Promise<Coin[]> => {
+        const supplies = await this.queryClient.bank.unverified.totalSupply();
+        return supplies.map(coinFromProto);
     };
 
     /**

@@ -18,16 +18,20 @@
 - [disconnect](lumclient.md#disconnect)
 - [getAccount](lumclient.md#getaccount)
 - [getAccountUnverified](lumclient.md#getaccountunverified)
+- [getAllBalancesUnverified](lumclient.md#getallbalancesunverified)
+- [getAllSupplies](lumclient.md#getallsupplies)
 - [getBalance](lumclient.md#getbalance)
-- [getBalancesUnverified](lumclient.md#getbalancesunverified)
+- [getBalanceUnverified](lumclient.md#getbalanceunverified)
 - [getBlock](lumclient.md#getblock)
 - [getBlockHeight](lumclient.md#getblockheight)
 - [getChainId](lumclient.md#getchainid)
+- [getSupply](lumclient.md#getsupply)
 - [getTx](lumclient.md#gettx)
 - [getValidators](lumclient.md#getvalidators)
 - [searchTx](lumclient.md#searchtx)
 - [signAndBroadcastTx](lumclient.md#signandbroadcasttx)
 - [signTx](lumclient.md#signtx)
+- [status](lumclient.md#status)
 - [txsQuery](lumclient.md#txsquery)
 - [connect](lumclient.md#connect)
 
@@ -57,7 +61,7 @@ ___
 
 ### queryClient
 
-• `Readonly` **queryClient**: *QueryClient* & AuthExtension & BankExtension
+• `Readonly` **queryClient**: *QueryClient* & AuthExtension & BankExtension & DistributionExtension & StakingExtension
 
 ___
 
@@ -126,6 +130,32 @@ Name | Type | Description |
 
 ___
 
+### getAllBalancesUnverified
+
+▸ **getAllBalancesUnverified**(`address`: *string*): *Promise*<[*Coin*](../interfaces/lumtypes.coin.md)[]\>
+
+Get all account balances without verifying their existence
+
+#### Parameters:
+
+Name | Type | Description |
+:------ | :------ | :------ |
+`address` | *string* | wallet address    |
+
+**Returns:** *Promise*<[*Coin*](../interfaces/lumtypes.coin.md)[]\>
+
+___
+
+### getAllSupplies
+
+▸ **getAllSupplies**(): *Promise*<[*Coin*](../interfaces/lumtypes.coin.md)[]\>
+
+Get all coins supplies
+
+**Returns:** *Promise*<[*Coin*](../interfaces/lumtypes.coin.md)[]\>
+
+___
+
 ### getBalance
 
 ▸ **getBalance**(`address`: *string*, `searchDenom`: *string*): *Promise*<*null* \| [*Coin*](../interfaces/lumtypes.coin.md)\>
@@ -143,19 +173,20 @@ Name | Type | Description |
 
 ___
 
-### getBalancesUnverified
+### getBalanceUnverified
 
-▸ **getBalancesUnverified**(`address`: *string*): *Promise*<[*Coin*](../interfaces/lumtypes.coin.md)[]\>
+▸ **getBalanceUnverified**(`address`: *string*, `searchDenom`: *string*): *Promise*<*null* \| [*Coin*](../interfaces/lumtypes.coin.md)\>
 
-Get all account balances without verifying their existence
+Get an account balance without verifying their existence
 
 #### Parameters:
 
 Name | Type | Description |
 :------ | :------ | :------ |
-`address` | *string* | wallet address    |
+`address` | *string* | wallet address   |
+`searchDenom` | *string* | Coin denomination (ex: lum)    |
 
-**Returns:** *Promise*<[*Coin*](../interfaces/lumtypes.coin.md)[]\>
+**Returns:** *Promise*<*null* \| [*Coin*](../interfaces/lumtypes.coin.md)\>
 
 ___
 
@@ -192,6 +223,22 @@ ___
 Get the chain id
 
 **Returns:** *Promise*<string\>
+
+___
+
+### getSupply
+
+▸ **getSupply**(`searchDenom`: *string*): *Promise*<*null* \| [*Coin*](../interfaces/lumtypes.coin.md)\>
+
+Get coin supply
+
+#### Parameters:
+
+Name | Type | Description |
+:------ | :------ | :------ |
+`searchDenom` | *string* | Coin denomination (ex: lum)    |
+
+**Returns:** *Promise*<*null* \| [*Coin*](../interfaces/lumtypes.coin.md)\>
 
 ___
 
@@ -289,6 +336,16 @@ Name | Type | Description |
 `memo?` | *string* | optional memo for the transaction    |
 
 **Returns:** *Promise*<Uint8Array\>
+
+___
+
+### status
+
+▸ **status**(): *Promise*<StatusResponse\>
+
+Get the connected node status information
+
+**Returns:** *Promise*<StatusResponse\>
 
 ___
 
