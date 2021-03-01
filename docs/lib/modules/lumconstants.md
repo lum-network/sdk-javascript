@@ -5,7 +5,12 @@
 ### Variables
 
 - [HDPath](lumconstants.md#hdpath)
-- [LumAddressPrefix](lumconstants.md#lumaddressprefix)
+- [LumBech32PrefixAccAddr](lumconstants.md#lumbech32prefixaccaddr)
+- [LumBech32PrefixAccPub](lumconstants.md#lumbech32prefixaccpub)
+- [LumBech32PrefixConsAddr](lumconstants.md#lumbech32prefixconsaddr)
+- [LumBech32PrefixConsPub](lumconstants.md#lumbech32prefixconspub)
+- [LumBech32PrefixValAddr](lumconstants.md#lumbech32prefixvaladdr)
+- [LumBech32PrefixValPub](lumconstants.md#lumbech32prefixvalpub)
 - [LumDenom](lumconstants.md#lumdenom)
 - [PrivateKeyLength](lumconstants.md#privatekeylength)
 
@@ -23,13 +28,55 @@ Lum Network HDPath
 
 **`see`** https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
 
+**`see`** https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+
 ___
 
-### LumAddressPrefix
+### LumBech32PrefixAccAddr
 
-• `Const` **LumAddressPrefix**: *lum*= 'lum'
+• `Const` **LumBech32PrefixAccAddr**: *lum*= 'lum'
 
-Lum Network address prefix
+Lum Network Bech32 prefix of an account's address
+
+___
+
+### LumBech32PrefixAccPub
+
+• `Const` **LumBech32PrefixAccPub**: *lumpub*= 'lumpub'
+
+Lum Network Bech32 prefix of an account's public key
+
+___
+
+### LumBech32PrefixConsAddr
+
+• `Const` **LumBech32PrefixConsAddr**: *lumvalcons*= 'lumvalcons'
+
+Lum Network Bech32 prefix of a consensus node address
+
+___
+
+### LumBech32PrefixConsPub
+
+• `Const` **LumBech32PrefixConsPub**: *lumvalconspub*= 'lumvalconspub'
+
+Lum Network Bech32 prefix of a consensus node public key
+
+___
+
+### LumBech32PrefixValAddr
+
+• `Const` **LumBech32PrefixValAddr**: *lumvaloper*= 'lumvaloper'
+
+Lum Network Bech32 prefix of a validator's operator address
+
+___
+
+### LumBech32PrefixValPub
+
+• `Const` **LumBech32PrefixValPub**: *lumvaloperpub*= 'lumvaloperpub'
+
+Lum Network Bech32 prefix of a validator's operator public key
 
 ___
 

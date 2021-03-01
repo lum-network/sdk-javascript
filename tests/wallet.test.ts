@@ -12,7 +12,7 @@ describe('LumWallet', () => {
         const w3 = await LumWallet.fromKeyStore(keystore, 'lumiere');
 
         expect(LumUtils.isAddressValid(w1.address)).toBe(true);
-        expect(LumUtils.isAddressValid(w1.address, LumConstants.LumAddressPrefix)).toBe(true);
+        expect(LumUtils.isAddressValid(w1.address, LumConstants.LumBech32PrefixAccAddr)).toBe(true);
         expect(LumUtils.isAddressValid(w1.address, undefined)).toBe(true);
         expect(LumUtils.isAddressValid(w1.address, 'cosmos')).toBe(false);
         expect(w1.address).toEqual(w2.address);

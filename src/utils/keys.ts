@@ -3,7 +3,7 @@ import { Any } from '..//codec/google/protobuf/any';
 import { Secp256k1, sha256, ripemd160, EnglishMnemonic, Bip39, Slip10, Slip10Curve, stringToPath, Random } from '@cosmjs/crypto';
 
 import { Bech32 } from './encoding';
-import { LumAddressPrefix, getLumHdPath, PrivateKeyLength } from '../constants';
+import { LumBech32PrefixAccAddr, getLumHdPath, PrivateKeyLength } from '../constants';
 
 /**
  * Derives a bech32 wallet address from a public key (secp256k1)
@@ -11,7 +11,7 @@ import { LumAddressPrefix, getLumHdPath, PrivateKeyLength } from '../constants';
  * @param publicKey public key to derive the address from
  * @param prefix address prefix to use (ex: lum)
  */
-export const getAddressFromPublicKey = (publicKey: Uint8Array, prefix = LumAddressPrefix) => {
+export const getAddressFromPublicKey = (publicKey: Uint8Array, prefix = LumBech32PrefixAccAddr) => {
     if (publicKey.length !== 33) {
         throw new Error(`Invalid Secp256k1 pubkey length (compressed): ${publicKey.length}`);
     }
@@ -78,7 +78,7 @@ export const generatePrivateKey = (): Uint8Array => {
  * @param address address to check
  * @param prefix prefix to check (will not be checked if not provided)
  */
-export const isAddressValid = (address: string, prefix: string | undefined = LumAddressPrefix): boolean => {
+export const isAddressValid = (address: string, prefix: string | undefined = LumBech32PrefixAccAddr): boolean => {
     try {
         const decoded = Bech32.decode(address);
         return (!prefix || prefix === decoded.prefix) && decoded.data.length === 20;

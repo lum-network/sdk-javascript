@@ -25,7 +25,7 @@ export class LumWallet {
      * @param publicKey wallet public key (secp256k1)
      * @param addressPrefix prefix to use to derive the address from the public key (ex: lum)
      */
-    constructor(privateKey: Uint8Array, publicKey: Uint8Array, addressPrefix = constants.LumAddressPrefix) {
+    constructor(privateKey: Uint8Array, publicKey: Uint8Array, addressPrefix = constants.LumBech32PrefixAccAddr) {
         this.publicKey = publicKey;
         this.privateKey = privateKey;
         this.address = utils.getAddressFromPublicKey(publicKey, addressPrefix);
@@ -37,7 +37,7 @@ export class LumWallet {
      * @param privateKey wallet private key (secp256k1)
      * @param addressPrefix prefix to use to derive the address from the public key (ex: lum)
      */
-    static fromPrivateKey = async (privateKey: Uint8Array, addressPrefix = constants.LumAddressPrefix) => {
+    static fromPrivateKey = async (privateKey: Uint8Array, addressPrefix = constants.LumBech32PrefixAccAddr) => {
         const publicKey = await utils.getPublicKeyFromPrivateKey(privateKey);
         return new LumWallet(privateKey, publicKey, addressPrefix);
     };
@@ -49,7 +49,7 @@ export class LumWallet {
      * @param hdPath BIP44 derivation path
      * @param addressPrefix prefix to use to derive the address from the public key (ex: lum)
      */
-    static fromMnemonic = async (mnemonic: string, hdPath = constants.getLumHdPath(0), addressPrefix = constants.LumAddressPrefix) => {
+    static fromMnemonic = async (mnemonic: string, hdPath = constants.getLumHdPath(0), addressPrefix = constants.LumBech32PrefixAccAddr) => {
         const privateKey = await utils.getPrivateKeyFromMnemonic(mnemonic, hdPath);
         return LumWallet.fromPrivateKey(privateKey, addressPrefix);
     };
@@ -61,7 +61,7 @@ export class LumWallet {
      * @param password keystore password
      * @param addressPrefix prefix to use to derive the address from the public key (ex: lum)
      */
-    static fromKeyStore = async (keystore: string | utils.KeyStore, password: string, addressPrefix = constants.LumAddressPrefix) => {
+    static fromKeyStore = async (keystore: string | utils.KeyStore, password: string, addressPrefix = constants.LumBech32PrefixAccAddr) => {
         const privateKey = utils.getPrivateKeyFromKeystore(keystore, password);
         return LumWallet.fromPrivateKey(privateKey, addressPrefix);
     };
