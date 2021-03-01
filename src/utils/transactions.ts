@@ -9,7 +9,7 @@ import { sha256 } from './encoding';
 import { Message } from '../messages';
 import { Fee, SignDoc } from '../types';
 import { publicKeyToProto } from './keys';
-import { LumRegistry } from './registry';
+import { LumRegistry } from '../registry';
 
 /**
  * Generate transaction auth info payload

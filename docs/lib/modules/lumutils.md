@@ -6,10 +6,6 @@
 
 - [KeyStore](../interfaces/lumutils.keystore.md)
 
-### Variables
-
-- [LumRegistry](lumutils.md#lumregistry)
-
 ### Functions
 
 - [broadcastTxCommitSuccess](lumutils.md#broadcasttxcommitsuccess)
@@ -44,12 +40,6 @@
 - [sha3](lumutils.md#sha3)
 - [toJSON](lumutils.md#tojson)
 - [verifySignature](lumutils.md#verifysignature)
-
-## Variables
-
-### LumRegistry
-
-• `Const` **LumRegistry**: *Registry*
 
 ## Functions
 

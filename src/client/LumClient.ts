@@ -182,7 +182,7 @@ export class LumClient {
      *
      * @param blockHeight block height to return. If no height is provided, it will fetch validator set which corresponds to the latest block
      */
-    getValidators = async (blockHeight?: number): Promise<ValidatorsResponse> => {
+    getValidators = async (blockHeight?: number | undefined): Promise<ValidatorsResponse> => {
         const results = await this.tmClient.validators(blockHeight);
         return results;
     };

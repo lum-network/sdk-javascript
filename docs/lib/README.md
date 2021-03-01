@@ -13,3 +13,13 @@
 
 - [LumClient](classes/lumclient.md)
 - [LumWallet](classes/lumwallet.md)
+
+### Variables
+
+- [LumRegistry](README.md#lumregistry)
+
+## Variables
+
+### LumRegistry
+
+• `Const` **LumRegistry**: *ExtendedRegistry*
