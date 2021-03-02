@@ -1,5 +1,5 @@
 import { Uint64 } from '@cosmjs/math';
-import { Client as TendermintClient, adaptor34 as TendermintAdaptor, StatusResponse } from '@cosmjs/tendermint-rpc';
+import { Tendermint34Client, StatusResponse } from '@cosmjs/tendermint-rpc';
 import {
     QueryClient as StargateQueryClient,
     setupAuthExtension as StargateSetupAuthExtension,
@@ -19,7 +19,7 @@ import { sha256, generateAuthInfo, generateSignDoc, generateSignDocBytes, genera
 import { BroadcastTxCommitResponse, ValidatorsResponse, TxResponse, TxSearchParams, BlockResponse, Account, Coin, Fee } from '../types';
 
 export class LumClient {
-    readonly tmClient: TendermintClient;
+    readonly tmClient: Tendermint34Client;
     readonly queryClient: StargateQueryClient & AuthExtension & BankExtension & DistributionExtension & StakingExtension;
     private chainId?: string;
 
@@ -28,9 +28,24 @@ export class LumClient {
      *
      * @param tmClient tendermint RPC client
      */
-    constructor(tmClient: TendermintClient) {
+    constructor(tmClient: Tendermint34Client) {
         this.tmClient = tmClient;
         this.queryClient = StargateQueryClient.withExtensions(tmClient, StargateSetupAuthExtension, StargateSetupBankExtension, StargateDistributionExtension, StargateStakingExtension);
+
+        // Used for debugging while gasWanted, gasUsed and codespace are still waiting to be included in the code lib
+        // // @ts-ignore
+        // this.tmClient.r.decodeTx = (data) => {
+        //     const res = adaptor34.responses.decodeTx(data);
+        //     if (res && res.result) {
+        //         // @ts-ignore
+        //         res.result.gasWanted = Int53.fromString(data.result.tx_result.gas_wanted || '0').toNumber();
+        //         // @ts-ignore
+        //         res.result.gasUsed = Int53.fromString(data.result.tx_result.gas_used || '0').toNumber();
+        //         // @ts-ignore
+        //         res.result.codespace = data.result.tx_result.codespace;
+        //     }
+        //     return res;
+        // };
     }
 
     /**
@@ -40,7 +55,7 @@ export class LumClient {
      * @param endpoint Blockchain node RPC url
      */
     static connect = async (endpoint: string): Promise<LumClient> => {
-        const tmClient = await TendermintClient.connect(endpoint, TendermintAdaptor);
+        const tmClient = await Tendermint34Client.connect(endpoint);
         return new LumClient(tmClient);
     };
 
@@ -177,13 +192,15 @@ export class LumClient {
     };
 
     /**
-     * Get all validators
+     * Get validators (paginated)
      * Validators are sorted first by voting power (descending), then by address (ascending)
      *
      * @param blockHeight block height to return. If no height is provided, it will fetch validator set which corresponds to the latest block
+     * @param page page to query (defaul to 1)
+     * @param perPage results per page (default to 30)
      */
-    getValidators = async (blockHeight?: number | undefined): Promise<ValidatorsResponse> => {
-        const results = await this.tmClient.validators(blockHeight);
+    getValidators = async (blockHeight?: number | undefined, page = 1, perPage = 30): Promise<ValidatorsResponse> => {
+        const results = await this.tmClient.validators({ height: blockHeight, page: page, per_page: perPage });
         return results;
     };
 
@@ -209,7 +226,7 @@ export class LumClient {
      *
      * @param queries queries to run (see utils/search for helpers)
      * @param page page to query (default to 1)
-     * @param perPage result per pages (default to 30)
+     * @param perPage results per pages (default to 30)
      * @param includeProof whether or not to include proofs of the transactions inclusion in the block
      */
     searchTx = async (queries: string[], page = 1, perPage = 30, includeProof?: boolean): Promise<TxResponse[]> => {
