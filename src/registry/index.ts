@@ -1,11 +1,13 @@
 import { Registry, GeneratedType } from '@cosmjs/proto-signing';
 
 import { Tx } from '../codec/cosmos/tx/v1beta1/tx';
+import { PubKey } from '../codec/cosmos/crypto/secp256k1/keys';
 import { MsgSend, MsgMultiSend } from '../codec/cosmos/bank/v1beta1/tx';
 import { MsgFundCommunityPool, MsgSetWithdrawAddress, MsgWithdrawDelegatorReward, MsgWithdrawValidatorCommission } from '../codec/cosmos/distribution/v1beta1/tx';
 import { MsgBeginRedelegate, MsgCreateValidator, MsgDelegate, MsgEditValidator, MsgUndelegate } from '../codec/cosmos/staking/v1beta1/tx';
 
 const registryTypes: Iterable<[string, GeneratedType]> = [
+    ['/cosmos.crypto.ed25519.PubKey', PubKey as GeneratedType],
     ['/cosmos.bank.v1beta1.MsgSend', MsgSend as GeneratedType],
     ['/cosmos.bank.v1beta1.MsgMultiSend', MsgMultiSend as GeneratedType],
     ['/cosmos.distribution.v1beta1.MsgFundCommunityPool', MsgFundCommunityPool as GeneratedType],

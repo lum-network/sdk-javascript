@@ -192,19 +192,6 @@ export class LumClient {
     };
 
     /**
-     * Get validators (paginated)
-     * Validators are sorted first by voting power (descending), then by address (ascending)
-     *
-     * @param blockHeight block height to return. If no height is provided, it will fetch validator set which corresponds to the latest block
-     * @param page page to query (defaul to 1)
-     * @param perPage results per page (default to 30)
-     */
-    getValidators = async (blockHeight?: number | undefined, page = 1, perPage = 30): Promise<ValidatorsResponse> => {
-        const results = await this.tmClient.validators({ height: blockHeight, page: page, per_page: perPage });
-        return results;
-    };
-
-    /**
      * Get a transaction by Hash
      *
      * @param hash transaction hash to retrieve

@@ -1,4 +1,5 @@
 export * from './tendermint';
+export * from './cosmos';
 export * from './Account';
 export * from './Coin';
 export * from './Fee';
