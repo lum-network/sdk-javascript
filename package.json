@@ -1,6 +1,6 @@
 {
     "name": "@lum-network/sdk-javascript",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "license": "Apache-2.0",
     "description": "Javascript SDK library for NodeJS and Web browsers to interact with the Lum Network.",
     "homepage": "https://github.com/lum-network/sdk-javascript#readme",
