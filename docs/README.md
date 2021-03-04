@@ -60,7 +60,8 @@ console.log(`Wallet address: ${wallet.address}`);
 ### Connect to the testnet
 
 ```typescript
-const testnetClient = await LumClient.connect('http://localhost:26657');
+// Use http://node0.lum.network/rpc to connect to the mainnet
+const testnetClient = await LumClient.connect('http://node0.testnet.lum.network/rpc');
 ```
 
 ### Account information & balance
@@ -93,7 +94,7 @@ if (balances.length === 0) {
 
 #### Get account transactions (sent and received)
 ```typescript
-// The client search feature supports multiple searches and merge+store the results
+// The client search feature supports multiple searches and merge+sort the results
 const transactions = await testnetClient.searchTx([
     LumUtils.searchTxFrom(wallet.address),
     LumUtils.searchTxTo(wallet.address),
@@ -118,4 +119,26 @@ const fee = {
 const broadcastResult = await clt.signAndBroadcastTx(w1, [sendMsg], fee, 'hello memo!');
 // Verify the transaction was succesfully broadcasted and made it into a block
 console.log(`Broadcast success: ${LumUtils.broadcastTxCommitSuccess(broadcastResult)}`);
+```
+
+### Use all tendermint RPCs
+
+The underlying tendermint client is directly accessible via the `.tmClient` property of the LumClient.
+
+```typescript
+    const health = await testnetClient.tmClient.health();
+    const status = await testnetClient.tmClient.status();
+    const genesis = await testnetClient.tmClient.genesis();
+    const latestBlock = await testnetClient.tmClient.block();
+```
+
+### Use all modules RPCs
+
+The underlying query client is directly accessible via the `.queryClient` property of the LumClient.
+
+It allows to directly query all modules endpoints such as:
+
+```typescript
+    const supplies = await clt.queryClient.bank.unverified.totalSupply();
+    // [{ denom: 'lum', amount: '1000000' }]
 ```

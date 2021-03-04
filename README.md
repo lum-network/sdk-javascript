@@ -65,7 +65,7 @@ The SDK is based on the [CosmJS](https://github.com/cosmos/cosmjs) implementatio
 
 It is intented to be used standalone, without having to import specific CosmJS packages which can get make implementations tricky and messy.
 
-Therefore all codecs, types, functions are features from the CosmJS SDK are either re-implemented by this SDK or re-exporter for simplicity purposes.
+Therefore all codecs, types, functions are features from the CosmJS SDK are either re-implemented by this SDK or re-exported for simplicity purposes.
 
 Directly importing the CosmJS SDK or other cryptographic library should be considered bad practice for most use cases.
 
