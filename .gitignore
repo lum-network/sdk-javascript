@@ -108,3 +108,6 @@ dist
 
 # Proto files
 /proto
+
+# IDE
+.idea
