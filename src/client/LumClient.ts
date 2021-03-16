@@ -16,7 +16,7 @@ import {
 import { LumWallet } from '../wallet';
 import { Message } from '../messages';
 import { sha256, generateAuthInfo, generateSignDoc, generateSignDocBytes, generateTxBytes } from '../utils';
-import { BroadcastTxCommitResponse, ValidatorsResponse, TxResponse, TxSearchParams, BlockResponse, Account, Coin, Fee } from '../types';
+import { BroadcastTxCommitResponse, TxResponse, TxSearchParams, BlockResponse, Account, Coin, Fee } from '../types';
 
 export class LumClient {
     readonly tmClient: Tendermint34Client;

@@ -1,8 +1,5 @@
 import { LumWallet, LumClient, LumUtils, LumConstants, LumRegistry, LumTypes } from '../src';
 
-const genesisAccountAddress = 'lum100hm4tt3z3mj4gc453quvu452dcp2ehqavrtlp';
-const genesisValidatorAddress = '23D45E13FF3418D23DF989D78EBE6DE76F3A89EC';
-
 describe('LumClient', () => {
     let clt: LumClient;
     let w1: LumWallet;
@@ -10,8 +7,8 @@ describe('LumClient', () => {
 
     beforeAll(async () => {
         clt = await LumClient.connect('http://node0.testnet.lum.network/rpc');
-        w1 = await LumWallet.fromMnemonic('noodle hope lounge dismiss erase elephant seek crawl check equal city chest');
-        w2 = await LumWallet.fromMnemonic('sick hollow lizard train motion eternal mixture rude section tray nice awful');
+        w1 = await LumWallet.fromMnemonic(LumUtils.generateMnemonic());
+        w2 = await LumWallet.fromMnemonic(LumUtils.generateMnemonic());
         expect(w1.address).not.toEqual(w2.address);
     });
 
@@ -20,20 +17,23 @@ describe('LumClient', () => {
     });
 
     it('Should expose basic information', async () => {
-        expect(clt.getChainId()).resolves.toEqual('lumnetwork'); // TODO: will be update to lumnetwork-testnet
-        expect(clt.getBlockHeight()).resolves.toBeGreaterThan(0);
-        expect(clt.getBlock()).resolves.toBeTruthy();
+        const height = (await clt.getBlockHeight()) - 1;
+        expect(clt.getChainId()).resolves.toEqual('lumnetwork-testnet');
+        expect(height).toBeGreaterThan(0);
+        expect(clt.getBlock(height)).resolves.toBeTruthy();
     });
 
     it('should expose tendermint rpcs', async () => {
+        const height = (await clt.getBlockHeight()) - 1;
+        expect(height).toBeGreaterThan(0);
         expect(clt.tmClient.health()).resolves.toBeNull();
         expect(clt.tmClient.status()).resolves.toBeTruthy();
         expect(clt.tmClient.genesis()).resolves.toBeTruthy();
         expect(clt.tmClient.abciInfo()).resolves.toBeTruthy();
-        expect(clt.tmClient.block()).resolves.toBeTruthy();
-        expect(clt.tmClient.blockResults()).resolves.toBeTruthy();
-        expect(clt.tmClient.blockchain()).resolves.toBeTruthy();
-        expect(clt.tmClient.validatorsAll()).resolves.toBeTruthy();
+        expect(clt.tmClient.block(height)).resolves.toBeTruthy();
+        expect(clt.tmClient.blockResults(height)).resolves.toBeTruthy();
+        expect(clt.tmClient.blockchain(0, height)).resolves.toBeTruthy();
+        expect(clt.tmClient.validatorsAll(height)).resolves.toBeTruthy();
     });
 
     it('Should expose bank module', async () => {
@@ -59,8 +59,11 @@ describe('LumClient', () => {
         }
         expect(found).toBeTruthy();
 
-        // Get boot val (genesis) with address genesisValidatorAddress
-        const bootVal = validators.validators.filter((v) => LumUtils.toHex(v.address).toUpperCase() === genesisValidatorAddress)[0];
+        // Get first available block
+        const firstBlock = await clt.getBlock(2);
+
+        // Get boot val (genesis) with address genesis proposer address
+        const bootVal = validators.validators.filter((v) => LumUtils.toHex(v.address) === LumUtils.toHex(firstBlock.block.header.proposerAddress))[0];
         expect(bootVal).toBeTruthy();
 
         // Get staking validator by matching it using pubkeys
@@ -83,11 +86,32 @@ describe('LumClient', () => {
     });
 
     it('Should expose distribution module', async () => {
-        const deleg = await clt.queryClient.distribution.unverified.delegatorWithdrawAddress(genesisAccountAddress);
+        // Get validators
+        const validators = await clt.tmClient.validatorsAll();
+        expect(validators.validators.length).toBeGreaterThanOrEqual(1);
+
+        // Get first available block
+        const firstBlock = await clt.getBlock(2);
+
+        // Get boot val (genesis) with address genesis proposer address
+        const bootVal = validators.validators.filter((v) => LumUtils.toHex(v.address) === LumUtils.toHex(firstBlock.block.header.proposerAddress))[0];
+        expect(bootVal).toBeTruthy();
+
+        // Get genesis validator account address
+        const stakers = await clt.queryClient.staking.unverified.validators('BOND_STATUS_BONDED');
+        const bootStak = stakers.validators.filter((s) => LumUtils.toHex((LumRegistry.decode(s.consensusPubkey) as LumTypes.PubKey).key) === LumUtils.toHex(bootVal.pubkey.data))[0];
+        expect(bootVal).toBeTruthy();
+
+        // Get account information by deriving the address from the operator address
+        const delegAddress = LumUtils.Bech32.encode(LumConstants.LumBech32PrefixAccAddr, LumUtils.Bech32.decode(bootStak.operatorAddress).data);
+        const account = await clt.getAccount(delegAddress);
+        expect(account).toBeTruthy();
+
+        const deleg = await clt.queryClient.distribution.unverified.delegatorWithdrawAddress(account.address);
         expect(deleg).toBeTruthy();
-        expect(deleg.withdrawAddress).toEqual(genesisAccountAddress);
-        const validators = await clt.queryClient.distribution.unverified.delegatorValidators(genesisAccountAddress);
-        expect(validators).toBeTruthy();
-        expect(validators.validators.length).toBeGreaterThan(0);
+        expect(deleg.withdrawAddress).toEqual(account.address);
+        const delegValidators = await clt.queryClient.distribution.unverified.delegatorValidators(account.address);
+        expect(delegValidators).toBeTruthy();
+        expect(delegValidators.validators.length).toBeGreaterThan(0);
     });
 });
