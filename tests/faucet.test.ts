@@ -19,7 +19,7 @@ describe('Faucet', () => {
             amount: [{ denom: LumConstants.LumDenom, amount: '0' }],
             gas: '100000',
         };
-        const broadcastResult = await clt.signAndBroadcastTx(w1, [mintMsg], fee, 'I need a dollar!', false);
+        const broadcastResult = await clt.signAndBroadcastTx(w1, [mintMsg], fee, 'I need a dollar!');
         expect(LumUtils.broadcastTxCommitSuccess(broadcastResult)).toBeTruthy();
     });
 });
