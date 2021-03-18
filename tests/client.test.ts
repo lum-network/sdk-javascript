@@ -1,4 +1,4 @@
-import { LumWallet, LumClient, LumUtils, LumConstants, LumRegistry, LumTypes } from '../src';
+import { LumWallet, LumWalletFactory, LumClient, LumUtils, LumConstants, LumRegistry, LumTypes } from '../src';
 
 describe('LumClient', () => {
     let clt: LumClient;
@@ -7,9 +7,9 @@ describe('LumClient', () => {
 
     beforeAll(async () => {
         clt = await LumClient.connect('http://node0.testnet.lum.network/rpc');
-        w1 = await LumWallet.fromMnemonic(LumUtils.generateMnemonic());
-        w2 = await LumWallet.fromMnemonic(LumUtils.generateMnemonic());
-        expect(w1.address).not.toEqual(w2.address);
+        w1 = await LumWalletFactory.fromMnemonic(LumUtils.generateMnemonic());
+        w2 = await LumWalletFactory.fromMnemonic(LumUtils.generateMnemonic());
+        expect(w1.getAddress()).not.toEqual(w2.getAddress());
     });
 
     afterAll(async () => {

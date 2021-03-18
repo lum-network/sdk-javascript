@@ -1,77 +1,54 @@
-import * as utils from '../utils';
-import * as constants from '../constants';
+import { LumTypes } from '..';
 
-export class LumWallet {
-    /**
-     * Private key (secp256k1)
-     */
-    private readonly privateKey: Uint8Array;
-    /**
-     * Public key (secp256k1)
-     */
-    public readonly publicKey: Uint8Array;
-    /**
-     * Adress (bech32)
-     */
-    public readonly address: string;
+export abstract class LumWallet {
+    protected publicKey?: Uint8Array;
+    protected address?: string;
 
     /**
-     * Create a LumWallet instance based on a private key and a public key
-     * This constructor is not intended to be used directly as mismatching privateKey and publicKey will lead
-     * to undesired behaviour
-     * Better use the provided static LumWallet builders
+     * Gets the current wallet address
+     * @see {@link LumWallet.useAccount}
      *
-     * @param privateKey wallet private key (secp256k1)
-     * @param publicKey wallet public key (secp256k1)
-     * @param addressPrefix prefix to use to derive the address from the public key (ex: lum)
+     * @returns wallet address (Bech32)
      */
-    constructor(privateKey: Uint8Array, publicKey: Uint8Array, addressPrefix = constants.LumBech32PrefixAccAddr) {
-        this.publicKey = publicKey;
-        this.privateKey = privateKey;
-        this.address = utils.getAddressFromPublicKey(publicKey, addressPrefix);
-    }
-
-    /**
-     * Create a LumWallet instance based on a private key (secp256k1)
-     *
-     * @param privateKey wallet private key (secp256k1)
-     * @param addressPrefix prefix to use to derive the address from the public key (ex: lum)
-     */
-    static fromPrivateKey = async (privateKey: Uint8Array, addressPrefix = constants.LumBech32PrefixAccAddr) => {
-        const publicKey = await utils.getPublicKeyFromPrivateKey(privateKey);
-        return new LumWallet(privateKey, publicKey, addressPrefix);
+    getAddress = (): string => {
+        if (!this.address) {
+            throw new Error('No account selected.');
+        }
+        return this.address;
     };
 
     /**
-     * Create a LumWallet instance based on a mnemonic and a derivation path
+     * Gets the current wallet public key
+     * @see {@link LumWallet.useAccount}
      *
-     * @param mnemonic mnemonic used to derive the private key
-     * @param hdPath BIP44 derivation path
-     * @param addressPrefix prefix to use to derive the address from the public key (ex: lum)
+     * @returns wallet public key (secp256k1)
      */
-    static fromMnemonic = async (mnemonic: string, hdPath = constants.getLumHdPath(0), addressPrefix = constants.LumBech32PrefixAccAddr) => {
-        const privateKey = await utils.getPrivateKeyFromMnemonic(mnemonic, hdPath);
-        return LumWallet.fromPrivateKey(privateKey, addressPrefix);
+    getPublicKey = (): Uint8Array => {
+        if (!this.publicKey) {
+            throw new Error('No account selected.');
+        }
+        return this.publicKey;
     };
 
     /**
-     * Create a LumWallet instance based on a keystore
-     *
-     * @param keystore keystore used to decypher the private key
-     * @param password keystore password
-     * @param addressPrefix prefix to use to derive the address from the public key (ex: lum)
+     * Whether or not the wallet support changing account
+     * Basically only wallet initialized using a private key should not be able to do so
+     * @see {@link LumWallet.useAccount}
      */
-    static fromKeyStore = async (keystore: string | utils.KeyStore, password: string, addressPrefix = constants.LumBech32PrefixAccAddr) => {
-        const privateKey = utils.getPrivateKeyFromKeystore(keystore, password);
-        return LumWallet.fromPrivateKey(privateKey, addressPrefix);
-    };
+    abstract canChangeAccount(): boolean;
 
     /**
-     * Sign a transaction using the wallet private key
+     * Change the wallet to use
      *
-     * @param hashedMessage transaction hashed message (sha256)
+     * @param hdPath BIP44 HD Path
+     * @param addressPrefix prefix to use (ex: lum)
      */
-    signTransaction = async (hashedMessage: Uint8Array): Promise<Uint8Array> => {
-        return utils.generateSignature(hashedMessage, this.privateKey);
-    };
+    abstract useAccount(hdPath: string, addressPrefix: string): Promise<boolean>;
+
+    /**
+     * Sign a transaction using a LumWallet
+     *
+     * @param doc document to sign
+     */
+    abstract signTransaction(doc: LumTypes.SignDoc): Promise<Uint8Array>;
 }

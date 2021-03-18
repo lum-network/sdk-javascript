@@ -13,10 +13,7 @@ import {
     DistributionExtension,
 } from '@cosmjs/stargate';
 
-import { LumWallet } from '../wallet';
-import { Message } from '../messages';
-import { sha256, generateAuthInfo, generateSignDoc, generateSignDocBytes, generateTxBytes } from '../utils';
-import { BroadcastTxCommitResponse, TxResponse, TxSearchParams, BlockResponse, Account, Coin, Fee } from '../types';
+import { LumWallet, LumUtils, LumTypes, LumMessages } from '..';
 
 export class LumClient {
     readonly tmClient: Tendermint34Client;
@@ -102,7 +99,7 @@ export class LumClient {
      *
      * @param height block height to get (default to current height)
      */
-    getBlock = async (height?: number): Promise<BlockResponse> => {
+    getBlock = async (height?: number): Promise<LumTypes.BlockResponse> => {
         const response = await this.tmClient.block(height);
         return response;
     };
@@ -112,7 +109,7 @@ export class LumClient {
      *
      * @param address wallet address
      */
-    getAccount = async (address: string): Promise<Account | null> => {
+    getAccount = async (address: string): Promise<LumTypes.Account | null> => {
         const account = await this.queryClient.auth.account(address);
         if (!account) {
             return null;
@@ -129,7 +126,7 @@ export class LumClient {
      *
      * @param address wallet address
      */
-    getAccountUnverified = async (address: string): Promise<Account | null> => {
+    getAccountUnverified = async (address: string): Promise<LumTypes.Account | null> => {
         const account = await this.queryClient.auth.unverified.account(address);
         if (!account) {
             return null;
@@ -147,7 +144,7 @@ export class LumClient {
      * @param address wallet address
      * @param searchDenom Coin denomination (ex: lum)
      */
-    getBalance = async (address: string, searchDenom: string): Promise<Coin | null> => {
+    getBalance = async (address: string, searchDenom: string): Promise<LumTypes.Coin | null> => {
         const balance = await this.queryClient.bank.balance(address, searchDenom);
         return balance ? coinFromProto(balance) : null;
     };
@@ -158,7 +155,7 @@ export class LumClient {
      * @param address wallet address
      * @param searchDenom Coin denomination (ex: lum)
      */
-    getBalanceUnverified = async (address: string, searchDenom: string): Promise<Coin | null> => {
+    getBalanceUnverified = async (address: string, searchDenom: string): Promise<LumTypes.Coin | null> => {
         const balance = await this.queryClient.bank.unverified.balance(address, searchDenom);
         return balance ? coinFromProto(balance) : null;
     };
@@ -168,7 +165,7 @@ export class LumClient {
      *
      * @param address wallet address
      */
-    getAllBalancesUnverified = async (address: string): Promise<Coin[]> => {
+    getAllBalancesUnverified = async (address: string): Promise<LumTypes.Coin[]> => {
         const balances = await this.queryClient.bank.unverified.allBalances(address);
         return balances.map(coinFromProto);
     };
@@ -178,7 +175,7 @@ export class LumClient {
      *
      * @param searchDenom Coin denomination (ex: lum)
      */
-    getSupply = async (searchDenom: string): Promise<Coin | null> => {
+    getSupply = async (searchDenom: string): Promise<LumTypes.Coin | null> => {
         const supply = await this.queryClient.bank.unverified.supplyOf(searchDenom);
         return supply ? coinFromProto(supply) : null;
     };
@@ -186,7 +183,7 @@ export class LumClient {
     /**
      * Get all coins supplies
      */
-    getAllSupplies = async (): Promise<Coin[]> => {
+    getAllSupplies = async (): Promise<LumTypes.Coin[]> => {
         const supplies = await this.queryClient.bank.unverified.totalSupply();
         return supplies.map(coinFromProto);
     };
@@ -197,7 +194,7 @@ export class LumClient {
      * @param hash transaction hash to retrieve
      * @param includeProof whether or not to include proof of the transaction inclusion in the block
      */
-    getTx = async (hash: Uint8Array, includeProof?: boolean): Promise<TxResponse | null> => {
+    getTx = async (hash: Uint8Array, includeProof?: boolean): Promise<LumTypes.TxResponse | null> => {
         const result = await this.tmClient.tx({ hash: hash, prove: includeProof });
         return result;
     };
@@ -216,10 +213,10 @@ export class LumClient {
      * @param perPage results per pages (default to 30)
      * @param includeProof whether or not to include proofs of the transactions inclusion in the block
      */
-    searchTx = async (queries: string[], page = 1, perPage = 30, includeProof?: boolean): Promise<TxResponse[]> => {
+    searchTx = async (queries: string[], page = 1, perPage = 30, includeProof?: boolean): Promise<LumTypes.TxResponse[]> => {
         const results = await Promise.all(queries.map((q) => this.txsQuery({ query: q, page: page, per_page: perPage, prove: includeProof })));
         const seenHashes: Uint8Array[] = [];
-        const uniqueResults: TxResponse[] = [];
+        const uniqueResults: LumTypes.TxResponse[] = [];
         for (let r = 0; r < results.length; r++) {
             for (let t = 0; t < results[r].length; t++) {
                 const tx = results[r][t];
@@ -237,9 +234,9 @@ export class LumClient {
      *
      * @param params Search params
      */
-    private txsQuery = async (params: TxSearchParams): Promise<TxResponse[]> => {
+    private txsQuery = async (params: LumTypes.TxSearchParams): Promise<LumTypes.TxResponse[]> => {
         const results = await this.tmClient.txSearch(params);
-        return results.txs as TxResponse[];
+        return results.txs as LumTypes.TxResponse[];
     };
 
     /**
@@ -250,20 +247,18 @@ export class LumClient {
      * @param fee requested fee
      * @param memo optional memo for the transaction
      */
-    signTx = async (wallet: LumWallet, messages: Message[], fee: Fee, memo?: string): Promise<Uint8Array> => {
-        const account = await this.getAccount(wallet.address);
+    signTx = async (wallet: LumWallet, messages: LumMessages.Message[], fee: LumTypes.Fee, memo?: string): Promise<Uint8Array> => {
+        const account = await this.getAccount(wallet.getAddress());
         if (!account) {
             throw new Error('Account not found');
         }
         const { accountNumber, sequence } = account;
         const chainId = await this.getChainId();
 
-        const authInfo = generateAuthInfo(wallet.publicKey, fee, sequence);
-        const signDoc = generateSignDoc(messages, memo, authInfo, chainId, accountNumber);
-        const signBytes = generateSignDocBytes(signDoc);
-        const hashedMessage = sha256(signBytes);
-        const signature = await wallet.signTransaction(hashedMessage);
-        return generateTxBytes(signDoc, signature);
+        const authInfo = LumUtils.generateAuthInfo(wallet.getPublicKey(), fee, sequence);
+        const signDoc = LumUtils.generateSignDoc(messages, memo, authInfo, chainId, accountNumber);
+        const signature = await wallet.signTransaction(signDoc);
+        return LumUtils.generateTxBytes(signDoc, signature);
     };
 
     /**
@@ -272,7 +267,7 @@ export class LumClient {
      *
      * @param tx signed transaction to broadcast
      */
-    broadcastTx = async (tx: Uint8Array): Promise<BroadcastTxCommitResponse> => {
+    broadcastTx = async (tx: Uint8Array): Promise<LumTypes.BroadcastTxCommitResponse> => {
         const response = await this.tmClient.broadcastTxCommit({ tx });
         return response;
     };
@@ -285,7 +280,7 @@ export class LumClient {
      * @param fee requested fee
      * @param memo optional memo for the transaction
      */
-    signAndBroadcastTx = async (wallet: LumWallet, messages: Message[], fee: Fee, memo?: string): Promise<BroadcastTxCommitResponse> => {
+    signAndBroadcastTx = async (wallet: LumWallet, messages: LumMessages.Message[], fee: LumTypes.Fee, memo?: string): Promise<LumTypes.BroadcastTxCommitResponse> => {
         const signedTx = await this.signTx(wallet, messages, fee, memo);
         return this.broadcastTx(signedTx);
     };

@@ -1,4 +1,4 @@
-import { LumClient, LumConstants, LumMessages, LumUtils, LumWallet } from '../src';
+import { LumClient, LumConstants, LumMessages, LumUtils, LumWallet, LumWalletFactory } from '../src';
 
 describe('Faucet', () => {
     let clt: LumClient;
@@ -6,7 +6,7 @@ describe('Faucet', () => {
 
     beforeAll(async () => {
         clt = await LumClient.connect('http://node0.testnet.lum.network/rpc');
-        w1 = await LumWallet.fromMnemonic(LumUtils.generateMnemonic());
+        w1 = await LumWalletFactory.fromMnemonic(LumUtils.generateMnemonic());
     });
 
     afterAll(async () => {
@@ -14,7 +14,7 @@ describe('Faucet', () => {
     });
 
     it('Should build and dispatch a mint message', async () => {
-        const mintMsg = LumMessages.BuildMsgMintAndSend(w1.address, new Date());
+        const mintMsg = LumMessages.BuildMsgMintAndSend(w1.getAddress(), new Date());
         const fee = {
             amount: [{ denom: LumConstants.LumDenom, amount: '0' }],
             gas: '100000',

@@ -3,7 +3,7 @@ import * as LumConstants from './constants';
 import * as LumTypes from './types';
 import * as LumMessages from './messages';
 import { LumRegistry } from './registry';
-import { LumWallet } from './wallet';
+import { LumWallet, LumWalletFactory } from './wallet';
 import { LumClient } from './client';
 
-export { LumWallet, LumClient, LumTypes, LumUtils, LumConstants, LumMessages, LumRegistry };
+export { LumWallet, LumWalletFactory, LumClient, LumTypes, LumUtils, LumConstants, LumMessages, LumRegistry };
