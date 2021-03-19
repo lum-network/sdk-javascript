@@ -23,6 +23,18 @@ export class LumLedgerWallet extends LumWallet {
         return true;
     };
 
+    /**
+     * Gets the connected application configuration
+     */
+    getAppConfiguration = async (): Promise<{
+        test_mode: boolean;
+        version: string;
+        device_locked: boolean;
+        major: string;
+    }> => {
+        return this.cosmosApp.getAppConfiguration();
+    };
+
     useAccount = async (hdPath: string, addressPrefix: string): Promise<boolean> => {
         const { address, publicKey } = await this.cosmosApp.getAddress(hdPath, addressPrefix);
         this.hdPath = hdPath;
