@@ -46,9 +46,9 @@ export abstract class LumWallet {
     abstract useAccount(hdPath: string, addressPrefix: string): Promise<boolean>;
 
     /**
-     * Sign a transaction using a LumWallet
+     * Sign a transaction document using a LumWallet
      *
      * @param doc document to sign
      */
-    abstract signTransaction(doc: LumTypes.SignDoc): Promise<Uint8Array>;
+    abstract signTransaction(doc: LumTypes.Doc): Promise<Uint8Array>;
 }

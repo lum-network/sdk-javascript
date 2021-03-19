@@ -1,4 +1,4 @@
-import { LumUtils, LumConstants, LumMessages, LumTypes } from '..';
+import { LumUtils, LumConstants, LumTypes } from '..';
 import { LumWallet } from '.';
 
 export class LumPaperWallet extends LumWallet {
@@ -39,11 +39,12 @@ export class LumPaperWallet extends LumWallet {
         throw new Error('No available mnemonic or private key.');
     };
 
-    signTransaction = async (doc: LumTypes.SignDoc): Promise<Uint8Array> => {
+    signTransaction = async (doc: LumTypes.Doc): Promise<Uint8Array> => {
         if (!this.privateKey || !this.publicKey) {
             throw new Error('No account selected.');
         }
-        const signBytes = LumUtils.generateSignDocBytes(doc);
+        const signDoc = LumUtils.generateSignDoc(doc, this.getPublicKey());
+        const signBytes = LumUtils.generateSignDocBytes(signDoc);
         const hashedMessage = LumUtils.sha256(signBytes);
         const signature = await LumUtils.generateSignature(hashedMessage, this.privateKey);
         return signature;

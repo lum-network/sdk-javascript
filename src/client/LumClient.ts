@@ -243,21 +243,15 @@ export class LumClient {
      * Signs the messages using the provided wallet and builds the transaction
      *
      * @param wallet signing wallet
-     * @param messages messages to sign
-     * @param fee requested fee
-     * @param memo optional memo for the transaction
+     * @param doc document to sign
      */
-    signTx = async (wallet: LumWallet, messages: LumMessages.Message[], fee: LumTypes.Fee, memo?: string): Promise<Uint8Array> => {
+    signTx = async (wallet: LumWallet, doc: LumTypes.Doc): Promise<Uint8Array> => {
         const account = await this.getAccount(wallet.getAddress());
         if (!account) {
             throw new Error('Account not found');
         }
-        const { accountNumber, sequence } = account;
-        const chainId = await this.getChainId();
-
-        const authInfo = LumUtils.generateAuthInfo(wallet.getPublicKey(), fee, sequence);
-        const signDoc = LumUtils.generateSignDoc(messages, memo, authInfo, chainId, accountNumber);
-        const signature = await wallet.signTransaction(signDoc);
+        const signDoc = LumUtils.generateSignDoc(doc, wallet.getPublicKey());
+        const signature = await wallet.signTransaction(doc);
         return LumUtils.generateTxBytes(signDoc, signature);
     };
 
@@ -276,12 +270,10 @@ export class LumClient {
      * Signs and broadcast the transaction using the specified wallet and messages
      *
      * @param wallet signing wallet
-     * @param messages messages to sign
-     * @param fee requested fee
-     * @param memo optional memo for the transaction
+     * @param doc document to sign and broadcast as a transaction
      */
-    signAndBroadcastTx = async (wallet: LumWallet, messages: LumMessages.Message[], fee: LumTypes.Fee, memo?: string): Promise<LumTypes.BroadcastTxCommitResponse> => {
-        const signedTx = await this.signTx(wallet, messages, fee, memo);
+    signAndBroadcastTx = async (wallet: LumWallet, doc: LumTypes.Doc): Promise<LumTypes.BroadcastTxCommitResponse> => {
+        const signedTx = await this.signTx(wallet, doc);
         return this.broadcastTx(signedTx);
     };
 }

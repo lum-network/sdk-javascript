@@ -12,7 +12,7 @@ A couple examples to help you get started.
 
 ```typescript
 import {
-    LumWallet,
+    LumWalletFactory,
     LumClient,
     LumTypes,
     LumUtils,
@@ -21,7 +21,7 @@ import {
 } from '@lum-network/sdk-javascript'
 ```
 
-### Create a wallet
+### Software wallets
 
 #### Mnemonic
 ```typescript
@@ -29,7 +29,7 @@ import {
 const mnemonic = LumUtils.generateMnemonic(12);
 
 // Create a wallet instance based on this fresh mnemonic
-const wallet = await LumWallet.fromMnemonic(mnemonic);
+const wallet = await LumWalletFactory.fromMnemonic(mnemonic);
 ```
 
 #### Private key
@@ -38,12 +38,12 @@ const wallet = await LumWallet.fromMnemonic(mnemonic);
 const privateKey = LumUtils.generatePrivateKey();
 
 // Create a wallet instance based on this fresh private key
-const wallet = await LumWallet.fromPrivateKey(mnemonic);
+const wallet = await LumWalletFactory.fromPrivateKey(mnemonic);
 console.log(`Wallet address: ${wallet.address}`);
 
 // Create a wallet instance based on an hexadecimal private key (ex: user input - 0x is optional)
 const hexPrivateKey = '0xb8e62c34928025cdd3aef6cbebc68694b5ad9209b2aff6d3891c8e61d22d3a3b';
-const existingWallet = await LumWallet.fromPrivateKey(LumUtils.keyFromHex(hexPrivateKey));
+const existingWallet = await LumWalletFactory.fromPrivateKey(LumUtils.keyFromHex(hexPrivateKey));
 console.log(`Existing wallet address: ${wallet.address}`);
 ```
 
@@ -53,9 +53,48 @@ console.log(`Existing wallet address: ${wallet.address}`);
 const privateKey = LumUtils.generatePrivateKey();
 // Create a keystore (or consume user input)
 const keystore = LumUtils.generateKeyStore(privateKey, 'some-password');
-const wallet = await LumWallet.fromKeyStore(keystore, 'some-password');
+const wallet = await LumWalletFactory.fromKeyStore(keystore, 'some-password');
 console.log(`Wallet address: ${wallet.address}`);
 ```
+
+### Hardware wallets
+
+**IMPORTANT NOTES:**
+- Transaction signature using Hardware devices is currently work in progress, therefore broadcasting a transaction is not possible at the moment.
+- Derivation path using the Cosmos Ledger application cannot be set to the default Lum Path for now `m/44'/118'/0'/*/*` and must remain on the Cosmos path `m/44'/'837/0'/*/*`
+
+#### Ledger
+
+The SDK only provides access to the Ledger API using a provided Transport.
+Ledger transport must be initialized and handled by the code using the SDK.
+
+See [LedgerHQ/ledgerjs documentation](https://github.com/LedgerHQ/ledgerjs) for more information.
+
+```typescript
+import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
+
+// Connect your ledger device
+// Unlock it
+// Open the Cosmos application
+
+// Create a Node HID transport
+const transport = await TransportNodeHid.create();
+
+// Create the ledger based wallet instance
+const wallet = await LumWalletFactory.fromLedgerTransport(transport, `m/44'/118'/0'/0/0`, 'lum');
+
+// Change account to 1 and wallet to 1 (optional)
+await wallet.useAccount(`m/44'/118'/0'/1/1`, 'lum');
+
+// Get account information
+const account = await testnetClient.getAccount(wallet.getAddress());
+if (account === null) {
+    console.log('Account: not found');
+} else {
+    console.log(`Account: ${account.address}, ${account.accountNumber}, ${account.sequence}`);
+}
+```
+
 
 ### Connect to the testnet
 
@@ -78,7 +117,7 @@ if (account === null) {
 
 #### Get account balances
 ```typescript
-const balances = await testnetClient.getBalancesUnverified(wallet.address);
+const balances = await testnetClient.getAllBalancesUnverified(wallet.address);
 if (balances.length === 0) {
     console.log('Balances: empty account');
 } else {
@@ -115,8 +154,19 @@ const fee = {
     amount: [{ denom: LumConstants.LumDenom, amount: '1' }],
     gas: '100000',
 };
+// Fetch account number and sequence
+const account = await testnetClient.getAccount(wallet.address);
+// Create the transaction document
+const doc = {
+    accountNumber: account.accountNumber,
+    chainId,
+    fee: fee,
+    memo: 'my transaction memo',
+    messages: [sendMsg],
+    sequence: account.sequence,
+};
 // Sign and broadcast the transaction using the client
-const broadcastResult = await clt.signAndBroadcastTx(w1, [sendMsg], fee, 'hello memo!');
+const broadcastResult = await clt.signAndBroadcastTx(w1, doc);
 // Verify the transaction was succesfully broadcasted and made it into a block
 console.log(`Broadcast success: ${LumUtils.broadcastTxCommitSuccess(broadcastResult)}`);
 ```
