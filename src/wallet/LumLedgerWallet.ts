@@ -1,7 +1,7 @@
 import Transport from '@ledgerhq/hw-transport';
 import Cosmos from '@ledgerhq/hw-app-cosmos';
 
-import { LumUtils, LumTypes, LumRegistry } from '..';
+import { LumUtils, LumTypes } from '..';
 import { LumWallet } from '.';
 
 export class LumLedgerWallet extends LumWallet {

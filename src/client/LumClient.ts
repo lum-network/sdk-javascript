@@ -13,7 +13,7 @@ import {
     DistributionExtension,
 } from '@cosmjs/stargate';
 
-import { LumWallet, LumUtils, LumTypes, LumMessages } from '..';
+import { LumWallet, LumUtils, LumTypes } from '..';
 
 export class LumClient {
     readonly tmClient: Tendermint34Client;

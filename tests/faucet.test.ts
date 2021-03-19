@@ -1,4 +1,4 @@
-import { LumClient, LumConstants, LumMessages, LumUtils, LumWallet, LumWalletFactory } from '../src';
+import { LumClient, LumUtils, LumWallet, LumWalletFactory } from '../src';
 
 describe('Faucet', () => {
     let clt: LumClient;
