@@ -12,13 +12,23 @@
 ### Classes
 
 - [LumClient](classes/lumclient.md)
+- [LumLedgerWallet](classes/lumledgerwallet.md)
+- [LumPaperWallet](classes/lumpaperwallet.md)
 - [LumWallet](classes/lumwallet.md)
+- [LumWalletFactory](classes/lumwalletfactory.md)
 
 ### Variables
 
+- [LumAminoRegistry](README.md#lumaminoregistry)
 - [LumRegistry](README.md#lumregistry)
 
 ## Variables
+
+### LumAminoRegistry
+
+• `Const` **LumAminoRegistry**: *AminoTypes*
+
+___
 
 ### LumRegistry
 

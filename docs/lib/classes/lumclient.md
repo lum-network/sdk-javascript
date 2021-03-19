@@ -27,7 +27,6 @@
 - [getChainId](lumclient.md#getchainid)
 - [getSupply](lumclient.md#getsupply)
 - [getTx](lumclient.md#gettx)
-- [getValidators](lumclient.md#getvalidators)
 - [searchTx](lumclient.md#searchtx)
 - [signAndBroadcastTx](lumclient.md#signandbroadcasttx)
 - [signTx](lumclient.md#signtx)
@@ -39,7 +38,7 @@
 
 ### constructor
 
-\+ **new LumClient**(`tmClient`: *Client*): [*LumClient*](lumclient.md)
+\+ **new LumClient**(`tmClient`: *Tendermint34Client*): [*LumClient*](lumclient.md)
 
 Create a LumClient instance using a tendermint RPC client
 
@@ -47,7 +46,7 @@ Create a LumClient instance using a tendermint RPC client
 
 Name | Type | Description |
 :------ | :------ | :------ |
-`tmClient` | *Client* | tendermint RPC client    |
+`tmClient` | *Tendermint34Client* | tendermint RPC client    |
 
 **Returns:** [*LumClient*](lumclient.md)
 
@@ -67,7 +66,7 @@ ___
 
 ### tmClient
 
-• `Readonly` **tmClient**: *Client*
+• `Readonly` **tmClient**: *Tendermint34Client*
 
 ## Methods
 
@@ -259,23 +258,6 @@ Name | Type | Description |
 
 ___
 
-### getValidators
-
-▸ **getValidators**(`blockHeight?`: *number*): *Promise*<ValidatorsResponse\>
-
-Get all validators
-Validators are sorted first by voting power (descending), then by address (ascending)
-
-#### Parameters:
-
-Name | Type | Description |
-:------ | :------ | :------ |
-`blockHeight?` | *number* | block height to return. If no height is provided, it will fetch validator set which corresponds to the latest block    |
-
-**Returns:** *Promise*<ValidatorsResponse\>
-
-___
-
 ### searchTx
 
 ▸ **searchTx**(`queries`: *string*[], `page?`: *number*, `perPage?`: *number*, `includeProof?`: *boolean*): *Promise*<TxResponse[]\>
@@ -294,7 +276,7 @@ Name | Type | Default value | Description |
 :------ | :------ | :------ | :------ |
 `queries` | *string*[] | - | queries to run (see utils/search for helpers)   |
 `page` | *number* | 1 | page to query (default to 1)   |
-`perPage` | *number* | 30 | result per pages (default to 30)   |
+`perPage` | *number* | 30 | results per pages (default to 30)   |
 `includeProof?` | *boolean* | - | whether or not to include proofs of the transactions inclusion in the block    |
 
 **Returns:** *Promise*<TxResponse[]\>
@@ -303,7 +285,7 @@ ___
 
 ### signAndBroadcastTx
 
-▸ **signAndBroadcastTx**(`wallet`: [*LumWallet*](lumwallet.md), `messages`: [*Message*](../interfaces/lummessages.message.md)[], `fee`: [*Fee*](../interfaces/lumtypes.fee.md), `memo?`: *string*): *Promise*<BroadcastTxCommitResponse\>
+▸ **signAndBroadcastTx**(`wallet`: [*LumWallet*](lumwallet.md), `doc`: [*Doc*](../interfaces/lumtypes.doc.md)): *Promise*<BroadcastTxCommitResponse\>
 
 Signs and broadcast the transaction using the specified wallet and messages
 
@@ -312,9 +294,7 @@ Signs and broadcast the transaction using the specified wallet and messages
 Name | Type | Description |
 :------ | :------ | :------ |
 `wallet` | [*LumWallet*](lumwallet.md) | signing wallet   |
-`messages` | [*Message*](../interfaces/lummessages.message.md)[] | messages to sign   |
-`fee` | [*Fee*](../interfaces/lumtypes.fee.md) | requested fee   |
-`memo?` | *string* | optional memo for the transaction    |
+`doc` | [*Doc*](../interfaces/lumtypes.doc.md) | document to sign and broadcast as a transaction    |
 
 **Returns:** *Promise*<BroadcastTxCommitResponse\>
 
@@ -322,7 +302,7 @@ ___
 
 ### signTx
 
-▸ **signTx**(`wallet`: [*LumWallet*](lumwallet.md), `messages`: [*Message*](../interfaces/lummessages.message.md)[], `fee`: [*Fee*](../interfaces/lumtypes.fee.md), `memo?`: *string*): *Promise*<Uint8Array\>
+▸ **signTx**(`wallet`: [*LumWallet*](lumwallet.md), `doc`: [*Doc*](../interfaces/lumtypes.doc.md)): *Promise*<Uint8Array\>
 
 Signs the messages using the provided wallet and builds the transaction
 
@@ -331,9 +311,7 @@ Signs the messages using the provided wallet and builds the transaction
 Name | Type | Description |
 :------ | :------ | :------ |
 `wallet` | [*LumWallet*](lumwallet.md) | signing wallet   |
-`messages` | [*Message*](../interfaces/lummessages.message.md)[] | messages to sign   |
-`fee` | [*Fee*](../interfaces/lumtypes.fee.md) | requested fee   |
-`memo?` | *string* | optional memo for the transaction    |
+`doc` | [*Doc*](../interfaces/lumtypes.doc.md) | document to sign    |
 
 **Returns:** *Promise*<Uint8Array\>
 

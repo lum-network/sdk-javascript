@@ -22,7 +22,7 @@
 
 ### HDPath
 
-• `Const` **HDPath**: *m/44'/837'/0'/0/*= "m/44'/837'/0'/0/"
+• `Const` **HDPath**: *m/44'/837'/0'/*= "m/44'/837'/0'/"
 
 Lum Network HDPath
 
@@ -98,7 +98,7 @@ Private Key length
 
 ### getLumHdPath
 
-▸ `Const`**getLumHdPath**(`accountIndex?`: *number*): *string*
+▸ `Const`**getLumHdPath**(`accountIndex?`: *number*, `walletIndex?`: *number*): *string*
 
 Get a Lum Network HDPath for a specified account index
 
@@ -107,5 +107,6 @@ Get a Lum Network HDPath for a specified account index
 Name | Type | Default value | Description |
 :------ | :------ | :------ | :------ |
 `accountIndex` | *number* | 0 | appended at the end of the default Lum derivation path    |
+`walletIndex` | *number* | 0 | - |
 
 **Returns:** *string*
