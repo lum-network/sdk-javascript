@@ -12,12 +12,12 @@ declare module '@ledgerhq/hw-app-cosmos' {
         transport: import('@ledgerhq/hw-transport').default<*>;
 
         constructor(transport: import('@ledgerhq/hw-transport').default<*>, scrambleKey: string);
-        getAppConfiguration(): {
+        getAppConfiguration(): Promise<{
             test_mode: boolean;
             version: string;
             device_locked: boolean;
             major: string;
-        };
+        }>;
 
         serializePath(path: Buffer): Buffer;
 

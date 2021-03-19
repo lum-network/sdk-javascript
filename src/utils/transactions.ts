@@ -4,6 +4,7 @@ import { Secp256k1, Secp256k1Signature } from '@cosmjs/crypto';
 import { makeAuthInfoBytes, makeSignBytes } from '@cosmjs/proto-signing';
 
 import { TxRaw } from '../codec/cosmos/tx/v1beta1/tx';
+import { SignMode } from '../codec/cosmos/tx/signing/v1beta1/signing';
 
 import { sha256 } from './encoding';
 import { Fee, Doc, SignDoc } from '../types';
@@ -17,10 +18,10 @@ import { LumRegistry } from '../registry';
  * @param fee requested fee
  * @param sequence account sequence number
  */
-export const generateAuthInfoBytes = (publicKey: Uint8Array, fee: Fee, sequence: number): Uint8Array => {
+export const generateAuthInfoBytes = (publicKey: Uint8Array, fee: Fee, sequence: number, signMode: SignMode): Uint8Array => {
     const pubkeyAny = publicKeyToProto(publicKey);
     const gasLimit = Int53.fromString(fee.gas).toNumber();
-    return makeAuthInfoBytes([pubkeyAny], fee.amount, gasLimit, sequence);
+    return makeAuthInfoBytes([pubkeyAny], fee.amount, gasLimit, sequence, signMode);
 };
 
 /**
@@ -28,8 +29,9 @@ export const generateAuthInfoBytes = (publicKey: Uint8Array, fee: Fee, sequence:
  *
  * @param doc document to create the sign version
  * @param publicKey public key used for signature
+ * @param signMode signing mode for the transaction
  */
-export const generateSignDoc = (doc: Doc, publicKey: Uint8Array): SignDoc => {
+export const generateSignDoc = (doc: Doc, publicKey: Uint8Array, signMode: SignMode): SignDoc => {
     const txBody = {
         messages: doc.messages,
         memo: doc.memo,
@@ -41,7 +43,7 @@ export const generateSignDoc = (doc: Doc, publicKey: Uint8Array): SignDoc => {
 
     return {
         bodyBytes,
-        authInfoBytes: generateAuthInfoBytes(publicKey, doc.fee, doc.sequence),
+        authInfoBytes: generateAuthInfoBytes(publicKey, doc.fee, doc.sequence, signMode),
         chainId: doc.chainId,
         accountNumber: Long.fromNumber(doc.accountNumber),
     };

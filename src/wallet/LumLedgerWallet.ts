@@ -1,7 +1,9 @@
 import Transport from '@ledgerhq/hw-transport';
 import Cosmos from '@ledgerhq/hw-app-cosmos';
+import { ExtendedSecp256k1Signature } from '@cosmjs/crypto';
 
-import { LumUtils, LumTypes } from '..';
+import { SignMode } from '../codec/cosmos/tx/signing/v1beta1/signing';
+import { LumUtils, LumTypes, LumAminoRegistry } from '..';
 import { LumWallet } from '.';
 
 export class LumLedgerWallet extends LumWallet {
@@ -13,8 +15,24 @@ export class LumLedgerWallet extends LumWallet {
         this.cosmosApp = new Cosmos(transport, 'CSM'); // TODO: CSM identifier should either be LUM or dynamic depending on our ledger implementation
     }
 
+    signingMode = (): SignMode => {
+        return SignMode.SIGN_MODE_LEGACY_AMINO_JSON;
+    };
+
     canChangeAccount = () => {
         return true;
+    };
+
+    /**
+     * Gets the connected application configuration
+     */
+    getAppConfiguration = async (): Promise<{
+        test_mode: boolean;
+        version: string;
+        device_locked: boolean;
+        major: string;
+    }> => {
+        return this.cosmosApp.getAppConfiguration();
     };
 
     useAccount = async (hdPath: string, addressPrefix: string): Promise<boolean> => {
@@ -37,17 +55,18 @@ export class LumLedgerWallet extends LumWallet {
         // sign call: https://github.com/LedgerHQ/ledgerjs/blob/master/packages/hw-app-cosmos/src/Cosmos.js
         // Expected tx format: https://github.com/cosmos/ledger-cosmos/blob/master/docs/TXSPEC.md
         const msg = {
-            'account_number': doc.accountNumber,
+            'account_number': doc.accountNumber.toString(),
             'chain_id': doc.chainId,
             'fee': doc.fee,
             'memo': doc.memo,
-            'msgs': doc.messages,
-            'sequence': doc.sequence,
+            'msgs': doc.messages.map((msg) => LumAminoRegistry.toAmino(msg)),
+            'sequence': doc.sequence.toString(),
         };
         const { signature, return_code } = await this.cosmosApp.sign(this.hdPath, JSON.stringify(LumUtils.sortJSON(msg)));
         if (!signature || return_code === 0) {
             throw new Error(`Failed to sign message: error code ${return_code}`);
         }
-        return new Uint8Array(signature);
+        const sig = ExtendedSecp256k1Signature.fromDer(signature);
+        return new Uint8Array([...sig.r(32), ...sig.s(32)]);
     };
 }
