@@ -1,3 +1,4 @@
+import { SignMode } from '../codec/cosmos/tx/signing/v1beta1/signing';
 import { LumUtils, LumConstants, LumTypes } from '..';
 import { LumWallet } from '.';
 
@@ -21,6 +22,10 @@ export class LumPaperWallet extends LumWallet {
         }
     }
 
+    signingMode = (): SignMode => {
+        return SignMode.SIGN_MODE_DIRECT;
+    };
+
     canChangeAccount = (): boolean => {
         return !!this.mnemonic;
     };
@@ -43,7 +48,7 @@ export class LumPaperWallet extends LumWallet {
         if (!this.privateKey || !this.publicKey) {
             throw new Error('No account selected.');
         }
-        const signDoc = LumUtils.generateSignDoc(doc, this.getPublicKey());
+        const signDoc = LumUtils.generateSignDoc(doc, this.getPublicKey(), this.signingMode());
         const signBytes = LumUtils.generateSignDocBytes(signDoc);
         const hashedMessage = LumUtils.sha256(signBytes);
         const signature = await LumUtils.generateSignature(hashedMessage, this.privateKey);

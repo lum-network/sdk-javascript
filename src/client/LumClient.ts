@@ -250,7 +250,7 @@ export class LumClient {
         if (!account) {
             throw new Error('Account not found');
         }
-        const signDoc = LumUtils.generateSignDoc(doc, wallet.getPublicKey());
+        const signDoc = LumUtils.generateSignDoc(doc, wallet.getPublicKey(), wallet.signingMode());
         const signature = await wallet.signTransaction(doc);
         return LumUtils.generateTxBytes(signDoc, signature);
     };

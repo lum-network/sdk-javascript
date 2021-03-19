@@ -1,3 +1,4 @@
+import { SignMode } from '../codec/cosmos/tx/signing/v1beta1/signing';
 import { LumTypes } from '..';
 
 export abstract class LumWallet {
@@ -29,6 +30,11 @@ export abstract class LumWallet {
         }
         return this.publicKey;
     };
+
+    /**
+     * Gets the wallet signin mode
+     */
+    abstract signingMode(): SignMode;
 
     /**
      * Whether or not the wallet support changing account
