@@ -54,4 +54,19 @@ export class LumPaperWallet extends LumWallet {
         const signature = await LumUtils.generateSignature(hashedMessage, this.privateKey);
         return signature;
     };
+
+    signMessage = async (msg: string): Promise<LumTypes.SignMsg> => {
+        if (!this.privateKey || !this.publicKey) {
+            throw new Error('No account selected.');
+        }
+        const signature = await LumUtils.generateSignature(LumUtils.sha256(LumUtils.toAscii(msg)), this.privateKey);
+        return {
+            address: this.getAddress(),
+            publicKey: this.getPublicKey(),
+            msg: msg,
+            sig: signature,
+            version: LumConstants.LumWalletSigningVersion,
+            signer: LumConstants.LumMessageSigner.PAPER,
+        };
+    };
 }

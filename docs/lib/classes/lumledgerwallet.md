@@ -25,6 +25,7 @@
 - [getAddress](lumledgerwallet.md#getaddress)
 - [getAppConfiguration](lumledgerwallet.md#getappconfiguration)
 - [getPublicKey](lumledgerwallet.md#getpublickey)
+- [signMessage](lumledgerwallet.md#signmessage)
 - [signTransaction](lumledgerwallet.md#signtransaction)
 - [signingMode](lumledgerwallet.md#signingmode)
 - [useAccount](lumledgerwallet.md#useaccount)
@@ -122,6 +123,22 @@ Gets the current wallet public key
 **Returns:** *Uint8Array*
 
 wallet public key (secp256k1)
+
+Inherited from: [LumWallet](lumwallet.md)
+
+___
+
+### signMessage
+
+▸ **signMessage**(`msg`: *string*): *Promise*<[*SignMsg*](../interfaces/lumtypes.signmsg.md)\>
+
+#### Parameters:
+
+Name | Type |
+:------ | :------ |
+`msg` | *string* |
+
+**Returns:** *Promise*<[*SignMsg*](../interfaces/lumtypes.signmsg.md)\>
 
 Inherited from: [LumWallet](lumwallet.md)
 

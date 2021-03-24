@@ -54,3 +54,16 @@ export const getLumHdPath = (accountIndex = 0, walletIndex = 0): string => {
  * Private Key length
  */
 export const PrivateKeyLength = 32;
+
+/**
+ * Signing version of the SDK
+ */
+export const LumWalletSigningVersion = '1';
+
+/**
+ * Signing wallets
+ */
+export enum LumMessageSigner {
+    PAPER = 'lum-sdk/paper',
+    LEDGER = 'lum-sdk/ledger',
+}

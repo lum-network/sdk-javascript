@@ -29,4 +29,23 @@ describe('LumWallet', () => {
         expect(LumWalletFactory.fromMnemonic(LumUtils.generateMnemonic(12))).resolves.toBeInstanceOf(LumWallet);
         expect(LumWalletFactory.fromMnemonic(LumUtils.generateMnemonic(24))).resolves.toBeInstanceOf(LumWallet);
     });
+
+    it('Should be able to sign and verify messages', async () => {
+        const message = 'Lum network is an awesome decentralized protocol';
+
+        const mnemonic = 'surround miss nominee dream gap cross assault thank captain prosper drop duty group candy wealth weather scale put';
+        const w1 = await LumWalletFactory.fromMnemonic(mnemonic);
+        const w2 = await LumWalletFactory.fromMnemonic(LumUtils.generateMnemonic());
+
+        const signed = await w1.signMessage(message);
+
+        const v1 = await LumUtils.verifySignMsg(signed);
+        expect(v1).toBeTruthy();
+        const v2 = await LumUtils.verifySignMsg(Object.assign({}, signed, { msg: 'Wrong message input' }));
+        expect(v2).toBeFalsy();
+        const v3 = await LumUtils.verifySignMsg(Object.assign({}, signed, { publicKey: w2.getPublicKey() }));
+        expect(v3).toBeFalsy();
+        const v4 = await LumUtils.verifySignMsg(Object.assign({}, signed, { address: w2.getAddress() }));
+        expect(v4).toBeFalsy();
+    });
 });
