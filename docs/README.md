@@ -39,12 +39,12 @@ const privateKey = LumUtils.generatePrivateKey();
 
 // Create a wallet instance based on this fresh private key
 const wallet = await LumWalletFactory.fromPrivateKey(mnemonic);
-console.log(`Wallet address: ${wallet.address}`);
+console.log(`Wallet address: ${wallet.getAddress()}`);
 
 // Create a wallet instance based on an hexadecimal private key (ex: user input - 0x is optional)
 const hexPrivateKey = '0xb8e62c34928025cdd3aef6cbebc68694b5ad9209b2aff6d3891c8e61d22d3a3b';
 const existingWallet = await LumWalletFactory.fromPrivateKey(LumUtils.keyFromHex(hexPrivateKey));
-console.log(`Existing wallet address: ${wallet.address}`);
+console.log(`Existing wallet address: ${wallet.getAddress()}`);
 ```
 
 #### Keystore
@@ -54,7 +54,7 @@ const privateKey = LumUtils.generatePrivateKey();
 // Create a keystore (or consume user input)
 const keystore = LumUtils.generateKeyStore(privateKey, 'some-password');
 const wallet = await LumWalletFactory.fromKeyStore(keystore, 'some-password');
-console.log(`Wallet address: ${wallet.address}`);
+console.log(`Wallet address: ${wallet.getAddress()}`);
 ```
 
 ### Hardware wallets
@@ -107,7 +107,7 @@ const testnetClient = await LumClient.connect('http://node0.testnet.lum.network/
 
 #### Get account information
 ```typescript
-const account = await testnetClient.getAccount(wallet.address);
+const account = await testnetClient.getAccount(wallet.getAddress());
 if (account === null) {
     console.log('Account: not found');
 } else {
@@ -117,7 +117,7 @@ if (account === null) {
 
 #### Get account balances
 ```typescript
-const balances = await testnetClient.getAllBalancesUnverified(wallet.address);
+const balances = await testnetClient.getAllBalancesUnverified(wallet.getAddress());
 if (balances.length === 0) {
     console.log('Balances: empty account');
 } else {
@@ -135,8 +135,8 @@ if (balances.length === 0) {
 ```typescript
 // The client search feature supports multiple searches and merge+sort the results
 const transactions = await testnetClient.searchTx([
-    LumUtils.searchTxFrom(wallet.address),
-    LumUtils.searchTxTo(wallet.address),
+    LumUtils.searchTxFrom(wallet.getAddress()),
+    LumUtils.searchTxTo(wallet.getAddress()),
 ]);
 console.log(`Transactions: ${transactions.map((tx) => tx.hash).join(', ')}`);
 ```
@@ -145,7 +145,7 @@ console.log(`Transactions: ${transactions.map((tx) => tx.hash).join(', ')}`);
 ```typescript
 // Build transaction message (Send 100 LUM)
 const sendMsg = LumMessages.BuildMsgSend(
-    wallet.address,
+    wallet.getAddress(),
     toAddress,
     [{ denom: LumConstants.LumDenom, amount: '100' }],
 );
@@ -155,7 +155,7 @@ const fee = {
     gas: '100000',
 };
 // Fetch account number and sequence
-const account = await testnetClient.getAccount(wallet.address);
+const account = await testnetClient.getAccount(wallet.getAddress());
 // Create the transaction document
 const doc = {
     accountNumber: account.accountNumber,
@@ -176,10 +176,10 @@ console.log(`Broadcast success: ${LumUtils.broadcastTxCommitSuccess(broadcastRes
 The underlying tendermint client is directly accessible via the `.tmClient` property of the LumClient.
 
 ```typescript
-    const health = await testnetClient.tmClient.health();
-    const status = await testnetClient.tmClient.status();
-    const genesis = await testnetClient.tmClient.genesis();
-    const latestBlock = await testnetClient.tmClient.block();
+const health = await testnetClient.tmClient.health();
+const status = await testnetClient.tmClient.status();
+const genesis = await testnetClient.tmClient.genesis();
+const latestBlock = await testnetClient.tmClient.block();
 ```
 
 ### Use all modules RPCs
@@ -189,6 +189,19 @@ The underlying query client is directly accessible via the `.queryClient` proper
 It allows to directly query all modules endpoints such as:
 
 ```typescript
-    const supplies = await clt.queryClient.bank.unverified.totalSupply();
-    // [{ denom: 'lum', amount: '1000000' }]
+const supplies = await clt.queryClient.bank.unverified.totalSupply();
+// [{ denom: 'lum', amount: '1000000' }]
+```
+
+### Message signature & verification
+
+#### Sign a message
+```typescript
+const message = 'Lum network is an awesome decentralized protocol';
+const signedPayload = await wallet.signMessage(message);
+// { address, publicKey, msg, sig, version, signer }
+const validSig = await LumUtils.verifySignMsg(signedPayload);
+// true
+const invalidSig = await LumUtils.verifySignMsg(Object.assign(signedPayload, { msg: 'Wrong message input' }));
+// false
 ```

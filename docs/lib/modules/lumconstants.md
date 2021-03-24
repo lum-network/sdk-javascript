@@ -2,6 +2,10 @@
 
 ## Table of contents
 
+### Enumerations
+
+- [LumMessageSigner](../enums/lumconstants.lummessagesigner.md)
+
 ### Variables
 
 - [HDPath](lumconstants.md#hdpath)
@@ -12,6 +16,7 @@
 - [LumBech32PrefixValAddr](lumconstants.md#lumbech32prefixvaladdr)
 - [LumBech32PrefixValPub](lumconstants.md#lumbech32prefixvalpub)
 - [LumDenom](lumconstants.md#lumdenom)
+- [LumWalletSigningVersion](lumconstants.md#lumwalletsigningversion)
 - [PrivateKeyLength](lumconstants.md#privatekeylength)
 
 ### Functions
@@ -85,6 +90,14 @@ ___
 • `Const` **LumDenom**: *lum*= 'lum'
 
 Lum Coin denomination
+
+___
+
+### LumWalletSigningVersion
+
+• `Const` **LumWalletSigningVersion**: *1*= '1'
+
+Signing version of the SDK
 
 ___
 

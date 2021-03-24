@@ -8,4 +8,5 @@ export * from './Commission';
 export * from './CommissionRates';
 export * from './Doc';
 export * from './SignDoc';
+export * from './SignMsg';
 export * from './Log';

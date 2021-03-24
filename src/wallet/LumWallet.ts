@@ -57,4 +57,12 @@ export abstract class LumWallet {
      * @param doc document to sign
      */
     abstract signTransaction(doc: LumTypes.Doc): Promise<Uint8Array>;
+
+    /**
+     * Sign a message using a LumWallet
+     * Provided for signature generation and verification as signature will depend on the wallet payload implementation
+     *
+     * @param msg message to sign
+     */
+    abstract signMessage(msg: string): Promise<LumTypes.SignMsg>;
 }

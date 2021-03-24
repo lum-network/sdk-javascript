@@ -24,6 +24,7 @@
 - [canChangeAccount](lumwallet.md#canchangeaccount)
 - [getAddress](lumwallet.md#getaddress)
 - [getPublicKey](lumwallet.md#getpublickey)
+- [signMessage](lumwallet.md#signmessage)
 - [signTransaction](lumwallet.md#signtransaction)
 - [signingMode](lumwallet.md#signingmode)
 - [useAccount](lumwallet.md#useaccount)
@@ -88,6 +89,23 @@ Gets the current wallet public key
 **Returns:** *Uint8Array*
 
 wallet public key (secp256k1)
+
+___
+
+### signMessage
+
+▸ `Abstract`**signMessage**(`msg`: *string*): *Promise*<[*SignMsg*](../interfaces/lumtypes.signmsg.md)\>
+
+Sign a message using a LumWallet
+Provided for signature generation and verification as signature will depend on the wallet payload implementation
+
+#### Parameters:
+
+Name | Type | Description |
+:------ | :------ | :------ |
+`msg` | *string* | message to sign    |
+
+**Returns:** *Promise*<[*SignMsg*](../interfaces/lumtypes.signmsg.md)\>
 
 ___
 

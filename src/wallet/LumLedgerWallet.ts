@@ -3,7 +3,7 @@ import Cosmos from '@ledgerhq/hw-app-cosmos';
 import { ExtendedSecp256k1Signature } from '@cosmjs/crypto';
 
 import { SignMode } from '../codec/cosmos/tx/signing/v1beta1/signing';
-import { LumUtils, LumTypes, LumAminoRegistry } from '..';
+import { LumUtils, LumTypes, LumAminoRegistry, LumConstants } from '..';
 import { LumWallet } from '.';
 
 export class LumLedgerWallet extends LumWallet {
@@ -47,9 +47,7 @@ export class LumLedgerWallet extends LumWallet {
         if (!this.hdPath) {
             throw new Error('No account selected.');
         }
-        // TODO: does not work as intented - signature "works" but not valid for broadcast using the client
-        // Implementation not working. We are not sure if we will be able to sign transactions using the new protobuf implementation
-        // with the current cosmos ledger application
+        // Implementation only works using Legacy Amino payload.
         //
         // Useful doc & code:
         // sign call: https://github.com/LedgerHQ/ledgerjs/blob/master/packages/hw-app-cosmos/src/Cosmos.js
@@ -68,5 +66,38 @@ export class LumLedgerWallet extends LumWallet {
         }
         const sig = ExtendedSecp256k1Signature.fromDer(signature);
         return new Uint8Array([...sig.r(32), ...sig.s(32)]);
+    };
+
+    signMessage = async (msg: string): Promise<LumTypes.SignMsg> => {
+        if (!this.hdPath) {
+            throw new Error('No account selected.');
+        }
+        // Implementation only works using Legacy Amino payload.
+        // We must simulate an empty transaction to get a valid signature from the device
+        //
+        // The transaction will not work if broadcasted anyway. This is intented to avoid wrong usage of this feature
+        // that is only provided for basic message signature and verification
+        const msgToSign = {
+            'account_number': '0',
+            'chain_id': 'lum-network',
+            'fee': {},
+            'memo': msg,
+            'msgs': [],
+            'sequence': '0',
+        };
+        const { signature, return_code } = await this.cosmosApp.sign(this.hdPath, JSON.stringify(LumUtils.sortJSON(msgToSign)));
+        if (!signature || return_code === 0) {
+            throw new Error(`Failed to sign message: error code ${return_code}`);
+        }
+        const sig = ExtendedSecp256k1Signature.fromDer(signature);
+
+        return {
+            address: this.getAddress(),
+            publicKey: this.getPublicKey(),
+            msg: msg,
+            sig: new Uint8Array([...sig.r(32), ...sig.s(32)]),
+            version: LumConstants.LumWalletSigningVersion,
+            signer: LumConstants.LumMessageSigner.LEDGER,
+        };
     };
 }

@@ -16,6 +16,7 @@
 - [LogEvent](../interfaces/lumtypes.logevent.md)
 - [PubKey](../interfaces/lumtypes.pubkey.md)
 - [SignDoc](../interfaces/lumtypes.signdoc.md)
+- [SignMsg](../interfaces/lumtypes.signmsg.md)
 - [Tx](../interfaces/lumtypes.tx.md)
 
 ### Variables
