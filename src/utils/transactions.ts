@@ -117,7 +117,7 @@ export const verifySignMsg = async (msg: SignMsg): Promise<boolean> => {
         // Same a used in the LumLedgerWallet > signMessage method
         const msgToSign = {
             'account_number': '0',
-            'chain_id': 'lum-network',
+            'chain_id': 'lum-signature-only',
             'fee': {},
             'memo': msg.msg,
             'msgs': [],
