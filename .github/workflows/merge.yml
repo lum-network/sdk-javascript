@@ -1,4 +1,4 @@
-name: CD
+name: Send built code in production when a merge commit is created
 
 on:
   push:
@@ -8,8 +8,8 @@ on:
 jobs:
   build:
     name: Release & Publish
-
     runs-on: ubuntu-latest
+    environment: production
 
     strategy:
       matrix:
@@ -27,21 +27,19 @@ jobs:
 
       - name: Install dependencies
         run: yarn --frozen-lockfile
-      - name: Run code formatter
-        run: yarn format
-      - name: Run code linter
-        run: yarn lint
-      - name: Run unit tests
-        run: yarn test
 
       - name: Run clean
         run: yarn clean
+
       - name: Run build lib and types
         run: yarn build:lib
+
       - name: Copy LICENSE
         run: cp LICENSE build/LICENSE
+
       - name: Copy README
         run: cp README.md build/README.md
+
       - name: Copy package.json
         run: cp package.json build/package.json
 
