@@ -1,10 +1,11 @@
-name: CI
+name: Format and unit test the code when a pull request is opened
 
 on:
   pull_request:
     branches:
       - master
       - develop
+    types: [opened, edited, synchronize, reopened]
 
 jobs:
   build:
