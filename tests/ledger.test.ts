@@ -27,7 +27,7 @@ describe('Ledger', () => {
         // const chainId = await clt.getChainId();
         // const sendMsg = LumMessages.BuildMsgSend(w1.getAddress(), 'lum1lsagfzrm4gz28he4wunt63sts5xzmczwjttsr9', [{ denom: 'lum', amount: '3' }]);
         // const fee = {
-        //     amount: [{ denom: LumConstants.LumDenom, amount: '1' }],
+        //     amount: [{ denom: LumConstants.MicroLumDenom, amount: '1' }],
         //     gas: '100000',
         // };
         // const doc = {

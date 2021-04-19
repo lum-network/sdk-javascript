@@ -17,7 +17,7 @@ describe('Faucet', () => {
         // WIP
         // const mintMsg = LumMessages.BuildMsgMintAndSend(w1.getAddress(), new Date());
         // const fee = {
-        //     amount: [{ denom: LumConstants.LumDenom, amount: '0' }],
+        //     amount: [{ denom: LumConstants.MicroLumDenom, amount: '0' }],
         //     gas: '100000',
         // };
         // const chainId = await clt.getChainId();
