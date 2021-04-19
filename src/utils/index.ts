@@ -6,3 +6,4 @@ export * from './transactions';
 export * from './broadcast';
 export * from './search';
 export * from './txlogs';
+export * from './units';

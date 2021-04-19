@@ -1,7 +1,18 @@
 /**
+ * Lum Exponent
+ * 1 lum = 10^6 ulum
+ */
+export const LumExponent = 6;
+
+/**
  * Lum Coin denomination
  */
 export const LumDenom = 'lum';
+
+/**
+ * Micro Lum Coin denomination
+ */
+export const MicroLumDenom = 'ulum';
 
 /**
  * Lum Network Bech32 prefix of an account's address

@@ -16,7 +16,9 @@
 - [LumBech32PrefixValAddr](lumconstants.md#lumbech32prefixvaladdr)
 - [LumBech32PrefixValPub](lumconstants.md#lumbech32prefixvalpub)
 - [LumDenom](lumconstants.md#lumdenom)
+- [LumExponent](lumconstants.md#lumexponent)
 - [LumWalletSigningVersion](lumconstants.md#lumwalletsigningversion)
+- [MicroLumDenom](lumconstants.md#microlumdenom)
 - [PrivateKeyLength](lumconstants.md#privatekeylength)
 
 ### Functions
@@ -93,11 +95,28 @@ Lum Coin denomination
 
 ___
 
+### LumExponent
+
+• `Const` **LumExponent**: *6*= 6
+
+Lum Exponent
+1 lum = 10^6 ulum
+
+___
+
 ### LumWalletSigningVersion
 
 • `Const` **LumWalletSigningVersion**: *1*= '1'
 
 Signing version of the SDK
+
+___
+
+### MicroLumDenom
+
+• `Const` **MicroLumDenom**: *ulum*= 'ulum'
+
+Micro Lum Coin denomination
 
 ___
 

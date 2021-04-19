@@ -40,7 +40,7 @@ describe('LumClient', () => {
         const supplies = await clt.queryClient.bank.unverified.totalSupply();
         expect(supplies).toBeTruthy();
         expect(supplies.length).toBeGreaterThan(0);
-        const lumSupply = supplies.filter((c) => c.denom === LumConstants.LumDenom)[0];
+        const lumSupply = supplies.filter((c) => c.denom === LumConstants.MicroLumDenom)[0];
         expect(lumSupply).toBeTruthy();
         expect(parseFloat(lumSupply.amount)).toBeGreaterThan(0);
     });
@@ -80,7 +80,7 @@ describe('LumClient', () => {
         const balances = await clt.getAllBalancesUnverified(account.address);
         expect(balances).toBeTruthy();
         expect(balances.length).toBeGreaterThan(0);
-        const lumBalance = balances.filter((b) => b.denom === LumConstants.LumDenom)[0];
+        const lumBalance = balances.filter((b) => b.denom === LumConstants.MicroLumDenom)[0];
         expect(lumBalance).toBeTruthy();
         expect(parseFloat(lumBalance.amount)).toBeGreaterThan(0);
     });

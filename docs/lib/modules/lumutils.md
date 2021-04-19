@@ -10,6 +10,7 @@
 
 - [broadcastTxCommitSuccess](lumutils.md#broadcasttxcommitsuccess)
 - [broadcastTxSyncSuccess](lumutils.md#broadcasttxsyncsuccess)
+- [convertUnit](lumutils.md#convertunit)
 - [generateAuthInfoBytes](lumutils.md#generateauthinfobytes)
 - [generateKeyStore](lumutils.md#generatekeystore)
 - [generateMnemonic](lumutils.md#generatemnemonic)
@@ -75,6 +76,28 @@ Name | Type |
 `res` | BroadcastTxSyncResponse |
 
 **Returns:** *boolean*
+
+___
+
+### convertUnit
+
+▸ `Const`**convertUnit**(`coin`: [*Coin*](../interfaces/lumtypes.coin.md), `toDenom`: *string*): *string*
+
+Converts the Coin amount into the destination denom.
+This method does not do any actual math and only "move" the floating precision of the amoun in order to avoid any
+possible floating point precision issue.
+It does nothing if src denom = dst denom.
+
+#### Parameters:
+
+Name | Type | Description |
+:------ | :------ | :------ |
+`coin` | [*Coin*](../interfaces/lumtypes.coin.md) | Coin to convert into toDenom   |
+`toDenom` | *string* | destination denom to convert into   |
+
+**Returns:** *string*
+
+the amount converted
 
 ___
 
