@@ -1,29 +1,78 @@
-import { LumWallet, LumWalletFactory, LumClient, LumUtils, LumConstants, LumRegistry, LumTypes } from '../src';
+import { LumWallet, LumWalletFactory, LumClient, LumUtils, LumConstants, LumRegistry, LumTypes, LumMessages } from "../src";
+import axios from "axios";
+import Long from "long";
 
-describe('LumClient', () => {
+const sleep = (millis: number): Promise<void> => {
+    return new Promise(resolve => setTimeout(resolve, millis));
+};
+
+const randomString = (): string => {
+    return Math.random().toString(36).substring(7);
+}
+
+describe("LumClient", () => {
     let clt: LumClient;
     let w1: LumWallet;
     let w2: LumWallet;
 
     beforeAll(async () => {
-        clt = await LumClient.connect('http://node0.testnet.lum.network/rpc');
+        clt = await LumClient.connect("http://node0.testnet.lum.network/rpc");
+
+        // Prepare the wallets
         w1 = await LumWalletFactory.fromMnemonic(LumUtils.generateMnemonic());
         w2 = await LumWalletFactory.fromMnemonic(LumUtils.generateMnemonic());
         expect(w1.getAddress()).not.toEqual(w2.getAddress());
+
+        // Seed them with faucet coins each
+        await axios.get(`https://bridge.testnet.lum.network/faucet/${w1.getAddress()}`);
+        await axios.get(`https://bridge.testnet.lum.network/faucet/${w2.getAddress()}`);
     });
 
     afterAll(async () => {
         await expect(clt.disconnect()).resolves.toBeTruthy();
     });
 
-    it('Should expose basic information', async () => {
+    it("Should be able to use beam features", async () => {
+        const beamId = randomString();
+
+        // Here we wait until the faucet transaction get dispatched and the account finally exists on the blockchain
+        // This should be improved since... you know...
+        let acc: LumTypes.Account = null;
+        while(acc === null){
+            acc = await clt.getAccount(w1.getAddress());
+            await sleep(1000);
+        }
+        expect(acc).toBeTruthy();
+
+        const chainId = await clt.getChainId();
+
+        const openBeamMsg = LumMessages.BuildMsgOpenBeam(beamId, w1.getAddress(), new Long(100), "test", null, null);
+
+        const fee = {
+             amount: [{ denom: LumConstants.MicroLumDenom, amount: '1' }],
+             gas: '100000',
+        };
+        const doc = {
+             accountNumber: acc.accountNumber,
+             chainId,
+             fee: fee,
+             memo: 'Just a open beam transaction',
+             messages: [openBeamMsg],
+             sequence: acc.sequence,
+        };
+
+        const tx = await clt.signAndBroadcastTx(w1, doc);
+        expect(tx.deliverTx.code).toBe(0);
+    })
+
+    it("Should expose basic information", async () => {
         const height = (await clt.getBlockHeight()) - 1;
-        expect(clt.getChainId()).resolves.toEqual('lumnetwork-testnet');
+        expect(clt.getChainId()).resolves.toEqual("lumnetwork-testnet");
         expect(height).toBeGreaterThan(0);
         expect(clt.getBlock(height)).resolves.toBeTruthy();
     });
 
-    it('should expose tendermint rpcs', async () => {
+    it("should expose tendermint rpcs", async () => {
         const height = (await clt.getBlockHeight()) - 1;
         expect(height).toBeGreaterThan(0);
         expect(clt.tmClient.health()).resolves.toBeNull();
@@ -36,7 +85,7 @@ describe('LumClient', () => {
         expect(clt.tmClient.validatorsAll(height)).resolves.toBeTruthy();
     });
 
-    it('Should expose bank module', async () => {
+    it("Should expose bank module", async () => {
         const supplies = await clt.queryClient.bank.unverified.totalSupply();
         expect(supplies).toBeTruthy();
         expect(supplies.length).toBeGreaterThan(0);
@@ -45,7 +94,7 @@ describe('LumClient', () => {
         expect(parseFloat(lumSupply.amount)).toBeGreaterThan(0);
     });
 
-    it('Should expose staking module', async () => {
+    it("Should expose staking module", async () => {
         const validators = await clt.tmClient.validatorsAll();
         expect(validators.validators.length).toBeGreaterThanOrEqual(1);
         const block = await clt.getBlock();
@@ -67,7 +116,7 @@ describe('LumClient', () => {
         expect(bootVal).toBeTruthy();
 
         // Get staking validator by matching it using pubkeys
-        const stakers = await clt.queryClient.staking.unverified.validators('BOND_STATUS_BONDED');
+        const stakers = await clt.queryClient.staking.unverified.validators("BOND_STATUS_BONDED");
         const bootStak = stakers.validators.filter((s) => LumUtils.toHex((LumRegistry.decode(s.consensusPubkey) as LumTypes.PubKey).key) === LumUtils.toHex(bootVal.pubkey.data))[0];
         expect(bootVal).toBeTruthy();
 
@@ -85,7 +134,7 @@ describe('LumClient', () => {
         expect(parseFloat(lumBalance.amount)).toBeGreaterThan(0);
     });
 
-    it('Should expose distribution module', async () => {
+    it("Should expose distribution module", async () => {
         // Get validators
         const validators = await clt.tmClient.validatorsAll();
         expect(validators.validators.length).toBeGreaterThanOrEqual(1);
@@ -98,7 +147,7 @@ describe('LumClient', () => {
         expect(bootVal).toBeTruthy();
 
         // Get genesis validator account address
-        const stakers = await clt.queryClient.staking.unverified.validators('BOND_STATUS_BONDED');
+        const stakers = await clt.queryClient.staking.unverified.validators("BOND_STATUS_BONDED");
         const bootStak = stakers.validators.filter((s) => LumUtils.toHex((LumRegistry.decode(s.consensusPubkey) as LumTypes.PubKey).key) === LumUtils.toHex(bootVal.pubkey.data))[0];
         expect(bootVal).toBeTruthy();
 
@@ -113,5 +162,9 @@ describe('LumClient', () => {
         const delegValidators = await clt.queryClient.distribution.unverified.delegatorValidators(account.address);
         expect(delegValidators).toBeTruthy();
         expect(delegValidators.validators.length).toBeGreaterThan(0);
+    });
+
+    it("Should open a beam", async () => {
+
     });
 });
