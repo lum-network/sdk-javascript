@@ -1,6 +1,6 @@
 import { Message } from '../Message';
 import { Description } from '../../types';
-import { MsgEditValidator } from "../../codec/cosmos/staking/v1beta1/tx";
+import { MsgEditValidator } from '../../codec/cosmos/staking/v1beta1/tx';
 
 export const MsgEditValidatorUrl = '/cosmos.staking.v1beta1.MsgEditValidator';
 

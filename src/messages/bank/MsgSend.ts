@@ -1,6 +1,6 @@
 import { Message } from '../Message';
 import { Coin } from '../../types';
-import { MsgSend } from "../../codec/cosmos/bank/v1beta1/tx";
+import { MsgSend } from '../../codec/cosmos/bank/v1beta1/tx';
 
 export const MsgSendUrl = '/cosmos.bank.v1beta1.MsgSend';
 

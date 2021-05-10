@@ -1,5 +1,5 @@
 import { Message } from '../Message';
-import { MsgSetWithdrawAddress } from "../../codec/cosmos/distribution/v1beta1/tx";
+import { MsgSetWithdrawAddress } from '../../codec/cosmos/distribution/v1beta1/tx';
 
 export const MsgSetWithdrawAddressUrl = '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress';
 

@@ -1,7 +1,7 @@
 import { Message } from '../Message';
 import { Coin, Description, CommissionRates } from '../../types';
 import { Any } from '../../codec/google/protobuf/any';
-import { MsgCreateValidator } from "../../codec/cosmos/staking/v1beta1/tx";
+import { MsgCreateValidator } from '../../codec/cosmos/staking/v1beta1/tx';
 
 export const MsgCreateValidatorUrl = '/cosmos.staking.v1beta1.MsgCreateValidator';
 

@@ -1,6 +1,6 @@
 import { Message } from '../Message';
 import { Coin } from '../../types';
-import { MsgDelegate } from "../../codec/cosmos/staking/v1beta1/tx";
+import { MsgDelegate } from '../../codec/cosmos/staking/v1beta1/tx';
 
 export const MsgDelegateUrl = '/cosmos.staking.v1beta1.MsgDelegate';
 
