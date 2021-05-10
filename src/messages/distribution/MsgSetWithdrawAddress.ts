@@ -1,15 +1,7 @@
 import { Message } from '../Message';
+import { MsgSetWithdrawAddress } from "../../codec/cosmos/distribution/v1beta1/tx";
 
 export const MsgSetWithdrawAddressUrl = '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress';
-
-/**
- * MsgSetWithdrawAddress sets the withdraw address for
- * a delegator (or validator self-delegation).
- */
-export interface MsgSetWithdrawAddress {
-    delegatorAddress: string;
-    withdrawAddress: string;
-}
 
 export const BuildMsgSetWithdrawAddress = (delegatorAddress: string, withdrawAddress: string): Message => {
     return {
