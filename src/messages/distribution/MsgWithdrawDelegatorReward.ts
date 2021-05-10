@@ -1,15 +1,7 @@
 import { Message } from '../Message';
+import { MsgWithdrawDelegatorReward } from '../../codec/cosmos/distribution/v1beta1/tx';
 
 export const MsgWithdrawDelegatorRewardUrl = '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward';
-
-/**
- * MsgWithdrawDelegatorReward represents delegation withdrawal to a delegator
- * from a single validator.
- */
-export interface MsgWithdrawDelegatorReward {
-    delegatorAddress: string;
-    validatorAddress: string;
-}
 
 export const BuildMsgWithdrawDelegatorReward = (delegatorAddress: string, validatorAddress: string): Message => {
     return {

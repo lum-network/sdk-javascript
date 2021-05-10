@@ -6,6 +6,7 @@ import { PubKey } from '../codec/cosmos/crypto/secp256k1/keys';
 import { MsgSend, MsgMultiSend } from '../codec/cosmos/bank/v1beta1/tx';
 import { MsgFundCommunityPool, MsgSetWithdrawAddress, MsgWithdrawDelegatorReward, MsgWithdrawValidatorCommission } from '../codec/cosmos/distribution/v1beta1/tx';
 import { MsgBeginRedelegate, MsgCreateValidator, MsgDelegate, MsgEditValidator, MsgUndelegate } from '../codec/cosmos/staking/v1beta1/tx';
+import { MsgCancelBeam, MsgClaimBeam, MsgOpenBeam, MsgUpdateBeam } from '../codec/chain/beam/beam';
 
 const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/cosmos.crypto.ed25519.PubKey', PubKey as GeneratedType],
@@ -20,6 +21,10 @@ const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/cosmos.staking.v1beta1.MsgDelegate', MsgDelegate as GeneratedType],
     ['/cosmos.staking.v1beta1.MsgEditValidator', MsgEditValidator as GeneratedType],
     ['/cosmos.staking.v1beta1.MsgUndelegate', MsgUndelegate as GeneratedType],
+    ['/lum.network.beam.MsgOpenBeam', MsgOpenBeam as GeneratedType],
+    ['/lum.network.beam.MsgUpdateBeam', MsgUpdateBeam as GeneratedType],
+    ['/lum.network.beam.MsgCancelBeam', MsgCancelBeam as GeneratedType],
+    ['/lum.network.beam.MsgClaimBeam', MsgClaimBeam as GeneratedType],
 ];
 
 class ExtendedRegistry extends Registry {
@@ -27,5 +32,6 @@ class ExtendedRegistry extends Registry {
         return Tx.decode(tx);
     };
 }
+
 export const LumAminoRegistry = new AminoTypes();
 export const LumRegistry = new ExtendedRegistry(registryTypes);
