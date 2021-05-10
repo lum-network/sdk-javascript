@@ -615,7 +615,7 @@ export const BeamReview_BeamReviewMerchantReview = {
         }
         if (object.ratings !== undefined && object.ratings !== null) {
             Object.entries(object.ratings).forEach(([key, value]) => {
-                message.ratings[key] = Long(value);
+                message.ratings[key] = new Long(value as any);
             });
         }
         if (object.title !== undefined && object.title !== null) {
@@ -686,7 +686,7 @@ export const BeamReview_BeamReviewMerchantReview = {
         if (object.ratings !== undefined && object.ratings !== null) {
             Object.entries(object.ratings).forEach(([key, value]) => {
                 if (value !== undefined) {
-                    message.ratings[key] = Long(value);
+                    message.ratings[key] = new Long(value as any);
                 }
             });
         }
@@ -975,7 +975,7 @@ export const BeamReview_BeamReviewProductReview = {
         }
         if (object.ratings !== undefined && object.ratings !== null) {
             Object.entries(object.ratings).forEach(([key, value]) => {
-                message.ratings[key] = Long(value);
+                message.ratings[key] = new Long(value as any);
             });
         }
         if (object.title !== undefined && object.title !== null) {
@@ -1068,7 +1068,7 @@ export const BeamReview_BeamReviewProductReview = {
         if (object.ratings !== undefined && object.ratings !== null) {
             Object.entries(object.ratings).forEach(([key, value]) => {
                 if (value !== undefined) {
-                    message.ratings[key] = Long(value);
+                    message.ratings[key] = new Long(value as any);
                 }
             });
         }
