@@ -4,7 +4,7 @@ import { LumWallet } from '.';
 
 export class LumPaperWallet extends LumWallet {
     private readonly mnemonic?: string;
-    private privateKey?: Uint8Array;
+    public privateKey?: Uint8Array;
 
     /**
      * Create a LumPaperWallet instance based on a mnemonic or a private key
@@ -48,7 +48,14 @@ export class LumPaperWallet extends LumWallet {
         if (!this.privateKey || !this.publicKey) {
             throw new Error('No account selected.');
         }
-        const signDoc = LumUtils.generateSignDoc(doc, this.getPublicKey(), this.signingMode());
+        const signerIndex = LumUtils.uint8IndexOf(
+            doc.signers.map((signer) => signer.publicKey),
+            this.publicKey as Uint8Array,
+        );
+        if (signerIndex === -1) {
+            throw new Error('Signer not found in document');
+        }
+        const signDoc = LumUtils.generateSignDoc(doc, signerIndex, this.signingMode());
         const signBytes = LumUtils.generateSignDocBytes(signDoc);
         const hashedMessage = LumUtils.sha256(signBytes);
         const signature = await LumUtils.generateSignature(hashedMessage, this.privateKey);
