@@ -158,12 +158,15 @@ const fee = {
 const account = await testnetClient.getAccount(wallet.getAddress());
 // Create the transaction document
 const doc = {
-    accountNumber: account.accountNumber,
     chainId,
     fee: fee,
     memo: 'my transaction memo',
     messages: [sendMsg],
-    sequence: account.sequence,
+    signers: [{
+        accountNumber: account.accountNumber,
+        sequence: account.sequence,
+        publicKey: wallet.getPublicKey(),
+    }],
 };
 // Sign and broadcast the transaction using the client
 const broadcastResult = await clt.signAndBroadcastTx(w1, doc);
