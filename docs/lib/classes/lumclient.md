@@ -329,7 +329,7 @@ ___
 
 ### txsQuery
 
-▸ `Private`**txsQuery**(`params`: TxSearchParams): *Promise*<TxResponse[]\>
+▸ `Private`**txsQuery**(`params`: TxSearchParams): *Promise*<readonly TxResponse[]\>
 
 Run a tx search
 
@@ -339,7 +339,7 @@ Name | Type | Description |
 :------ | :------ | :------ |
 `params` | TxSearchParams | Search params    |
 
-**Returns:** *Promise*<TxResponse[]\>
+**Returns:** *Promise*<readonly TxResponse[]\>
 
 ___
 

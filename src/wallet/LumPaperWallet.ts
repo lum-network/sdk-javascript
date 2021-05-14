@@ -4,7 +4,7 @@ import { LumWallet } from '.';
 
 export class LumPaperWallet extends LumWallet {
     private readonly mnemonic?: string;
-    public privateKey?: Uint8Array;
+    private privateKey?: Uint8Array;
 
     /**
      * Create a LumPaperWallet instance based on a mnemonic or a private key
@@ -42,6 +42,14 @@ export class LumPaperWallet extends LumWallet {
             return false;
         }
         throw new Error('No available mnemonic or private key.');
+    };
+
+    sign = async (data: Uint8Array): Promise<Uint8Array> => {
+        if (!this.privateKey || !this.publicKey) {
+            throw new Error('No account selected.');
+        }
+        const signature = await LumUtils.generateSignature(data, this.privateKey);
+        return signature;
     };
 
     signTransaction = async (doc: LumTypes.Doc): Promise<Uint8Array> => {

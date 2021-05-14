@@ -43,6 +43,10 @@ export class LumLedgerWallet extends LumWallet {
         return true;
     };
 
+    sign = async (): Promise<Uint8Array> => {
+        throw new Error('Feature not supported.');
+    };
+
     signTransaction = async (doc: LumTypes.Doc): Promise<Uint8Array> => {
         if (!this.hdPath) {
             throw new Error('No account selected.');
