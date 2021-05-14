@@ -67,7 +67,7 @@ ___
 
 ### privateKey
 
-• `Private` `Optional` **privateKey**: *undefined* \| *Uint8Array*
+• `Optional` **privateKey**: *undefined* \| *Uint8Array*
 
 ___
 

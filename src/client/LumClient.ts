@@ -242,17 +242,31 @@ export class LumClient {
     /**
      * Signs the messages using the provided wallet and builds the transaction
      *
-     * @param wallet signing wallet
+     * @param wallet signing wallet or wallets for multi signature
      * @param doc document to sign
      */
-    signTx = async (wallet: LumWallet, doc: LumTypes.Doc): Promise<Uint8Array> => {
-        const account = await this.getAccount(wallet.getAddress());
-        if (!account) {
-            throw new Error('Account not found');
+    signTx = async (wallet: LumWallet | LumWallet[], doc: LumTypes.Doc): Promise<Uint8Array> => {
+        let wallets: LumWallet[] = [];
+        if (Array.isArray(wallet)) {
+            wallets = wallet;
+        } else {
+            wallets = [wallet];
         }
-        const signDoc = LumUtils.generateSignDoc(doc, wallet.getPublicKey(), wallet.signingMode());
-        const signature = await wallet.signTransaction(doc);
-        return LumUtils.generateTxBytes(signDoc, signature);
+
+        if (wallets.length < 1) {
+            throw new Error('At least one wallet is required to sign the transaction');
+        }
+        const signDoc = LumUtils.generateSignDoc(doc, 0, wallets[0].signingMode());
+        const signatures: Uint8Array[] = [];
+
+        for (let i = 0; i < wallets.length; i++) {
+            const account = await this.getAccount(wallets[i].getAddress());
+            if (!account) {
+                throw new Error(`Account not found for wallet at index ${i}`);
+            }
+            signatures.push(await wallets[i].signTransaction(doc));
+        }
+        return LumUtils.generateTxBytes(signDoc, signatures);
     };
 
     /**
@@ -269,10 +283,10 @@ export class LumClient {
     /**
      * Signs and broadcast the transaction using the specified wallet and messages
      *
-     * @param wallet signing wallet
+     * @param wallet signing wallet or wallets for multi signature
      * @param doc document to sign and broadcast as a transaction
      */
-    signAndBroadcastTx = async (wallet: LumWallet, doc: LumTypes.Doc): Promise<LumTypes.BroadcastTxCommitResponse> => {
+    signAndBroadcastTx = async (wallet: LumWallet | LumWallet[], doc: LumTypes.Doc): Promise<LumTypes.BroadcastTxCommitResponse> => {
         const signedTx = await this.signTx(wallet, doc);
         return this.broadcastTx(signedTx);
     };

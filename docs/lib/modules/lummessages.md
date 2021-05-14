@@ -5,46 +5,40 @@
 ### Interfaces
 
 - [Message](../interfaces/lummessages.message.md)
-- [MsgBeginRedelegate](../interfaces/lummessages.msgbeginredelegate.md)
-- [MsgCreateValidator](../interfaces/lummessages.msgcreatevalidator.md)
-- [MsgDelegate](../interfaces/lummessages.msgdelegate.md)
-- [MsgEditValidator](../interfaces/lummessages.msgeditvalidator.md)
-- [MsgFundCommunityPool](../interfaces/lummessages.msgfundcommunitypool.md)
-- [MsgMintAndSend](../interfaces/lummessages.msgmintandsend.md)
-- [MsgMultiSend](../interfaces/lummessages.msgmultisend.md)
-- [MsgSend](../interfaces/lummessages.msgsend.md)
-- [MsgSetWithdrawAddress](../interfaces/lummessages.msgsetwithdrawaddress.md)
-- [MsgUndelegate](../interfaces/lummessages.msgundelegate.md)
-- [MsgWithdrawDelegatorReward](../interfaces/lummessages.msgwithdrawdelegatorreward.md)
-- [MsgWithdrawValidatorCommission](../interfaces/lummessages.msgwithdrawvalidatorcommission.md)
 
 ### Variables
 
 - [MsgBeginRedelegateUrl](lummessages.md#msgbeginredelegateurl)
+- [MsgCancelBeamUrl](lummessages.md#msgcancelbeamurl)
+- [MsgClaimBeamUrl](lummessages.md#msgclaimbeamurl)
 - [MsgCreateValidatorUrl](lummessages.md#msgcreatevalidatorurl)
 - [MsgDelegateUrl](lummessages.md#msgdelegateurl)
 - [MsgEditValidatorUrl](lummessages.md#msgeditvalidatorurl)
 - [MsgFundCommunityPoolUrl](lummessages.md#msgfundcommunitypoolurl)
-- [MsgMintAndSendUrl](lummessages.md#msgmintandsendurl)
 - [MsgMultiSendUrl](lummessages.md#msgmultisendurl)
+- [MsgOpenBeamUrl](lummessages.md#msgopenbeamurl)
 - [MsgSendUrl](lummessages.md#msgsendurl)
 - [MsgSetWithdrawAddressUrl](lummessages.md#msgsetwithdrawaddressurl)
 - [MsgUndelegateUrl](lummessages.md#msgundelegateurl)
+- [MsgUpdateBeamUrl](lummessages.md#msgupdatebeamurl)
 - [MsgWithdrawDelegatorRewardUrl](lummessages.md#msgwithdrawdelegatorrewardurl)
 - [MsgWithdrawValidatorCommissionUrl](lummessages.md#msgwithdrawvalidatorcommissionurl)
 
 ### Functions
 
 - [BuildMsgBeginRedelegate](lummessages.md#buildmsgbeginredelegate)
+- [BuildMsgCancelBeam](lummessages.md#buildmsgcancelbeam)
+- [BuildMsgClaimBeam](lummessages.md#buildmsgclaimbeam)
 - [BuildMsgCreateValidator](lummessages.md#buildmsgcreatevalidator)
 - [BuildMsgDelegate](lummessages.md#buildmsgdelegate)
 - [BuildMsgEditValidator](lummessages.md#buildmsgeditvalidator)
 - [BuildMsgFundCommunityPool](lummessages.md#buildmsgfundcommunitypool)
-- [BuildMsgMintAndSend](lummessages.md#buildmsgmintandsend)
 - [BuildMsgMultiSend](lummessages.md#buildmsgmultisend)
+- [BuildMsgOpenBeam](lummessages.md#buildmsgopenbeam)
 - [BuildMsgSend](lummessages.md#buildmsgsend)
 - [BuildMsgSetWithdrawAddress](lummessages.md#buildmsgsetwithdrawaddress)
 - [BuildMsgUndelegate](lummessages.md#buildmsgundelegate)
+- [BuildMsgUpdateBeam](lummessages.md#buildmsgupdatebeam)
 - [BuildMsgWithdrawDelegatorReward](lummessages.md#buildmsgwithdrawdelegatorreward)
 - [BuildMsgWithdrawValidatorCommission](lummessages.md#buildmsgwithdrawvalidatorcommission)
 
@@ -53,6 +47,18 @@
 ### MsgBeginRedelegateUrl
 
 • `Const` **MsgBeginRedelegateUrl**: */cosmos.staking.v1beta1.MsgBeginRedelegate*= '/cosmos.staking.v1beta1.MsgBeginRedelegate'
+
+___
+
+### MsgCancelBeamUrl
+
+• `Const` **MsgCancelBeamUrl**: */lum.network.beam.MsgCancelBeam*= '/lum.network.beam.MsgCancelBeam'
+
+___
+
+### MsgClaimBeamUrl
+
+• `Const` **MsgClaimBeamUrl**: */lum.network.beam.MsgClaimBeam*= '/lum.network.beam.MsgClaimBeam'
 
 ___
 
@@ -80,15 +86,15 @@ ___
 
 ___
 
-### MsgMintAndSendUrl
-
-• `Const` **MsgMintAndSendUrl**: */lum.network.faucet.MsgMintAndSend*= '/lum.network.faucet.MsgMintAndSend'
-
-___
-
 ### MsgMultiSendUrl
 
 • `Const` **MsgMultiSendUrl**: */cosmos.bank.v1beta1.MsgMultiSend*= '/cosmos.bank.v1beta1.MsgMultiSend'
+
+___
+
+### MsgOpenBeamUrl
+
+• `Const` **MsgOpenBeamUrl**: */lum.network.beam.MsgOpenBeam*= '/lum.network.beam.MsgOpenBeam'
 
 ___
 
@@ -107,6 +113,12 @@ ___
 ### MsgUndelegateUrl
 
 • `Const` **MsgUndelegateUrl**: */cosmos.staking.v1beta1.MsgUndelegate*= '/cosmos.staking.v1beta1.MsgUndelegate'
+
+___
+
+### MsgUpdateBeamUrl
+
+• `Const` **MsgUpdateBeamUrl**: */lum.network.beam.MsgUpdateBeam*= '/lum.network.beam.MsgUpdateBeam'
 
 ___
 
@@ -134,6 +146,37 @@ Name | Type |
 `validatorSrcAddress` | *string* |
 `validatorDstAddress` | *string* |
 `amount?` | [*Coin*](../interfaces/lumtypes.coin.md) |
+
+**Returns:** [*Message*](../interfaces/lummessages.message.md)
+
+___
+
+### BuildMsgCancelBeam
+
+▸ `Const`**BuildMsgCancelBeam**(`updater`: *string*, `id`: *string*): [*Message*](../interfaces/lummessages.message.md)
+
+#### Parameters:
+
+Name | Type |
+:------ | :------ |
+`updater` | *string* |
+`id` | *string* |
+
+**Returns:** [*Message*](../interfaces/lummessages.message.md)
+
+___
+
+### BuildMsgClaimBeam
+
+▸ `Const`**BuildMsgClaimBeam**(`claimer`: *string*, `id`: *string*, `secret`: *string*): [*Message*](../interfaces/lummessages.message.md)
+
+#### Parameters:
+
+Name | Type |
+:------ | :------ |
+`claimer` | *string* |
+`id` | *string* |
+`secret` | *string* |
 
 **Returns:** [*Message*](../interfaces/lummessages.message.md)
 
@@ -207,36 +250,35 @@ Name | Type |
 
 ___
 
-### BuildMsgMintAndSend
+### BuildMsgMultiSend
 
-▸ `Const`**BuildMsgMintAndSend**(`minter`: *string*, `mintTime`: Date): *object*
+▸ `Const`**BuildMsgMultiSend**(`inputs`: Input[], `outputs`: Output[]): [*Message*](../interfaces/lummessages.message.md)
 
 #### Parameters:
 
 Name | Type |
 :------ | :------ |
-`minter` | *string* |
-`mintTime` | Date |
+`inputs` | Input[] |
+`outputs` | Output[] |
 
-**Returns:** *object*
-
-Name | Type |
-:------ | :------ |
-`typeUrl` | *string* |
-`value` | [*MsgMintAndSend*](../interfaces/lummessages.msgmintandsend.md) |
+**Returns:** [*Message*](../interfaces/lummessages.message.md)
 
 ___
 
-### BuildMsgMultiSend
+### BuildMsgOpenBeam
 
-▸ `Const`**BuildMsgMultiSend**(`input`: { `address`: *string* ; `coins`: [*Coin*](../interfaces/lumtypes.coin.md)[]  }[], `output`: { `address`: *string* ; `coins`: [*Coin*](../interfaces/lumtypes.coin.md)[]  }[]): [*Message*](../interfaces/lummessages.message.md)
+▸ `Const`**BuildMsgOpenBeam**(`id`: *string*, `creator`: *string*, `amount`: Long, `secret`: *string*, `reward?`: BeamReward, `review?`: BeamReview): [*Message*](../interfaces/lummessages.message.md)
 
 #### Parameters:
 
 Name | Type |
 :------ | :------ |
-`input` | { `address`: *string* ; `coins`: [*Coin*](../interfaces/lumtypes.coin.md)[]  }[] |
-`output` | { `address`: *string* ; `coins`: [*Coin*](../interfaces/lumtypes.coin.md)[]  }[] |
+`id` | *string* |
+`creator` | *string* |
+`amount` | Long |
+`secret` | *string* |
+`reward?` | BeamReward |
+`review?` | BeamReview |
 
 **Returns:** [*Message*](../interfaces/lummessages.message.md)
 
@@ -284,6 +326,24 @@ Name | Type |
 `delegatorAddress` | *string* |
 `validatorAddress` | *string* |
 `amount?` | [*Coin*](../interfaces/lumtypes.coin.md) |
+
+**Returns:** [*Message*](../interfaces/lummessages.message.md)
+
+___
+
+### BuildMsgUpdateBeam
+
+▸ `Const`**BuildMsgUpdateBeam**(`updater`: *string*, `id`: *string*, `amount`: Long, `reward?`: BeamReward, `review?`: BeamReview): [*Message*](../interfaces/lummessages.message.md)
+
+#### Parameters:
+
+Name | Type |
+:------ | :------ |
+`updater` | *string* |
+`id` | *string* |
+`amount` | Long |
+`reward?` | BeamReward |
+`review?` | BeamReview |
 
 **Returns:** [*Message*](../interfaces/lummessages.message.md)
 

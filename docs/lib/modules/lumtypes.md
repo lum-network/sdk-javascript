@@ -10,6 +10,7 @@
 - [CommissionRates](../interfaces/lumtypes.commissionrates.md)
 - [Description](../interfaces/lumtypes.description.md)
 - [Doc](../interfaces/lumtypes.doc.md)
+- [DocSigner](../interfaces/lumtypes.docsigner.md)
 - [Fee](../interfaces/lumtypes.fee.md)
 - [Log](../interfaces/lumtypes.log.md)
 - [LogAttribute](../interfaces/lumtypes.logattribute.md)
