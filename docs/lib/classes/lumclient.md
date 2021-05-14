@@ -285,7 +285,7 @@ ___
 
 ### signAndBroadcastTx
 
-▸ **signAndBroadcastTx**(`wallet`: [*LumWallet*](lumwallet.md), `doc`: [*Doc*](../interfaces/lumtypes.doc.md)): *Promise*<BroadcastTxCommitResponse\>
+▸ **signAndBroadcastTx**(`wallet`: [*LumWallet*](lumwallet.md) \| [*LumWallet*](lumwallet.md)[], `doc`: [*Doc*](../interfaces/lumtypes.doc.md)): *Promise*<BroadcastTxCommitResponse\>
 
 Signs and broadcast the transaction using the specified wallet and messages
 
@@ -293,7 +293,7 @@ Signs and broadcast the transaction using the specified wallet and messages
 
 Name | Type | Description |
 :------ | :------ | :------ |
-`wallet` | [*LumWallet*](lumwallet.md) | signing wallet   |
+`wallet` | [*LumWallet*](lumwallet.md) \| [*LumWallet*](lumwallet.md)[] | signing wallet or wallets for multi signature   |
 `doc` | [*Doc*](../interfaces/lumtypes.doc.md) | document to sign and broadcast as a transaction    |
 
 **Returns:** *Promise*<BroadcastTxCommitResponse\>
@@ -302,7 +302,7 @@ ___
 
 ### signTx
 
-▸ **signTx**(`wallet`: [*LumWallet*](lumwallet.md), `doc`: [*Doc*](../interfaces/lumtypes.doc.md)): *Promise*<Uint8Array\>
+▸ **signTx**(`wallet`: [*LumWallet*](lumwallet.md) \| [*LumWallet*](lumwallet.md)[], `doc`: [*Doc*](../interfaces/lumtypes.doc.md)): *Promise*<Uint8Array\>
 
 Signs the messages using the provided wallet and builds the transaction
 
@@ -310,7 +310,7 @@ Signs the messages using the provided wallet and builds the transaction
 
 Name | Type | Description |
 :------ | :------ | :------ |
-`wallet` | [*LumWallet*](lumwallet.md) | signing wallet   |
+`wallet` | [*LumWallet*](lumwallet.md) \| [*LumWallet*](lumwallet.md)[] | signing wallet or wallets for multi signature   |
 `doc` | [*Doc*](../interfaces/lumtypes.doc.md) | document to sign    |
 
 **Returns:** *Promise*<Uint8Array\>
@@ -329,7 +329,7 @@ ___
 
 ### txsQuery
 
-▸ `Private`**txsQuery**(`params`: TxSearchParams): *Promise*<TxResponse[]\>
+▸ `Private`**txsQuery**(`params`: TxSearchParams): *Promise*<readonly TxResponse[]\>
 
 Run a tx search
 
@@ -339,7 +339,7 @@ Name | Type | Description |
 :------ | :------ | :------ |
 `params` | TxSearchParams | Search params    |
 
-**Returns:** *Promise*<TxResponse[]\>
+**Returns:** *Promise*<readonly TxResponse[]\>
 
 ___
 

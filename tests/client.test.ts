@@ -1,10 +1,6 @@
-import { LumWallet, LumWalletFactory, LumClient, LumUtils, LumConstants, LumRegistry, LumTypes, LumMessages } from "../src";
-import axios from "axios";
-import Long from "long";
-
-const sleep = (millis: number): Promise<void> => {
-    return new Promise(resolve => setTimeout(resolve, millis));
-};
+import { LumWallet, LumWalletFactory, LumClient, LumUtils, LumConstants, LumRegistry, LumTypes, LumMessages, LumPaperWallet } from '../src';
+import axios from 'axios';
+import Long from 'long';
 
 const randomString = (): string => {
     return Math.random().toString(36).substring(7);
@@ -16,56 +12,77 @@ describe("LumClient", () => {
     let w2: LumWallet;
 
     beforeAll(async () => {
-        clt = await LumClient.connect("http://node0.testnet.lum.network/rpc");
+        clt = await LumClient.connect('http://node0.testnet.lum.network/rpc');
 
         // Prepare the wallets
         w1 = await LumWalletFactory.fromMnemonic(LumUtils.generateMnemonic());
         w2 = await LumWalletFactory.fromMnemonic(LumUtils.generateMnemonic());
+
         expect(w1.getAddress()).not.toEqual(w2.getAddress());
 
         // Seed them with faucet coins each
-        await axios.get(`https://bridge.testnet.lum.network/faucet/${w1.getAddress()}`);
-        await axios.get(`https://bridge.testnet.lum.network/faucet/${w2.getAddress()}`);
+        let res = await axios.get(`https://bridge.testnet.lum.network/faucet/${w1.getAddress()}`);
+        expect(res.status).toEqual(200);
+        res = await axios.get(`https://bridge.testnet.lum.network/faucet/${w2.getAddress()}`);
+        expect(res.status).toEqual(200);
+        const faucetResult = new Promise((resolve, reject) => {
+            let it = 0;
+            const rec = setInterval(async () => {
+                const balance1 = await clt.getBalance(w1.getAddress(), LumConstants.MicroLumDenom);
+                const balance2 = await clt.getBalance(w2.getAddress(), LumConstants.MicroLumDenom);
+                if (balance1 && balance2 && parseInt(balance1.amount) > 0 && parseInt(balance2.amount) > 0) {
+                    clearInterval(rec);
+                    resolve(true);
+                } else if (it >= 60) {
+                    clearInterval(rec);
+                    reject();
+                }
+                it++;
+            }, 1000);
+        });
+        await expect(faucetResult).resolves.toBeTruthy();
     });
 
     afterAll(async () => {
         await expect(clt.disconnect()).resolves.toBeTruthy();
     });
 
-    it("Should be able to use beam features", async () => {
+    it('Should be able to use beam features', async () => {
         const beamId = randomString();
 
         // Here we wait until the faucet transaction get dispatched and the account finally exists on the blockchain
         // This should be improved since... you know...
-        let acc: LumTypes.Account = null;
-        while(acc === null){
-            acc = await clt.getAccount(w1.getAddress());
-            await sleep(1000);
-        }
+        const acc = await clt.getAccount(w1.getAddress());
         expect(acc).toBeTruthy();
 
         const chainId = await clt.getChainId();
 
-        const openBeamMsg = LumMessages.BuildMsgOpenBeam(beamId, w1.getAddress(), new Long(100), "test", null, null);
+        const openBeamMsg = LumMessages.BuildMsgOpenBeam(beamId, w1.getAddress(), new Long(100), 'test', null, null);
 
         const fee = {
-             amount: [{ denom: LumConstants.MicroLumDenom, amount: '1' }],
-             gas: '100000',
+            amount: [{ denom: LumConstants.MicroLumDenom, amount: '1' }],
+            gas: '100000',
         };
         const doc = {
-             accountNumber: acc.accountNumber,
-             chainId,
-             fee: fee,
-             memo: 'Just a open beam transaction',
-             messages: [openBeamMsg],
-             sequence: acc.sequence,
+            accountNumber: acc.accountNumber,
+            chainId,
+            fee: fee,
+            memo: 'Just a open beam transaction',
+            messages: [openBeamMsg],
+            signers: [
+                {
+                    accountNumber: acc.accountNumber,
+                    sequence: acc.sequence,
+                    publicKey: w1.getPublicKey(),
+                },
+            ],
         };
 
         const tx = await clt.signAndBroadcastTx(w1, doc);
         expect(tx.deliverTx.code).toBe(0);
-    })
+    });
 
-    it("Should expose basic information", async () => {
+    it('Should expose basic information', async () => {
         const height = (await clt.getBlockHeight()) - 1;
         expect(clt.getChainId()).resolves.toEqual("lumnetwork-testnet");
         expect(height).toBeGreaterThan(0);
@@ -85,8 +102,8 @@ describe("LumClient", () => {
         expect(clt.tmClient.validatorsAll(height)).resolves.toBeTruthy();
     });
 
-    it("Should expose bank module", async () => {
-        const supplies = await clt.queryClient.bank.unverified.totalSupply();
+    it('Should expose bank module', async () => {
+        const supplies = await clt.queryClient.bank.totalSupply();
         expect(supplies).toBeTruthy();
         expect(supplies.length).toBeGreaterThan(0);
         const lumSupply = supplies.filter((c) => c.denom === LumConstants.MicroLumDenom)[0];
@@ -116,7 +133,7 @@ describe("LumClient", () => {
         expect(bootVal).toBeTruthy();
 
         // Get staking validator by matching it using pubkeys
-        const stakers = await clt.queryClient.staking.unverified.validators("BOND_STATUS_BONDED");
+        const stakers = await clt.queryClient.staking.validators('BOND_STATUS_BONDED');
         const bootStak = stakers.validators.filter((s) => LumUtils.toHex((LumRegistry.decode(s.consensusPubkey) as LumTypes.PubKey).key) === LumUtils.toHex(bootVal.pubkey.data))[0];
         expect(bootVal).toBeTruthy();
 
@@ -147,7 +164,7 @@ describe("LumClient", () => {
         expect(bootVal).toBeTruthy();
 
         // Get genesis validator account address
-        const stakers = await clt.queryClient.staking.unverified.validators("BOND_STATUS_BONDED");
+        const stakers = await clt.queryClient.staking.validators('BOND_STATUS_BONDED');
         const bootStak = stakers.validators.filter((s) => LumUtils.toHex((LumRegistry.decode(s.consensusPubkey) as LumTypes.PubKey).key) === LumUtils.toHex(bootVal.pubkey.data))[0];
         expect(bootVal).toBeTruthy();
 
@@ -156,15 +173,49 @@ describe("LumClient", () => {
         const account = await clt.getAccount(delegAddress);
         expect(account).toBeTruthy();
 
-        const deleg = await clt.queryClient.distribution.unverified.delegatorWithdrawAddress(account.address);
+        const deleg = await clt.queryClient.distribution.delegatorWithdrawAddress(account.address);
         expect(deleg).toBeTruthy();
         expect(deleg.withdrawAddress).toEqual(account.address);
-        const delegValidators = await clt.queryClient.distribution.unverified.delegatorValidators(account.address);
+        const delegValidators = await clt.queryClient.distribution.delegatorValidators(account.address);
         expect(delegValidators).toBeTruthy();
         expect(delegValidators.validators.length).toBeGreaterThan(0);
     });
 
-    it("Should open a beam", async () => {
+    it('Should open a beam', async () => {});
 
+    it('Should allow multiple signers per transaction', async () => {
+        const acc1 = await clt.getAccount(w1.getAddress());
+        const acc2 = await clt.getAccount(w2.getAddress());
+        const chainId = await clt.getChainId();
+        const fee = {
+            amount: [{ denom: LumConstants.MicroLumDenom, amount: '1' }],
+            gas: '300000',
+        };
+
+        const doc = {
+            accountNumber: 0, //acc1.accountNumber,
+            chainId,
+            fee: fee,
+            memo: 'Just a open beam transaction',
+            messages: [
+                LumMessages.BuildMsgSend(w1.getAddress(), w2.getAddress(), [{ denom: LumConstants.MicroLumDenom, amount: '99' }]),
+                LumMessages.BuildMsgSend(w2.getAddress(), w1.getAddress(), [{ denom: LumConstants.MicroLumDenom, amount: '99' }]),
+            ],
+            signers: [
+                {
+                    accountNumber: acc1.accountNumber,
+                    sequence: acc1.sequence,
+                    publicKey: w1.getPublicKey(),
+                },
+                {
+                    accountNumber: acc2.accountNumber,
+                    sequence: acc2.sequence,
+                    publicKey: w2.getPublicKey(),
+                },
+            ],
+        };
+
+        const res = await clt.signAndBroadcastTx([w1, w2], doc);
+        expect(LumUtils.broadcastTxCommitSuccess(res));
     });
 });

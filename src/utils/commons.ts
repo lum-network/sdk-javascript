@@ -1,5 +1,7 @@
 export { isNonNullObject, isUint8Array } from '@cosmjs/utils';
 
+import { toHex } from './encoding';
+
 /**
  * Sorts an object properties recursively.
  *
@@ -23,4 +25,21 @@ export const sortJSON = <T>(jsonObj: T): T => {
         newObject[keys[i]] = sortJSON(jsonObj[keys[i]]);
     }
     return newObject as T;
+};
+
+/**
+ * Find the index of an Uint8Array element in an array of Uint8Array.
+ *
+ * @param arr Array to search elem
+ * @param elem Elem to search in array
+ * @returns The index of the element in the array or -1
+ */
+export const uint8IndexOf = (arr: Uint8Array[], elem: Uint8Array) => {
+    const hexElem = toHex(elem);
+    for (let i = 0; i < arr.length; i++) {
+        if (hexElem === toHex(arr[i])) {
+            return i;
+        }
+    }
+    return -1;
 };

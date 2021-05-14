@@ -43,6 +43,10 @@ export class LumLedgerWallet extends LumWallet {
         return true;
     };
 
+    sign = async (): Promise<Uint8Array> => {
+        throw new Error('Feature not supported.');
+    };
+
     signTransaction = async (doc: LumTypes.Doc): Promise<Uint8Array> => {
         if (!this.hdPath) {
             throw new Error('No account selected.');
@@ -52,13 +56,20 @@ export class LumLedgerWallet extends LumWallet {
         // Useful doc & code:
         // sign call: https://github.com/LedgerHQ/ledgerjs/blob/master/packages/hw-app-cosmos/src/Cosmos.js
         // Expected tx format: https://github.com/cosmos/ledger-cosmos/blob/master/docs/TXSPEC.md
+        const signerIndex = LumUtils.uint8IndexOf(
+            doc.signers.map((signer) => signer.publicKey),
+            this.publicKey as Uint8Array,
+        );
+        if (signerIndex === -1) {
+            throw new Error('Signer not found in document');
+        }
         const msg = {
-            'account_number': doc.accountNumber.toString(),
+            'account_number': doc.signers[signerIndex].accountNumber.toString(),
             'chain_id': doc.chainId,
             'fee': doc.fee,
             'memo': doc.memo,
             'msgs': doc.messages.map((msg) => LumAminoRegistry.toAmino(msg)),
-            'sequence': doc.sequence.toString(),
+            'sequence': doc.signers[signerIndex].sequence.toString(),
         };
         const { signature, return_code } = await this.cosmosApp.sign(this.hdPath, JSON.stringify(LumUtils.sortJSON(msg)));
         if (!signature || return_code === 0) {

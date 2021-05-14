@@ -24,6 +24,7 @@
 - [canChangeAccount](lumwallet.md#canchangeaccount)
 - [getAddress](lumwallet.md#getaddress)
 - [getPublicKey](lumwallet.md#getpublickey)
+- [sign](lumwallet.md#sign)
 - [signMessage](lumwallet.md#signmessage)
 - [signTransaction](lumwallet.md#signtransaction)
 - [signingMode](lumwallet.md#signingmode)
@@ -89,6 +90,23 @@ Gets the current wallet public key
 **Returns:** *Uint8Array*
 
 wallet public key (secp256k1)
+
+___
+
+### sign
+
+▸ `Abstract`**sign**(`data`: *Uint8Array*): *Promise*<Uint8Array\>
+
+Sign a raw payload.
+This method might not be available for all types of wallets such as Ledger.
+
+#### Parameters:
+
+Name | Type | Description |
+:------ | :------ | :------ |
+`data` | *Uint8Array* | the payload to sign directly    |
+
+**Returns:** *Promise*<Uint8Array\>
 
 ___
 

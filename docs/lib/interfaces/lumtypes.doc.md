@@ -6,22 +6,13 @@
 
 ### Properties
 
-- [accountNumber](lumtypes.doc.md#accountnumber)
 - [chainId](lumtypes.doc.md#chainid)
 - [fee](lumtypes.doc.md#fee)
 - [memo](lumtypes.doc.md#memo)
 - [messages](lumtypes.doc.md#messages)
-- [sequence](lumtypes.doc.md#sequence)
+- [signers](lumtypes.doc.md#signers)
 
 ## Properties
-
-### accountNumber
-
-• **accountNumber**: *number*
-
-account_number is the account number of the account in state
-
-___
 
 ### chainId
 
@@ -57,8 +48,8 @@ Transactions messages
 
 ___
 
-### sequence
+### signers
 
-• **sequence**: *number*
+• **signers**: [*DocSigner*](lumtypes.docsigner.md)[]
 
-Transction sequence number
+Transction auth signers

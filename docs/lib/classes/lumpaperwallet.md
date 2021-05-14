@@ -24,6 +24,7 @@
 - [canChangeAccount](lumpaperwallet.md#canchangeaccount)
 - [getAddress](lumpaperwallet.md#getaddress)
 - [getPublicKey](lumpaperwallet.md#getpublickey)
+- [sign](lumpaperwallet.md#sign)
 - [signMessage](lumpaperwallet.md#signmessage)
 - [signTransaction](lumpaperwallet.md#signtransaction)
 - [signingMode](lumpaperwallet.md#signingmode)
@@ -116,6 +117,22 @@ Gets the current wallet public key
 **Returns:** *Uint8Array*
 
 wallet public key (secp256k1)
+
+Inherited from: [LumWallet](lumwallet.md)
+
+___
+
+### sign
+
+▸ **sign**(`data`: *Uint8Array*): *Promise*<Uint8Array\>
+
+#### Parameters:
+
+Name | Type |
+:------ | :------ |
+`data` | *Uint8Array* |
+
+**Returns:** *Promise*<Uint8Array\>
 
 Inherited from: [LumWallet](lumwallet.md)
 

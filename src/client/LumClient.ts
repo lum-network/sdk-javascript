@@ -6,14 +6,14 @@ import {
     setupBankExtension as StargateSetupBankExtension,
     setupDistributionExtension as StargateDistributionExtension,
     setupStakingExtension as StargateStakingExtension,
-    coinFromProto,
     AuthExtension,
     BankExtension,
     StakingExtension,
     DistributionExtension,
 } from '@cosmjs/stargate';
 
-import { LumWallet, LumUtils, LumTypes } from '..';
+import { BaseAccount } from '../codec/cosmos/auth/v1beta1/auth';
+import { LumWallet, LumUtils, LumTypes, LumRegistry } from '..';
 
 export class LumClient {
     readonly tmClient: Tendermint34Client;
@@ -110,10 +110,11 @@ export class LumClient {
      * @param address wallet address
      */
     getAccount = async (address: string): Promise<LumTypes.Account | null> => {
-        const account = await this.queryClient.auth.account(address);
-        if (!account) {
+        const anyAccount = await this.queryClient.auth.verified.account(address);
+        if (!anyAccount) {
             return null;
         }
+        const account = LumRegistry.decode(anyAccount) as BaseAccount;
         return {
             address: account.address,
             accountNumber: Uint64.fromString(account.accountNumber.toString()).toNumber(),
@@ -127,10 +128,11 @@ export class LumClient {
      * @param address wallet address
      */
     getAccountUnverified = async (address: string): Promise<LumTypes.Account | null> => {
-        const account = await this.queryClient.auth.unverified.account(address);
-        if (!account) {
+        const anyAccount = await this.queryClient.auth.account(address);
+        if (!anyAccount) {
             return null;
         }
+        const account = LumRegistry.decode(anyAccount) as BaseAccount;
         return {
             address: account.address,
             accountNumber: Uint64.fromString(account.accountNumber.toString()).toNumber(),
@@ -145,8 +147,8 @@ export class LumClient {
      * @param searchDenom Coin denomination (ex: lum)
      */
     getBalance = async (address: string, searchDenom: string): Promise<LumTypes.Coin | null> => {
-        const balance = await this.queryClient.bank.balance(address, searchDenom);
-        return balance ? coinFromProto(balance) : null;
+        const balance = await this.queryClient.bank.verified.balance(address, searchDenom);
+        return balance ? balance : null;
     };
 
     /**
@@ -156,8 +158,8 @@ export class LumClient {
      * @param searchDenom Coin denomination (ex: lum)
      */
     getBalanceUnverified = async (address: string, searchDenom: string): Promise<LumTypes.Coin | null> => {
-        const balance = await this.queryClient.bank.unverified.balance(address, searchDenom);
-        return balance ? coinFromProto(balance) : null;
+        const balance = await this.queryClient.bank.balance(address, searchDenom);
+        return balance ? balance : null;
     };
 
     /**
@@ -166,8 +168,8 @@ export class LumClient {
      * @param address wallet address
      */
     getAllBalancesUnverified = async (address: string): Promise<LumTypes.Coin[]> => {
-        const balances = await this.queryClient.bank.unverified.allBalances(address);
-        return balances.map(coinFromProto);
+        const balances = await this.queryClient.bank.allBalances(address);
+        return balances;
     };
 
     /**
@@ -176,16 +178,16 @@ export class LumClient {
      * @param searchDenom Coin denomination (ex: lum)
      */
     getSupply = async (searchDenom: string): Promise<LumTypes.Coin | null> => {
-        const supply = await this.queryClient.bank.unverified.supplyOf(searchDenom);
-        return supply ? coinFromProto(supply) : null;
+        const supply = await this.queryClient.bank.supplyOf(searchDenom);
+        return supply ? supply : null;
     };
 
     /**
      * Get all coins supplies
      */
     getAllSupplies = async (): Promise<LumTypes.Coin[]> => {
-        const supplies = await this.queryClient.bank.unverified.totalSupply();
-        return supplies.map(coinFromProto);
+        const supplies = await this.queryClient.bank.totalSupply();
+        return supplies;
     };
 
     /**
@@ -234,25 +236,39 @@ export class LumClient {
      *
      * @param params Search params
      */
-    private txsQuery = async (params: LumTypes.TxSearchParams): Promise<LumTypes.TxResponse[]> => {
+    private txsQuery = async (params: LumTypes.TxSearchParams): Promise<readonly LumTypes.TxResponse[]> => {
         const results = await this.tmClient.txSearch(params);
-        return results.txs as LumTypes.TxResponse[];
+        return results.txs;
     };
 
     /**
      * Signs the messages using the provided wallet and builds the transaction
      *
-     * @param wallet signing wallet
+     * @param wallet signing wallet or wallets for multi signature
      * @param doc document to sign
      */
-    signTx = async (wallet: LumWallet, doc: LumTypes.Doc): Promise<Uint8Array> => {
-        const account = await this.getAccount(wallet.getAddress());
-        if (!account) {
-            throw new Error('Account not found');
+    signTx = async (wallet: LumWallet | LumWallet[], doc: LumTypes.Doc): Promise<Uint8Array> => {
+        let wallets: LumWallet[] = [];
+        if (Array.isArray(wallet)) {
+            wallets = wallet;
+        } else {
+            wallets = [wallet];
         }
-        const signDoc = LumUtils.generateSignDoc(doc, wallet.getPublicKey(), wallet.signingMode());
-        const signature = await wallet.signTransaction(doc);
-        return LumUtils.generateTxBytes(signDoc, signature);
+
+        if (wallets.length < 1) {
+            throw new Error('At least one wallet is required to sign the transaction');
+        }
+        const signDoc = LumUtils.generateSignDoc(doc, 0, wallets[0].signingMode());
+        const signatures: Uint8Array[] = [];
+
+        for (let i = 0; i < wallets.length; i++) {
+            const account = await this.getAccount(wallets[i].getAddress());
+            if (!account) {
+                throw new Error(`Account not found for wallet at index ${i}`);
+            }
+            signatures.push(await wallets[i].signTransaction(doc));
+        }
+        return LumUtils.generateTxBytes(signDoc, signatures);
     };
 
     /**
@@ -269,10 +285,10 @@ export class LumClient {
     /**
      * Signs and broadcast the transaction using the specified wallet and messages
      *
-     * @param wallet signing wallet
+     * @param wallet signing wallet or wallets for multi signature
      * @param doc document to sign and broadcast as a transaction
      */
-    signAndBroadcastTx = async (wallet: LumWallet, doc: LumTypes.Doc): Promise<LumTypes.BroadcastTxCommitResponse> => {
+    signAndBroadcastTx = async (wallet: LumWallet | LumWallet[], doc: LumTypes.Doc): Promise<LumTypes.BroadcastTxCommitResponse> => {
         const signedTx = await this.signTx(wallet, doc);
         return this.broadcastTx(signedTx);
     };

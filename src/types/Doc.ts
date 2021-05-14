@@ -1,9 +1,8 @@
 import { Message } from '../messages';
 import { Fee } from './Fee';
+import { DocSigner } from './DocSigner';
 
 export interface Doc {
-    /** account_number is the account number of the account in state */
-    accountNumber: number;
     /**
      * chain_id is the unique identifier of the chain this transaction targets.
      * It prevents signed transactions from being used on another chain by an
@@ -23,7 +22,7 @@ export interface Doc {
      */
     messages: Message[];
     /**
-     * Transction sequence number
+     * Transction auth signers
      */
-    sequence: number;
+    signers: DocSigner[];
 }

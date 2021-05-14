@@ -52,6 +52,14 @@ export abstract class LumWallet {
     abstract useAccount(hdPath: string, addressPrefix: string): Promise<boolean>;
 
     /**
+     * Sign a raw payload.
+     * This method might not be available for all types of wallets such as Ledger.
+     *
+     * @param data the payload to sign directly
+     */
+    abstract sign(data: Uint8Array): Promise<Uint8Array>;
+
+    /**
      * Sign a transaction document using a LumWallet
      *
      * @param doc document to sign
