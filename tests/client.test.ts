@@ -2,15 +2,11 @@ import { LumWallet, LumWalletFactory, LumClient, LumUtils, LumConstants, LumRegi
 import axios from 'axios';
 import Long from 'long';
 
-const sleep = (millis: number): Promise<void> => {
-    return new Promise((resolve) => setTimeout(resolve, millis));
-};
-
 const randomString = (): string => {
     return Math.random().toString(36).substring(7);
-};
+}
 
-describe('LumClient', () => {
+describe("LumClient", () => {
     let clt: LumClient;
     let w1: LumWallet;
     let w2: LumWallet;
@@ -88,12 +84,12 @@ describe('LumClient', () => {
 
     it('Should expose basic information', async () => {
         const height = (await clt.getBlockHeight()) - 1;
-        expect(clt.getChainId()).resolves.toEqual('lumnetwork-testnet');
+        expect(clt.getChainId()).resolves.toEqual("lumnetwork-testnet");
         expect(height).toBeGreaterThan(0);
         expect(clt.getBlock(height)).resolves.toBeTruthy();
     });
 
-    it('should expose tendermint rpcs', async () => {
+    it("should expose tendermint rpcs", async () => {
         const height = (await clt.getBlockHeight()) - 1;
         expect(height).toBeGreaterThan(0);
         expect(clt.tmClient.health()).resolves.toBeNull();
@@ -115,7 +111,7 @@ describe('LumClient', () => {
         expect(parseFloat(lumSupply.amount)).toBeGreaterThan(0);
     });
 
-    it('Should expose staking module', async () => {
+    it("Should expose staking module", async () => {
         const validators = await clt.tmClient.validatorsAll();
         expect(validators.validators.length).toBeGreaterThanOrEqual(1);
         const block = await clt.getBlock();
@@ -155,7 +151,7 @@ describe('LumClient', () => {
         expect(parseFloat(lumBalance.amount)).toBeGreaterThan(0);
     });
 
-    it('Should expose distribution module', async () => {
+    it("Should expose distribution module", async () => {
         // Get validators
         const validators = await clt.tmClient.validatorsAll();
         expect(validators.validators.length).toBeGreaterThanOrEqual(1);
