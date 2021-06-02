@@ -1,5 +1,5 @@
 import { Message } from '../Message';
-import { MsgClaimBeam } from '../../codec/chain/beam/beam';
+import { MsgClaimBeam } from '../../codec/chain/beam/tx';
 
 export const MsgClaimBeamUrl = '/lum.network.beam.MsgClaimBeam';
 

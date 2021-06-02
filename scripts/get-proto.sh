@@ -9,6 +9,7 @@ ZIP_FILE="$COSMOS_DIR/tmp.zip"
 
 LUM_NETWORK_DIR="$PROTO_DIR/lum-network"
 LUM_NETWORK_SDK_DIR="$LUM_NETWORK_DIR/chain"
+ZIP_LUM_FILE="$LUM_NETWORK_DIR/tmp.zip"
 
 REF=${REF:-"master"}
 SUFFIX=${REF}
@@ -25,7 +26,10 @@ mv "$COSMOS_SDK_DIR-$SUFFIX" "$COSMOS_SDK_DIR"
 rm "$ZIP_FILE"
 
 # Create the lum network dir
-mkdir -p "$LUM_NETWORK_SDK_DIR/proto/chain/beam"
+mkdir -p "$LUM_NETWORK_DIR"
 
 # Download the beam archive
-wget -qO "$LUM_NETWORK_SDK_DIR/proto/chain/beam/beam.proto" "https://raw.githubusercontent.com/lum-network/chain/master/proto/beam/beam.proto?token=ABH2VUAPWO3DRGHMRGXWZWDASVAMY"
+wget -qO "$ZIP_LUM_FILE" "https://github.com/lum-network/chain/archive/$REF.zip"
+unzip "$ZIP_LUM_FILE" "*.proto" -d "$LUM_NETWORK_DIR"
+mv "$LUM_NETWORK_SDK_DIR-$SUFFIX" "$LUM_NETWORK_SDK_DIR"
+rm "$ZIP_LUM_FILE"
