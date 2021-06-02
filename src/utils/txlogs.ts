@@ -52,10 +52,21 @@ export const parseLogs = (input: unknown): readonly Log[] => {
  * @param input transaction log (for tx returned by the client you can use tx.result.log)
  */
 export const parseRawLogs = (input = '[]'): readonly Log[] => {
-    const logsToParse = JSON.parse(input).map(({ events }: { events: readonly unknown[] }, i: number) => ({
-        msg_index: i,
-        events,
-        log: '',
-    }));
-    return parseLogs(logsToParse);
+    try {
+        const logsToParse = JSON.parse(input).map(({ events }: { events: readonly unknown[] }, i: number) => ({
+            msg_index: i,
+            events,
+            log: '',
+        }));
+        return parseLogs(logsToParse);
+    } catch (e) {
+        // Transactions that failed only contain a string error message in the logs
+        return [
+            {
+                msg_index: 0,
+                events: [],
+                log: input,
+            },
+        ];
+    }
 };
