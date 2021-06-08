@@ -2,7 +2,7 @@
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
 import { Coin } from '../../cosmos/base/v1beta1/coin';
-import { BeamData, BeamState, beamStateFromJSON, beamStateToJSON } from '../beam/beam';
+import { BeamData, BeamState, beamStateFromJSON, beamStateToJSON } from './beam';
 
 export const protobufPackage = 'lum.network.beam';
 
@@ -14,6 +14,8 @@ export interface MsgOpenBeam {
     schema: string;
     data?: BeamData;
     claimAddress: string;
+    claimExpiresAtBlock: number;
+    closesAtBlock: number;
 }
 
 export interface MsgUpdateBeam {
@@ -24,6 +26,9 @@ export interface MsgUpdateBeam {
     cancelReason: string;
     hideContent: boolean;
     data?: BeamData;
+    claimAddress: string;
+    claimExpiresAtBlock: number;
+    closesAtBlock: number;
 }
 
 export interface MsgClaimBeam {
@@ -32,7 +37,7 @@ export interface MsgClaimBeam {
     secret: string;
 }
 
-const baseMsgOpenBeam: object = { id: '', creatorAddress: '', secret: '', schema: '', claimAddress: '' };
+const baseMsgOpenBeam: object = { id: '', creatorAddress: '', secret: '', schema: '', claimAddress: '', claimExpiresAtBlock: 0, closesAtBlock: 0 };
 
 export const MsgOpenBeam = {
     encode(message: MsgOpenBeam, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -56,6 +61,12 @@ export const MsgOpenBeam = {
         }
         if (message.claimAddress !== '') {
             writer.uint32(58).string(message.claimAddress);
+        }
+        if (message.claimExpiresAtBlock !== 0) {
+            writer.uint32(64).int32(message.claimExpiresAtBlock);
+        }
+        if (message.closesAtBlock !== 0) {
+            writer.uint32(72).int32(message.closesAtBlock);
         }
         return writer;
     },
@@ -87,6 +98,12 @@ export const MsgOpenBeam = {
                     break;
                 case 7:
                     message.claimAddress = reader.string();
+                    break;
+                case 8:
+                    message.claimExpiresAtBlock = reader.int32();
+                    break;
+                case 9:
+                    message.closesAtBlock = reader.int32();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -133,6 +150,16 @@ export const MsgOpenBeam = {
         } else {
             message.claimAddress = '';
         }
+        if (object.claimExpiresAtBlock !== undefined && object.claimExpiresAtBlock !== null) {
+            message.claimExpiresAtBlock = Number(object.claimExpiresAtBlock);
+        } else {
+            message.claimExpiresAtBlock = 0;
+        }
+        if (object.closesAtBlock !== undefined && object.closesAtBlock !== null) {
+            message.closesAtBlock = Number(object.closesAtBlock);
+        } else {
+            message.closesAtBlock = 0;
+        }
         return message;
     },
 
@@ -145,6 +172,8 @@ export const MsgOpenBeam = {
         message.schema !== undefined && (obj.schema = message.schema);
         message.data !== undefined && (obj.data = message.data ? BeamData.toJSON(message.data) : undefined);
         message.claimAddress !== undefined && (obj.claimAddress = message.claimAddress);
+        message.claimExpiresAtBlock !== undefined && (obj.claimExpiresAtBlock = message.claimExpiresAtBlock);
+        message.closesAtBlock !== undefined && (obj.closesAtBlock = message.closesAtBlock);
         return obj;
     },
 
@@ -185,11 +214,21 @@ export const MsgOpenBeam = {
         } else {
             message.claimAddress = '';
         }
+        if (object.claimExpiresAtBlock !== undefined && object.claimExpiresAtBlock !== null) {
+            message.claimExpiresAtBlock = object.claimExpiresAtBlock;
+        } else {
+            message.claimExpiresAtBlock = 0;
+        }
+        if (object.closesAtBlock !== undefined && object.closesAtBlock !== null) {
+            message.closesAtBlock = object.closesAtBlock;
+        } else {
+            message.closesAtBlock = 0;
+        }
         return message;
     },
 };
 
-const baseMsgUpdateBeam: object = { id: '', updaterAddress: '', status: 0, cancelReason: '', hideContent: false };
+const baseMsgUpdateBeam: object = { id: '', updaterAddress: '', status: 0, cancelReason: '', hideContent: false, claimAddress: '', claimExpiresAtBlock: 0, closesAtBlock: 0 };
 
 export const MsgUpdateBeam = {
     encode(message: MsgUpdateBeam, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -213,6 +252,15 @@ export const MsgUpdateBeam = {
         }
         if (message.data !== undefined) {
             BeamData.encode(message.data, writer.uint32(58).fork()).ldelim();
+        }
+        if (message.claimAddress !== '') {
+            writer.uint32(66).string(message.claimAddress);
+        }
+        if (message.claimExpiresAtBlock !== 0) {
+            writer.uint32(72).int32(message.claimExpiresAtBlock);
+        }
+        if (message.closesAtBlock !== 0) {
+            writer.uint32(80).int32(message.closesAtBlock);
         }
         return writer;
     },
@@ -244,6 +292,15 @@ export const MsgUpdateBeam = {
                     break;
                 case 7:
                     message.data = BeamData.decode(reader, reader.uint32());
+                    break;
+                case 8:
+                    message.claimAddress = reader.string();
+                    break;
+                case 9:
+                    message.claimExpiresAtBlock = reader.int32();
+                    break;
+                case 10:
+                    message.closesAtBlock = reader.int32();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -290,6 +347,21 @@ export const MsgUpdateBeam = {
         } else {
             message.data = undefined;
         }
+        if (object.claimAddress !== undefined && object.claimAddress !== null) {
+            message.claimAddress = String(object.claimAddress);
+        } else {
+            message.claimAddress = '';
+        }
+        if (object.claimExpiresAtBlock !== undefined && object.claimExpiresAtBlock !== null) {
+            message.claimExpiresAtBlock = Number(object.claimExpiresAtBlock);
+        } else {
+            message.claimExpiresAtBlock = 0;
+        }
+        if (object.closesAtBlock !== undefined && object.closesAtBlock !== null) {
+            message.closesAtBlock = Number(object.closesAtBlock);
+        } else {
+            message.closesAtBlock = 0;
+        }
         return message;
     },
 
@@ -302,6 +374,9 @@ export const MsgUpdateBeam = {
         message.cancelReason !== undefined && (obj.cancelReason = message.cancelReason);
         message.hideContent !== undefined && (obj.hideContent = message.hideContent);
         message.data !== undefined && (obj.data = message.data ? BeamData.toJSON(message.data) : undefined);
+        message.claimAddress !== undefined && (obj.claimAddress = message.claimAddress);
+        message.claimExpiresAtBlock !== undefined && (obj.claimExpiresAtBlock = message.claimExpiresAtBlock);
+        message.closesAtBlock !== undefined && (obj.closesAtBlock = message.closesAtBlock);
         return obj;
     },
 
@@ -341,6 +416,21 @@ export const MsgUpdateBeam = {
             message.data = BeamData.fromPartial(object.data);
         } else {
             message.data = undefined;
+        }
+        if (object.claimAddress !== undefined && object.claimAddress !== null) {
+            message.claimAddress = object.claimAddress;
+        } else {
+            message.claimAddress = '';
+        }
+        if (object.claimExpiresAtBlock !== undefined && object.claimExpiresAtBlock !== null) {
+            message.claimExpiresAtBlock = object.claimExpiresAtBlock;
+        } else {
+            message.claimExpiresAtBlock = 0;
+        }
+        if (object.closesAtBlock !== undefined && object.closesAtBlock !== null) {
+            message.closesAtBlock = object.closesAtBlock;
+        } else {
+            message.closesAtBlock = 0;
         }
         return message;
     },
