@@ -1,22 +1,21 @@
 import { Message } from '../Message';
-import { BeamSchemeReview, BeamSchemeReward } from '../../codec/chain/beam/beam';
+import { BeamData } from '../../codec/chain/beam/beam';
 import { MsgOpenBeam } from '../../codec/chain/beam/tx';
 import { Coin } from '../../types';
 
 export const MsgOpenBeamUrl = '/lum.network.beam.MsgOpenBeam';
 
-export const BuildMsgOpenBeam = (id: string, creator: string, amount: Coin, secret: string, schema: string, owner?: string, reward?: BeamSchemeReward, review?: BeamSchemeReview): Message => {
+export const BuildMsgOpenBeam = (id: string, creatorAddress: string, claimAddress: string, amount: Coin, secret: string, schema: string, data?: BeamData): Message => {
     return {
         typeUrl: MsgOpenBeamUrl,
         value: {
             id,
-            creator,
+            creatorAddress,
+            claimAddress,
             amount,
             secret,
             schema,
-            reward,
-            owner,
-            review,
+            data,
         } as MsgOpenBeam,
     };
 };

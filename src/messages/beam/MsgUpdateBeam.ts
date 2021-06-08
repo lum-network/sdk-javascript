@@ -1,20 +1,21 @@
 import { Message } from '../Message';
-import { BeamSchemeReview, BeamSchemeReward, BeamState } from '../../codec/chain/beam/beam';
+import { BeamData, BeamState } from '../../codec/chain/beam/beam';
 import { MsgUpdateBeam } from '../../codec/chain/beam/tx';
 import { Coin } from '../../types';
 
 export const MsgUpdateBeamUrl = '/lum.network.beam.MsgUpdateBeam';
 
-export const BuildMsgUpdateBeam = (updater: string, id: string, amount: Coin, status?: BeamState, reward?: BeamSchemeReward, review?: BeamSchemeReview): Message => {
+export const BuildMsgUpdateBeam = (id: string, updaterAddress: string, amount: Coin, status?: BeamState, data?: BeamData, cancelReason = '', hideContent = false): Message => {
     return {
         typeUrl: MsgUpdateBeamUrl,
         value: {
-            updater,
             id,
+            updaterAddress,
             amount,
             status,
-            reward,
-            review,
+            data,
+            cancelReason,
+            hideContent,
         } as MsgUpdateBeam,
     };
 };
