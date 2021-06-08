@@ -140,7 +140,7 @@ export interface BeamProductReview_BeamProduct_BeamProductIds {
     asins: string[];
 }
 
-export interface BeamSchemeReview {
+export interface BeamData {
     reward?: BeamReward;
     verifier?: BeamVerifier;
     reviewer?: BeamReviewer;
@@ -148,23 +148,19 @@ export interface BeamSchemeReview {
     productsReviews: BeamProductReview[];
 }
 
-export interface BeamSchemeReward {
-    reward?: BeamReward;
-    verifier?: BeamVerifier;
-}
-
 export interface Beam {
-    creator: string;
+    creatorAddress: string;
     id: string;
     amount?: Coin;
     status: BeamState;
     secret: string;
-    owner: string;
+    claimAddress: string;
     fundsWithdrawn: boolean;
     claimed: boolean;
+    cancelReason: string;
+    hideContent: boolean;
     schema: string;
-    reward?: BeamSchemeReward;
-    review?: BeamSchemeReview;
+    data?: BeamData;
 }
 
 const baseBeamMedia: object = { mimetype: '', url: '', thumbnailUrl: '' };
@@ -1703,10 +1699,10 @@ export const BeamProductReview_BeamProduct_BeamProductIds = {
     },
 };
 
-const baseBeamSchemeReview: object = {};
+const baseBeamData: object = {};
 
-export const BeamSchemeReview = {
-    encode(message: BeamSchemeReview, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const BeamData = {
+    encode(message: BeamData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
         if (message.reward !== undefined) {
             BeamReward.encode(message.reward, writer.uint32(10).fork()).ldelim();
         }
@@ -1725,10 +1721,10 @@ export const BeamSchemeReview = {
         return writer;
     },
 
-    decode(input: _m0.Reader | Uint8Array, length?: number): BeamSchemeReview {
+    decode(input: _m0.Reader | Uint8Array, length?: number): BeamData {
         const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBeamSchemeReview } as BeamSchemeReview;
+        const message = { ...baseBeamData } as BeamData;
         message.productsReviews = [];
         while (reader.pos < end) {
             const tag = reader.uint32();
@@ -1756,8 +1752,8 @@ export const BeamSchemeReview = {
         return message;
     },
 
-    fromJSON(object: any): BeamSchemeReview {
-        const message = { ...baseBeamSchemeReview } as BeamSchemeReview;
+    fromJSON(object: any): BeamData {
+        const message = { ...baseBeamData } as BeamData;
         message.productsReviews = [];
         if (object.reward !== undefined && object.reward !== null) {
             message.reward = BeamReward.fromJSON(object.reward);
@@ -1787,7 +1783,7 @@ export const BeamSchemeReview = {
         return message;
     },
 
-    toJSON(message: BeamSchemeReview): unknown {
+    toJSON(message: BeamData): unknown {
         const obj: any = {};
         message.reward !== undefined && (obj.reward = message.reward ? BeamReward.toJSON(message.reward) : undefined);
         message.verifier !== undefined && (obj.verifier = message.verifier ? BeamVerifier.toJSON(message.verifier) : undefined);
@@ -1801,8 +1797,8 @@ export const BeamSchemeReview = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<BeamSchemeReview>): BeamSchemeReview {
-        const message = { ...baseBeamSchemeReview } as BeamSchemeReview;
+    fromPartial(object: DeepPartial<BeamData>): BeamData {
+        const message = { ...baseBeamData } as BeamData;
         message.productsReviews = [];
         if (object.reward !== undefined && object.reward !== null) {
             message.reward = BeamReward.fromPartial(object.reward);
@@ -1833,84 +1829,12 @@ export const BeamSchemeReview = {
     },
 };
 
-const baseBeamSchemeReward: object = {};
-
-export const BeamSchemeReward = {
-    encode(message: BeamSchemeReward, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-        if (message.reward !== undefined) {
-            BeamReward.encode(message.reward, writer.uint32(10).fork()).ldelim();
-        }
-        if (message.verifier !== undefined) {
-            BeamVerifier.encode(message.verifier, writer.uint32(18).fork()).ldelim();
-        }
-        return writer;
-    },
-
-    decode(input: _m0.Reader | Uint8Array, length?: number): BeamSchemeReward {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBeamSchemeReward } as BeamSchemeReward;
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.reward = BeamReward.decode(reader, reader.uint32());
-                    break;
-                case 2:
-                    message.verifier = BeamVerifier.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-
-    fromJSON(object: any): BeamSchemeReward {
-        const message = { ...baseBeamSchemeReward } as BeamSchemeReward;
-        if (object.reward !== undefined && object.reward !== null) {
-            message.reward = BeamReward.fromJSON(object.reward);
-        } else {
-            message.reward = undefined;
-        }
-        if (object.verifier !== undefined && object.verifier !== null) {
-            message.verifier = BeamVerifier.fromJSON(object.verifier);
-        } else {
-            message.verifier = undefined;
-        }
-        return message;
-    },
-
-    toJSON(message: BeamSchemeReward): unknown {
-        const obj: any = {};
-        message.reward !== undefined && (obj.reward = message.reward ? BeamReward.toJSON(message.reward) : undefined);
-        message.verifier !== undefined && (obj.verifier = message.verifier ? BeamVerifier.toJSON(message.verifier) : undefined);
-        return obj;
-    },
-
-    fromPartial(object: DeepPartial<BeamSchemeReward>): BeamSchemeReward {
-        const message = { ...baseBeamSchemeReward } as BeamSchemeReward;
-        if (object.reward !== undefined && object.reward !== null) {
-            message.reward = BeamReward.fromPartial(object.reward);
-        } else {
-            message.reward = undefined;
-        }
-        if (object.verifier !== undefined && object.verifier !== null) {
-            message.verifier = BeamVerifier.fromPartial(object.verifier);
-        } else {
-            message.verifier = undefined;
-        }
-        return message;
-    },
-};
-
-const baseBeam: object = { creator: '', id: '', status: 0, secret: '', owner: '', fundsWithdrawn: false, claimed: false, schema: '' };
+const baseBeam: object = { creatorAddress: '', id: '', status: 0, secret: '', claimAddress: '', fundsWithdrawn: false, claimed: false, cancelReason: '', hideContent: false, schema: '' };
 
 export const Beam = {
     encode(message: Beam, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-        if (message.creator !== '') {
-            writer.uint32(10).string(message.creator);
+        if (message.creatorAddress !== '') {
+            writer.uint32(10).string(message.creatorAddress);
         }
         if (message.id !== '') {
             writer.uint32(18).string(message.id);
@@ -1924,8 +1848,8 @@ export const Beam = {
         if (message.secret !== '') {
             writer.uint32(42).string(message.secret);
         }
-        if (message.owner !== '') {
-            writer.uint32(50).string(message.owner);
+        if (message.claimAddress !== '') {
+            writer.uint32(50).string(message.claimAddress);
         }
         if (message.fundsWithdrawn === true) {
             writer.uint32(56).bool(message.fundsWithdrawn);
@@ -1933,14 +1857,17 @@ export const Beam = {
         if (message.claimed === true) {
             writer.uint32(64).bool(message.claimed);
         }
+        if (message.cancelReason !== '') {
+            writer.uint32(74).string(message.cancelReason);
+        }
+        if (message.hideContent === true) {
+            writer.uint32(80).bool(message.hideContent);
+        }
         if (message.schema !== '') {
-            writer.uint32(74).string(message.schema);
+            writer.uint32(90).string(message.schema);
         }
-        if (message.reward !== undefined) {
-            BeamSchemeReward.encode(message.reward, writer.uint32(82).fork()).ldelim();
-        }
-        if (message.review !== undefined) {
-            BeamSchemeReview.encode(message.review, writer.uint32(90).fork()).ldelim();
+        if (message.data !== undefined) {
+            BeamData.encode(message.data, writer.uint32(98).fork()).ldelim();
         }
         return writer;
     },
@@ -1953,7 +1880,7 @@ export const Beam = {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
-                    message.creator = reader.string();
+                    message.creatorAddress = reader.string();
                     break;
                 case 2:
                     message.id = reader.string();
@@ -1968,7 +1895,7 @@ export const Beam = {
                     message.secret = reader.string();
                     break;
                 case 6:
-                    message.owner = reader.string();
+                    message.claimAddress = reader.string();
                     break;
                 case 7:
                     message.fundsWithdrawn = reader.bool();
@@ -1977,13 +1904,16 @@ export const Beam = {
                     message.claimed = reader.bool();
                     break;
                 case 9:
-                    message.schema = reader.string();
+                    message.cancelReason = reader.string();
                     break;
                 case 10:
-                    message.reward = BeamSchemeReward.decode(reader, reader.uint32());
+                    message.hideContent = reader.bool();
                     break;
                 case 11:
-                    message.review = BeamSchemeReview.decode(reader, reader.uint32());
+                    message.schema = reader.string();
+                    break;
+                case 12:
+                    message.data = BeamData.decode(reader, reader.uint32());
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -1995,10 +1925,10 @@ export const Beam = {
 
     fromJSON(object: any): Beam {
         const message = { ...baseBeam } as Beam;
-        if (object.creator !== undefined && object.creator !== null) {
-            message.creator = String(object.creator);
+        if (object.creatorAddress !== undefined && object.creatorAddress !== null) {
+            message.creatorAddress = String(object.creatorAddress);
         } else {
-            message.creator = '';
+            message.creatorAddress = '';
         }
         if (object.id !== undefined && object.id !== null) {
             message.id = String(object.id);
@@ -2020,10 +1950,10 @@ export const Beam = {
         } else {
             message.secret = '';
         }
-        if (object.owner !== undefined && object.owner !== null) {
-            message.owner = String(object.owner);
+        if (object.claimAddress !== undefined && object.claimAddress !== null) {
+            message.claimAddress = String(object.claimAddress);
         } else {
-            message.owner = '';
+            message.claimAddress = '';
         }
         if (object.fundsWithdrawn !== undefined && object.fundsWithdrawn !== null) {
             message.fundsWithdrawn = Boolean(object.fundsWithdrawn);
@@ -2035,46 +1965,52 @@ export const Beam = {
         } else {
             message.claimed = false;
         }
+        if (object.cancelReason !== undefined && object.cancelReason !== null) {
+            message.cancelReason = String(object.cancelReason);
+        } else {
+            message.cancelReason = '';
+        }
+        if (object.hideContent !== undefined && object.hideContent !== null) {
+            message.hideContent = Boolean(object.hideContent);
+        } else {
+            message.hideContent = false;
+        }
         if (object.schema !== undefined && object.schema !== null) {
             message.schema = String(object.schema);
         } else {
             message.schema = '';
         }
-        if (object.reward !== undefined && object.reward !== null) {
-            message.reward = BeamSchemeReward.fromJSON(object.reward);
+        if (object.data !== undefined && object.data !== null) {
+            message.data = BeamData.fromJSON(object.data);
         } else {
-            message.reward = undefined;
-        }
-        if (object.review !== undefined && object.review !== null) {
-            message.review = BeamSchemeReview.fromJSON(object.review);
-        } else {
-            message.review = undefined;
+            message.data = undefined;
         }
         return message;
     },
 
     toJSON(message: Beam): unknown {
         const obj: any = {};
-        message.creator !== undefined && (obj.creator = message.creator);
+        message.creatorAddress !== undefined && (obj.creatorAddress = message.creatorAddress);
         message.id !== undefined && (obj.id = message.id);
         message.amount !== undefined && (obj.amount = message.amount ? Coin.toJSON(message.amount) : undefined);
         message.status !== undefined && (obj.status = beamStateToJSON(message.status));
         message.secret !== undefined && (obj.secret = message.secret);
-        message.owner !== undefined && (obj.owner = message.owner);
+        message.claimAddress !== undefined && (obj.claimAddress = message.claimAddress);
         message.fundsWithdrawn !== undefined && (obj.fundsWithdrawn = message.fundsWithdrawn);
         message.claimed !== undefined && (obj.claimed = message.claimed);
+        message.cancelReason !== undefined && (obj.cancelReason = message.cancelReason);
+        message.hideContent !== undefined && (obj.hideContent = message.hideContent);
         message.schema !== undefined && (obj.schema = message.schema);
-        message.reward !== undefined && (obj.reward = message.reward ? BeamSchemeReward.toJSON(message.reward) : undefined);
-        message.review !== undefined && (obj.review = message.review ? BeamSchemeReview.toJSON(message.review) : undefined);
+        message.data !== undefined && (obj.data = message.data ? BeamData.toJSON(message.data) : undefined);
         return obj;
     },
 
     fromPartial(object: DeepPartial<Beam>): Beam {
         const message = { ...baseBeam } as Beam;
-        if (object.creator !== undefined && object.creator !== null) {
-            message.creator = object.creator;
+        if (object.creatorAddress !== undefined && object.creatorAddress !== null) {
+            message.creatorAddress = object.creatorAddress;
         } else {
-            message.creator = '';
+            message.creatorAddress = '';
         }
         if (object.id !== undefined && object.id !== null) {
             message.id = object.id;
@@ -2096,10 +2032,10 @@ export const Beam = {
         } else {
             message.secret = '';
         }
-        if (object.owner !== undefined && object.owner !== null) {
-            message.owner = object.owner;
+        if (object.claimAddress !== undefined && object.claimAddress !== null) {
+            message.claimAddress = object.claimAddress;
         } else {
-            message.owner = '';
+            message.claimAddress = '';
         }
         if (object.fundsWithdrawn !== undefined && object.fundsWithdrawn !== null) {
             message.fundsWithdrawn = object.fundsWithdrawn;
@@ -2111,20 +2047,25 @@ export const Beam = {
         } else {
             message.claimed = false;
         }
+        if (object.cancelReason !== undefined && object.cancelReason !== null) {
+            message.cancelReason = object.cancelReason;
+        } else {
+            message.cancelReason = '';
+        }
+        if (object.hideContent !== undefined && object.hideContent !== null) {
+            message.hideContent = object.hideContent;
+        } else {
+            message.hideContent = false;
+        }
         if (object.schema !== undefined && object.schema !== null) {
             message.schema = object.schema;
         } else {
             message.schema = '';
         }
-        if (object.reward !== undefined && object.reward !== null) {
-            message.reward = BeamSchemeReward.fromPartial(object.reward);
+        if (object.data !== undefined && object.data !== null) {
+            message.data = BeamData.fromPartial(object.data);
         } else {
-            message.reward = undefined;
-        }
-        if (object.review !== undefined && object.review !== null) {
-            message.review = BeamSchemeReview.fromPartial(object.review);
-        } else {
-            message.review = undefined;
+            message.data = undefined;
         }
         return message;
     },

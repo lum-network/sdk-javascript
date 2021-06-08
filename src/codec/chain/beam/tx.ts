@@ -2,45 +2,45 @@
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
 import { Coin } from '../../cosmos/base/v1beta1/coin';
-import { BeamSchemeReward, BeamSchemeReview, BeamState, beamStateFromJSON, beamStateToJSON } from './beam';
+import { BeamData, BeamState, beamStateFromJSON, beamStateToJSON } from '../beam/beam';
 
 export const protobufPackage = 'lum.network.beam';
 
 export interface MsgOpenBeam {
     id: string;
-    creator: string;
+    creatorAddress: string;
     secret: string;
     amount?: Coin;
     schema: string;
-    reward?: BeamSchemeReward;
-    review?: BeamSchemeReview;
-    owner: string;
+    data?: BeamData;
+    claimAddress: string;
 }
 
 export interface MsgUpdateBeam {
-    updater: string;
     id: string;
+    updaterAddress: string;
     amount?: Coin;
     status: BeamState;
-    reward?: BeamSchemeReward;
-    review?: BeamSchemeReview;
+    cancelReason: string;
+    hideContent: boolean;
+    data?: BeamData;
 }
 
 export interface MsgClaimBeam {
-    claimer: string;
     id: string;
+    claimerAddress: string;
     secret: string;
 }
 
-const baseMsgOpenBeam: object = { id: '', creator: '', secret: '', schema: '', owner: '' };
+const baseMsgOpenBeam: object = { id: '', creatorAddress: '', secret: '', schema: '', claimAddress: '' };
 
 export const MsgOpenBeam = {
     encode(message: MsgOpenBeam, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
         if (message.id !== '') {
             writer.uint32(10).string(message.id);
         }
-        if (message.creator !== '') {
-            writer.uint32(18).string(message.creator);
+        if (message.creatorAddress !== '') {
+            writer.uint32(18).string(message.creatorAddress);
         }
         if (message.secret !== '') {
             writer.uint32(26).string(message.secret);
@@ -51,14 +51,11 @@ export const MsgOpenBeam = {
         if (message.schema !== '') {
             writer.uint32(42).string(message.schema);
         }
-        if (message.reward !== undefined) {
-            BeamSchemeReward.encode(message.reward, writer.uint32(50).fork()).ldelim();
+        if (message.data !== undefined) {
+            BeamData.encode(message.data, writer.uint32(50).fork()).ldelim();
         }
-        if (message.review !== undefined) {
-            BeamSchemeReview.encode(message.review, writer.uint32(58).fork()).ldelim();
-        }
-        if (message.owner !== '') {
-            writer.uint32(66).string(message.owner);
+        if (message.claimAddress !== '') {
+            writer.uint32(58).string(message.claimAddress);
         }
         return writer;
     },
@@ -74,7 +71,7 @@ export const MsgOpenBeam = {
                     message.id = reader.string();
                     break;
                 case 2:
-                    message.creator = reader.string();
+                    message.creatorAddress = reader.string();
                     break;
                 case 3:
                     message.secret = reader.string();
@@ -86,13 +83,10 @@ export const MsgOpenBeam = {
                     message.schema = reader.string();
                     break;
                 case 6:
-                    message.reward = BeamSchemeReward.decode(reader, reader.uint32());
+                    message.data = BeamData.decode(reader, reader.uint32());
                     break;
                 case 7:
-                    message.review = BeamSchemeReview.decode(reader, reader.uint32());
-                    break;
-                case 8:
-                    message.owner = reader.string();
+                    message.claimAddress = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -109,10 +103,10 @@ export const MsgOpenBeam = {
         } else {
             message.id = '';
         }
-        if (object.creator !== undefined && object.creator !== null) {
-            message.creator = String(object.creator);
+        if (object.creatorAddress !== undefined && object.creatorAddress !== null) {
+            message.creatorAddress = String(object.creatorAddress);
         } else {
-            message.creator = '';
+            message.creatorAddress = '';
         }
         if (object.secret !== undefined && object.secret !== null) {
             message.secret = String(object.secret);
@@ -129,20 +123,15 @@ export const MsgOpenBeam = {
         } else {
             message.schema = '';
         }
-        if (object.reward !== undefined && object.reward !== null) {
-            message.reward = BeamSchemeReward.fromJSON(object.reward);
+        if (object.data !== undefined && object.data !== null) {
+            message.data = BeamData.fromJSON(object.data);
         } else {
-            message.reward = undefined;
+            message.data = undefined;
         }
-        if (object.review !== undefined && object.review !== null) {
-            message.review = BeamSchemeReview.fromJSON(object.review);
+        if (object.claimAddress !== undefined && object.claimAddress !== null) {
+            message.claimAddress = String(object.claimAddress);
         } else {
-            message.review = undefined;
-        }
-        if (object.owner !== undefined && object.owner !== null) {
-            message.owner = String(object.owner);
-        } else {
-            message.owner = '';
+            message.claimAddress = '';
         }
         return message;
     },
@@ -150,13 +139,12 @@ export const MsgOpenBeam = {
     toJSON(message: MsgOpenBeam): unknown {
         const obj: any = {};
         message.id !== undefined && (obj.id = message.id);
-        message.creator !== undefined && (obj.creator = message.creator);
+        message.creatorAddress !== undefined && (obj.creatorAddress = message.creatorAddress);
         message.secret !== undefined && (obj.secret = message.secret);
         message.amount !== undefined && (obj.amount = message.amount ? Coin.toJSON(message.amount) : undefined);
         message.schema !== undefined && (obj.schema = message.schema);
-        message.reward !== undefined && (obj.reward = message.reward ? BeamSchemeReward.toJSON(message.reward) : undefined);
-        message.review !== undefined && (obj.review = message.review ? BeamSchemeReview.toJSON(message.review) : undefined);
-        message.owner !== undefined && (obj.owner = message.owner);
+        message.data !== undefined && (obj.data = message.data ? BeamData.toJSON(message.data) : undefined);
+        message.claimAddress !== undefined && (obj.claimAddress = message.claimAddress);
         return obj;
     },
 
@@ -167,10 +155,10 @@ export const MsgOpenBeam = {
         } else {
             message.id = '';
         }
-        if (object.creator !== undefined && object.creator !== null) {
-            message.creator = object.creator;
+        if (object.creatorAddress !== undefined && object.creatorAddress !== null) {
+            message.creatorAddress = object.creatorAddress;
         } else {
-            message.creator = '';
+            message.creatorAddress = '';
         }
         if (object.secret !== undefined && object.secret !== null) {
             message.secret = object.secret;
@@ -187,34 +175,29 @@ export const MsgOpenBeam = {
         } else {
             message.schema = '';
         }
-        if (object.reward !== undefined && object.reward !== null) {
-            message.reward = BeamSchemeReward.fromPartial(object.reward);
+        if (object.data !== undefined && object.data !== null) {
+            message.data = BeamData.fromPartial(object.data);
         } else {
-            message.reward = undefined;
+            message.data = undefined;
         }
-        if (object.review !== undefined && object.review !== null) {
-            message.review = BeamSchemeReview.fromPartial(object.review);
+        if (object.claimAddress !== undefined && object.claimAddress !== null) {
+            message.claimAddress = object.claimAddress;
         } else {
-            message.review = undefined;
-        }
-        if (object.owner !== undefined && object.owner !== null) {
-            message.owner = object.owner;
-        } else {
-            message.owner = '';
+            message.claimAddress = '';
         }
         return message;
     },
 };
 
-const baseMsgUpdateBeam: object = { updater: '', id: '', status: 0 };
+const baseMsgUpdateBeam: object = { id: '', updaterAddress: '', status: 0, cancelReason: '', hideContent: false };
 
 export const MsgUpdateBeam = {
     encode(message: MsgUpdateBeam, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-        if (message.updater !== '') {
-            writer.uint32(10).string(message.updater);
-        }
         if (message.id !== '') {
-            writer.uint32(18).string(message.id);
+            writer.uint32(10).string(message.id);
+        }
+        if (message.updaterAddress !== '') {
+            writer.uint32(18).string(message.updaterAddress);
         }
         if (message.amount !== undefined) {
             Coin.encode(message.amount, writer.uint32(26).fork()).ldelim();
@@ -222,11 +205,14 @@ export const MsgUpdateBeam = {
         if (message.status !== 0) {
             writer.uint32(32).int32(message.status);
         }
-        if (message.reward !== undefined) {
-            BeamSchemeReward.encode(message.reward, writer.uint32(42).fork()).ldelim();
+        if (message.cancelReason !== '') {
+            writer.uint32(42).string(message.cancelReason);
         }
-        if (message.review !== undefined) {
-            BeamSchemeReview.encode(message.review, writer.uint32(50).fork()).ldelim();
+        if (message.hideContent === true) {
+            writer.uint32(48).bool(message.hideContent);
+        }
+        if (message.data !== undefined) {
+            BeamData.encode(message.data, writer.uint32(58).fork()).ldelim();
         }
         return writer;
     },
@@ -239,10 +225,10 @@ export const MsgUpdateBeam = {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
-                    message.updater = reader.string();
+                    message.id = reader.string();
                     break;
                 case 2:
-                    message.id = reader.string();
+                    message.updaterAddress = reader.string();
                     break;
                 case 3:
                     message.amount = Coin.decode(reader, reader.uint32());
@@ -251,10 +237,13 @@ export const MsgUpdateBeam = {
                     message.status = reader.int32() as any;
                     break;
                 case 5:
-                    message.reward = BeamSchemeReward.decode(reader, reader.uint32());
+                    message.cancelReason = reader.string();
                     break;
                 case 6:
-                    message.review = BeamSchemeReview.decode(reader, reader.uint32());
+                    message.hideContent = reader.bool();
+                    break;
+                case 7:
+                    message.data = BeamData.decode(reader, reader.uint32());
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -266,15 +255,15 @@ export const MsgUpdateBeam = {
 
     fromJSON(object: any): MsgUpdateBeam {
         const message = { ...baseMsgUpdateBeam } as MsgUpdateBeam;
-        if (object.updater !== undefined && object.updater !== null) {
-            message.updater = String(object.updater);
-        } else {
-            message.updater = '';
-        }
         if (object.id !== undefined && object.id !== null) {
             message.id = String(object.id);
         } else {
             message.id = '';
+        }
+        if (object.updaterAddress !== undefined && object.updaterAddress !== null) {
+            message.updaterAddress = String(object.updaterAddress);
+        } else {
+            message.updaterAddress = '';
         }
         if (object.amount !== undefined && object.amount !== null) {
             message.amount = Coin.fromJSON(object.amount);
@@ -286,41 +275,47 @@ export const MsgUpdateBeam = {
         } else {
             message.status = 0;
         }
-        if (object.reward !== undefined && object.reward !== null) {
-            message.reward = BeamSchemeReward.fromJSON(object.reward);
+        if (object.cancelReason !== undefined && object.cancelReason !== null) {
+            message.cancelReason = String(object.cancelReason);
         } else {
-            message.reward = undefined;
+            message.cancelReason = '';
         }
-        if (object.review !== undefined && object.review !== null) {
-            message.review = BeamSchemeReview.fromJSON(object.review);
+        if (object.hideContent !== undefined && object.hideContent !== null) {
+            message.hideContent = Boolean(object.hideContent);
         } else {
-            message.review = undefined;
+            message.hideContent = false;
+        }
+        if (object.data !== undefined && object.data !== null) {
+            message.data = BeamData.fromJSON(object.data);
+        } else {
+            message.data = undefined;
         }
         return message;
     },
 
     toJSON(message: MsgUpdateBeam): unknown {
         const obj: any = {};
-        message.updater !== undefined && (obj.updater = message.updater);
         message.id !== undefined && (obj.id = message.id);
+        message.updaterAddress !== undefined && (obj.updaterAddress = message.updaterAddress);
         message.amount !== undefined && (obj.amount = message.amount ? Coin.toJSON(message.amount) : undefined);
         message.status !== undefined && (obj.status = beamStateToJSON(message.status));
-        message.reward !== undefined && (obj.reward = message.reward ? BeamSchemeReward.toJSON(message.reward) : undefined);
-        message.review !== undefined && (obj.review = message.review ? BeamSchemeReview.toJSON(message.review) : undefined);
+        message.cancelReason !== undefined && (obj.cancelReason = message.cancelReason);
+        message.hideContent !== undefined && (obj.hideContent = message.hideContent);
+        message.data !== undefined && (obj.data = message.data ? BeamData.toJSON(message.data) : undefined);
         return obj;
     },
 
     fromPartial(object: DeepPartial<MsgUpdateBeam>): MsgUpdateBeam {
         const message = { ...baseMsgUpdateBeam } as MsgUpdateBeam;
-        if (object.updater !== undefined && object.updater !== null) {
-            message.updater = object.updater;
-        } else {
-            message.updater = '';
-        }
         if (object.id !== undefined && object.id !== null) {
             message.id = object.id;
         } else {
             message.id = '';
+        }
+        if (object.updaterAddress !== undefined && object.updaterAddress !== null) {
+            message.updaterAddress = object.updaterAddress;
+        } else {
+            message.updaterAddress = '';
         }
         if (object.amount !== undefined && object.amount !== null) {
             message.amount = Coin.fromPartial(object.amount);
@@ -332,29 +327,34 @@ export const MsgUpdateBeam = {
         } else {
             message.status = 0;
         }
-        if (object.reward !== undefined && object.reward !== null) {
-            message.reward = BeamSchemeReward.fromPartial(object.reward);
+        if (object.cancelReason !== undefined && object.cancelReason !== null) {
+            message.cancelReason = object.cancelReason;
         } else {
-            message.reward = undefined;
+            message.cancelReason = '';
         }
-        if (object.review !== undefined && object.review !== null) {
-            message.review = BeamSchemeReview.fromPartial(object.review);
+        if (object.hideContent !== undefined && object.hideContent !== null) {
+            message.hideContent = object.hideContent;
         } else {
-            message.review = undefined;
+            message.hideContent = false;
+        }
+        if (object.data !== undefined && object.data !== null) {
+            message.data = BeamData.fromPartial(object.data);
+        } else {
+            message.data = undefined;
         }
         return message;
     },
 };
 
-const baseMsgClaimBeam: object = { claimer: '', id: '', secret: '' };
+const baseMsgClaimBeam: object = { id: '', claimerAddress: '', secret: '' };
 
 export const MsgClaimBeam = {
     encode(message: MsgClaimBeam, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-        if (message.claimer !== '') {
-            writer.uint32(10).string(message.claimer);
-        }
         if (message.id !== '') {
-            writer.uint32(18).string(message.id);
+            writer.uint32(10).string(message.id);
+        }
+        if (message.claimerAddress !== '') {
+            writer.uint32(18).string(message.claimerAddress);
         }
         if (message.secret !== '') {
             writer.uint32(26).string(message.secret);
@@ -370,10 +370,10 @@ export const MsgClaimBeam = {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
-                    message.claimer = reader.string();
+                    message.id = reader.string();
                     break;
                 case 2:
-                    message.id = reader.string();
+                    message.claimerAddress = reader.string();
                     break;
                 case 3:
                     message.secret = reader.string();
@@ -388,15 +388,15 @@ export const MsgClaimBeam = {
 
     fromJSON(object: any): MsgClaimBeam {
         const message = { ...baseMsgClaimBeam } as MsgClaimBeam;
-        if (object.claimer !== undefined && object.claimer !== null) {
-            message.claimer = String(object.claimer);
-        } else {
-            message.claimer = '';
-        }
         if (object.id !== undefined && object.id !== null) {
             message.id = String(object.id);
         } else {
             message.id = '';
+        }
+        if (object.claimerAddress !== undefined && object.claimerAddress !== null) {
+            message.claimerAddress = String(object.claimerAddress);
+        } else {
+            message.claimerAddress = '';
         }
         if (object.secret !== undefined && object.secret !== null) {
             message.secret = String(object.secret);
@@ -408,23 +408,23 @@ export const MsgClaimBeam = {
 
     toJSON(message: MsgClaimBeam): unknown {
         const obj: any = {};
-        message.claimer !== undefined && (obj.claimer = message.claimer);
         message.id !== undefined && (obj.id = message.id);
+        message.claimerAddress !== undefined && (obj.claimerAddress = message.claimerAddress);
         message.secret !== undefined && (obj.secret = message.secret);
         return obj;
     },
 
     fromPartial(object: DeepPartial<MsgClaimBeam>): MsgClaimBeam {
         const message = { ...baseMsgClaimBeam } as MsgClaimBeam;
-        if (object.claimer !== undefined && object.claimer !== null) {
-            message.claimer = object.claimer;
-        } else {
-            message.claimer = '';
-        }
         if (object.id !== undefined && object.id !== null) {
             message.id = object.id;
         } else {
             message.id = '';
+        }
+        if (object.claimerAddress !== undefined && object.claimerAddress !== null) {
+            message.claimerAddress = object.claimerAddress;
+        } else {
+            message.claimerAddress = '';
         }
         if (object.secret !== undefined && object.secret !== null) {
             message.secret = object.secret;
