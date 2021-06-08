@@ -5,7 +5,17 @@ import { Coin } from '../../types';
 
 export const MsgOpenBeamUrl = '/lum.network.beam.MsgOpenBeam';
 
-export const BuildMsgOpenBeam = (id: string, creatorAddress: string, claimAddress: string, amount: Coin, secret: string, schema: string, data?: BeamData): Message => {
+export const BuildMsgOpenBeam = (
+    id: string,
+    creatorAddress: string,
+    claimAddress: string,
+    amount: Coin,
+    secret: string,
+    schema: string,
+    data?: BeamData,
+    closesAtBlock = 0,
+    claimExpiresAtBlock = 0,
+): Message => {
     return {
         typeUrl: MsgOpenBeamUrl,
         value: {
@@ -16,6 +26,8 @@ export const BuildMsgOpenBeam = (id: string, creatorAddress: string, claimAddres
             secret,
             schema,
             data,
+            claimExpiresAtBlock,
+            closesAtBlock,
         } as MsgOpenBeam,
     };
 };

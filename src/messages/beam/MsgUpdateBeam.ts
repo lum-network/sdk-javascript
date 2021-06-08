@@ -5,7 +5,18 @@ import { Coin } from '../../types';
 
 export const MsgUpdateBeamUrl = '/lum.network.beam.MsgUpdateBeam';
 
-export const BuildMsgUpdateBeam = (id: string, updaterAddress: string, amount: Coin, status?: BeamState, data?: BeamData, cancelReason = '', hideContent = false): Message => {
+export const BuildMsgUpdateBeam = (
+    id: string,
+    updaterAddress: string,
+    amount: Coin,
+    status?: BeamState,
+    data?: BeamData,
+    cancelReason = '',
+    hideContent = false,
+    claimAddress = '',
+    closesAtBlock = 0,
+    claimExpiresAtBlock = 0,
+): Message => {
     return {
         typeUrl: MsgUpdateBeamUrl,
         value: {
@@ -16,6 +27,9 @@ export const BuildMsgUpdateBeam = (id: string, updaterAddress: string, amount: C
             data,
             cancelReason,
             hideContent,
+            claimAddress,
+            closesAtBlock,
+            claimExpiresAtBlock,
         } as MsgUpdateBeam,
     };
 };
