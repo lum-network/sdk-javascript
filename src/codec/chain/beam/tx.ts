@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
+import { Coin } from '../../cosmos/base/v1beta1/coin';
 import { BeamSchemeReward, BeamSchemeReview, BeamState, beamStateFromJSON, beamStateToJSON } from './beam';
 
 export const protobufPackage = 'lum.network.beam';
@@ -9,16 +10,17 @@ export interface MsgOpenBeam {
     id: string;
     creator: string;
     secret: string;
-    amount: Long;
+    amount?: Coin;
     schema: string;
     reward?: BeamSchemeReward;
     review?: BeamSchemeReview;
+    owner: string;
 }
 
 export interface MsgUpdateBeam {
     updater: string;
     id: string;
-    amount: Long;
+    amount?: Coin;
     status: BeamState;
     reward?: BeamSchemeReward;
     review?: BeamSchemeReview;
@@ -30,7 +32,7 @@ export interface MsgClaimBeam {
     secret: string;
 }
 
-const baseMsgOpenBeam: object = { id: '', creator: '', secret: '', amount: Long.ZERO, schema: '' };
+const baseMsgOpenBeam: object = { id: '', creator: '', secret: '', schema: '', owner: '' };
 
 export const MsgOpenBeam = {
     encode(message: MsgOpenBeam, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -43,8 +45,8 @@ export const MsgOpenBeam = {
         if (message.secret !== '') {
             writer.uint32(26).string(message.secret);
         }
-        if (!message.amount.isZero()) {
-            writer.uint32(32).int64(message.amount);
+        if (message.amount !== undefined) {
+            Coin.encode(message.amount, writer.uint32(34).fork()).ldelim();
         }
         if (message.schema !== '') {
             writer.uint32(42).string(message.schema);
@@ -54,6 +56,9 @@ export const MsgOpenBeam = {
         }
         if (message.review !== undefined) {
             BeamSchemeReview.encode(message.review, writer.uint32(58).fork()).ldelim();
+        }
+        if (message.owner !== '') {
+            writer.uint32(66).string(message.owner);
         }
         return writer;
     },
@@ -75,7 +80,7 @@ export const MsgOpenBeam = {
                     message.secret = reader.string();
                     break;
                 case 4:
-                    message.amount = reader.int64() as Long;
+                    message.amount = Coin.decode(reader, reader.uint32());
                     break;
                 case 5:
                     message.schema = reader.string();
@@ -85,6 +90,9 @@ export const MsgOpenBeam = {
                     break;
                 case 7:
                     message.review = BeamSchemeReview.decode(reader, reader.uint32());
+                    break;
+                case 8:
+                    message.owner = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -112,9 +120,9 @@ export const MsgOpenBeam = {
             message.secret = '';
         }
         if (object.amount !== undefined && object.amount !== null) {
-            message.amount = Long.fromString(object.amount);
+            message.amount = Coin.fromJSON(object.amount);
         } else {
-            message.amount = Long.ZERO;
+            message.amount = undefined;
         }
         if (object.schema !== undefined && object.schema !== null) {
             message.schema = String(object.schema);
@@ -131,6 +139,11 @@ export const MsgOpenBeam = {
         } else {
             message.review = undefined;
         }
+        if (object.owner !== undefined && object.owner !== null) {
+            message.owner = String(object.owner);
+        } else {
+            message.owner = '';
+        }
         return message;
     },
 
@@ -139,10 +152,11 @@ export const MsgOpenBeam = {
         message.id !== undefined && (obj.id = message.id);
         message.creator !== undefined && (obj.creator = message.creator);
         message.secret !== undefined && (obj.secret = message.secret);
-        message.amount !== undefined && (obj.amount = (message.amount || Long.ZERO).toString());
+        message.amount !== undefined && (obj.amount = message.amount ? Coin.toJSON(message.amount) : undefined);
         message.schema !== undefined && (obj.schema = message.schema);
         message.reward !== undefined && (obj.reward = message.reward ? BeamSchemeReward.toJSON(message.reward) : undefined);
         message.review !== undefined && (obj.review = message.review ? BeamSchemeReview.toJSON(message.review) : undefined);
+        message.owner !== undefined && (obj.owner = message.owner);
         return obj;
     },
 
@@ -164,9 +178,9 @@ export const MsgOpenBeam = {
             message.secret = '';
         }
         if (object.amount !== undefined && object.amount !== null) {
-            message.amount = object.amount as Long;
+            message.amount = Coin.fromPartial(object.amount);
         } else {
-            message.amount = Long.ZERO;
+            message.amount = undefined;
         }
         if (object.schema !== undefined && object.schema !== null) {
             message.schema = object.schema;
@@ -183,11 +197,16 @@ export const MsgOpenBeam = {
         } else {
             message.review = undefined;
         }
+        if (object.owner !== undefined && object.owner !== null) {
+            message.owner = object.owner;
+        } else {
+            message.owner = '';
+        }
         return message;
     },
 };
 
-const baseMsgUpdateBeam: object = { updater: '', id: '', amount: Long.ZERO, status: 0 };
+const baseMsgUpdateBeam: object = { updater: '', id: '', status: 0 };
 
 export const MsgUpdateBeam = {
     encode(message: MsgUpdateBeam, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -197,8 +216,8 @@ export const MsgUpdateBeam = {
         if (message.id !== '') {
             writer.uint32(18).string(message.id);
         }
-        if (!message.amount.isZero()) {
-            writer.uint32(24).int64(message.amount);
+        if (message.amount !== undefined) {
+            Coin.encode(message.amount, writer.uint32(26).fork()).ldelim();
         }
         if (message.status !== 0) {
             writer.uint32(32).int32(message.status);
@@ -226,7 +245,7 @@ export const MsgUpdateBeam = {
                     message.id = reader.string();
                     break;
                 case 3:
-                    message.amount = reader.int64() as Long;
+                    message.amount = Coin.decode(reader, reader.uint32());
                     break;
                 case 4:
                     message.status = reader.int32() as any;
@@ -258,9 +277,9 @@ export const MsgUpdateBeam = {
             message.id = '';
         }
         if (object.amount !== undefined && object.amount !== null) {
-            message.amount = Long.fromString(object.amount);
+            message.amount = Coin.fromJSON(object.amount);
         } else {
-            message.amount = Long.ZERO;
+            message.amount = undefined;
         }
         if (object.status !== undefined && object.status !== null) {
             message.status = beamStateFromJSON(object.status);
@@ -284,7 +303,7 @@ export const MsgUpdateBeam = {
         const obj: any = {};
         message.updater !== undefined && (obj.updater = message.updater);
         message.id !== undefined && (obj.id = message.id);
-        message.amount !== undefined && (obj.amount = (message.amount || Long.ZERO).toString());
+        message.amount !== undefined && (obj.amount = message.amount ? Coin.toJSON(message.amount) : undefined);
         message.status !== undefined && (obj.status = beamStateToJSON(message.status));
         message.reward !== undefined && (obj.reward = message.reward ? BeamSchemeReward.toJSON(message.reward) : undefined);
         message.review !== undefined && (obj.review = message.review ? BeamSchemeReview.toJSON(message.review) : undefined);
@@ -304,9 +323,9 @@ export const MsgUpdateBeam = {
             message.id = '';
         }
         if (object.amount !== undefined && object.amount !== null) {
-            message.amount = object.amount as Long;
+            message.amount = Coin.fromPartial(object.amount);
         } else {
-            message.amount = Long.ZERO;
+            message.amount = undefined;
         }
         if (object.status !== undefined && object.status !== null) {
             message.status = object.status;

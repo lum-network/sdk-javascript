@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
+import { Coin } from '../../cosmos/base/v1beta1/coin';
 
 export const protobufPackage = 'lum.network.beam';
 
@@ -8,7 +9,6 @@ export enum BeamState {
     OPEN = 0,
     CANCELED = 1,
     CLOSED = 2,
-    CLAIMED = 3,
     UNRECOGNIZED = -1,
 }
 
@@ -23,9 +23,6 @@ export function beamStateFromJSON(object: any): BeamState {
         case 2:
         case 'CLOSED':
             return BeamState.CLOSED;
-        case 3:
-        case 'CLAIMED':
-            return BeamState.CLAIMED;
         case -1:
         case 'UNRECOGNIZED':
         default:
@@ -41,8 +38,6 @@ export function beamStateToJSON(object: BeamState): string {
             return 'CANCELED';
         case BeamState.CLOSED:
             return 'CLOSED';
-        case BeamState.CLAIMED:
-            return 'CLAIMED';
         default:
             return 'UNKNOWN';
     }
@@ -161,9 +156,12 @@ export interface BeamSchemeReward {
 export interface Beam {
     creator: string;
     id: string;
-    amount: Long;
+    amount?: Coin;
     status: BeamState;
     secret: string;
+    owner: string;
+    fundsWithdrawn: boolean;
+    claimed: boolean;
     schema: string;
     reward?: BeamSchemeReward;
     review?: BeamSchemeReview;
@@ -1907,7 +1905,7 @@ export const BeamSchemeReward = {
     },
 };
 
-const baseBeam: object = { creator: '', id: '', amount: Long.ZERO, status: 0, secret: '', schema: '' };
+const baseBeam: object = { creator: '', id: '', status: 0, secret: '', owner: '', fundsWithdrawn: false, claimed: false, schema: '' };
 
 export const Beam = {
     encode(message: Beam, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1917,8 +1915,8 @@ export const Beam = {
         if (message.id !== '') {
             writer.uint32(18).string(message.id);
         }
-        if (!message.amount.isZero()) {
-            writer.uint32(24).int64(message.amount);
+        if (message.amount !== undefined) {
+            Coin.encode(message.amount, writer.uint32(26).fork()).ldelim();
         }
         if (message.status !== 0) {
             writer.uint32(32).int32(message.status);
@@ -1926,14 +1924,23 @@ export const Beam = {
         if (message.secret !== '') {
             writer.uint32(42).string(message.secret);
         }
+        if (message.owner !== '') {
+            writer.uint32(50).string(message.owner);
+        }
+        if (message.fundsWithdrawn === true) {
+            writer.uint32(56).bool(message.fundsWithdrawn);
+        }
+        if (message.claimed === true) {
+            writer.uint32(64).bool(message.claimed);
+        }
         if (message.schema !== '') {
-            writer.uint32(50).string(message.schema);
+            writer.uint32(74).string(message.schema);
         }
         if (message.reward !== undefined) {
-            BeamSchemeReward.encode(message.reward, writer.uint32(58).fork()).ldelim();
+            BeamSchemeReward.encode(message.reward, writer.uint32(82).fork()).ldelim();
         }
         if (message.review !== undefined) {
-            BeamSchemeReview.encode(message.review, writer.uint32(66).fork()).ldelim();
+            BeamSchemeReview.encode(message.review, writer.uint32(90).fork()).ldelim();
         }
         return writer;
     },
@@ -1952,7 +1959,7 @@ export const Beam = {
                     message.id = reader.string();
                     break;
                 case 3:
-                    message.amount = reader.int64() as Long;
+                    message.amount = Coin.decode(reader, reader.uint32());
                     break;
                 case 4:
                     message.status = reader.int32() as any;
@@ -1961,12 +1968,21 @@ export const Beam = {
                     message.secret = reader.string();
                     break;
                 case 6:
-                    message.schema = reader.string();
+                    message.owner = reader.string();
                     break;
                 case 7:
-                    message.reward = BeamSchemeReward.decode(reader, reader.uint32());
+                    message.fundsWithdrawn = reader.bool();
                     break;
                 case 8:
+                    message.claimed = reader.bool();
+                    break;
+                case 9:
+                    message.schema = reader.string();
+                    break;
+                case 10:
+                    message.reward = BeamSchemeReward.decode(reader, reader.uint32());
+                    break;
+                case 11:
                     message.review = BeamSchemeReview.decode(reader, reader.uint32());
                     break;
                 default:
@@ -1990,9 +2006,9 @@ export const Beam = {
             message.id = '';
         }
         if (object.amount !== undefined && object.amount !== null) {
-            message.amount = Long.fromString(object.amount);
+            message.amount = Coin.fromJSON(object.amount);
         } else {
-            message.amount = Long.ZERO;
+            message.amount = undefined;
         }
         if (object.status !== undefined && object.status !== null) {
             message.status = beamStateFromJSON(object.status);
@@ -2003,6 +2019,21 @@ export const Beam = {
             message.secret = String(object.secret);
         } else {
             message.secret = '';
+        }
+        if (object.owner !== undefined && object.owner !== null) {
+            message.owner = String(object.owner);
+        } else {
+            message.owner = '';
+        }
+        if (object.fundsWithdrawn !== undefined && object.fundsWithdrawn !== null) {
+            message.fundsWithdrawn = Boolean(object.fundsWithdrawn);
+        } else {
+            message.fundsWithdrawn = false;
+        }
+        if (object.claimed !== undefined && object.claimed !== null) {
+            message.claimed = Boolean(object.claimed);
+        } else {
+            message.claimed = false;
         }
         if (object.schema !== undefined && object.schema !== null) {
             message.schema = String(object.schema);
@@ -2026,9 +2057,12 @@ export const Beam = {
         const obj: any = {};
         message.creator !== undefined && (obj.creator = message.creator);
         message.id !== undefined && (obj.id = message.id);
-        message.amount !== undefined && (obj.amount = (message.amount || Long.ZERO).toString());
+        message.amount !== undefined && (obj.amount = message.amount ? Coin.toJSON(message.amount) : undefined);
         message.status !== undefined && (obj.status = beamStateToJSON(message.status));
         message.secret !== undefined && (obj.secret = message.secret);
+        message.owner !== undefined && (obj.owner = message.owner);
+        message.fundsWithdrawn !== undefined && (obj.fundsWithdrawn = message.fundsWithdrawn);
+        message.claimed !== undefined && (obj.claimed = message.claimed);
         message.schema !== undefined && (obj.schema = message.schema);
         message.reward !== undefined && (obj.reward = message.reward ? BeamSchemeReward.toJSON(message.reward) : undefined);
         message.review !== undefined && (obj.review = message.review ? BeamSchemeReview.toJSON(message.review) : undefined);
@@ -2048,9 +2082,9 @@ export const Beam = {
             message.id = '';
         }
         if (object.amount !== undefined && object.amount !== null) {
-            message.amount = object.amount as Long;
+            message.amount = Coin.fromPartial(object.amount);
         } else {
-            message.amount = Long.ZERO;
+            message.amount = undefined;
         }
         if (object.status !== undefined && object.status !== null) {
             message.status = object.status;
@@ -2061,6 +2095,21 @@ export const Beam = {
             message.secret = object.secret;
         } else {
             message.secret = '';
+        }
+        if (object.owner !== undefined && object.owner !== null) {
+            message.owner = object.owner;
+        } else {
+            message.owner = '';
+        }
+        if (object.fundsWithdrawn !== undefined && object.fundsWithdrawn !== null) {
+            message.fundsWithdrawn = object.fundsWithdrawn;
+        } else {
+            message.fundsWithdrawn = false;
+        }
+        if (object.claimed !== undefined && object.claimed !== null) {
+            message.claimed = object.claimed;
+        } else {
+            message.claimed = false;
         }
         if (object.schema !== undefined && object.schema !== null) {
             message.schema = object.schema;

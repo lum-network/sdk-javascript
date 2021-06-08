@@ -1,12 +1,12 @@
-import { LumWallet, LumWalletFactory, LumClient, LumUtils, LumConstants, LumRegistry, LumTypes, LumMessages, LumPaperWallet } from '../src';
+import { LumWallet, LumWalletFactory, LumClient, LumUtils, LumConstants, LumRegistry, LumTypes, LumMessages } from '../src';
 import axios from 'axios';
-import Long from 'long';
+import { BeamSchemeReward } from '../src/codec/chain/beam/beam';
 
 const randomString = (): string => {
     return Math.random().toString(36).substring(7);
-}
+};
 
-describe("LumClient", () => {
+describe('LumClient', () => {
     let clt: LumClient;
     let w1: LumWallet;
     let w2: LumWallet;
@@ -47,7 +47,7 @@ describe("LumClient", () => {
         await expect(clt.disconnect()).resolves.toBeTruthy();
     });
 
-    it('Should be able to use beam features', async () => {
+    it('Should open a beam review transaction', async () => {
         const beamId = randomString();
 
         // Here we wait until the faucet transaction get dispatched and the account finally exists on the blockchain
@@ -57,7 +57,35 @@ describe("LumClient", () => {
 
         const chainId = await clt.getChainId();
 
-        const openBeamMsg = LumMessages.BuildMsgOpenBeam(beamId, w1.getAddress(), new Long(100), 'test', null, null);
+        const amount: LumTypes.Coin = {
+            amount: '1',
+            denom: LumConstants.MicroLumDenom,
+        };
+
+        const openBeamMsg = LumMessages.BuildMsgOpenBeam(
+            beamId,
+            w1.getAddress(),
+            amount,
+            'test',
+            'lum-network/review',
+            null,
+            BeamSchemeReward.fromPartial({
+                reward: {
+                    amount: 1,
+                    status: 'pending',
+                    currency: 'EUR',
+                    maxAmount: 2,
+                    trigger: 'purchase',
+                    details: [],
+                },
+                verifier: {
+                    name: 'test',
+                    url: 'https://test.com',
+                    signature: 'test',
+                },
+            }),
+            null,
+        );
 
         const fee = {
             amount: [{ denom: LumConstants.MicroLumDenom, amount: '1' }],
@@ -84,12 +112,12 @@ describe("LumClient", () => {
 
     it('Should expose basic information', async () => {
         const height = (await clt.getBlockHeight()) - 1;
-        expect(clt.getChainId()).resolves.toEqual("lumnetwork-testnet");
+        expect(clt.getChainId()).resolves.toEqual('lumnetwork-testnet');
         expect(height).toBeGreaterThan(0);
         expect(clt.getBlock(height)).resolves.toBeTruthy();
     });
 
-    it("should expose tendermint rpcs", async () => {
+    it('should expose tendermint rpcs', async () => {
         const height = (await clt.getBlockHeight()) - 1;
         expect(height).toBeGreaterThan(0);
         expect(clt.tmClient.health()).resolves.toBeNull();
@@ -111,7 +139,7 @@ describe("LumClient", () => {
         expect(parseFloat(lumSupply.amount)).toBeGreaterThan(0);
     });
 
-    it("Should expose staking module", async () => {
+    it('Should expose staking module', async () => {
         const validators = await clt.tmClient.validatorsAll();
         expect(validators.validators.length).toBeGreaterThanOrEqual(1);
         const block = await clt.getBlock();
@@ -151,7 +179,7 @@ describe("LumClient", () => {
         expect(parseFloat(lumBalance.amount)).toBeGreaterThan(0);
     });
 
-    it("Should expose distribution module", async () => {
+    it('Should expose distribution module', async () => {
         // Get validators
         const validators = await clt.tmClient.validatorsAll();
         expect(validators.validators.length).toBeGreaterThanOrEqual(1);
