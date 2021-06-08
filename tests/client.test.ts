@@ -1,6 +1,6 @@
 import { LumWallet, LumWalletFactory, LumClient, LumUtils, LumConstants, LumRegistry, LumTypes, LumMessages } from '../src';
 import axios from 'axios';
-import { BeamSchemeReview, BeamSchemeReward } from "../src/codec/chain/beam/beam";
+import { BeamData } from "../src/codec/chain/beam/beam";
 
 const randomString = (): string => {
     return Math.random().toString(36).substring(7);
@@ -65,18 +65,17 @@ describe('LumClient', () => {
         const openBeamMsg = LumMessages.BuildMsgOpenBeam(
             beamId,
             w1.getAddress(),
+            '',
             amount,
             'test',
             'lum-network/review',
-            null,
-            null,
-            BeamSchemeReview.fromPartial({
+            BeamData.fromPartial({
                 reward: {
                     amount: 1,
-                    status: "pending",
-                    trigger: "purchase",
+                    status: 'pending',
+                    trigger: 'purchase',
                     maxAmount: 2,
-                    currency: "EUR",
+                    currency: 'EUR',
                 },
                 verifier: {
                     name: 'test',
@@ -84,51 +83,51 @@ describe('LumClient', () => {
                     signature: 'test',
                 },
                 reviewer: {
-                    reviewerId: "kqjsndqj342",
-                    name: "John Doe",
-                    isAnonymous: false
+                    reviewerId: 'kqjsndqj342',
+                    name: 'John Doe',
+                    isAnonymous: false,
                 },
                 merchantReview: {
-                    reviewId: "sjqdqsd444sq",
-                    reviewUrl: "https://google.com",
-                    title: "Good",
-                    orderId: "js44",
-                    ratingUrl: "https://google.com",
-                    timestamp: (new Date).toString(),
-                    collectionMethod: "purchase",
-                    merchantUrl: "https://google.com",
+                    reviewId: 'sjqdqsd444sq',
+                    reviewUrl: 'https://google.com',
+                    title: 'Good',
+                    orderId: 'js44',
+                    ratingUrl: 'https://google.com',
+                    timestamp: new Date().toString(),
+                    collectionMethod: 'purchase',
+                    merchantUrl: 'https://google.com',
                     content: {
-                        overall: "Not bad not good",
-                        customerService: "Not good not bad"
+                        overall: 'Not bad not good',
+                        customerService: 'Not good not bad',
                     },
                     ratings: {
                         nps: 3,
                         customerService: 3,
-                        overall: 3
-                    }
+                        overall: 3,
+                    },
                 },
                 productsReviews: [
                     {
-                        title: "Product",
-                        timestamp: (new Date).toString(),
-                        ratingUrl: "https://google.com",
-                        reviewUrl: "https://google.com",
-                        orderId: "123445",
-                        reviewId: "54321",
+                        title: 'Product',
+                        timestamp: new Date().toString(),
+                        ratingUrl: 'https://google.com',
+                        reviewUrl: 'https://google.com',
+                        orderId: '123445',
+                        reviewId: '54321',
                         ratings: {
                             overall: 3,
-                            quality: 3
+                            quality: 3,
                         },
                         content: {
-                            overall: "a",
-                            cons: "b",
-                            pros: "d"
+                            overall: 'a',
+                            cons: 'b',
+                            pros: 'd',
                         },
-                        collectionMethod: "purchase",
+                        collectionMethod: 'purchase',
                         medias: [],
-                        products: []
-                    }
-                ]
+                        products: [],
+                    },
+                ],
             }),
         );
 
@@ -152,8 +151,9 @@ describe('LumClient', () => {
         };
 
         const tx = await clt.signAndBroadcastTx(w1, doc);
+        console.log(JSON.stringify(tx));
         expect(tx.deliverTx.code).toBe(0);
-    })
+    });
 
     it('Should open a beam reward transaction', async () => {
         const beamId = randomString();
@@ -173,11 +173,11 @@ describe('LumClient', () => {
         const openBeamMsg = LumMessages.BuildMsgOpenBeam(
             beamId,
             w1.getAddress(),
+            '',
             amount,
             'test',
-            'lum-network/review',
-            null,
-            BeamSchemeReward.fromPartial({
+            'lum-network/reward',
+            BeamData.fromPartial({
                 reward: {
                     amount: 1,
                     status: 'pending',
@@ -191,8 +191,7 @@ describe('LumClient', () => {
                     url: 'https://test.com',
                     signature: 'test',
                 },
-            }),
-            null,
+            })
         );
 
         const fee = {
