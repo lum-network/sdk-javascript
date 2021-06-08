@@ -1,6 +1,6 @@
 import { LumWallet, LumWalletFactory, LumClient, LumUtils, LumConstants, LumRegistry, LumTypes, LumMessages } from '../src';
 import axios from 'axios';
-import { BeamSchemeReward } from '../src/codec/chain/beam/beam';
+import { BeamSchemeReview, BeamSchemeReward } from "../src/codec/chain/beam/beam";
 
 const randomString = (): string => {
     return Math.random().toString(36).substring(7);
@@ -47,7 +47,115 @@ describe('LumClient', () => {
         await expect(clt.disconnect()).resolves.toBeTruthy();
     });
 
-    it('Should open a beam review transaction', async () => {
+    it('should open a beam review transaction', async () => {
+        const beamId = randomString();
+
+        // Here we wait until the faucet transaction get dispatched and the account finally exists on the blockchain
+        // This should be improved since... you know...
+        const acc = await clt.getAccount(w1.getAddress());
+        expect(acc).toBeTruthy();
+
+        const chainId = await clt.getChainId();
+
+        const amount: LumTypes.Coin = {
+            amount: '1',
+            denom: LumConstants.MicroLumDenom,
+        };
+
+        const openBeamMsg = LumMessages.BuildMsgOpenBeam(
+            beamId,
+            w1.getAddress(),
+            amount,
+            'test',
+            'lum-network/review',
+            null,
+            null,
+            BeamSchemeReview.fromPartial({
+                reward: {
+                    amount: 1,
+                    status: "pending",
+                    trigger: "purchase",
+                    maxAmount: 2,
+                    currency: "EUR",
+                },
+                verifier: {
+                    name: 'test',
+                    url: 'https://test.com',
+                    signature: 'test',
+                },
+                reviewer: {
+                    reviewerId: "kqjsndqj342",
+                    name: "John Doe",
+                    isAnonymous: false
+                },
+                merchantReview: {
+                    reviewId: "sjqdqsd444sq",
+                    reviewUrl: "https://google.com",
+                    title: "Good",
+                    orderId: "js44",
+                    ratingUrl: "https://google.com",
+                    timestamp: (new Date).toString(),
+                    collectionMethod: "purchase",
+                    merchantUrl: "https://google.com",
+                    content: {
+                        overall: "Not bad not good",
+                        customerService: "Not good not bad"
+                    },
+                    ratings: {
+                        nps: 3,
+                        customerService: 3,
+                        overall: 3
+                    }
+                },
+                productsReviews: [
+                    {
+                        title: "Product",
+                        timestamp: (new Date).toString(),
+                        ratingUrl: "https://google.com",
+                        reviewUrl: "https://google.com",
+                        orderId: "123445",
+                        reviewId: "54321",
+                        ratings: {
+                            overall: 3,
+                            quality: 3
+                        },
+                        content: {
+                            overall: "a",
+                            cons: "b",
+                            pros: "d"
+                        },
+                        collectionMethod: "purchase",
+                        medias: [],
+                        products: []
+                    }
+                ]
+            }),
+        );
+
+        const fee = {
+            amount: [{ denom: LumConstants.MicroLumDenom, amount: '1' }],
+            gas: '100000',
+        };
+        const doc = {
+            accountNumber: acc.accountNumber,
+            chainId,
+            fee: fee,
+            memo: 'Beam review transaction',
+            messages: [openBeamMsg],
+            signers: [
+                {
+                    accountNumber: acc.accountNumber,
+                    sequence: acc.sequence,
+                    publicKey: w1.getPublicKey(),
+                },
+            ],
+        };
+
+        const tx = await clt.signAndBroadcastTx(w1, doc);
+        expect(tx.deliverTx.code).toBe(0);
+    })
+
+    it('Should open a beam reward transaction', async () => {
         const beamId = randomString();
 
         // Here we wait until the faucet transaction get dispatched and the account finally exists on the blockchain
@@ -95,7 +203,7 @@ describe('LumClient', () => {
             accountNumber: acc.accountNumber,
             chainId,
             fee: fee,
-            memo: 'Just a open beam transaction',
+            memo: 'Beam reward transaction',
             messages: [openBeamMsg],
             signers: [
                 {
@@ -208,8 +316,6 @@ describe('LumClient', () => {
         expect(delegValidators).toBeTruthy();
         expect(delegValidators.validators.length).toBeGreaterThan(0);
     });
-
-    it('Should open a beam', async () => {});
 
     it('Should allow multiple signers per transaction', async () => {
         const acc1 = await clt.getAccount(w1.getAddress());
