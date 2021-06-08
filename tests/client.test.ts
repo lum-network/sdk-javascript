@@ -151,7 +151,6 @@ describe('LumClient', () => {
         };
 
         const tx = await clt.signAndBroadcastTx(w1, doc);
-        console.log(JSON.stringify(tx));
         expect(tx.deliverTx.code).toBe(0);
     });
 
