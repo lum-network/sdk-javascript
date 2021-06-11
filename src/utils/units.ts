@@ -16,7 +16,9 @@ export const convertUnit = (coin: LumTypes.Coin, toDenom: string): string => {
         throw new Error('More than one separator found');
     }
 
-    if (coin.denom.startsWith('u') && coin.denom.endsWith(toDenom)) {
+    if (coin.denom === toDenom) {
+        return coin.amount;
+    } else if (coin.denom.startsWith('u') && coin.denom.endsWith(toDenom)) {
         // from micro to base
         if (parts.length !== 1) {
             throw new Error('Micro units cannot have floating precision');
