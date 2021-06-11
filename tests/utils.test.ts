@@ -2,6 +2,7 @@ import { LumConstants, LumUtils } from '../src';
 
 describe('Utils', () => {
     it('Unit conversion should output consistent results', () => {
+        expect(LumUtils.convertUnit({ denom: LumConstants.MicroLumDenom, amount: '23456789' }, LumConstants.MicroLumDenom)).toEqual('23456789');
         expect(LumUtils.convertUnit({ denom: LumConstants.LumDenom, amount: '23.456789' }, LumConstants.LumDenom)).toEqual('23.456789');
         expect(LumUtils.convertUnit({ denom: LumConstants.LumDenom, amount: '23.456789' }, LumConstants.MicroLumDenom)).toEqual('23456789');
         expect(LumUtils.convertUnit({ denom: LumConstants.LumDenom, amount: '23456789' }, LumConstants.MicroLumDenom)).toEqual('23456789000000');
