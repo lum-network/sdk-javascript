@@ -11,7 +11,7 @@ export interface QueryGetBeamRequest {
 }
 
 export interface QueryGetBeamResponse {
-    Beam?: Beam;
+    beam?: Beam;
 }
 
 export interface QueryFetchBeamsRequest {
@@ -19,7 +19,7 @@ export interface QueryFetchBeamsRequest {
 }
 
 export interface QueryFetchBeamsResponse {
-    Beam: Beam[];
+    beams: Beam[];
     pagination?: PageResponse;
 }
 
@@ -82,8 +82,8 @@ const baseQueryGetBeamResponse: object = {};
 
 export const QueryGetBeamResponse = {
     encode(message: QueryGetBeamResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-        if (message.Beam !== undefined) {
-            Beam.encode(message.Beam, writer.uint32(10).fork()).ldelim();
+        if (message.beam !== undefined) {
+            Beam.encode(message.beam, writer.uint32(10).fork()).ldelim();
         }
         return writer;
     },
@@ -96,7 +96,7 @@ export const QueryGetBeamResponse = {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
-                    message.Beam = Beam.decode(reader, reader.uint32());
+                    message.beam = Beam.decode(reader, reader.uint32());
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -108,26 +108,26 @@ export const QueryGetBeamResponse = {
 
     fromJSON(object: any): QueryGetBeamResponse {
         const message = { ...baseQueryGetBeamResponse } as QueryGetBeamResponse;
-        if (object.Beam !== undefined && object.Beam !== null) {
-            message.Beam = Beam.fromJSON(object.Beam);
+        if (object.beam !== undefined && object.beam !== null) {
+            message.beam = Beam.fromJSON(object.beam);
         } else {
-            message.Beam = undefined;
+            message.beam = undefined;
         }
         return message;
     },
 
     toJSON(message: QueryGetBeamResponse): unknown {
         const obj: any = {};
-        message.Beam !== undefined && (obj.Beam = message.Beam ? Beam.toJSON(message.Beam) : undefined);
+        message.beam !== undefined && (obj.beam = message.beam ? Beam.toJSON(message.beam) : undefined);
         return obj;
     },
 
     fromPartial(object: DeepPartial<QueryGetBeamResponse>): QueryGetBeamResponse {
         const message = { ...baseQueryGetBeamResponse } as QueryGetBeamResponse;
-        if (object.Beam !== undefined && object.Beam !== null) {
-            message.Beam = Beam.fromPartial(object.Beam);
+        if (object.beam !== undefined && object.beam !== null) {
+            message.beam = Beam.fromPartial(object.beam);
         } else {
-            message.Beam = undefined;
+            message.beam = undefined;
         }
         return message;
     },
@@ -192,7 +192,7 @@ const baseQueryFetchBeamsResponse: object = {};
 
 export const QueryFetchBeamsResponse = {
     encode(message: QueryFetchBeamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-        for (const v of message.Beam) {
+        for (const v of message.beams) {
             Beam.encode(v!, writer.uint32(10).fork()).ldelim();
         }
         if (message.pagination !== undefined) {
@@ -205,12 +205,12 @@ export const QueryFetchBeamsResponse = {
         const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseQueryFetchBeamsResponse } as QueryFetchBeamsResponse;
-        message.Beam = [];
+        message.beams = [];
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
-                    message.Beam.push(Beam.decode(reader, reader.uint32()));
+                    message.beams.push(Beam.decode(reader, reader.uint32()));
                     break;
                 case 2:
                     message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -225,10 +225,10 @@ export const QueryFetchBeamsResponse = {
 
     fromJSON(object: any): QueryFetchBeamsResponse {
         const message = { ...baseQueryFetchBeamsResponse } as QueryFetchBeamsResponse;
-        message.Beam = [];
-        if (object.Beam !== undefined && object.Beam !== null) {
-            for (const e of object.Beam) {
-                message.Beam.push(Beam.fromJSON(e));
+        message.beams = [];
+        if (object.beams !== undefined && object.beams !== null) {
+            for (const e of object.beams) {
+                message.beams.push(Beam.fromJSON(e));
             }
         }
         if (object.pagination !== undefined && object.pagination !== null) {
@@ -241,10 +241,10 @@ export const QueryFetchBeamsResponse = {
 
     toJSON(message: QueryFetchBeamsResponse): unknown {
         const obj: any = {};
-        if (message.Beam) {
-            obj.Beam = message.Beam.map((e) => (e ? Beam.toJSON(e) : undefined));
+        if (message.beams) {
+            obj.beams = message.beams.map((e) => (e ? Beam.toJSON(e) : undefined));
         } else {
-            obj.Beam = [];
+            obj.beams = [];
         }
         message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
         return obj;
@@ -252,10 +252,10 @@ export const QueryFetchBeamsResponse = {
 
     fromPartial(object: DeepPartial<QueryFetchBeamsResponse>): QueryFetchBeamsResponse {
         const message = { ...baseQueryFetchBeamsResponse } as QueryFetchBeamsResponse;
-        message.Beam = [];
-        if (object.Beam !== undefined && object.Beam !== null) {
-            for (const e of object.Beam) {
-                message.Beam.push(Beam.fromPartial(e));
+        message.beams = [];
+        if (object.beams !== undefined && object.beams !== null) {
+            for (const e of object.beams) {
+                message.beams.push(Beam.fromPartial(e));
             }
         }
         if (object.pagination !== undefined && object.pagination !== null) {
