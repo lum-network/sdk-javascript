@@ -6,21 +6,25 @@ import { Coin } from '../../cosmos/base/v1beta1/coin';
 export const protobufPackage = 'lum.network.beam';
 
 export enum BeamState {
-    OPEN = 0,
-    CANCELED = 1,
-    CLOSED = 2,
+    UNSPECIFIED = 0,
+    OPEN = 1,
+    CANCELED = 2,
+    CLOSED = 3,
     UNRECOGNIZED = -1,
 }
 
 export function beamStateFromJSON(object: any): BeamState {
     switch (object) {
         case 0:
+        case 'UNSPECIFIED':
+            return BeamState.UNSPECIFIED;
+        case 1:
         case 'OPEN':
             return BeamState.OPEN;
-        case 1:
+        case 2:
         case 'CANCELED':
             return BeamState.CANCELED;
-        case 2:
+        case 3:
         case 'CLOSED':
             return BeamState.CLOSED;
         case -1:
@@ -32,6 +36,8 @@ export function beamStateFromJSON(object: any): BeamState {
 
 export function beamStateToJSON(object: BeamState): string {
     switch (object) {
+        case BeamState.UNSPECIFIED:
+            return 'UNSPECIFIED';
         case BeamState.OPEN:
             return 'OPEN';
         case BeamState.CANCELED:
