@@ -14,10 +14,11 @@ import {
 
 import { BaseAccount } from '../codec/cosmos/auth/v1beta1/auth';
 import { LumWallet, LumUtils, LumTypes, LumRegistry } from '..';
+import { BeamExtension, setupBeamExtension as BeamSetupBeamExtension } from '../extensions';
 
 export class LumClient {
     readonly tmClient: Tendermint34Client;
-    readonly queryClient: StargateQueryClient & AuthExtension & BankExtension & DistributionExtension & StakingExtension;
+    readonly queryClient: StargateQueryClient & AuthExtension & BankExtension & DistributionExtension & StakingExtension & BeamExtension;
     private chainId?: string;
 
     /**
@@ -27,7 +28,14 @@ export class LumClient {
      */
     constructor(tmClient: Tendermint34Client) {
         this.tmClient = tmClient;
-        this.queryClient = StargateQueryClient.withExtensions(tmClient, StargateSetupAuthExtension, StargateSetupBankExtension, StargateDistributionExtension, StargateStakingExtension);
+        this.queryClient = StargateQueryClient.withExtensions(
+            tmClient,
+            StargateSetupAuthExtension,
+            StargateSetupBankExtension,
+            StargateDistributionExtension,
+            StargateStakingExtension,
+            BeamSetupBeamExtension,
+        );
 
         // Used for debugging while gasWanted, gasUsed and codespace are still waiting to be included in the code lib
         // // @ts-ignore

@@ -1,6 +1,6 @@
 import { LumWallet, LumWalletFactory, LumClient, LumUtils, LumConstants, LumRegistry, LumTypes, LumMessages } from '../src';
 import axios from 'axios';
-import { BeamData } from "../src/codec/chain/beam/beam";
+import { BeamData, BeamState } from "../src/codec/chain/beam/beam";
 
 const randomString = (): string => {
     return Math.random().toString(36).substring(7);
@@ -45,6 +45,67 @@ describe('LumClient', () => {
 
     afterAll(async () => {
         await expect(clt.disconnect()).resolves.toBeTruthy();
+    });
+
+    it('should open a beam and close it', async () => {
+        const beamId = randomString();
+
+        let acc = await clt.getAccount(w1.getAddress());
+        expect(acc).toBeTruthy();
+
+        const chainId = await clt.getChainId();
+        const amount: LumTypes.Coin = {
+            amount: '1',
+            denom: LumConstants.MicroLumDenom,
+        };
+
+        const fee = {
+            amount: [{ denom: LumConstants.MicroLumDenom, amount: '1' }],
+            gas: '100000',
+        };
+
+        // Create the beam
+        let doc = {
+            accountNumber: acc.accountNumber,
+            chainId,
+            fee: fee,
+            memo: 'Beam review transaction',
+            messages: [LumMessages.BuildMsgOpenBeam(beamId, w1.getAddress(), '', amount, 'test', 'lum-network/review', null, 0, 0)],
+            signers: [
+                {
+                    accountNumber: acc.accountNumber,
+                    sequence: acc.sequence,
+                    publicKey: w1.getPublicKey(),
+                },
+            ],
+        };
+
+        const txCreate = await clt.signAndBroadcastTx(w1, doc);
+        expect(txCreate.deliverTx.code).toBe(0);
+        const beamAfterCreate = await clt.queryClient.beam.get(beamId);
+        expect(beamAfterCreate.status).toBe(BeamState.OPEN);
+
+        // Update the beam
+        acc = await clt.getAccount(w1.getAddress());
+        doc = {
+            accountNumber: acc.accountNumber,
+            chainId,
+            fee: fee,
+            memo: 'Beam review transaction',
+            messages: [LumMessages.BuildMsgUpdateBeam(beamId, w1.getAddress(), null, BeamState.CANCELED)],
+            signers: [
+                {
+                    accountNumber: acc.accountNumber,
+                    sequence: acc.sequence,
+                    publicKey: w1.getPublicKey(),
+                },
+            ],
+        };
+
+        const txUpdate = await clt.signAndBroadcastTx(w1, doc);
+        expect(txUpdate.deliverTx.code).toBe(0);
+        const beamAfterUpdate = await clt.queryClient.beam.get(beamId);
+        expect(beamAfterUpdate.status).toBe(BeamState.CANCELED);
     });
 
     it('should open a beam review transaction', async () => {
