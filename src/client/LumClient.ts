@@ -68,6 +68,21 @@ export class LumClient {
      * Disconnect the underlying tendermint client
      */
     disconnect() {
+        // Temporary fix missing stop calls from the cosmjs socket implementation
+        // @ts-ignore
+        this.tmClient.client && this.tmClient.client.socket && this.tmClient.client.events && this.tmClient.client.socket.events._stopNow();
+        // @ts-ignore
+        this.tmClient.client &&
+            // @ts-ignore
+            this.tmClient.client.socket &&
+            // @ts-ignore
+            this.tmClient.client.socket.connectionStatus &&
+            // @ts-ignore
+            this.tmClient.client.socket.connectionStatus.updates &&
+            // @ts-ignore
+            this.tmClient.client.socket.connectionStatus.updates._stopNow();
+
+        // Disconnect the client
         this.tmClient.disconnect();
     }
 

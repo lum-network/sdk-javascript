@@ -1,6 +1,6 @@
 import { LumWallet, LumWalletFactory, LumClient, LumUtils, LumConstants, LumRegistry, LumTypes, LumMessages } from '../src';
 import axios from 'axios';
-import { BeamData, BeamState } from "../src/codec/chain/beam/beam";
+import { BeamData, BeamState } from '../src/codec/chain/beam/beam';
 
 const randomString = (): string => {
     return Math.random().toString(36).substring(7);
@@ -12,7 +12,7 @@ describe('LumClient', () => {
     let w2: LumWallet;
 
     beforeAll(async () => {
-        clt = await LumClient.connect('http://node0.testnet.lum.network/rpc');
+        clt = await LumClient.connect('https://node0.testnet.lum.network/rpc');
 
         // Prepare the wallets
         w1 = await LumWalletFactory.fromMnemonic(LumUtils.generateMnemonic());
@@ -45,6 +45,12 @@ describe('LumClient', () => {
 
     afterAll(async () => {
         await expect(clt.disconnect()).resolves.toBeTruthy();
+    });
+
+    it('should allow to connect via webshockets', async () => {
+        const wsClt = await LumClient.connect('wss://node0.testnet.lum.network/rpc');
+        expect(await wsClt.status()).toBeTruthy();
+        wsClt.disconnect();
     });
 
     it('should open a beam and close it', async () => {
@@ -251,7 +257,7 @@ describe('LumClient', () => {
                     url: 'https://test.com',
                     signature: 'test',
                 },
-            })
+            }),
         );
 
         const fee = {
