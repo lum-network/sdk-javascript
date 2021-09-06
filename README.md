@@ -72,6 +72,24 @@ Directly importing the CosmJS SDK or other cryptographic library should be consi
 
 Do not hesitate to contribute to this repository. This SDK is intended to be a one-stop-shop for all Lum Network javascript implementations and should definitely be improved over time by all its users.
 
+## Protocol Buffer Codecs
+
+### Introduction
+
+As of [v0.40](https://github.com/cosmos/cosmos-sdk/releases/tag/v0.40.0), the Cosmos SDK uses [protocol buffers](https://developers.google.com/protocol-buffers) as its standard serialization format for blockchain state and wire communication. This library by default supports protocol buffer serialization for many of the standard queries and messages defined by the Cosmos SDK and the Lum Network custom implementations.
+
+### Acquire the definition files
+
+```bash
+yarn get-proto
+```
+
+### Generate codec files
+
+```bash
+yarn define-proto
+```
+
 ## Contributing
 
 Contributions are most welcome.
