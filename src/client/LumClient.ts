@@ -6,10 +6,12 @@ import {
     setupBankExtension as StargateSetupBankExtension,
     setupDistributionExtension as StargateDistributionExtension,
     setupStakingExtension as StargateStakingExtension,
+    setupGovExtension as StargateGovExtension,
     AuthExtension,
     BankExtension,
     StakingExtension,
     DistributionExtension,
+    GovExtension,
 } from '@cosmjs/stargate';
 
 import { BaseAccount } from '../codec/cosmos/auth/v1beta1/auth';
@@ -18,7 +20,7 @@ import { BeamExtension, setupBeamExtension as BeamSetupBeamExtension } from '../
 
 export class LumClient {
     readonly tmClient: Tendermint34Client;
-    readonly queryClient: StargateQueryClient & AuthExtension & BankExtension & DistributionExtension & StakingExtension & BeamExtension;
+    readonly queryClient: StargateQueryClient & AuthExtension & BankExtension & DistributionExtension & StakingExtension & GovExtension & BeamExtension;
     private chainId?: string;
 
     /**
@@ -34,6 +36,7 @@ export class LumClient {
             StargateSetupBankExtension,
             StargateDistributionExtension,
             StargateStakingExtension,
+            StargateGovExtension,
             BeamSetupBeamExtension,
         );
 
@@ -124,7 +127,7 @@ export class LumClient {
      */
     getBlock = async (height?: number): Promise<LumTypes.BlockResponse> => {
         const response = await this.tmClient.block(height);
-        return response;
+        return response as LumTypes.BlockResponse;
     };
 
     /**
