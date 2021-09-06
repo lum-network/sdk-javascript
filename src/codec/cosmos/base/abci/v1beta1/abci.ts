@@ -1,8 +1,8 @@
 /* eslint-disable */
 import Long from 'long';
+import _m0 from 'protobufjs/minimal';
 import { Any } from '../../../../google/protobuf/any';
 import { Event } from '../../../../tendermint/abci/types';
-import _m0 from 'protobufjs/minimal';
 
 export const protobufPackage = 'cosmos.base.abci.v1beta1';
 
@@ -183,7 +183,7 @@ export const TxResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): TxResponse {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseTxResponse } as TxResponse;
         message.logs = [];
@@ -405,7 +405,7 @@ export const ABCIMessageLog = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): ABCIMessageLog {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseABCIMessageLog } as ABCIMessageLog;
         message.events = [];
@@ -498,7 +498,7 @@ export const StringEvent = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): StringEvent {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseStringEvent } as StringEvent;
         message.attributes = [];
@@ -577,7 +577,7 @@ export const Attribute = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Attribute {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseAttribute } as Attribute;
         while (reader.pos < end) {
@@ -649,7 +649,7 @@ export const GasInfo = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): GasInfo {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseGasInfo } as GasInfo;
         while (reader.pos < end) {
@@ -724,10 +724,11 @@ export const Result = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Result {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseResult } as Result;
         message.events = [];
+        message.data = new Uint8Array();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -751,6 +752,7 @@ export const Result = {
     fromJSON(object: any): Result {
         const message = { ...baseResult } as Result;
         message.events = [];
+        message.data = new Uint8Array();
         if (object.data !== undefined && object.data !== null) {
             message.data = bytesFromBase64(object.data);
         }
@@ -815,7 +817,7 @@ export const SimulationResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): SimulationResponse {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseSimulationResponse } as SimulationResponse;
         while (reader.pos < end) {
@@ -887,9 +889,10 @@ export const MsgData = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgData {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseMsgData } as MsgData;
+        message.data = new Uint8Array();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -909,6 +912,7 @@ export const MsgData = {
 
     fromJSON(object: any): MsgData {
         const message = { ...baseMsgData } as MsgData;
+        message.data = new Uint8Array();
         if (object.msgType !== undefined && object.msgType !== null) {
             message.msgType = String(object.msgType);
         } else {
@@ -954,7 +958,7 @@ export const TxMsgData = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): TxMsgData {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseTxMsgData } as TxMsgData;
         message.data = [];
@@ -1031,7 +1035,7 @@ export const SearchTxsResult = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): SearchTxsResult {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseSearchTxsResult } as SearchTxsResult;
         message.txs = [];
@@ -1181,7 +1185,7 @@ function base64FromBytes(arr: Uint8Array): string {
     return btoa(bin.join(''));
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
 export type DeepPartial<T> = T extends Builtin
     ? T
     : T extends Array<infer U>
@@ -1191,3 +1195,8 @@ export type DeepPartial<T> = T extends Builtin
     : T extends {}
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
+
+if (_m0.util.Long !== Long) {
+    _m0.util.Long = Long as any;
+    _m0.configure();
+}

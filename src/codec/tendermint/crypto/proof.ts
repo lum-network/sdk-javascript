@@ -60,10 +60,11 @@ export const Proof = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Proof {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseProof } as Proof;
         message.aunts = [];
+        message.leafHash = new Uint8Array();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -90,6 +91,7 @@ export const Proof = {
     fromJSON(object: any): Proof {
         const message = { ...baseProof } as Proof;
         message.aunts = [];
+        message.leafHash = new Uint8Array();
         if (object.total !== undefined && object.total !== null) {
             message.total = Long.fromString(object.total);
         } else {
@@ -165,9 +167,10 @@ export const ValueOp = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): ValueOp {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseValueOp } as ValueOp;
+        message.key = new Uint8Array();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -187,6 +190,7 @@ export const ValueOp = {
 
     fromJSON(object: any): ValueOp {
         const message = { ...baseValueOp } as ValueOp;
+        message.key = new Uint8Array();
         if (object.key !== undefined && object.key !== null) {
             message.key = bytesFromBase64(object.key);
         }
@@ -238,7 +242,7 @@ export const DominoOp = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): DominoOp {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseDominoOp } as DominoOp;
         while (reader.pos < end) {
@@ -327,9 +331,11 @@ export const ProofOp = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): ProofOp {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseProofOp } as ProofOp;
+        message.key = new Uint8Array();
+        message.data = new Uint8Array();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -352,6 +358,8 @@ export const ProofOp = {
 
     fromJSON(object: any): ProofOp {
         const message = { ...baseProofOp } as ProofOp;
+        message.key = new Uint8Array();
+        message.data = new Uint8Array();
         if (object.type !== undefined && object.type !== null) {
             message.type = String(object.type);
         } else {
@@ -406,7 +414,7 @@ export const ProofOps = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): ProofOps {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseProofOps } as ProofOps;
         message.ops = [];
@@ -486,7 +494,7 @@ function base64FromBytes(arr: Uint8Array): string {
     return btoa(bin.join(''));
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
 export type DeepPartial<T> = T extends Builtin
     ? T
     : T extends Array<infer U>
@@ -496,3 +504,8 @@ export type DeepPartial<T> = T extends Builtin
     : T extends {}
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
+
+if (_m0.util.Long !== Long) {
+    _m0.util.Long = Long as any;
+    _m0.configure();
+}

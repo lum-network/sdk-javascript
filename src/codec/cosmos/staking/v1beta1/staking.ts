@@ -1,11 +1,11 @@
 /* eslint-disable */
+import Long from 'long';
+import _m0 from 'protobufjs/minimal';
 import { Header } from '../../../tendermint/types/types';
 import { Any } from '../../../google/protobuf/any';
-import Long from 'long';
 import { Duration } from '../../../google/protobuf/duration';
 import { Coin } from '../../../cosmos/base/v1beta1/coin';
 import { Timestamp } from '../../../google/protobuf/timestamp';
-import _m0 from 'protobufjs/minimal';
 
 export const protobufPackage = 'cosmos.staking.v1beta1';
 
@@ -74,23 +74,33 @@ export interface HistoricalInfo {
  * a validator.
  */
 export interface CommissionRates {
+    /** rate is the commission rate charged to delegators, as a fraction. */
     rate: string;
+    /** max_rate defines the maximum commission rate which validator can ever charge, as a fraction. */
     maxRate: string;
+    /** max_change_rate defines the maximum daily increase of the validator commission, as a fraction. */
     maxChangeRate: string;
 }
 
 /** Commission defines commission parameters for a given validator. */
 export interface Commission {
+    /** commission_rates defines the initial commission rates to be used for creating a validator. */
     commissionRates?: CommissionRates;
+    /** update_time is the last time the commission rate was changed. */
     updateTime?: Date;
 }
 
 /** Description defines a validator description. */
 export interface Description {
+    /** moniker defines a human-readable name for the validator. */
     moniker: string;
+    /** identity defines an optional identity signature (ex. UPort or Keybase). */
     identity: string;
+    /** website defines an optional website link. */
     website: string;
+    /** security_contact defines an optional email for security contact. */
     securityContact: string;
+    /** details define other optional details. */
     details: string;
 }
 
@@ -105,16 +115,27 @@ export interface Description {
  * multiplied by exchange rate.
  */
 export interface Validator {
+    /** operator_address defines the address of the validator's operator; bech encoded in JSON. */
     operatorAddress: string;
+    /** consensus_pubkey is the consensus public key of the validator, as a Protobuf Any. */
     consensusPubkey?: Any;
+    /** jailed defined whether the validator has been jailed from bonded status or not. */
     jailed: boolean;
+    /** status is the validator status (bonded/unbonding/unbonded). */
     status: BondStatus;
+    /** tokens define the delegated tokens (incl. self-delegation). */
     tokens: string;
+    /** delegator_shares defines total shares issued to a validator's delegators. */
     delegatorShares: string;
+    /** description defines the description terms for the validator. */
     description?: Description;
+    /** unbonding_height defines, if unbonding, the height at which this validator has begun unbonding. */
     unbondingHeight: Long;
+    /** unbonding_time defines, if unbonding, the min time for the validator to complete unbonding. */
     unbondingTime?: Date;
+    /** commission defines the commission parameters. */
     commission?: Commission;
+    /** min_self_delegation is the validator's self declared minimum self delegation. */
     minSelfDelegation: string;
 }
 
@@ -161,8 +182,11 @@ export interface DVVTriplets {
  * validator.
  */
 export interface Delegation {
+    /** delegator_address is the bech32-encoded address of the delegator. */
     delegatorAddress: string;
+    /** validator_address is the bech32-encoded address of the validator. */
     validatorAddress: string;
+    /** shares define the delegation shares received. */
     shares: string;
 }
 
@@ -171,25 +195,35 @@ export interface Delegation {
  * for a single validator in an time-ordered list.
  */
 export interface UnbondingDelegation {
+    /** delegator_address is the bech32-encoded address of the delegator. */
     delegatorAddress: string;
+    /** validator_address is the bech32-encoded address of the validator. */
     validatorAddress: string;
-    /** unbonding delegation entries */
+    /** entries are the unbonding delegation entries. */
     entries: UnbondingDelegationEntry[];
 }
 
 /** UnbondingDelegationEntry defines an unbonding object with relevant metadata. */
 export interface UnbondingDelegationEntry {
+    /** creation_height is the height which the unbonding took place. */
     creationHeight: Long;
+    /** completion_time is the unix time for unbonding completion. */
     completionTime?: Date;
+    /** initial_balance defines the tokens initially scheduled to receive at completion. */
     initialBalance: string;
+    /** balance defines the tokens to receive at completion. */
     balance: string;
 }
 
 /** RedelegationEntry defines a redelegation object with relevant metadata. */
 export interface RedelegationEntry {
+    /** creation_height  defines the height which the redelegation took place. */
     creationHeight: Long;
+    /** completion_time defines the unix time for redelegation completion. */
     completionTime?: Date;
+    /** initial_balance defines the initial balance when redelegation started. */
     initialBalance: string;
+    /** shares_dst is the amount of destination-validator shares created by redelegation. */
     sharesDst: string;
 }
 
@@ -198,19 +232,27 @@ export interface RedelegationEntry {
  * from a particular source validator to a particular destination validator.
  */
 export interface Redelegation {
+    /** delegator_address is the bech32-encoded address of the delegator. */
     delegatorAddress: string;
+    /** validator_src_address is the validator redelegation source operator address. */
     validatorSrcAddress: string;
+    /** validator_dst_address is the validator redelegation destination operator address. */
     validatorDstAddress: string;
-    /** redelegation entries */
+    /** entries are the redelegation entries. */
     entries: RedelegationEntry[];
 }
 
 /** Params defines the parameters for the staking module. */
 export interface Params {
+    /** unbonding_time is the time duration of unbonding. */
     unbondingTime?: Duration;
+    /** max_validators is the maximum number of validators. */
     maxValidators: number;
+    /** max_entries is the max entries for either unbonding delegation or redelegation (per pair/trio). */
     maxEntries: number;
+    /** historical_entries is the number of historical entries to persist. */
     historicalEntries: number;
+    /** bond_denom defines the bondable coin denomination. */
     bondDenom: string;
 }
 
@@ -266,7 +308,7 @@ export const HistoricalInfo = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): HistoricalInfo {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseHistoricalInfo } as HistoricalInfo;
         message.valset = [];
@@ -348,7 +390,7 @@ export const CommissionRates = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): CommissionRates {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseCommissionRates } as CommissionRates;
         while (reader.pos < end) {
@@ -434,7 +476,7 @@ export const Commission = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Commission {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseCommission } as Commission;
         while (reader.pos < end) {
@@ -472,7 +514,7 @@ export const Commission = {
     toJSON(message: Commission): unknown {
         const obj: any = {};
         message.commissionRates !== undefined && (obj.commissionRates = message.commissionRates ? CommissionRates.toJSON(message.commissionRates) : undefined);
-        message.updateTime !== undefined && (obj.updateTime = message.updateTime !== undefined ? message.updateTime.toISOString() : null);
+        message.updateTime !== undefined && (obj.updateTime = message.updateTime.toISOString());
         return obj;
     },
 
@@ -515,7 +557,7 @@ export const Description = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Description {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseDescription } as Description;
         while (reader.pos < end) {
@@ -656,7 +698,7 @@ export const Validator = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Validator {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseValidator } as Validator;
         while (reader.pos < end) {
@@ -773,7 +815,7 @@ export const Validator = {
         message.delegatorShares !== undefined && (obj.delegatorShares = message.delegatorShares);
         message.description !== undefined && (obj.description = message.description ? Description.toJSON(message.description) : undefined);
         message.unbondingHeight !== undefined && (obj.unbondingHeight = (message.unbondingHeight || Long.ZERO).toString());
-        message.unbondingTime !== undefined && (obj.unbondingTime = message.unbondingTime !== undefined ? message.unbondingTime.toISOString() : null);
+        message.unbondingTime !== undefined && (obj.unbondingTime = message.unbondingTime.toISOString());
         message.commission !== undefined && (obj.commission = message.commission ? Commission.toJSON(message.commission) : undefined);
         message.minSelfDelegation !== undefined && (obj.minSelfDelegation = message.minSelfDelegation);
         return obj;
@@ -851,7 +893,7 @@ export const ValAddresses = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): ValAddresses {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseValAddresses } as ValAddresses;
         message.addresses = [];
@@ -916,7 +958,7 @@ export const DVPair = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): DVPair {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseDVPair } as DVPair;
         while (reader.pos < end) {
@@ -985,7 +1027,7 @@ export const DVPairs = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): DVPairs {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseDVPairs } as DVPairs;
         message.pairs = [];
@@ -1053,7 +1095,7 @@ export const DVVTriplet = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): DVVTriplet {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseDVVTriplet } as DVVTriplet;
         while (reader.pos < end) {
@@ -1136,7 +1178,7 @@ export const DVVTriplets = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): DVVTriplets {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseDVVTriplets } as DVVTriplets;
         message.triplets = [];
@@ -1204,7 +1246,7 @@ export const Delegation = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Delegation {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseDelegation } as Delegation;
         while (reader.pos < end) {
@@ -1293,7 +1335,7 @@ export const UnbondingDelegation = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): UnbondingDelegation {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseUnbondingDelegation } as UnbondingDelegation;
         message.entries = [];
@@ -1392,7 +1434,7 @@ export const UnbondingDelegationEntry = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): UnbondingDelegationEntry {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseUnbondingDelegationEntry } as UnbondingDelegationEntry;
         while (reader.pos < end) {
@@ -1446,7 +1488,7 @@ export const UnbondingDelegationEntry = {
     toJSON(message: UnbondingDelegationEntry): unknown {
         const obj: any = {};
         message.creationHeight !== undefined && (obj.creationHeight = (message.creationHeight || Long.ZERO).toString());
-        message.completionTime !== undefined && (obj.completionTime = message.completionTime !== undefined ? message.completionTime.toISOString() : null);
+        message.completionTime !== undefined && (obj.completionTime = message.completionTime.toISOString());
         message.initialBalance !== undefined && (obj.initialBalance = message.initialBalance);
         message.balance !== undefined && (obj.balance = message.balance);
         return obj;
@@ -1498,7 +1540,7 @@ export const RedelegationEntry = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): RedelegationEntry {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseRedelegationEntry } as RedelegationEntry;
         while (reader.pos < end) {
@@ -1552,7 +1594,7 @@ export const RedelegationEntry = {
     toJSON(message: RedelegationEntry): unknown {
         const obj: any = {};
         message.creationHeight !== undefined && (obj.creationHeight = (message.creationHeight || Long.ZERO).toString());
-        message.completionTime !== undefined && (obj.completionTime = message.completionTime !== undefined ? message.completionTime.toISOString() : null);
+        message.completionTime !== undefined && (obj.completionTime = message.completionTime.toISOString());
         message.initialBalance !== undefined && (obj.initialBalance = message.initialBalance);
         message.sharesDst !== undefined && (obj.sharesDst = message.sharesDst);
         return obj;
@@ -1604,7 +1646,7 @@ export const Redelegation = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Redelegation {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseRedelegation } as Redelegation;
         message.entries = [];
@@ -1720,7 +1762,7 @@ export const Params = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseParams } as Params;
         while (reader.pos < end) {
@@ -1834,7 +1876,7 @@ export const DelegationResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): DelegationResponse {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseDelegationResponse } as DelegationResponse;
         while (reader.pos < end) {
@@ -1906,7 +1948,7 @@ export const RedelegationEntryResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): RedelegationEntryResponse {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseRedelegationEntryResponse } as RedelegationEntryResponse;
         while (reader.pos < end) {
@@ -1978,7 +2020,7 @@ export const RedelegationResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): RedelegationResponse {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseRedelegationResponse } as RedelegationResponse;
         message.entries = [];
@@ -2057,7 +2099,7 @@ export const Pool = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Pool {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...basePool } as Pool;
         while (reader.pos < end) {
@@ -2115,7 +2157,7 @@ export const Pool = {
     },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
 export type DeepPartial<T> = T extends Builtin
     ? T
     : T extends Array<infer U>

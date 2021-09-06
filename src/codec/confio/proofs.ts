@@ -358,10 +358,12 @@ export const ExistenceProof = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): ExistenceProof {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseExistenceProof } as ExistenceProof;
         message.path = [];
+        message.key = new Uint8Array();
+        message.value = new Uint8Array();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -388,6 +390,8 @@ export const ExistenceProof = {
     fromJSON(object: any): ExistenceProof {
         const message = { ...baseExistenceProof } as ExistenceProof;
         message.path = [];
+        message.key = new Uint8Array();
+        message.value = new Uint8Array();
         if (object.key !== undefined && object.key !== null) {
             message.key = bytesFromBase64(object.key);
         }
@@ -464,9 +468,10 @@ export const NonExistenceProof = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): NonExistenceProof {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseNonExistenceProof } as NonExistenceProof;
+        message.key = new Uint8Array();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -489,6 +494,7 @@ export const NonExistenceProof = {
 
     fromJSON(object: any): NonExistenceProof {
         const message = { ...baseNonExistenceProof } as NonExistenceProof;
+        message.key = new Uint8Array();
         if (object.key !== undefined && object.key !== null) {
             message.key = bytesFromBase64(object.key);
         }
@@ -554,7 +560,7 @@ export const CommitmentProof = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): CommitmentProof {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseCommitmentProof } as CommitmentProof;
         while (reader.pos < end) {
@@ -663,9 +669,10 @@ export const LeafOp = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): LeafOp {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseLeafOp } as LeafOp;
+        message.prefix = new Uint8Array();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -694,6 +701,7 @@ export const LeafOp = {
 
     fromJSON(object: any): LeafOp {
         const message = { ...baseLeafOp } as LeafOp;
+        message.prefix = new Uint8Array();
         if (object.hash !== undefined && object.hash !== null) {
             message.hash = hashOpFromJSON(object.hash);
         } else {
@@ -778,9 +786,11 @@ export const InnerOp = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): InnerOp {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseInnerOp } as InnerOp;
+        message.prefix = new Uint8Array();
+        message.suffix = new Uint8Array();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -803,6 +813,8 @@ export const InnerOp = {
 
     fromJSON(object: any): InnerOp {
         const message = { ...baseInnerOp } as InnerOp;
+        message.prefix = new Uint8Array();
+        message.suffix = new Uint8Array();
         if (object.hash !== undefined && object.hash !== null) {
             message.hash = hashOpFromJSON(object.hash);
         } else {
@@ -866,7 +878,7 @@ export const ProofSpec = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): ProofSpec {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseProofSpec } as ProofSpec;
         while (reader.pos < end) {
@@ -980,10 +992,11 @@ export const InnerSpec = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): InnerSpec {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseInnerSpec } as InnerSpec;
         message.childOrder = [];
+        message.emptyChild = new Uint8Array();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -1023,6 +1036,7 @@ export const InnerSpec = {
     fromJSON(object: any): InnerSpec {
         const message = { ...baseInnerSpec } as InnerSpec;
         message.childOrder = [];
+        message.emptyChild = new Uint8Array();
         if (object.childOrder !== undefined && object.childOrder !== null) {
             for (const e of object.childOrder) {
                 message.childOrder.push(Number(e));
@@ -1117,7 +1131,7 @@ export const BatchProof = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): BatchProof {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseBatchProof } as BatchProof;
         message.entries = [];
@@ -1182,7 +1196,7 @@ export const BatchEntry = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): BatchEntry {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseBatchEntry } as BatchEntry;
         while (reader.pos < end) {
@@ -1254,7 +1268,7 @@ export const CompressedBatchProof = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): CompressedBatchProof {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseCompressedBatchProof } as CompressedBatchProof;
         message.entries = [];
@@ -1340,7 +1354,7 @@ export const CompressedBatchEntry = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): CompressedBatchEntry {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseCompressedBatchEntry } as CompressedBatchEntry;
         while (reader.pos < end) {
@@ -1420,10 +1434,12 @@ export const CompressedExistenceProof = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): CompressedExistenceProof {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseCompressedExistenceProof } as CompressedExistenceProof;
         message.path = [];
+        message.key = new Uint8Array();
+        message.value = new Uint8Array();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -1457,6 +1473,8 @@ export const CompressedExistenceProof = {
     fromJSON(object: any): CompressedExistenceProof {
         const message = { ...baseCompressedExistenceProof } as CompressedExistenceProof;
         message.path = [];
+        message.key = new Uint8Array();
+        message.value = new Uint8Array();
         if (object.key !== undefined && object.key !== null) {
             message.key = bytesFromBase64(object.key);
         }
@@ -1533,9 +1551,10 @@ export const CompressedNonExistenceProof = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): CompressedNonExistenceProof {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseCompressedNonExistenceProof } as CompressedNonExistenceProof;
+        message.key = new Uint8Array();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -1558,6 +1577,7 @@ export const CompressedNonExistenceProof = {
 
     fromJSON(object: any): CompressedNonExistenceProof {
         const message = { ...baseCompressedNonExistenceProof } as CompressedNonExistenceProof;
+        message.key = new Uint8Array();
         if (object.key !== undefined && object.key !== null) {
             message.key = bytesFromBase64(object.key);
         }
@@ -1632,7 +1652,7 @@ function base64FromBytes(arr: Uint8Array): string {
     return btoa(bin.join(''));
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
 export type DeepPartial<T> = T extends Builtin
     ? T
     : T extends Array<infer U>
@@ -1642,3 +1662,8 @@ export type DeepPartial<T> = T extends Builtin
     : T extends {}
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
+
+if (_m0.util.Long !== Long) {
+    _m0.util.Long = Long as any;
+    _m0.configure();
+}

@@ -1,7 +1,7 @@
 import Long from 'long';
 import { Int53 } from '@cosmjs/math';
 import { Secp256k1, Secp256k1Signature } from '@cosmjs/crypto';
-import { makeAuthInfoBytes, makeSignBytes } from '@cosmjs/proto-signing';
+import { makeSignBytes } from '@cosmjs/proto-signing';
 
 import { TxRaw, AuthInfo } from '../codec/cosmos/tx/v1beta1/tx';
 import { SignMode } from '../codec/cosmos/tx/signing/v1beta1/signing';
