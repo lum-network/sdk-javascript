@@ -12,6 +12,7 @@ import {
     StakingExtension,
     DistributionExtension,
     GovExtension,
+    accountFromAny,
 } from '@cosmjs/stargate';
 
 import { BaseAccount } from '../codec/cosmos/auth/v1beta1/auth';
@@ -140,12 +141,7 @@ export class LumClient {
         if (!anyAccount) {
             return null;
         }
-        const account = LumRegistry.decode(anyAccount) as BaseAccount;
-        return {
-            address: account.address,
-            accountNumber: Uint64.fromString(account.accountNumber.toString()).toNumber(),
-            sequence: Uint64.fromString(account.sequence.toString()).toNumber(),
-        };
+        return accountFromAny(anyAccount);
     };
 
     /**
@@ -158,12 +154,7 @@ export class LumClient {
         if (!anyAccount) {
             return null;
         }
-        const account = LumRegistry.decode(anyAccount) as BaseAccount;
-        return {
-            address: account.address,
-            accountNumber: Uint64.fromString(account.accountNumber.toString()).toNumber(),
-            sequence: Uint64.fromString(account.sequence.toString()).toNumber(),
-        };
+        return accountFromAny(anyAccount);
     };
 
     /**
