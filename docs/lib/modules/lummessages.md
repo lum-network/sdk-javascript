@@ -9,36 +9,40 @@
 ### Variables
 
 - [MsgBeginRedelegateUrl](lummessages.md#msgbeginredelegateurl)
-- [MsgCancelBeamUrl](lummessages.md#msgcancelbeamurl)
 - [MsgClaimBeamUrl](lummessages.md#msgclaimbeamurl)
 - [MsgCreateValidatorUrl](lummessages.md#msgcreatevalidatorurl)
 - [MsgDelegateUrl](lummessages.md#msgdelegateurl)
+- [MsgDepositUrl](lummessages.md#msgdepositurl)
 - [MsgEditValidatorUrl](lummessages.md#msgeditvalidatorurl)
 - [MsgFundCommunityPoolUrl](lummessages.md#msgfundcommunitypoolurl)
 - [MsgMultiSendUrl](lummessages.md#msgmultisendurl)
 - [MsgOpenBeamUrl](lummessages.md#msgopenbeamurl)
 - [MsgSendUrl](lummessages.md#msgsendurl)
 - [MsgSetWithdrawAddressUrl](lummessages.md#msgsetwithdrawaddressurl)
+- [MsgSubmitProposalUrl](lummessages.md#msgsubmitproposalurl)
 - [MsgUndelegateUrl](lummessages.md#msgundelegateurl)
 - [MsgUpdateBeamUrl](lummessages.md#msgupdatebeamurl)
+- [MsgVoteUrl](lummessages.md#msgvoteurl)
 - [MsgWithdrawDelegatorRewardUrl](lummessages.md#msgwithdrawdelegatorrewardurl)
 - [MsgWithdrawValidatorCommissionUrl](lummessages.md#msgwithdrawvalidatorcommissionurl)
 
 ### Functions
 
 - [BuildMsgBeginRedelegate](lummessages.md#buildmsgbeginredelegate)
-- [BuildMsgCancelBeam](lummessages.md#buildmsgcancelbeam)
 - [BuildMsgClaimBeam](lummessages.md#buildmsgclaimbeam)
 - [BuildMsgCreateValidator](lummessages.md#buildmsgcreatevalidator)
 - [BuildMsgDelegate](lummessages.md#buildmsgdelegate)
+- [BuildMsgDeposit](lummessages.md#buildmsgdeposit)
 - [BuildMsgEditValidator](lummessages.md#buildmsgeditvalidator)
 - [BuildMsgFundCommunityPool](lummessages.md#buildmsgfundcommunitypool)
 - [BuildMsgMultiSend](lummessages.md#buildmsgmultisend)
 - [BuildMsgOpenBeam](lummessages.md#buildmsgopenbeam)
 - [BuildMsgSend](lummessages.md#buildmsgsend)
 - [BuildMsgSetWithdrawAddress](lummessages.md#buildmsgsetwithdrawaddress)
+- [BuildMsgSubmitProposal](lummessages.md#buildmsgsubmitproposal)
 - [BuildMsgUndelegate](lummessages.md#buildmsgundelegate)
 - [BuildMsgUpdateBeam](lummessages.md#buildmsgupdatebeam)
+- [BuildMsgVote](lummessages.md#buildmsgvote)
 - [BuildMsgWithdrawDelegatorReward](lummessages.md#buildmsgwithdrawdelegatorreward)
 - [BuildMsgWithdrawValidatorCommission](lummessages.md#buildmsgwithdrawvalidatorcommission)
 
@@ -47,12 +51,6 @@
 ### MsgBeginRedelegateUrl
 
 • `Const` **MsgBeginRedelegateUrl**: */cosmos.staking.v1beta1.MsgBeginRedelegate*= '/cosmos.staking.v1beta1.MsgBeginRedelegate'
-
-___
-
-### MsgCancelBeamUrl
-
-• `Const` **MsgCancelBeamUrl**: */lum.network.beam.MsgCancelBeam*= '/lum.network.beam.MsgCancelBeam'
 
 ___
 
@@ -71,6 +69,12 @@ ___
 ### MsgDelegateUrl
 
 • `Const` **MsgDelegateUrl**: */cosmos.staking.v1beta1.MsgDelegate*= '/cosmos.staking.v1beta1.MsgDelegate'
+
+___
+
+### MsgDepositUrl
+
+• `Const` **MsgDepositUrl**: */cosmos.gov.v1beta1.MsgDeposit*= '/cosmos.gov.v1beta1.MsgDeposit'
 
 ___
 
@@ -110,6 +114,12 @@ ___
 
 ___
 
+### MsgSubmitProposalUrl
+
+• `Const` **MsgSubmitProposalUrl**: */cosmos.gov.v1beta1.MsgSubmitProposal*= '/cosmos.gov.v1beta1.MsgSubmitProposal'
+
+___
+
 ### MsgUndelegateUrl
 
 • `Const` **MsgUndelegateUrl**: */cosmos.staking.v1beta1.MsgUndelegate*= '/cosmos.staking.v1beta1.MsgUndelegate'
@@ -119,6 +129,12 @@ ___
 ### MsgUpdateBeamUrl
 
 • `Const` **MsgUpdateBeamUrl**: */lum.network.beam.MsgUpdateBeam*= '/lum.network.beam.MsgUpdateBeam'
+
+___
+
+### MsgVoteUrl
+
+• `Const` **MsgVoteUrl**: */cosmos.gov.v1beta1.MsgVote*= '/cosmos.gov.v1beta1.MsgVote'
 
 ___
 
@@ -151,31 +167,16 @@ Name | Type |
 
 ___
 
-### BuildMsgCancelBeam
-
-▸ `Const`**BuildMsgCancelBeam**(`updater`: *string*, `id`: *string*): [*Message*](../interfaces/lummessages.message.md)
-
-#### Parameters:
-
-Name | Type |
-:------ | :------ |
-`updater` | *string* |
-`id` | *string* |
-
-**Returns:** [*Message*](../interfaces/lummessages.message.md)
-
-___
-
 ### BuildMsgClaimBeam
 
-▸ `Const`**BuildMsgClaimBeam**(`claimer`: *string*, `id`: *string*, `secret`: *string*): [*Message*](../interfaces/lummessages.message.md)
+▸ `Const`**BuildMsgClaimBeam**(`id`: *string*, `claimerAddress`: *string*, `secret`: *string*): [*Message*](../interfaces/lummessages.message.md)
 
 #### Parameters:
 
 Name | Type |
 :------ | :------ |
-`claimer` | *string* |
 `id` | *string* |
+`claimerAddress` | *string* |
 `secret` | *string* |
 
 **Returns:** [*Message*](../interfaces/lummessages.message.md)
@@ -213,6 +214,22 @@ Name | Type |
 `delegatorAddress` | *string* |
 `validatorAddress` | *string* |
 `amount?` | [*Coin*](../interfaces/lumtypes.coin.md) |
+
+**Returns:** [*Message*](../interfaces/lummessages.message.md)
+
+___
+
+### BuildMsgDeposit
+
+▸ `Const`**BuildMsgDeposit**(`proposalId`: Long, `depositor`: *string*, `amount`: [*Coin*](../interfaces/lumtypes.coin.md)[]): [*Message*](../interfaces/lummessages.message.md)
+
+#### Parameters:
+
+Name | Type |
+:------ | :------ |
+`proposalId` | Long |
+`depositor` | *string* |
+`amount` | [*Coin*](../interfaces/lumtypes.coin.md)[] |
 
 **Returns:** [*Message*](../interfaces/lummessages.message.md)
 
@@ -267,18 +284,21 @@ ___
 
 ### BuildMsgOpenBeam
 
-▸ `Const`**BuildMsgOpenBeam**(`id`: *string*, `creator`: *string*, `amount`: Long, `secret`: *string*, `reward?`: BeamReward, `review?`: BeamReview): [*Message*](../interfaces/lummessages.message.md)
+▸ `Const`**BuildMsgOpenBeam**(`id`: *string*, `creatorAddress`: *string*, `claimAddress`: *string*, `amount`: [*Coin*](../interfaces/lumtypes.coin.md), `secret`: *string*, `schema`: *string*, `data?`: BeamData, `closesAtBlock?`: *number*, `claimExpiresAtBlock?`: *number*): [*Message*](../interfaces/lummessages.message.md)
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`creator` | *string* |
-`amount` | Long |
-`secret` | *string* |
-`reward?` | BeamReward |
-`review?` | BeamReview |
+Name | Type | Default value |
+:------ | :------ | :------ |
+`id` | *string* | - |
+`creatorAddress` | *string* | - |
+`claimAddress` | *string* | - |
+`amount` | [*Coin*](../interfaces/lumtypes.coin.md) | - |
+`secret` | *string* | - |
+`schema` | *string* | - |
+`data?` | BeamData | - |
+`closesAtBlock` | *number* | 0 |
+`claimExpiresAtBlock` | *number* | 0 |
 
 **Returns:** [*Message*](../interfaces/lummessages.message.md)
 
@@ -315,6 +335,22 @@ Name | Type |
 
 ___
 
+### BuildMsgSubmitProposal
+
+▸ `Const`**BuildMsgSubmitProposal**(`proposer`: *string*, `initialDeposit`: [*Coin*](../interfaces/lumtypes.coin.md)[], `content?`: Any): [*Message*](../interfaces/lummessages.message.md)
+
+#### Parameters:
+
+Name | Type |
+:------ | :------ |
+`proposer` | *string* |
+`initialDeposit` | [*Coin*](../interfaces/lumtypes.coin.md)[] |
+`content?` | Any |
+
+**Returns:** [*Message*](../interfaces/lummessages.message.md)
+
+___
+
 ### BuildMsgUndelegate
 
 ▸ `Const`**BuildMsgUndelegate**(`delegatorAddress`: *string*, `validatorAddress`: *string*, `amount?`: [*Coin*](../interfaces/lumtypes.coin.md)): [*Message*](../interfaces/lummessages.message.md)
@@ -333,17 +369,38 @@ ___
 
 ### BuildMsgUpdateBeam
 
-▸ `Const`**BuildMsgUpdateBeam**(`updater`: *string*, `id`: *string*, `amount`: Long, `reward?`: BeamReward, `review?`: BeamReview): [*Message*](../interfaces/lummessages.message.md)
+▸ `Const`**BuildMsgUpdateBeam**(`id`: *string*, `updaterAddress`: *string*, `amount`: [*Coin*](../interfaces/lumtypes.coin.md), `status?`: UNSPECIFIED \| OPEN \| CANCELED \| CLOSED \| UNRECOGNIZED, `data?`: BeamData, `cancelReason?`: *string*, `hideContent?`: *boolean*, `claimAddress?`: *string*, `closesAtBlock?`: *number*, `claimExpiresAtBlock?`: *number*): [*Message*](../interfaces/lummessages.message.md)
+
+#### Parameters:
+
+Name | Type | Default value |
+:------ | :------ | :------ |
+`id` | *string* | - |
+`updaterAddress` | *string* | - |
+`amount` | [*Coin*](../interfaces/lumtypes.coin.md) | - |
+`status?` | UNSPECIFIED \| OPEN \| CANCELED \| CLOSED \| UNRECOGNIZED | - |
+`data?` | BeamData | - |
+`cancelReason` | *string* | '' |
+`hideContent` | *boolean* | false |
+`claimAddress` | *string* | '' |
+`closesAtBlock` | *number* | 0 |
+`claimExpiresAtBlock` | *number* | 0 |
+
+**Returns:** [*Message*](../interfaces/lummessages.message.md)
+
+___
+
+### BuildMsgVote
+
+▸ `Const`**BuildMsgVote**(`proposalId`: Long, `voter`: *string*, `option`: VoteOption): [*Message*](../interfaces/lummessages.message.md)
 
 #### Parameters:
 
 Name | Type |
 :------ | :------ |
-`updater` | *string* |
-`id` | *string* |
-`amount` | Long |
-`reward?` | BeamReward |
-`review?` | BeamReview |
+`proposalId` | Long |
+`voter` | *string* |
+`option` | VoteOption |
 
 **Returns:** [*Message*](../interfaces/lummessages.message.md)
 

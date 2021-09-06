@@ -60,7 +60,7 @@ ___
 
 ### queryClient
 
-• `Readonly` **queryClient**: *QueryClient* & AuthExtension & BankExtension & DistributionExtension & StakingExtension
+• `Readonly` **queryClient**: *QueryClient* & AuthExtension & BankExtension & DistributionExtension & StakingExtension & GovExtension & BeamExtension
 
 ___
 
