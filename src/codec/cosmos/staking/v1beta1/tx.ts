@@ -1,10 +1,10 @@
 /* eslint-disable */
+import Long from 'long';
+import _m0 from 'protobufjs/minimal';
 import { Description, CommissionRates } from '../../../cosmos/staking/v1beta1/staking';
 import { Any } from '../../../google/protobuf/any';
 import { Coin } from '../../../cosmos/base/v1beta1/coin';
 import { Timestamp } from '../../../google/protobuf/timestamp';
-import Long from 'long';
-import _m0 from 'protobufjs/minimal';
 
 export const protobufPackage = 'cosmos.staking.v1beta1';
 
@@ -112,7 +112,7 @@ export const MsgCreateValidator = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateValidator {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseMsgCreateValidator } as MsgCreateValidator;
         while (reader.pos < end) {
@@ -248,7 +248,7 @@ export const MsgCreateValidatorResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateValidatorResponse {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseMsgCreateValidatorResponse } as MsgCreateValidatorResponse;
         while (reader.pos < end) {
@@ -298,7 +298,7 @@ export const MsgEditValidator = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgEditValidator {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseMsgEditValidator } as MsgEditValidator;
         while (reader.pos < end) {
@@ -392,7 +392,7 @@ export const MsgEditValidatorResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgEditValidatorResponse {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseMsgEditValidatorResponse } as MsgEditValidatorResponse;
         while (reader.pos < end) {
@@ -439,7 +439,7 @@ export const MsgDelegate = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgDelegate {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseMsgDelegate } as MsgDelegate;
         while (reader.pos < end) {
@@ -519,7 +519,7 @@ export const MsgDelegateResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgDelegateResponse {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseMsgDelegateResponse } as MsgDelegateResponse;
         while (reader.pos < end) {
@@ -569,7 +569,7 @@ export const MsgBeginRedelegate = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgBeginRedelegate {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseMsgBeginRedelegate } as MsgBeginRedelegate;
         while (reader.pos < end) {
@@ -666,7 +666,7 @@ export const MsgBeginRedelegateResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgBeginRedelegateResponse {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseMsgBeginRedelegateResponse } as MsgBeginRedelegateResponse;
         while (reader.pos < end) {
@@ -695,7 +695,7 @@ export const MsgBeginRedelegateResponse = {
 
     toJSON(message: MsgBeginRedelegateResponse): unknown {
         const obj: any = {};
-        message.completionTime !== undefined && (obj.completionTime = message.completionTime !== undefined ? message.completionTime.toISOString() : null);
+        message.completionTime !== undefined && (obj.completionTime = message.completionTime.toISOString());
         return obj;
     },
 
@@ -727,7 +727,7 @@ export const MsgUndelegate = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgUndelegate {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseMsgUndelegate } as MsgUndelegate;
         while (reader.pos < end) {
@@ -810,7 +810,7 @@ export const MsgUndelegateResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgUndelegateResponse {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseMsgUndelegateResponse } as MsgUndelegateResponse;
         while (reader.pos < end) {
@@ -839,7 +839,7 @@ export const MsgUndelegateResponse = {
 
     toJSON(message: MsgUndelegateResponse): unknown {
         const obj: any = {};
-        message.completionTime !== undefined && (obj.completionTime = message.completionTime !== undefined ? message.completionTime.toISOString() : null);
+        message.completionTime !== undefined && (obj.completionTime = message.completionTime.toISOString());
         return obj;
     },
 
@@ -917,7 +917,7 @@ interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
 export type DeepPartial<T> = T extends Builtin
     ? T
     : T extends Array<infer U>

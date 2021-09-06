@@ -1,6 +1,6 @@
 import { Message } from '../Message';
-import { BeamData, BeamState } from '../../codec/chain/beam/beam';
-import { MsgUpdateBeam } from '../../codec/chain/beam/tx';
+import { BeamData, BeamState } from '../../codec/beam/beam';
+import { MsgUpdateBeam } from '../../codec/beam/tx';
 import { Coin } from '../../types';
 
 export const MsgUpdateBeamUrl = '/lum.network.beam.MsgUpdateBeam';

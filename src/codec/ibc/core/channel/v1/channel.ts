@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from 'long';
-import { Height } from '../../../../ibc/core/client/v1/client';
 import _m0 from 'protobufjs/minimal';
+import { Height } from '../../../../ibc/core/client/v1/client';
 
 export const protobufPackage = 'ibc.core.channel.v1';
 
@@ -246,7 +246,7 @@ export const Channel = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Channel {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseChannel } as Channel;
         message.connectionHops = [];
@@ -382,7 +382,7 @@ export const IdentifiedChannel = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): IdentifiedChannel {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseIdentifiedChannel } as IdentifiedChannel;
         message.connectionHops = [];
@@ -531,7 +531,7 @@ export const Counterparty = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Counterparty {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseCounterparty } as Counterparty;
         while (reader.pos < end) {
@@ -621,9 +621,10 @@ export const Packet = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Packet {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...basePacket } as Packet;
+        message.data = new Uint8Array();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -661,6 +662,7 @@ export const Packet = {
 
     fromJSON(object: any): Packet {
         const message = { ...basePacket } as Packet;
+        message.data = new Uint8Array();
         if (object.sequence !== undefined && object.sequence !== null) {
             message.sequence = Long.fromString(object.sequence);
         } else {
@@ -781,9 +783,10 @@ export const PacketState = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): PacketState {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...basePacketState } as PacketState;
+        message.data = new Uint8Array();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -809,6 +812,7 @@ export const PacketState = {
 
     fromJSON(object: any): PacketState {
         const message = { ...basePacketState } as PacketState;
+        message.data = new Uint8Array();
         if (object.portId !== undefined && object.portId !== null) {
             message.portId = String(object.portId);
         } else {
@@ -879,7 +883,7 @@ export const Acknowledgement = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Acknowledgement {
-        const reader = input instanceof Uint8Array ? new _m0.Reader(input) : input;
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseAcknowledgement } as Acknowledgement;
         while (reader.pos < end) {
@@ -964,7 +968,7 @@ function base64FromBytes(arr: Uint8Array): string {
     return btoa(bin.join(''));
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
 export type DeepPartial<T> = T extends Builtin
     ? T
     : T extends Array<infer U>
@@ -974,3 +978,8 @@ export type DeepPartial<T> = T extends Builtin
     : T extends {}
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
+
+if (_m0.util.Long !== Long) {
+    _m0.util.Long = Long as any;
+    _m0.configure();
+}

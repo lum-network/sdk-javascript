@@ -1,7 +1,8 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
-import { Coin } from '../../cosmos/base/v1beta1/coin';
+import { Coin } from '../cosmos/base/v1beta1/coin';
+import { Timestamp } from '../google/protobuf/timestamp';
 
 export const protobufPackage = 'lum.network.beam';
 
@@ -169,6 +170,8 @@ export interface Beam {
     data?: BeamData;
     claimExpiresAtBlock: number;
     closesAtBlock: number;
+    createdAt?: Date;
+    closedAt?: Date;
 }
 
 const baseBeamMedia: object = { mimetype: '', url: '', thumbnailUrl: '' };
@@ -1896,6 +1899,12 @@ export const Beam = {
         if (message.closesAtBlock !== 0) {
             writer.uint32(112).int32(message.closesAtBlock);
         }
+        if (message.createdAt !== undefined) {
+            Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(122).fork()).ldelim();
+        }
+        if (message.closedAt !== undefined) {
+            Timestamp.encode(toTimestamp(message.closedAt), writer.uint32(130).fork()).ldelim();
+        }
         return writer;
     },
 
@@ -1947,6 +1956,12 @@ export const Beam = {
                     break;
                 case 14:
                     message.closesAtBlock = reader.int32();
+                    break;
+                case 15:
+                    message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+                    break;
+                case 16:
+                    message.closedAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -2028,6 +2043,16 @@ export const Beam = {
         } else {
             message.closesAtBlock = 0;
         }
+        if (object.createdAt !== undefined && object.createdAt !== null) {
+            message.createdAt = fromJsonTimestamp(object.createdAt);
+        } else {
+            message.createdAt = undefined;
+        }
+        if (object.closedAt !== undefined && object.closedAt !== null) {
+            message.closedAt = fromJsonTimestamp(object.closedAt);
+        } else {
+            message.closedAt = undefined;
+        }
         return message;
     },
 
@@ -2047,6 +2072,8 @@ export const Beam = {
         message.data !== undefined && (obj.data = message.data ? BeamData.toJSON(message.data) : undefined);
         message.claimExpiresAtBlock !== undefined && (obj.claimExpiresAtBlock = message.claimExpiresAtBlock);
         message.closesAtBlock !== undefined && (obj.closesAtBlock = message.closesAtBlock);
+        message.createdAt !== undefined && (obj.createdAt = message.createdAt.toISOString());
+        message.closedAt !== undefined && (obj.closedAt = message.closedAt.toISOString());
         return obj;
     },
 
@@ -2122,6 +2149,16 @@ export const Beam = {
         } else {
             message.closesAtBlock = 0;
         }
+        if (object.createdAt !== undefined && object.createdAt !== null) {
+            message.createdAt = object.createdAt;
+        } else {
+            message.createdAt = undefined;
+        }
+        if (object.closedAt !== undefined && object.closedAt !== null) {
+            message.closedAt = object.closedAt;
+        } else {
+            message.closedAt = undefined;
+        }
         return message;
     },
 };
@@ -2136,6 +2173,32 @@ export type DeepPartial<T> = T extends Builtin
     : T extends {}
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
+
+function toTimestamp(date: Date): Timestamp {
+    const seconds = numberToLong(date.getTime() / 1_000);
+    const nanos = (date.getTime() % 1_000) * 1_000_000;
+    return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+    let millis = t.seconds.toNumber() * 1_000;
+    millis += t.nanos / 1_000_000;
+    return new Date(millis);
+}
+
+function fromJsonTimestamp(o: any): Date {
+    if (o instanceof Date) {
+        return o;
+    } else if (typeof o === 'string') {
+        return new Date(o);
+    } else {
+        return fromTimestamp(Timestamp.fromJSON(o));
+    }
+}
+
+function numberToLong(number: number) {
+    return Long.fromNumber(number);
+}
 
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;

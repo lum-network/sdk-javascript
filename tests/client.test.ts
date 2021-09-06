@@ -1,6 +1,6 @@
 import { LumWallet, LumWalletFactory, LumClient, LumUtils, LumConstants, LumRegistry, LumTypes, LumMessages } from '../src';
 import axios from 'axios';
-import { BeamData, BeamState } from '../src/codec/chain/beam/beam';
+import { BeamData, BeamState } from '../src/codec/beam/beam';
 
 const randomString = (): string => {
     return Math.random().toString(36).substring(7);
