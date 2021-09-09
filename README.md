@@ -72,6 +72,24 @@ Directly importing the CosmJS SDK or other cryptographic library should be consi
 
 Do not hesitate to contribute to this repository. This SDK is intended to be a one-stop-shop for all Lum Network javascript implementations and should definitely be improved over time by all its users.
 
+### Unittests
+
+#### All unittests except the ones involving a Ledger device (skipped by default) can be run using the following command
+
+```bash
+yarn test
+```
+
+#### Ledger unittests
+
+In order to run the unittest involving Ledger devices you need to do the following:
+
+1. Chose which application you want to use for the tests (Cosmos or Lum)
+2. Remove the `.skip` from all the tests your want to run in `./tests/ledger.test.ts`
+3. Connect a Ledger device and open either the Cosmos application or the Lum application
+4. Run `yarn test tests/ledger.test.ts`
+5. Follow the instructions on your Ledger device to pass each test that require a user input
+
 ## Protocol Buffer Codecs
 
 ### Introduction
