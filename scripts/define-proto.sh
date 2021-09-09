@@ -39,6 +39,8 @@ protoc \
     "$COSMOS_PROTO_DIR/cosmos/gov/v1beta1/query.proto" \
     "$COSMOS_PROTO_DIR/cosmos/gov/v1beta1/gov.proto" \
     "$COSMOS_PROTO_DIR/cosmos/gov/v1beta1/tx.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/mint/v1beta1/query.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/mint/v1beta1/mint.proto" \
     "$COSMOS_PROTO_DIR/cosmos/tx/signing/v1beta1/signing.proto" \
     "$COSMOS_PROTO_DIR/cosmos/tx/v1beta1/tx.proto" \
     "$COSMOS_PROTO_DIR/cosmos/vesting/v1beta1/vesting.proto" \

@@ -382,6 +382,25 @@ describe('LumClient', () => {
         expect(delegValidators.validators.length).toBeGreaterThan(0);
     });
 
+    it('Should expose the mint module', async () => {
+        const supply = await clt.getAllSupplies();
+
+        const params = await clt.queryClient.mint.params();
+        expect(params).toBeTruthy();
+        expect(params.inflationMin).toBeTruthy();
+        expect(params.inflationMax).toBeTruthy();
+        expect(params.inflationRateChange).toBeTruthy();
+        expect(params.mintDenom).toBeTruthy();
+        expect(params.blocksPerYear).toBeTruthy();
+        expect(params.goalBonded).toBeTruthy();
+
+        const inflation = await clt.queryClient.mint.inflation();
+        expect(parseInt(inflation)).toBeGreaterThan(0);
+
+        const annualProvisions = await clt.queryClient.mint.annualProvisions();
+        expect(parseInt(annualProvisions)).toBeGreaterThan(0);
+    });
+
     it('Should allow multiple signers per transaction', async () => {
         const acc1 = await clt.getAccount(w1.getAddress());
         const acc2 = await clt.getAccount(w2.getAddress());
