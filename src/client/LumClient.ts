@@ -1,4 +1,3 @@
-import { Uint64 } from '@cosmjs/math';
 import { Tendermint34Client, StatusResponse } from '@cosmjs/tendermint-rpc';
 import {
     QueryClient as StargateQueryClient,
@@ -15,13 +14,12 @@ import {
     accountFromAny,
 } from '@cosmjs/stargate';
 
-import { BaseAccount } from '../codec/cosmos/auth/v1beta1/auth';
-import { LumWallet, LumUtils, LumTypes, LumRegistry } from '..';
-import { BeamExtension, setupBeamExtension as BeamSetupBeamExtension } from '../extensions';
+import { LumWallet, LumUtils, LumTypes } from '..';
+import { BeamExtension, setupBeamExtension as BeamSetupBeamExtension, MintExtension, setupMintExtension as MintSetupExtension } from '../extensions';
 
 export class LumClient {
     readonly tmClient: Tendermint34Client;
-    readonly queryClient: StargateQueryClient & AuthExtension & BankExtension & DistributionExtension & StakingExtension & GovExtension & BeamExtension;
+    readonly queryClient: StargateQueryClient & AuthExtension & BankExtension & DistributionExtension & StakingExtension & GovExtension & MintExtension & BeamExtension;
     private chainId?: string;
 
     /**
@@ -38,6 +36,7 @@ export class LumClient {
             StargateDistributionExtension,
             StargateStakingExtension,
             StargateGovExtension,
+            MintSetupExtension,
             BeamSetupBeamExtension,
         );
 
