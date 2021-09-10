@@ -1,4 +1,3 @@
-import { Uint64 } from '@cosmjs/math';
 import { Tendermint34Client, StatusResponse } from '@cosmjs/tendermint-rpc';
 import {
     QueryClient as StargateQueryClient,
@@ -15,8 +14,7 @@ import {
     accountFromAny,
 } from '@cosmjs/stargate';
 
-import { BaseAccount } from '../codec/cosmos/auth/v1beta1/auth';
-import { LumWallet, LumUtils, LumTypes, LumRegistry } from '..';
+import { LumWallet, LumUtils, LumTypes } from '..';
 import { BeamExtension, setupBeamExtension as BeamSetupBeamExtension, MintExtension, setupMintExtension as MintSetupExtension } from '../extensions';
 
 export class LumClient {

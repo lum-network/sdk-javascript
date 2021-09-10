@@ -10,9 +10,9 @@ export class LumLedgerWallet extends LumWallet {
     cosmosApp: Cosmos;
     private hdPath?: string;
 
-    constructor(transport: Transport) {
+    constructor(transport: Transport, scrambleKey = 'CSM') {
         super();
-        this.cosmosApp = new Cosmos(transport, 'CSM'); // TODO: CSM identifier should either be LUM or dynamic depending on our ledger implementation
+        this.cosmosApp = new Cosmos(transport, scrambleKey);
     }
 
     signingMode = (): SignMode => {
