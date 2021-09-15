@@ -44,7 +44,10 @@ export interface QueryAllBalancesResponse {
  * QueryTotalSupplyRequest is the request type for the Query/TotalSupply RPC
  * method.
  */
-export interface QueryTotalSupplyRequest {}
+export interface QueryTotalSupplyRequest {
+    /** pagination defines an optional pagination for the request. */
+    pagination?: PageRequest;
+}
 
 /**
  * QueryTotalSupplyResponse is the response type for the Query/TotalSupply RPC
@@ -53,6 +56,8 @@ export interface QueryTotalSupplyRequest {}
 export interface QueryTotalSupplyResponse {
     /** supply is the supply of the coins */
     supply: Coin[];
+    /** pagination defines the pagination in the response. */
+    pagination?: PageResponse;
 }
 
 /** QuerySupplyOfRequest is the request type for the Query/SupplyOf RPC method. */
@@ -388,7 +393,10 @@ export const QueryAllBalancesResponse = {
 const baseQueryTotalSupplyRequest: object = {};
 
 export const QueryTotalSupplyRequest = {
-    encode(_: QueryTotalSupplyRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    encode(message: QueryTotalSupplyRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (message.pagination !== undefined) {
+            PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+        }
         return writer;
     },
 
@@ -399,6 +407,9 @@ export const QueryTotalSupplyRequest = {
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
+                case 1:
+                    message.pagination = PageRequest.decode(reader, reader.uint32());
+                    break;
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -407,18 +418,29 @@ export const QueryTotalSupplyRequest = {
         return message;
     },
 
-    fromJSON(_: any): QueryTotalSupplyRequest {
+    fromJSON(object: any): QueryTotalSupplyRequest {
         const message = { ...baseQueryTotalSupplyRequest } as QueryTotalSupplyRequest;
+        if (object.pagination !== undefined && object.pagination !== null) {
+            message.pagination = PageRequest.fromJSON(object.pagination);
+        } else {
+            message.pagination = undefined;
+        }
         return message;
     },
 
-    toJSON(_: QueryTotalSupplyRequest): unknown {
+    toJSON(message: QueryTotalSupplyRequest): unknown {
         const obj: any = {};
+        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
         return obj;
     },
 
-    fromPartial(_: DeepPartial<QueryTotalSupplyRequest>): QueryTotalSupplyRequest {
+    fromPartial(object: DeepPartial<QueryTotalSupplyRequest>): QueryTotalSupplyRequest {
         const message = { ...baseQueryTotalSupplyRequest } as QueryTotalSupplyRequest;
+        if (object.pagination !== undefined && object.pagination !== null) {
+            message.pagination = PageRequest.fromPartial(object.pagination);
+        } else {
+            message.pagination = undefined;
+        }
         return message;
     },
 };
@@ -429,6 +451,9 @@ export const QueryTotalSupplyResponse = {
     encode(message: QueryTotalSupplyResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
         for (const v of message.supply) {
             Coin.encode(v!, writer.uint32(10).fork()).ldelim();
+        }
+        if (message.pagination !== undefined) {
+            PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
         }
         return writer;
     },
@@ -443,6 +468,9 @@ export const QueryTotalSupplyResponse = {
             switch (tag >>> 3) {
                 case 1:
                     message.supply.push(Coin.decode(reader, reader.uint32()));
+                    break;
+                case 2:
+                    message.pagination = PageResponse.decode(reader, reader.uint32());
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -460,6 +488,11 @@ export const QueryTotalSupplyResponse = {
                 message.supply.push(Coin.fromJSON(e));
             }
         }
+        if (object.pagination !== undefined && object.pagination !== null) {
+            message.pagination = PageResponse.fromJSON(object.pagination);
+        } else {
+            message.pagination = undefined;
+        }
         return message;
     },
 
@@ -470,6 +503,7 @@ export const QueryTotalSupplyResponse = {
         } else {
             obj.supply = [];
         }
+        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
         return obj;
     },
 
@@ -480,6 +514,11 @@ export const QueryTotalSupplyResponse = {
             for (const e of object.supply) {
                 message.supply.push(Coin.fromPartial(e));
             }
+        }
+        if (object.pagination !== undefined && object.pagination !== null) {
+            message.pagination = PageResponse.fromPartial(object.pagination);
+        } else {
+            message.pagination = undefined;
         }
         return message;
     },

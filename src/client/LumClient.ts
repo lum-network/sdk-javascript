@@ -1,25 +1,29 @@
 import { Tendermint34Client, StatusResponse } from '@cosmjs/tendermint-rpc';
-import {
-    QueryClient as StargateQueryClient,
-    setupAuthExtension as StargateSetupAuthExtension,
-    setupBankExtension as StargateSetupBankExtension,
-    setupDistributionExtension as StargateDistributionExtension,
-    setupStakingExtension as StargateStakingExtension,
-    setupGovExtension as StargateGovExtension,
-    AuthExtension,
-    BankExtension,
-    StakingExtension,
-    DistributionExtension,
-    GovExtension,
-    accountFromAny,
-} from '@cosmjs/stargate';
+import { QueryClient as StargateQueryClient, accountFromAny } from '@cosmjs/stargate';
 
 import { LumWallet, LumUtils, LumTypes } from '..';
-import { BeamExtension, setupBeamExtension as BeamSetupBeamExtension, MintExtension, setupMintExtension as MintSetupExtension } from '../extensions';
+import {
+    AuthExtension,
+    setupAuthExtension,
+    BankExtension,
+    setupBankExtension,
+    BeamExtension,
+    setupBeamExtension,
+    DistributionExtension,
+    setupDistributionExtension,
+    GovExtension,
+    setupGovExtension,
+    IbcExtension,
+    setupIbcExtension,
+    MintExtension,
+    setupMintExtension,
+    StakingExtension,
+    setupStakingExtension,
+} from '../extensions';
 
 export class LumClient {
     readonly tmClient: Tendermint34Client;
-    readonly queryClient: StargateQueryClient & AuthExtension & BankExtension & DistributionExtension & StakingExtension & GovExtension & MintExtension & BeamExtension;
+    readonly queryClient: StargateQueryClient & AuthExtension & BankExtension & BeamExtension & DistributionExtension & GovExtension & IbcExtension & MintExtension & StakingExtension;
     private chainId?: string;
 
     /**
@@ -31,13 +35,14 @@ export class LumClient {
         this.tmClient = tmClient;
         this.queryClient = StargateQueryClient.withExtensions(
             tmClient,
-            StargateSetupAuthExtension,
-            StargateSetupBankExtension,
-            StargateDistributionExtension,
-            StargateStakingExtension,
-            StargateGovExtension,
-            MintSetupExtension,
-            BeamSetupBeamExtension,
+            setupAuthExtension,
+            setupBankExtension,
+            setupBeamExtension,
+            setupDistributionExtension,
+            setupGovExtension,
+            setupIbcExtension,
+            setupMintExtension,
+            setupStakingExtension,
         );
 
         // Used for debugging while gasWanted, gasUsed and codespace are still waiting to be included in the code lib
@@ -136,19 +141,6 @@ export class LumClient {
      * @param address wallet address
      */
     getAccount = async (address: string): Promise<LumTypes.Account | null> => {
-        const anyAccount = await this.queryClient.auth.verified.account(address);
-        if (!anyAccount) {
-            return null;
-        }
-        return accountFromAny(anyAccount);
-    };
-
-    /**
-     * Get account information without verifying its existence
-     *
-     * @param address wallet address
-     */
-    getAccountUnverified = async (address: string): Promise<LumTypes.Account | null> => {
         const anyAccount = await this.queryClient.auth.account(address);
         if (!anyAccount) {
             return null;
@@ -163,27 +155,16 @@ export class LumClient {
      * @param searchDenom Coin denomination (ex: lum)
      */
     getBalance = async (address: string, searchDenom: string): Promise<LumTypes.Coin | null> => {
-        const balance = await this.queryClient.bank.verified.balance(address, searchDenom);
-        return balance ? balance : null;
-    };
-
-    /**
-     * Get an account balance without verifying their existence
-     *
-     * @param address wallet address
-     * @param searchDenom Coin denomination (ex: lum)
-     */
-    getBalanceUnverified = async (address: string, searchDenom: string): Promise<LumTypes.Coin | null> => {
         const balance = await this.queryClient.bank.balance(address, searchDenom);
         return balance ? balance : null;
     };
 
     /**
-     * Get all account balances without verifying their existence
+     * Get all account balances
      *
      * @param address wallet address
      */
-    getAllBalancesUnverified = async (address: string): Promise<LumTypes.Coin[]> => {
+    getAllBalances = async (address: string): Promise<LumTypes.Coin[]> => {
         const balances = await this.queryClient.bank.allBalances(address);
         return balances;
     };
