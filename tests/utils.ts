@@ -6,19 +6,23 @@ export const requestCoinsFromFaucet = async (clt: LumClient, addr: string) => {
     const ulumAmount = 100 * Math.pow(10, LumConstants.LumExponent);
 
     // Try to query the local faucet
-    let res = await axios.post(
-        `http://0.0.0.0:4500/`,
-        { 'address': addr, 'coins': [`${ulumAmount}ulum`] },
-        {
-            headers: {
-                'Content-Type': 'application/json',
+    let res = null;
+    try {
+        res = await axios.post(
+            `http://0.0.0.0:4500/`,
+            { 'address': addr, 'coins': [`${ulumAmount}ulum`] },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             },
-        },
-    );
-    if (res.status !== 200) {
+        );
+    } catch (e) {}
+    if (!res || res.status !== 200) {
         // Otherwise query the testnet official faucet
         res = await axios.get(`https://bridge.testnet.lum.network/faucet/${addr}`);
     }
+    expect(res).toBeTruthy();
     expect(res.status).toEqual(200);
 
     const faucetResult = new Promise((resolve, reject) => {

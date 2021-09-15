@@ -12,7 +12,7 @@ describe('LumClient', () => {
     let w2: LumWallet;
 
     beforeAll(async () => {
-        clt = await LumClient.connect('http://0.0.0.0:26657');
+        clt = await LumClient.connect('http://node0.testnet.lum.network/rpc');
 
         // Prepare the wallets
         w1 = await LumWalletFactory.fromMnemonic(LumUtils.generateMnemonic());
