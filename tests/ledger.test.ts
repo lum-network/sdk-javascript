@@ -3,29 +3,14 @@ import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import { LumWalletFactory, LumMessages, LumUtils, LumConstants, LumWallet } from '../src';
 
 import { LumClient } from '../src';
+import { requestCoinsFromFaucet } from './utils';
 
 const requestCoinsIfNeeded = async (clt: LumClient, w: LumWallet, microLumMinAmount?: number) => {
     const balance = await clt.getBalance(w.getAddress(), LumConstants.MicroLumDenom);
     if (balance && parseInt(balance.amount) > microLumMinAmount) {
         return;
     }
-    const res = await axios.get(`https://bridge.testnet.lum.network/faucet/${w.getAddress()}`);
-    expect(res.status).toEqual(200);
-    const faucetResult = new Promise((resolve, reject) => {
-        let it = 0;
-        const rec = setInterval(async () => {
-            const balance = await clt.getBalance(w.getAddress(), LumConstants.MicroLumDenom);
-            if (balance && parseInt(balance.amount) > microLumMinAmount) {
-                clearInterval(rec);
-                resolve(true);
-            } else if (it >= 60) {
-                clearInterval(rec);
-                reject();
-            }
-            it++;
-        }, 1000);
-    });
-    await expect(faucetResult).resolves.toBeTruthy();
+    await requestCoinsFromFaucet(clt, w.getAddress());
 };
 
 describe('Ledger', () => {

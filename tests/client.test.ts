@@ -1,6 +1,6 @@
 import { LumWallet, LumWalletFactory, LumClient, LumUtils, LumConstants, LumRegistry, LumTypes, LumMessages } from '../src';
-import axios from 'axios';
 import { BeamData, BeamState } from '../src/codec/beam/beam';
+import { requestCoinsFromFaucet } from './utils';
 
 const randomString = (): string => {
     return Math.random().toString(36).substring(7);
@@ -12,7 +12,7 @@ describe('LumClient', () => {
     let w2: LumWallet;
 
     beforeAll(async () => {
-        clt = await LumClient.connect('https://node0.testnet.lum.network/rpc');
+        clt = await LumClient.connect('http://0.0.0.0:26657');
 
         // Prepare the wallets
         w1 = await LumWalletFactory.fromMnemonic(LumUtils.generateMnemonic());
@@ -21,26 +21,8 @@ describe('LumClient', () => {
         expect(w1.getAddress()).not.toEqual(w2.getAddress());
 
         // Seed them with faucet coins each
-        let res = await axios.get(`https://bridge.testnet.lum.network/faucet/${w1.getAddress()}`);
-        expect(res.status).toEqual(200);
-        res = await axios.get(`https://bridge.testnet.lum.network/faucet/${w2.getAddress()}`);
-        expect(res.status).toEqual(200);
-        const faucetResult = new Promise((resolve, reject) => {
-            let it = 0;
-            const rec = setInterval(async () => {
-                const balance1 = await clt.getBalance(w1.getAddress(), LumConstants.MicroLumDenom);
-                const balance2 = await clt.getBalance(w2.getAddress(), LumConstants.MicroLumDenom);
-                if (balance1 && balance2 && parseInt(balance1.amount) > 0 && parseInt(balance2.amount) > 0) {
-                    clearInterval(rec);
-                    resolve(true);
-                } else if (it >= 60) {
-                    clearInterval(rec);
-                    reject();
-                }
-                it++;
-            }, 1000);
-        });
-        await expect(faucetResult).resolves.toBeTruthy();
+        await requestCoinsFromFaucet(clt, w1.getAddress());
+        await requestCoinsFromFaucet(clt, w2.getAddress());
     });
 
     afterAll(async () => {
@@ -344,7 +326,7 @@ describe('LumClient', () => {
         expect(account).toBeTruthy();
 
         // Get account balances
-        const balances = await clt.getAllBalancesUnverified(account.address);
+        const balances = await clt.getAllBalances(account.address);
         expect(balances).toBeTruthy();
         expect(balances.length).toBeGreaterThan(0);
         const lumBalance = balances.filter((b) => b.denom === LumConstants.MicroLumDenom)[0];

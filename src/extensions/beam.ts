@@ -1,9 +1,9 @@
-import { createProtobufRpcClient, QueryClient } from '@cosmjs/stargate';
-
+import { QueryClient } from '@cosmjs/stargate';
 import { assert } from '@cosmjs/utils';
 
 import { Beam } from '../codec/beam/beam';
 import { QueryClientImpl } from '../codec/beam/query';
+import { createProtobufRpcClient } from './utils';
 
 export interface BeamExtension {
     readonly beam: {
