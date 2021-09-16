@@ -17,11 +17,9 @@
 - [broadcastTx](lumclient.md#broadcasttx)
 - [disconnect](lumclient.md#disconnect)
 - [getAccount](lumclient.md#getaccount)
-- [getAccountUnverified](lumclient.md#getaccountunverified)
-- [getAllBalancesUnverified](lumclient.md#getallbalancesunverified)
+- [getAllBalances](lumclient.md#getallbalances)
 - [getAllSupplies](lumclient.md#getallsupplies)
 - [getBalance](lumclient.md#getbalance)
-- [getBalanceUnverified](lumclient.md#getbalanceunverified)
 - [getBlock](lumclient.md#getblock)
 - [getBlockHeight](lumclient.md#getblockheight)
 - [getChainId](lumclient.md#getchainid)
@@ -60,7 +58,7 @@ ___
 
 ### queryClient
 
-• `Readonly` **queryClient**: *QueryClient* & AuthExtension & BankExtension & DistributionExtension & StakingExtension & GovExtension & BeamExtension
+• `Readonly` **queryClient**: *QueryClient* & AuthExtension & BankExtension & BeamExtension & DistributionExtension & GovExtension & IbcExtension & MintExtension & StakingExtension
 
 ___
 
@@ -113,27 +111,11 @@ Name | Type | Description |
 
 ___
 
-### getAccountUnverified
+### getAllBalances
 
-▸ **getAccountUnverified**(`address`: *string*): *Promise*<*null* \| [*Account*](../interfaces/lumtypes.account.md)\>
+▸ **getAllBalances**(`address`: *string*): *Promise*<[*Coin*](../interfaces/lumtypes.coin.md)[]\>
 
-Get account information without verifying its existence
-
-#### Parameters:
-
-Name | Type | Description |
-:------ | :------ | :------ |
-`address` | *string* | wallet address    |
-
-**Returns:** *Promise*<*null* \| [*Account*](../interfaces/lumtypes.account.md)\>
-
-___
-
-### getAllBalancesUnverified
-
-▸ **getAllBalancesUnverified**(`address`: *string*): *Promise*<[*Coin*](../interfaces/lumtypes.coin.md)[]\>
-
-Get all account balances without verifying their existence
+Get all account balances
 
 #### Parameters:
 
@@ -160,23 +142,6 @@ ___
 ▸ **getBalance**(`address`: *string*, `searchDenom`: *string*): *Promise*<*null* \| [*Coin*](../interfaces/lumtypes.coin.md)\>
 
 Get account balance
-
-#### Parameters:
-
-Name | Type | Description |
-:------ | :------ | :------ |
-`address` | *string* | wallet address   |
-`searchDenom` | *string* | Coin denomination (ex: lum)    |
-
-**Returns:** *Promise*<*null* \| [*Coin*](../interfaces/lumtypes.coin.md)\>
-
-___
-
-### getBalanceUnverified
-
-▸ **getBalanceUnverified**(`address`: *string*, `searchDenom`: *string*): *Promise*<*null* \| [*Coin*](../interfaces/lumtypes.coin.md)\>
-
-Get an account balance without verifying their existence
 
 #### Parameters:
 

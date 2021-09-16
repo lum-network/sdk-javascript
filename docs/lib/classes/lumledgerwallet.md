@@ -35,13 +35,14 @@
 
 ### constructor
 
-\+ **new LumLedgerWallet**(`transport`: *Transport*<string\>): [*LumLedgerWallet*](lumledgerwallet.md)
+\+ **new LumLedgerWallet**(`transport`: *Transport*<string\>, `scrambleKey?`: *string*): [*LumLedgerWallet*](lumledgerwallet.md)
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`transport` | *Transport*<string\> |
+Name | Type | Default value |
+:------ | :------ | :------ |
+`transport` | *Transport*<string\> | - |
+`scrambleKey` | *string* | 'CSM' |
 
 **Returns:** [*LumLedgerWallet*](lumledgerwallet.md)
 

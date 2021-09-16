@@ -24,6 +24,7 @@ export function createPagination(paginationKey?: Uint8Array): PageRequest | unde
               offset: Long.fromNumber(0, true),
               limit: Long.fromNumber(0, true),
               countTotal: false,
+              reverse: false,
           }
         : undefined;
 }

@@ -235,6 +235,7 @@ export function setupIbcExtension(base: QueryClient): IbcExtension {
                         portId: portId,
                         channelId: channelId,
                         pagination: createPagination(paginationKey),
+                        packetCommitmentSequences: [],
                     }),
                 allPacketAcknowledgements: async (portId: string, channelId: string) => {
                     const acknowledgements = [];
@@ -245,6 +246,7 @@ export function setupIbcExtension(base: QueryClient): IbcExtension {
                             channelId: channelId,
                             portId: portId,
                             pagination: createPagination(key),
+                            packetCommitmentSequences: [],
                         });
                         acknowledgements.push(...response.acknowledgements);
                         key = response.pagination?.nextKey;
