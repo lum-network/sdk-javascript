@@ -26,6 +26,9 @@ protoc \
     --ts_proto_opt="esModuleInterop=true,forceLong=long,useOptionals=true" \
     "$COSMOS_PROTO_DIR/cosmos/auth/v1beta1/auth.proto" \
     "$COSMOS_PROTO_DIR/cosmos/auth/v1beta1/query.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/authz/v1beta1/query.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/authz/v1beta1/authz.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/authz/v1beta1/tx.proto" \
     "$COSMOS_PROTO_DIR/cosmos/bank/v1beta1/bank.proto" \
     "$COSMOS_PROTO_DIR/cosmos/bank/v1beta1/query.proto" \
     "$COSMOS_PROTO_DIR/cosmos/bank/v1beta1/tx.proto" \
@@ -48,6 +51,12 @@ protoc \
     "$COSMOS_PROTO_DIR/cosmos/tx/signing/v1beta1/signing.proto" \
     "$COSMOS_PROTO_DIR/cosmos/tx/v1beta1/tx.proto" \
     "$COSMOS_PROTO_DIR/cosmos/vesting/v1beta1/vesting.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/slashing/v1beta1/query.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/slashing/v1beta1/slashing.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/slashing/v1beta1/tx.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/feegrant/v1beta1/query.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/feegrant/v1beta1/feegrant.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/feegrant/v1beta1/tx.proto" \
     "$IBC_PROTO_DIR/ibc/applications/transfer/v1/tx.proto" \
     "$IBC_PROTO_DIR/ibc/applications/transfer/v1/query.proto" \
     "$IBC_PROTO_DIR/ibc/core/channel/v1/channel.proto" \
