@@ -21,7 +21,7 @@ describe('Ledger', () => {
     });
 
     afterAll(async () => {
-        await expect(clt.disconnect()).resolves.toBeTruthy();
+        clt.disconnect();
     });
 
     // Remove the .skip part of the function to run the ledger tests manually

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { LumClient, LumConstants } from '../src';
 
-export const requestCoinsFromFaucet = async (clt: LumClient, addr: string) => {
+export const requestCoinsFromFaucet = async (clt: LumClient, addr: string): Promise<void> => {
     const ulumAmount = 100 * Math.pow(10, LumConstants.LumExponent);
 
     // Try to query the local faucet

@@ -9,9 +9,9 @@ declare module 'crypto-browserify';
  */
 declare module '@ledgerhq/hw-app-cosmos' {
     export default class Cosmos {
-        transport: import('@ledgerhq/hw-transport').default<*>;
+        transport: import('@ledgerhq/hw-transport').default;
 
-        constructor(transport: import('@ledgerhq/hw-transport').default<*>, scrambleKey: string);
+        constructor(transport: import('@ledgerhq/hw-transport').default, scrambleKey: string);
         getAppConfiguration(): Promise<{
             test_mode: boolean;
             version: string;

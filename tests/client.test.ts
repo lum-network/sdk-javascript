@@ -26,7 +26,7 @@ describe('LumClient', () => {
     });
 
     afterAll(async () => {
-        await expect(clt.disconnect()).resolves.toBeTruthy();
+        clt.disconnect();
     });
 
     it('should allow to connect via webshockets', async () => {
