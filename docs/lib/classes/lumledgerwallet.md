@@ -2,197 +2,250 @@
 
 ## Hierarchy
 
-* [*LumWallet*](lumwallet.md)
+- [`LumWallet`](LumWallet.md)
 
-  ↳ **LumLedgerWallet**
+  ↳ **`LumLedgerWallet`**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](lumledgerwallet.md#constructor)
+- [constructor](LumLedgerWallet.md#constructor)
 
 ### Properties
 
-- [address](lumledgerwallet.md#address)
-- [cosmosApp](lumledgerwallet.md#cosmosapp)
-- [hdPath](lumledgerwallet.md#hdpath)
-- [publicKey](lumledgerwallet.md#publickey)
+- [address](LumLedgerWallet.md#address)
+- [cosmosApp](LumLedgerWallet.md#cosmosapp)
+- [hdPath](LumLedgerWallet.md#hdpath)
+- [publicKey](LumLedgerWallet.md#publickey)
 
 ### Methods
 
-- [canChangeAccount](lumledgerwallet.md#canchangeaccount)
-- [getAddress](lumledgerwallet.md#getaddress)
-- [getAppConfiguration](lumledgerwallet.md#getappconfiguration)
-- [getPublicKey](lumledgerwallet.md#getpublickey)
-- [sign](lumledgerwallet.md#sign)
-- [signMessage](lumledgerwallet.md#signmessage)
-- [signTransaction](lumledgerwallet.md#signtransaction)
-- [signingMode](lumledgerwallet.md#signingmode)
-- [useAccount](lumledgerwallet.md#useaccount)
+- [canChangeAccount](LumLedgerWallet.md#canchangeaccount)
+- [getAddress](LumLedgerWallet.md#getaddress)
+- [getAppConfiguration](LumLedgerWallet.md#getappconfiguration)
+- [getPublicKey](LumLedgerWallet.md#getpublickey)
+- [sign](LumLedgerWallet.md#sign)
+- [signMessage](LumLedgerWallet.md#signmessage)
+- [signTransaction](LumLedgerWallet.md#signtransaction)
+- [signingMode](LumLedgerWallet.md#signingmode)
+- [useAccount](LumLedgerWallet.md#useaccount)
 
 ## Constructors
 
 ### constructor
 
-\+ **new LumLedgerWallet**(`transport`: *Transport*<string\>, `scrambleKey?`: *string*): [*LumLedgerWallet*](lumledgerwallet.md)
+• **new LumLedgerWallet**(`transport`, `scrambleKey?`)
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Default value |
-:------ | :------ | :------ |
-`transport` | *Transport*<string\> | - |
-`scrambleKey` | *string* | 'CSM' |
+| Name | Type | Default value |
+| :------ | :------ | :------ |
+| `transport` | `default` | `undefined` |
+| `scrambleKey` | `string` | `'CSM'` |
 
-**Returns:** [*LumLedgerWallet*](lumledgerwallet.md)
+#### Overrides
 
-Inherited from: [LumWallet](lumwallet.md)
+[LumWallet](LumWallet.md).[constructor](LumWallet.md#constructor)
 
 ## Properties
 
 ### address
 
-• `Protected` `Optional` **address**: *undefined* \| *string*
+• `Protected` `Optional` **address**: `string`
 
-Inherited from: [LumWallet](lumwallet.md).[address](lumwallet.md#address)
+#### Inherited from
+
+[LumWallet](LumWallet.md).[address](LumWallet.md#address)
 
 ___
 
 ### cosmosApp
 
-• **cosmosApp**: *default*
+• **cosmosApp**: `default`
 
 ___
 
 ### hdPath
 
-• `Private` `Optional` **hdPath**: *undefined* \| *string*
+• `Private` `Optional` **hdPath**: `string`
 
 ___
 
 ### publicKey
 
-• `Protected` `Optional` **publicKey**: *undefined* \| *Uint8Array*
+• `Protected` `Optional` **publicKey**: `Uint8Array`
 
-Inherited from: [LumWallet](lumwallet.md).[publicKey](lumwallet.md#publickey)
+#### Inherited from
+
+[LumWallet](LumWallet.md).[publicKey](LumWallet.md#publickey)
 
 ## Methods
 
 ### canChangeAccount
 
-▸ **canChangeAccount**(): *boolean*
+▸ **canChangeAccount**(): `boolean`
 
-**Returns:** *boolean*
+Whether or not the wallet support changing account
+Basically only wallet initialized using a private key should not be able to do so
 
-Inherited from: [LumWallet](lumwallet.md)
+#### Returns
+
+`boolean`
+
+#### Overrides
+
+[LumWallet](LumWallet.md).[canChangeAccount](LumWallet.md#canchangeaccount)
 
 ___
 
 ### getAddress
 
-▸ **getAddress**(): *string*
+▸ **getAddress**(): `string`
 
 Gets the current wallet address
 
-**`see`** [LumWallet.useAccount](lumwallet.md#useaccount)
+**`see`** [LumWallet.useAccount](LumWallet.md#useaccount)
 
-**Returns:** *string*
+#### Returns
+
+`string`
 
 wallet address (Bech32)
 
-Inherited from: [LumWallet](lumwallet.md)
+#### Inherited from
+
+[LumWallet](LumWallet.md).[getAddress](LumWallet.md#getaddress)
 
 ___
 
 ### getAppConfiguration
 
-▸ **getAppConfiguration**(): *Promise*<{ `device_locked`: *boolean* ; `major`: *string* ; `test_mode`: *boolean* ; `version`: *string*  }\>
+▸ **getAppConfiguration**(): `Promise`<`Object`\>
 
 Gets the connected application configuration
 
-**Returns:** *Promise*<{ `device_locked`: *boolean* ; `major`: *string* ; `test_mode`: *boolean* ; `version`: *string*  }\>
+#### Returns
+
+`Promise`<`Object`\>
 
 ___
 
 ### getPublicKey
 
-▸ **getPublicKey**(): *Uint8Array*
+▸ **getPublicKey**(): `Uint8Array`
 
 Gets the current wallet public key
 
-**`see`** [LumWallet.useAccount](lumwallet.md#useaccount)
+**`see`** [LumWallet.useAccount](LumWallet.md#useaccount)
 
-**Returns:** *Uint8Array*
+#### Returns
+
+`Uint8Array`
 
 wallet public key (secp256k1)
 
-Inherited from: [LumWallet](lumwallet.md)
+#### Inherited from
+
+[LumWallet](LumWallet.md).[getPublicKey](LumWallet.md#getpublickey)
 
 ___
 
 ### sign
 
-▸ **sign**(): *Promise*<Uint8Array\>
+▸ **sign**(): `Promise`<`Uint8Array`\>
 
-**Returns:** *Promise*<Uint8Array\>
+Sign a raw payload.
+This method might not be available for all types of wallets such as Ledger.
 
-Inherited from: [LumWallet](lumwallet.md)
+#### Returns
+
+`Promise`<`Uint8Array`\>
+
+#### Overrides
+
+[LumWallet](LumWallet.md).[sign](LumWallet.md#sign)
 
 ___
 
 ### signMessage
 
-▸ **signMessage**(`msg`: *string*): *Promise*<[*SignMsg*](../interfaces/lumtypes.signmsg.md)\>
+▸ **signMessage**(`msg`): `Promise`<[`SignMsg`](../interfaces/LumTypes.SignMsg.md)\>
 
-#### Parameters:
+Sign a message using a LumWallet
+Provided for signature generation and verification as signature will depend on the wallet payload implementation
 
-Name | Type |
-:------ | :------ |
-`msg` | *string* |
+#### Parameters
 
-**Returns:** *Promise*<[*SignMsg*](../interfaces/lumtypes.signmsg.md)\>
+| Name | Type |
+| :------ | :------ |
+| `msg` | `string` |
 
-Inherited from: [LumWallet](lumwallet.md)
+#### Returns
+
+`Promise`<[`SignMsg`](../interfaces/LumTypes.SignMsg.md)\>
+
+#### Overrides
+
+[LumWallet](LumWallet.md).[signMessage](LumWallet.md#signmessage)
 
 ___
 
 ### signTransaction
 
-▸ **signTransaction**(`doc`: [*Doc*](../interfaces/lumtypes.doc.md)): *Promise*<Uint8Array\>
+▸ **signTransaction**(`doc`): `Promise`<`Uint8Array`\>
 
-#### Parameters:
+Sign a transaction document using a LumWallet
 
-Name | Type |
-:------ | :------ |
-`doc` | [*Doc*](../interfaces/lumtypes.doc.md) |
+#### Parameters
 
-**Returns:** *Promise*<Uint8Array\>
+| Name | Type |
+| :------ | :------ |
+| `doc` | [`Doc`](../interfaces/LumTypes.Doc.md) |
 
-Inherited from: [LumWallet](lumwallet.md)
+#### Returns
+
+`Promise`<`Uint8Array`\>
+
+#### Overrides
+
+[LumWallet](LumWallet.md).[signTransaction](LumWallet.md#signtransaction)
 
 ___
 
 ### signingMode
 
-▸ **signingMode**(): SignMode
+▸ **signingMode**(): `SignMode`
 
-**Returns:** SignMode
+Gets the wallet signin mode
 
-Inherited from: [LumWallet](lumwallet.md)
+#### Returns
+
+`SignMode`
+
+#### Overrides
+
+[LumWallet](LumWallet.md).[signingMode](LumWallet.md#signingmode)
 
 ___
 
 ### useAccount
 
-▸ **useAccount**(`hdPath`: *string*, `addressPrefix`: *string*): *Promise*<boolean\>
+▸ **useAccount**(`hdPath`, `addressPrefix`): `Promise`<`boolean`\>
 
-#### Parameters:
+Change the wallet to use
 
-Name | Type |
-:------ | :------ |
-`hdPath` | *string* |
-`addressPrefix` | *string* |
+#### Parameters
 
-**Returns:** *Promise*<boolean\>
+| Name | Type |
+| :------ | :------ |
+| `hdPath` | `string` |
+| `addressPrefix` | `string` |
 
-Inherited from: [LumWallet](lumwallet.md)
+#### Returns
+
+`Promise`<`boolean`\>
+
+#### Overrides
+
+[LumWallet](LumWallet.md).[useAccount](LumWallet.md#useaccount)

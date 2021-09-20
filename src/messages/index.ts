@@ -4,3 +4,6 @@ export * from './beam';
 export * from './distribution';
 export * from './staking';
 export * from './gov';
+export * from './authz';
+export * from './feegrant';
+export * from './slashing';

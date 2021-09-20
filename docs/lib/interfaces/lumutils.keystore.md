@@ -1,6 +1,6 @@
 # Interface: KeyStore
 
-[LumUtils](../modules/lumutils.md).KeyStore
+[LumUtils](../modules/LumUtils.md).KeyStore
 
 KeyStore storage format (web3 secret storage format)
 
@@ -8,40 +8,40 @@ KeyStore storage format (web3 secret storage format)
 
 ### Properties
 
-- [crypto](lumutils.keystore.md#crypto)
-- [id](lumutils.keystore.md#id)
-- [version](lumutils.keystore.md#version)
+- [crypto](LumUtils.KeyStore.md#crypto)
+- [id](LumUtils.KeyStore.md#id)
+- [version](LumUtils.KeyStore.md#version)
 
 ## Properties
 
 ### crypto
 
-• **crypto**: *object*
+• **crypto**: `Object`
 
-#### Type declaration:
+#### Type declaration
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`cipher` | *string* | - |
-`cipherparams` | *object* | - |
-`cipherparams.iv` | *string* | - |
-`ciphertext` | *string* | - |
-`kdf` | *string* | - |
-`kdfparams` | *object* | - |
-`kdfparams.c` | *number* | - |
-`kdfparams.dklen` | *number* | - |
-`kdfparams.prf` | *string* | - |
-`kdfparams.salt` | *string* | - |
-`mac` | *string* | Must use sha3 according to web3 secret storage spec.   |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `cipher` | `string` | - |
+| `cipherparams` | `Object` | - |
+| `cipherparams.iv` | `string` | - |
+| `ciphertext` | `string` | - |
+| `kdf` | `string` | - |
+| `kdfparams` | `Object` | - |
+| `kdfparams.c` | `number` | - |
+| `kdfparams.dklen` | `number` | - |
+| `kdfparams.prf` | `string` | - |
+| `kdfparams.salt` | `string` | - |
+| `mac` | `string` | Must use sha3 according to web3 secret storage spec. |
 
 ___
 
 ### id
 
-• **id**: *string*
+• **id**: `string`
 
 ___
 
 ### version
 
-• **version**: *number*
+• **version**: `number`

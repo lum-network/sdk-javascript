@@ -1,22 +1,22 @@
 # Interface: Coin
 
-[LumTypes](../modules/lumtypes.md).Coin
+[LumTypes](../modules/LumTypes.md).Coin
 
 ## Table of contents
 
 ### Properties
 
-- [amount](lumtypes.coin.md#amount)
-- [denom](lumtypes.coin.md#denom)
+- [amount](LumTypes.Coin.md#amount)
+- [denom](LumTypes.Coin.md#denom)
 
 ## Properties
 
 ### amount
 
-• **amount**: *string*
+• **amount**: `string`
 
 ___
 
 ### denom
 
-• **denom**: *string*
+• **denom**: `string`

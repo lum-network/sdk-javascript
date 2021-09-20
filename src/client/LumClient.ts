@@ -20,10 +20,24 @@ import {
     StakingExtension,
     setupStakingExtension,
 } from '../extensions';
+import { setupSlashingExtension, SlashingExtension } from '../extensions/slashing';
+import { AuthzExtension, setupAuthzExtension } from '../extensions/authz';
+import { FeegrantExtension, setupFeegrantExtension } from '../extensions/feegrant';
 
 export class LumClient {
     readonly tmClient: Tendermint34Client;
-    readonly queryClient: StargateQueryClient & AuthExtension & BankExtension & BeamExtension & DistributionExtension & GovExtension & IbcExtension & MintExtension & StakingExtension;
+    readonly queryClient: StargateQueryClient &
+        AuthExtension &
+        AuthzExtension &
+        BankExtension &
+        BeamExtension &
+        DistributionExtension &
+        GovExtension &
+        IbcExtension &
+        MintExtension &
+        StakingExtension &
+        SlashingExtension &
+        FeegrantExtension;
     private chainId?: string;
 
     /**
@@ -36,6 +50,7 @@ export class LumClient {
         this.queryClient = StargateQueryClient.withExtensions(
             tmClient,
             setupAuthExtension,
+            setupAuthzExtension,
             setupBankExtension,
             setupBeamExtension,
             setupDistributionExtension,
@@ -43,6 +58,8 @@ export class LumClient {
             setupIbcExtension,
             setupMintExtension,
             setupStakingExtension,
+            setupSlashingExtension,
+            setupFeegrantExtension,
         );
 
         // Used for debugging while gasWanted, gasUsed and codespace are still waiting to be included in the code lib

@@ -1,29 +1,29 @@
 # Interface: Account
 
-[LumTypes](../modules/lumtypes.md).Account
+[LumTypes](../modules/LumTypes.md).Account
 
 ## Table of contents
 
 ### Properties
 
-- [accountNumber](lumtypes.account.md#accountnumber)
-- [address](lumtypes.account.md#address)
-- [sequence](lumtypes.account.md#sequence)
+- [accountNumber](LumTypes.Account.md#accountnumber)
+- [address](LumTypes.Account.md#address)
+- [sequence](LumTypes.Account.md#sequence)
 
 ## Properties
 
 ### accountNumber
 
-• `Readonly` **accountNumber**: *number*
+• `Readonly` **accountNumber**: `number`
 
 ___
 
 ### address
 
-• `Readonly` **address**: *string*
+• `Readonly` **address**: `string`
 
 ___
 
 ### sequence
 
-• `Readonly` **sequence**: *number*
+• `Readonly` **sequence**: `number`

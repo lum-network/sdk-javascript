@@ -4,228 +4,248 @@
 
 ### Constructors
 
-- [constructor](lumclient.md#constructor)
+- [constructor](LumClient.md#constructor)
 
 ### Properties
 
-- [chainId](lumclient.md#chainid)
-- [queryClient](lumclient.md#queryclient)
-- [tmClient](lumclient.md#tmclient)
+- [chainId](LumClient.md#chainid)
+- [queryClient](LumClient.md#queryclient)
+- [tmClient](LumClient.md#tmclient)
 
 ### Methods
 
-- [broadcastTx](lumclient.md#broadcasttx)
-- [disconnect](lumclient.md#disconnect)
-- [getAccount](lumclient.md#getaccount)
-- [getAllBalances](lumclient.md#getallbalances)
-- [getAllSupplies](lumclient.md#getallsupplies)
-- [getBalance](lumclient.md#getbalance)
-- [getBlock](lumclient.md#getblock)
-- [getBlockHeight](lumclient.md#getblockheight)
-- [getChainId](lumclient.md#getchainid)
-- [getSupply](lumclient.md#getsupply)
-- [getTx](lumclient.md#gettx)
-- [searchTx](lumclient.md#searchtx)
-- [signAndBroadcastTx](lumclient.md#signandbroadcasttx)
-- [signTx](lumclient.md#signtx)
-- [status](lumclient.md#status)
-- [txsQuery](lumclient.md#txsquery)
-- [connect](lumclient.md#connect)
+- [broadcastTx](LumClient.md#broadcasttx)
+- [disconnect](LumClient.md#disconnect)
+- [getAccount](LumClient.md#getaccount)
+- [getAllBalances](LumClient.md#getallbalances)
+- [getAllSupplies](LumClient.md#getallsupplies)
+- [getBalance](LumClient.md#getbalance)
+- [getBlock](LumClient.md#getblock)
+- [getBlockHeight](LumClient.md#getblockheight)
+- [getChainId](LumClient.md#getchainid)
+- [getSupply](LumClient.md#getsupply)
+- [getTx](LumClient.md#gettx)
+- [searchTx](LumClient.md#searchtx)
+- [signAndBroadcastTx](LumClient.md#signandbroadcasttx)
+- [signTx](LumClient.md#signtx)
+- [status](LumClient.md#status)
+- [txsQuery](LumClient.md#txsquery)
+- [connect](LumClient.md#connect)
 
 ## Constructors
 
 ### constructor
 
-\+ **new LumClient**(`tmClient`: *Tendermint34Client*): [*LumClient*](lumclient.md)
+• **new LumClient**(`tmClient`)
 
 Create a LumClient instance using a tendermint RPC client
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`tmClient` | *Tendermint34Client* | tendermint RPC client    |
-
-**Returns:** [*LumClient*](lumclient.md)
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `tmClient` | `Tendermint34Client` | tendermint RPC client |
 
 ## Properties
 
 ### chainId
 
-• `Private` `Optional` **chainId**: *undefined* \| *string*
+• `Private` `Optional` **chainId**: `string`
 
 ___
 
 ### queryClient
 
-• `Readonly` **queryClient**: *QueryClient* & AuthExtension & BankExtension & BeamExtension & DistributionExtension & GovExtension & IbcExtension & MintExtension & StakingExtension
+• `Readonly` **queryClient**: `QueryClient` & `AuthExtension` & `AuthzExtension` & `BankExtension` & `BeamExtension` & `DistributionExtension` & `GovExtension` & `IbcExtension` & `MintExtension` & `StakingExtension` & `SlashingExtension` & `FeegrantExtension`
 
 ___
 
 ### tmClient
 
-• `Readonly` **tmClient**: *Tendermint34Client*
+• `Readonly` **tmClient**: `Tendermint34Client`
 
 ## Methods
 
 ### broadcastTx
 
-▸ **broadcastTx**(`tx`: *Uint8Array*): *Promise*<BroadcastTxCommitResponse\>
+▸ **broadcastTx**(`tx`): `Promise`<`BroadcastTxCommitResponse`\>
 
 Broadcast a signed transaction
 Basic usage would be to use the signTx method prior to calling this method
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`tx` | *Uint8Array* | signed transaction to broadcast    |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `tx` | `Uint8Array` | signed transaction to broadcast |
 
-**Returns:** *Promise*<BroadcastTxCommitResponse\>
+#### Returns
+
+`Promise`<`BroadcastTxCommitResponse`\>
 
 ___
 
 ### disconnect
 
-▸ **disconnect**(): *void*
+▸ **disconnect**(): `void`
 
 Disconnect the underlying tendermint client
 
-**Returns:** *void*
+#### Returns
+
+`void`
 
 ___
 
 ### getAccount
 
-▸ **getAccount**(`address`: *string*): *Promise*<*null* \| [*Account*](../interfaces/lumtypes.account.md)\>
+▸ **getAccount**(`address`): `Promise`<``null`` \| [`Account`](../interfaces/LumTypes.Account.md)\>
 
 Get account information
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`address` | *string* | wallet address    |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `address` | `string` | wallet address |
 
-**Returns:** *Promise*<*null* \| [*Account*](../interfaces/lumtypes.account.md)\>
+#### Returns
+
+`Promise`<``null`` \| [`Account`](../interfaces/LumTypes.Account.md)\>
 
 ___
 
 ### getAllBalances
 
-▸ **getAllBalances**(`address`: *string*): *Promise*<[*Coin*](../interfaces/lumtypes.coin.md)[]\>
+▸ **getAllBalances**(`address`): `Promise`<[`Coin`](../interfaces/LumTypes.Coin.md)[]\>
 
 Get all account balances
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`address` | *string* | wallet address    |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `address` | `string` | wallet address |
 
-**Returns:** *Promise*<[*Coin*](../interfaces/lumtypes.coin.md)[]\>
+#### Returns
+
+`Promise`<[`Coin`](../interfaces/LumTypes.Coin.md)[]\>
 
 ___
 
 ### getAllSupplies
 
-▸ **getAllSupplies**(): *Promise*<[*Coin*](../interfaces/lumtypes.coin.md)[]\>
+▸ **getAllSupplies**(): `Promise`<[`Coin`](../interfaces/LumTypes.Coin.md)[]\>
 
 Get all coins supplies
 
-**Returns:** *Promise*<[*Coin*](../interfaces/lumtypes.coin.md)[]\>
+#### Returns
+
+`Promise`<[`Coin`](../interfaces/LumTypes.Coin.md)[]\>
 
 ___
 
 ### getBalance
 
-▸ **getBalance**(`address`: *string*, `searchDenom`: *string*): *Promise*<*null* \| [*Coin*](../interfaces/lumtypes.coin.md)\>
+▸ **getBalance**(`address`, `searchDenom`): `Promise`<``null`` \| [`Coin`](../interfaces/LumTypes.Coin.md)\>
 
 Get account balance
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`address` | *string* | wallet address   |
-`searchDenom` | *string* | Coin denomination (ex: lum)    |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `address` | `string` | wallet address |
+| `searchDenom` | `string` | Coin denomination (ex: lum) |
 
-**Returns:** *Promise*<*null* \| [*Coin*](../interfaces/lumtypes.coin.md)\>
+#### Returns
+
+`Promise`<``null`` \| [`Coin`](../interfaces/LumTypes.Coin.md)\>
 
 ___
 
 ### getBlock
 
-▸ **getBlock**(`height?`: *number*): *Promise*<BlockResponse\>
+▸ **getBlock**(`height?`): `Promise`<`BlockResponse`\>
 
 Get a block by height
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`height?` | *number* | block height to get (default to current height)    |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `height?` | `number` | block height to get (default to current height) |
 
-**Returns:** *Promise*<BlockResponse\>
+#### Returns
+
+`Promise`<`BlockResponse`\>
 
 ___
 
 ### getBlockHeight
 
-▸ **getBlockHeight**(): *Promise*<number\>
+▸ **getBlockHeight**(): `Promise`<`number`\>
 
 Get the current block height
 
-**Returns:** *Promise*<number\>
+#### Returns
+
+`Promise`<`number`\>
 
 ___
 
 ### getChainId
 
-▸ **getChainId**(): *Promise*<string\>
+▸ **getChainId**(): `Promise`<`string`\>
 
 Get the chain id
 
-**Returns:** *Promise*<string\>
+#### Returns
+
+`Promise`<`string`\>
 
 ___
 
 ### getSupply
 
-▸ **getSupply**(`searchDenom`: *string*): *Promise*<*null* \| [*Coin*](../interfaces/lumtypes.coin.md)\>
+▸ **getSupply**(`searchDenom`): `Promise`<``null`` \| [`Coin`](../interfaces/LumTypes.Coin.md)\>
 
 Get coin supply
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`searchDenom` | *string* | Coin denomination (ex: lum)    |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `searchDenom` | `string` | Coin denomination (ex: lum) |
 
-**Returns:** *Promise*<*null* \| [*Coin*](../interfaces/lumtypes.coin.md)\>
+#### Returns
+
+`Promise`<``null`` \| [`Coin`](../interfaces/LumTypes.Coin.md)\>
 
 ___
 
 ### getTx
 
-▸ **getTx**(`hash`: *Uint8Array*, `includeProof?`: *boolean*): *Promise*<*null* \| TxResponse\>
+▸ **getTx**(`hash`, `includeProof?`): `Promise`<``null`` \| `TxResponse`\>
 
 Get a transaction by Hash
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`hash` | *Uint8Array* | transaction hash to retrieve   |
-`includeProof?` | *boolean* | whether or not to include proof of the transaction inclusion in the block    |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `hash` | `Uint8Array` | transaction hash to retrieve |
+| `includeProof?` | `boolean` | whether or not to include proof of the transaction inclusion in the block |
 
-**Returns:** *Promise*<*null* \| TxResponse\>
+#### Returns
+
+`Promise`<``null`` \| `TxResponse`\>
 
 ___
 
 ### searchTx
 
-▸ **searchTx**(`queries`: *string*[], `page?`: *number*, `perPage?`: *number*, `includeProof?`: *boolean*): *Promise*<TxResponse[]\>
+▸ **searchTx**(`queries`, `page?`, `perPage?`, `includeProof?`): `Promise`<`TxResponse`[]\>
 
 Search for transactions (paginated)
 All queries will be run and results will be deduplicated, merged and sorted by block height
@@ -235,90 +255,102 @@ To tell which events you want, you need to provide a query. query is a string, w
 Examples: tm.event = 'NewBlock' # new blocks tm.event = 'CompleteProposal' # node got a complete proposal tm.event = 'Tx' AND tx.hash = 'XYZ' # single transaction tm.event = 'Tx' AND tx.height = 5 # all txs of the fifth block tx.height = 5 # all txs of the fifth block
 Tendermint provides a few predefined keys: tm.event, tx.hash and tx.height. Note for transactions, you can define additional keys by providing events with DeliverTx response.
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Default value | Description |
-:------ | :------ | :------ | :------ |
-`queries` | *string*[] | - | queries to run (see utils/search for helpers)   |
-`page` | *number* | 1 | page to query (default to 1)   |
-`perPage` | *number* | 30 | results per pages (default to 30)   |
-`includeProof?` | *boolean* | - | whether or not to include proofs of the transactions inclusion in the block    |
+| Name | Type | Default value | Description |
+| :------ | :------ | :------ | :------ |
+| `queries` | `string`[] | `undefined` | queries to run (see utils/search for helpers) |
+| `page` | `number` | `1` | page to query (default to 1) |
+| `perPage` | `number` | `30` | results per pages (default to 30) |
+| `includeProof?` | `boolean` | `undefined` | whether or not to include proofs of the transactions inclusion in the block |
 
-**Returns:** *Promise*<TxResponse[]\>
+#### Returns
+
+`Promise`<`TxResponse`[]\>
 
 ___
 
 ### signAndBroadcastTx
 
-▸ **signAndBroadcastTx**(`wallet`: [*LumWallet*](lumwallet.md) \| [*LumWallet*](lumwallet.md)[], `doc`: [*Doc*](../interfaces/lumtypes.doc.md)): *Promise*<BroadcastTxCommitResponse\>
+▸ **signAndBroadcastTx**(`wallet`, `doc`): `Promise`<`BroadcastTxCommitResponse`\>
 
 Signs and broadcast the transaction using the specified wallet and messages
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`wallet` | [*LumWallet*](lumwallet.md) \| [*LumWallet*](lumwallet.md)[] | signing wallet or wallets for multi signature   |
-`doc` | [*Doc*](../interfaces/lumtypes.doc.md) | document to sign and broadcast as a transaction    |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `wallet` | [`LumWallet`](LumWallet.md) \| [`LumWallet`](LumWallet.md)[] | signing wallet or wallets for multi signature |
+| `doc` | [`Doc`](../interfaces/LumTypes.Doc.md) | document to sign and broadcast as a transaction |
 
-**Returns:** *Promise*<BroadcastTxCommitResponse\>
+#### Returns
+
+`Promise`<`BroadcastTxCommitResponse`\>
 
 ___
 
 ### signTx
 
-▸ **signTx**(`wallet`: [*LumWallet*](lumwallet.md) \| [*LumWallet*](lumwallet.md)[], `doc`: [*Doc*](../interfaces/lumtypes.doc.md)): *Promise*<Uint8Array\>
+▸ **signTx**(`wallet`, `doc`): `Promise`<`Uint8Array`\>
 
 Signs the messages using the provided wallet and builds the transaction
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`wallet` | [*LumWallet*](lumwallet.md) \| [*LumWallet*](lumwallet.md)[] | signing wallet or wallets for multi signature   |
-`doc` | [*Doc*](../interfaces/lumtypes.doc.md) | document to sign    |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `wallet` | [`LumWallet`](LumWallet.md) \| [`LumWallet`](LumWallet.md)[] | signing wallet or wallets for multi signature |
+| `doc` | [`Doc`](../interfaces/LumTypes.Doc.md) | document to sign |
 
-**Returns:** *Promise*<Uint8Array\>
+#### Returns
+
+`Promise`<`Uint8Array`\>
 
 ___
 
 ### status
 
-▸ **status**(): *Promise*<StatusResponse\>
+▸ **status**(): `Promise`<`StatusResponse`\>
 
 Get the connected node status information
 
-**Returns:** *Promise*<StatusResponse\>
+#### Returns
+
+`Promise`<`StatusResponse`\>
 
 ___
 
 ### txsQuery
 
-▸ `Private`**txsQuery**(`params`: TxSearchParams): *Promise*<readonly TxResponse[]\>
+▸ `Private` **txsQuery**(`params`): `Promise`<readonly `TxResponse`[]\>
 
 Run a tx search
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`params` | TxSearchParams | Search params    |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `params` | `TxSearchParams` | Search params |
 
-**Returns:** *Promise*<readonly TxResponse[]\>
+#### Returns
+
+`Promise`<readonly `TxResponse`[]\>
 
 ___
 
 ### connect
 
-▸ `Static`**connect**(`endpoint`: *string*): *Promise*<[*LumClient*](lumclient.md)\>
+▸ `Static` **connect**(`endpoint`): `Promise`<[`LumClient`](LumClient.md)\>
 
 Creates a new LumClient for the given endpoint
 Uses HTTP when the URL schema is http or https, uses WebSockets otherwise
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`endpoint` | *string* | Blockchain node RPC url    |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `endpoint` | `string` | Blockchain node RPC url |
 
-**Returns:** *Promise*<[*LumClient*](lumclient.md)\>
+#### Returns
+
+`Promise`<[`LumClient`](LumClient.md)\>

@@ -4,32 +4,32 @@
 
 ### Enumerations
 
-- [LumMessageSigner](../enums/lumconstants.lummessagesigner.md)
+- [LumMessageSigner](../enums/LumConstants.LumMessageSigner.md)
 
 ### Variables
 
-- [HDPath](lumconstants.md#hdpath)
-- [LumBech32PrefixAccAddr](lumconstants.md#lumbech32prefixaccaddr)
-- [LumBech32PrefixAccPub](lumconstants.md#lumbech32prefixaccpub)
-- [LumBech32PrefixConsAddr](lumconstants.md#lumbech32prefixconsaddr)
-- [LumBech32PrefixConsPub](lumconstants.md#lumbech32prefixconspub)
-- [LumBech32PrefixValAddr](lumconstants.md#lumbech32prefixvaladdr)
-- [LumBech32PrefixValPub](lumconstants.md#lumbech32prefixvalpub)
-- [LumDenom](lumconstants.md#lumdenom)
-- [LumExponent](lumconstants.md#lumexponent)
-- [LumWalletSigningVersion](lumconstants.md#lumwalletsigningversion)
-- [MicroLumDenom](lumconstants.md#microlumdenom)
-- [PrivateKeyLength](lumconstants.md#privatekeylength)
+- [HDPath](LumConstants.md#hdpath)
+- [LumBech32PrefixAccAddr](LumConstants.md#lumbech32prefixaccaddr)
+- [LumBech32PrefixAccPub](LumConstants.md#lumbech32prefixaccpub)
+- [LumBech32PrefixConsAddr](LumConstants.md#lumbech32prefixconsaddr)
+- [LumBech32PrefixConsPub](LumConstants.md#lumbech32prefixconspub)
+- [LumBech32PrefixValAddr](LumConstants.md#lumbech32prefixvaladdr)
+- [LumBech32PrefixValPub](LumConstants.md#lumbech32prefixvalpub)
+- [LumDenom](LumConstants.md#lumdenom)
+- [LumExponent](LumConstants.md#lumexponent)
+- [LumWalletSigningVersion](LumConstants.md#lumwalletsigningversion)
+- [MicroLumDenom](LumConstants.md#microlumdenom)
+- [PrivateKeyLength](LumConstants.md#privatekeylength)
 
 ### Functions
 
-- [getLumHdPath](lumconstants.md#getlumhdpath)
+- [getLumHdPath](LumConstants.md#getlumhdpath)
 
 ## Variables
 
 ### HDPath
 
-• `Const` **HDPath**: *m/44'/837'/0'/*= "m/44'/837'/0'/"
+• **HDPath**: ``"m/44'/837'/0'/"``
 
 Lum Network HDPath
 
@@ -41,7 +41,7 @@ ___
 
 ### LumBech32PrefixAccAddr
 
-• `Const` **LumBech32PrefixAccAddr**: *lum*= 'lum'
+• **LumBech32PrefixAccAddr**: ``"lum"``
 
 Lum Network Bech32 prefix of an account's address
 
@@ -49,7 +49,7 @@ ___
 
 ### LumBech32PrefixAccPub
 
-• `Const` **LumBech32PrefixAccPub**: *lumpub*= 'lumpub'
+• **LumBech32PrefixAccPub**: ``"lumpub"``
 
 Lum Network Bech32 prefix of an account's public key
 
@@ -57,7 +57,7 @@ ___
 
 ### LumBech32PrefixConsAddr
 
-• `Const` **LumBech32PrefixConsAddr**: *lumvalcons*= 'lumvalcons'
+• **LumBech32PrefixConsAddr**: ``"lumvalcons"``
 
 Lum Network Bech32 prefix of a consensus node address
 
@@ -65,7 +65,7 @@ ___
 
 ### LumBech32PrefixConsPub
 
-• `Const` **LumBech32PrefixConsPub**: *lumvalconspub*= 'lumvalconspub'
+• **LumBech32PrefixConsPub**: ``"lumvalconspub"``
 
 Lum Network Bech32 prefix of a consensus node public key
 
@@ -73,7 +73,7 @@ ___
 
 ### LumBech32PrefixValAddr
 
-• `Const` **LumBech32PrefixValAddr**: *lumvaloper*= 'lumvaloper'
+• **LumBech32PrefixValAddr**: ``"lumvaloper"``
 
 Lum Network Bech32 prefix of a validator's operator address
 
@@ -81,7 +81,7 @@ ___
 
 ### LumBech32PrefixValPub
 
-• `Const` **LumBech32PrefixValPub**: *lumvaloperpub*= 'lumvaloperpub'
+• **LumBech32PrefixValPub**: ``"lumvaloperpub"``
 
 Lum Network Bech32 prefix of a validator's operator public key
 
@@ -89,7 +89,7 @@ ___
 
 ### LumDenom
 
-• `Const` **LumDenom**: *lum*= 'lum'
+• **LumDenom**: ``"lum"``
 
 Lum Coin denomination
 
@@ -97,7 +97,7 @@ ___
 
 ### LumExponent
 
-• `Const` **LumExponent**: *6*= 6
+• **LumExponent**: ``6``
 
 Lum Exponent
 1 lum = 10^6 ulum
@@ -106,7 +106,7 @@ ___
 
 ### LumWalletSigningVersion
 
-• `Const` **LumWalletSigningVersion**: *1*= '1'
+• **LumWalletSigningVersion**: ``"1"``
 
 Signing version of the SDK
 
@@ -114,7 +114,7 @@ ___
 
 ### MicroLumDenom
 
-• `Const` **MicroLumDenom**: *ulum*= 'ulum'
+• **MicroLumDenom**: ``"ulum"``
 
 Micro Lum Coin denomination
 
@@ -122,7 +122,7 @@ ___
 
 ### PrivateKeyLength
 
-• `Const` **PrivateKeyLength**: *32*= 32
+• **PrivateKeyLength**: ``32``
 
 Private Key length
 
@@ -130,15 +130,17 @@ Private Key length
 
 ### getLumHdPath
 
-▸ `Const`**getLumHdPath**(`accountIndex?`: *number*, `walletIndex?`: *number*): *string*
+▸ `Const` **getLumHdPath**(`accountIndex?`, `walletIndex?`): `string`
 
 Get a Lum Network HDPath for a specified account index
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Default value | Description |
-:------ | :------ | :------ | :------ |
-`accountIndex` | *number* | 0 | appended at the end of the default Lum derivation path    |
-`walletIndex` | *number* | 0 | - |
+| Name | Type | Default value | Description |
+| :------ | :------ | :------ | :------ |
+| `accountIndex` | `number` | `0` | appended at the end of the default Lum derivation path |
+| `walletIndex` | `number` | `0` | - |
 
-**Returns:** *string*
+#### Returns
+
+`string`

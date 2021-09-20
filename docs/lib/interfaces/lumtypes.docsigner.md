@@ -1,20 +1,20 @@
 # Interface: DocSigner
 
-[LumTypes](../modules/lumtypes.md).DocSigner
+[LumTypes](../modules/LumTypes.md).DocSigner
 
 ## Table of contents
 
 ### Properties
 
-- [accountNumber](lumtypes.docsigner.md#accountnumber)
-- [publicKey](lumtypes.docsigner.md#publickey)
-- [sequence](lumtypes.docsigner.md#sequence)
+- [accountNumber](LumTypes.DocSigner.md#accountnumber)
+- [publicKey](LumTypes.DocSigner.md#publickey)
+- [sequence](LumTypes.DocSigner.md#sequence)
 
 ## Properties
 
 ### accountNumber
 
-• **accountNumber**: *number*
+• **accountNumber**: `number`
 
 the account number of the account in state
 
@@ -22,7 +22,7 @@ ___
 
 ### publicKey
 
-• **publicKey**: *Uint8Array*
+• **publicKey**: `Uint8Array`
 
 account public key
 
@@ -30,6 +30,6 @@ ___
 
 ### sequence
 
-• **sequence**: *number*
+• **sequence**: `number`
 
 current account sequence
