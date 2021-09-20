@@ -1,6 +1,6 @@
 # Interface: Commission
 
-[LumTypes](../modules/lumtypes.md).Commission
+[LumTypes](../modules/LumTypes.md).Commission
 
 Commission defines commission parameters for a given validator.
 
@@ -8,17 +8,17 @@ Commission defines commission parameters for a given validator.
 
 ### Properties
 
-- [commissionRates](lumtypes.commission.md#commissionrates)
-- [updateTime](lumtypes.commission.md#updatetime)
+- [commissionRates](LumTypes.Commission.md#commissionrates)
+- [updateTime](LumTypes.Commission.md#updatetime)
 
 ## Properties
 
 ### commissionRates
 
-• `Optional` **commissionRates**: *undefined* \| [*CommissionRates*](lumtypes.commissionrates.md)
+• `Optional` **commissionRates**: [`CommissionRates`](LumTypes.CommissionRates.md)
 
 ___
 
 ### updateTime
 
-• `Optional` **updateTime**: *undefined* \| Date
+• `Optional` **updateTime**: `Date`

@@ -1,22 +1,22 @@
 # Interface: LogAttribute
 
-[LumTypes](../modules/lumtypes.md).LogAttribute
+[LumTypes](../modules/LumTypes.md).LogAttribute
 
 ## Table of contents
 
 ### Properties
 
-- [key](lumtypes.logattribute.md#key)
-- [value](lumtypes.logattribute.md#value)
+- [key](LumTypes.LogAttribute.md#key)
+- [value](LumTypes.LogAttribute.md#value)
 
 ## Properties
 
 ### key
 
-• `Readonly` **key**: *string*
+• `Readonly` **key**: `string`
 
 ___
 
 ### value
 
-• `Readonly` **value**: *string*
+• `Readonly` **value**: `string`

@@ -1,23 +1,23 @@
 # Interface: SignMsg
 
-[LumTypes](../modules/lumtypes.md).SignMsg
+[LumTypes](../modules/LumTypes.md).SignMsg
 
 ## Table of contents
 
 ### Properties
 
-- [address](lumtypes.signmsg.md#address)
-- [msg](lumtypes.signmsg.md#msg)
-- [publicKey](lumtypes.signmsg.md#publickey)
-- [sig](lumtypes.signmsg.md#sig)
-- [signer](lumtypes.signmsg.md#signer)
-- [version](lumtypes.signmsg.md#version)
+- [address](LumTypes.SignMsg.md#address)
+- [msg](LumTypes.SignMsg.md#msg)
+- [publicKey](LumTypes.SignMsg.md#publickey)
+- [sig](LumTypes.SignMsg.md#sig)
+- [signer](LumTypes.SignMsg.md#signer)
+- [version](LumTypes.SignMsg.md#version)
 
 ## Properties
 
 ### address
 
-• **address**: *string*
+• **address**: `string`
 
 Address of the signer
 
@@ -25,7 +25,7 @@ ___
 
 ### msg
 
-• **msg**: *string*
+• **msg**: `string`
 
 Message
 
@@ -33,7 +33,7 @@ ___
 
 ### publicKey
 
-• **publicKey**: *Uint8Array*
+• **publicKey**: `Uint8Array`
 
 publicKey of the signer
 
@@ -41,7 +41,7 @@ ___
 
 ### sig
 
-• **sig**: *Uint8Array*
+• **sig**: `Uint8Array`
 
 Message signature
 
@@ -49,7 +49,7 @@ ___
 
 ### signer
 
-• **signer**: [*LumMessageSigner*](../enums/lumconstants.lummessagesigner.md)
+• **signer**: [`LumMessageSigner`](../enums/LumConstants.LumMessageSigner.md)
 
 Signer wallet identifier
 
@@ -57,6 +57,6 @@ ___
 
 ### version
 
-• **version**: *string*
+• **version**: `string`
 
 Signing version

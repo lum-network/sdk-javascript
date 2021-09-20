@@ -1,6 +1,6 @@
 # Interface: Description
 
-[LumTypes](../modules/lumtypes.md).Description
+[LumTypes](../modules/LumTypes.md).Description
 
 Description defines a validator description.
 
@@ -8,38 +8,38 @@ Description defines a validator description.
 
 ### Properties
 
-- [details](lumtypes.description.md#details)
-- [identity](lumtypes.description.md#identity)
-- [moniker](lumtypes.description.md#moniker)
-- [securityContact](lumtypes.description.md#securitycontact)
-- [website](lumtypes.description.md#website)
+- [details](LumTypes.Description.md#details)
+- [identity](LumTypes.Description.md#identity)
+- [moniker](LumTypes.Description.md#moniker)
+- [securityContact](LumTypes.Description.md#securitycontact)
+- [website](LumTypes.Description.md#website)
 
 ## Properties
 
 ### details
 
-• **details**: *string*
+• **details**: `string`
 
 ___
 
 ### identity
 
-• **identity**: *string*
+• **identity**: `string`
 
 ___
 
 ### moniker
 
-• **moniker**: *string*
+• **moniker**: `string`
 
 ___
 
 ### securityContact
 
-• **securityContact**: *string*
+• **securityContact**: `string`
 
 ___
 
 ### website
 
-• **website**: *string*
+• **website**: `string`

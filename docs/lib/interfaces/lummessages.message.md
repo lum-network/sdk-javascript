@@ -1,22 +1,22 @@
 # Interface: Message
 
-[LumMessages](../modules/lummessages.md).Message
+[LumMessages](../modules/LumMessages.md).Message
 
 ## Table of contents
 
 ### Properties
 
-- [typeUrl](lummessages.message.md#typeurl)
-- [value](lummessages.message.md#value)
+- [typeUrl](LumMessages.Message.md#typeurl)
+- [value](LumMessages.Message.md#value)
 
 ## Properties
 
 ### typeUrl
 
-• **typeUrl**: *string*
+• **typeUrl**: `string`
 
 ___
 
 ### value
 
-• **value**: *unknown*
+• **value**: `unknown`

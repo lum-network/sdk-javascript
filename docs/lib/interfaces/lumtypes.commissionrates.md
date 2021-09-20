@@ -1,29 +1,29 @@
 # Interface: CommissionRates
 
-[LumTypes](../modules/lumtypes.md).CommissionRates
+[LumTypes](../modules/LumTypes.md).CommissionRates
 
 ## Table of contents
 
 ### Properties
 
-- [maxChangeRate](lumtypes.commissionrates.md#maxchangerate)
-- [maxRate](lumtypes.commissionrates.md#maxrate)
-- [rate](lumtypes.commissionrates.md#rate)
+- [maxChangeRate](LumTypes.CommissionRates.md#maxchangerate)
+- [maxRate](LumTypes.CommissionRates.md#maxrate)
+- [rate](LumTypes.CommissionRates.md#rate)
 
 ## Properties
 
 ### maxChangeRate
 
-• **maxChangeRate**: *string*
+• **maxChangeRate**: `string`
 
 ___
 
 ### maxRate
 
-• **maxRate**: *string*
+• **maxRate**: `string`
 
 ___
 
 ### rate
 
-• **rate**: *string*
+• **rate**: `string`

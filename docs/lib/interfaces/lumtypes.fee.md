@@ -1,22 +1,22 @@
 # Interface: Fee
 
-[LumTypes](../modules/lumtypes.md).Fee
+[LumTypes](../modules/LumTypes.md).Fee
 
 ## Table of contents
 
 ### Properties
 
-- [amount](lumtypes.fee.md#amount)
-- [gas](lumtypes.fee.md#gas)
+- [amount](LumTypes.Fee.md#amount)
+- [gas](LumTypes.Fee.md#gas)
 
 ## Properties
 
 ### amount
 
-• **amount**: readonly [*Coin*](lumtypes.coin.md)[]
+• **amount**: readonly [`Coin`](LumTypes.Coin.md)[]
 
 ___
 
 ### gas
 
-• **gas**: *string*
+• **gas**: `string`

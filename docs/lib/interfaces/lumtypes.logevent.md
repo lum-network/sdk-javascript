@@ -1,22 +1,22 @@
 # Interface: LogEvent
 
-[LumTypes](../modules/lumtypes.md).LogEvent
+[LumTypes](../modules/LumTypes.md).LogEvent
 
 ## Table of contents
 
 ### Properties
 
-- [attributes](lumtypes.logevent.md#attributes)
-- [type](lumtypes.logevent.md#type)
+- [attributes](LumTypes.LogEvent.md#attributes)
+- [type](LumTypes.LogEvent.md#type)
 
 ## Properties
 
 ### attributes
 
-• `Readonly` **attributes**: readonly [*LogAttribute*](lumtypes.logattribute.md)[]
+• `Readonly` **attributes**: readonly [`LogAttribute`](LumTypes.LogAttribute.md)[]
 
 ___
 
 ### type
 
-• `Readonly` **type**: *string*
+• `Readonly` **type**: `string`

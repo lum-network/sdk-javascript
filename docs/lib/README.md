@@ -4,18 +4,18 @@
 
 ### Namespaces
 
-- [LumConstants](modules/lumconstants.md)
-- [LumMessages](modules/lummessages.md)
-- [LumTypes](modules/lumtypes.md)
-- [LumUtils](modules/lumutils.md)
+- [LumConstants](modules/LumConstants.md)
+- [LumMessages](modules/LumMessages.md)
+- [LumTypes](modules/LumTypes.md)
+- [LumUtils](modules/LumUtils.md)
 
 ### Classes
 
-- [LumClient](classes/lumclient.md)
-- [LumLedgerWallet](classes/lumledgerwallet.md)
-- [LumPaperWallet](classes/lumpaperwallet.md)
-- [LumWallet](classes/lumwallet.md)
-- [LumWalletFactory](classes/lumwalletfactory.md)
+- [LumClient](classes/LumClient.md)
+- [LumLedgerWallet](classes/LumLedgerWallet.md)
+- [LumPaperWallet](classes/LumPaperWallet.md)
+- [LumWallet](classes/LumWallet.md)
+- [LumWalletFactory](classes/LumWalletFactory.md)
 
 ### Variables
 
@@ -26,10 +26,10 @@
 
 ### LumAminoRegistry
 
-• `Const` **LumAminoRegistry**: *AminoTypes*
+• **LumAminoRegistry**: `AminoTypes`
 
 ___
 
 ### LumRegistry
 
-• `Const` **LumRegistry**: *ExtendedRegistry*
+• **LumRegistry**: `ExtendedRegistry`

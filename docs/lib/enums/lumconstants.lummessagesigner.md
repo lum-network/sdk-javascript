@@ -1,6 +1,6 @@
 # Enumeration: LumMessageSigner
 
-[LumConstants](../modules/lumconstants.md).LumMessageSigner
+[LumConstants](../modules/LumConstants.md).LumMessageSigner
 
 Signing wallets
 
@@ -8,17 +8,17 @@ Signing wallets
 
 ### Enumeration members
 
-- [LEDGER](lumconstants.lummessagesigner.md#ledger)
-- [PAPER](lumconstants.lummessagesigner.md#paper)
+- [LEDGER](LumConstants.LumMessageSigner.md#ledger)
+- [PAPER](LumConstants.LumMessageSigner.md#paper)
 
 ## Enumeration members
 
 ### LEDGER
 
-• **LEDGER**: = "lum-sdk/ledger"
+• **LEDGER** = `"lum-sdk/ledger"`
 
 ___
 
 ### PAPER
 
-• **PAPER**: = "lum-sdk/paper"
+• **PAPER** = `"lum-sdk/paper"`
