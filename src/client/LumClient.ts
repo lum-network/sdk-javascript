@@ -272,7 +272,8 @@ export class LumClient {
         if (wallets.length < 1) {
             throw new Error('At least one wallet is required to sign the transaction');
         }
-        const signDoc = LumUtils.generateSignDoc(doc, 0, wallets[0].signingMode());
+
+        let signDoc: LumTypes.SignDoc | undefined = undefined;
         const signatures: Uint8Array[] = [];
 
         for (let i = 0; i < wallets.length; i++) {
@@ -280,7 +281,14 @@ export class LumClient {
             if (!account) {
                 throw new Error(`Account not found for wallet at index ${i}`);
             }
-            signatures.push(await wallets[i].signTransaction(doc));
+            const [walletSignedDoc, signature] = await wallets[i].signTransaction(doc);
+            if (i === 0) {
+                signDoc = walletSignedDoc;
+            }
+            signatures.push(signature);
+        }
+        if (!signDoc) {
+            throw new Error('Impossible error to avoid typescript warnings');
         }
         return LumUtils.generateTxBytes(signDoc, signatures);
     };

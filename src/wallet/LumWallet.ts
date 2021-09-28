@@ -64,7 +64,7 @@ export abstract class LumWallet {
      *
      * @param doc document to sign
      */
-    abstract signTransaction(doc: LumTypes.Doc): Promise<Uint8Array>;
+    abstract signTransaction(doc: LumTypes.Doc): Promise<[LumTypes.SignDoc, Uint8Array]>;
 
     /**
      * Sign a message using a LumWallet

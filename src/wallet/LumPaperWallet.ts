@@ -52,7 +52,7 @@ export class LumPaperWallet extends LumWallet {
         return signature;
     };
 
-    signTransaction = async (doc: LumTypes.Doc): Promise<Uint8Array> => {
+    signTransaction = async (doc: LumTypes.Doc): Promise<[LumTypes.SignDoc, Uint8Array]> => {
         if (!this.privateKey || !this.publicKey) {
             throw new Error('No account selected.');
         }
@@ -67,7 +67,7 @@ export class LumPaperWallet extends LumWallet {
         const signBytes = LumUtils.generateSignDocBytes(signDoc);
         const hashedMessage = LumUtils.sha256(signBytes);
         const signature = await LumUtils.generateSignature(hashedMessage, this.privateKey);
-        return signature;
+        return [signDoc, signature];
     };
 
     signMessage = async (msg: string): Promise<LumTypes.SignMsg> => {

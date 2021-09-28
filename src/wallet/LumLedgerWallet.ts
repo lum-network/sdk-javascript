@@ -47,7 +47,7 @@ export class LumLedgerWallet extends LumWallet {
         throw new Error('Feature not supported.');
     };
 
-    signTransaction = async (doc: LumTypes.Doc): Promise<Uint8Array> => {
+    signTransaction = async (doc: LumTypes.Doc): Promise<[LumTypes.SignDoc, Uint8Array]> => {
         if (!this.hdPath) {
             throw new Error('No account selected.');
         }
@@ -76,7 +76,7 @@ export class LumLedgerWallet extends LumWallet {
             throw new Error(`Failed to sign message: error code ${return_code}`);
         }
         const sig = ExtendedSecp256k1Signature.fromDer(signature);
-        return new Uint8Array([...sig.r(32), ...sig.s(32)]);
+        return [LumUtils.generateSignDoc(doc, signerIndex, this.signingMode()), new Uint8Array([...sig.r(32), ...sig.s(32)])];
     };
 
     signMessage = async (msg: string): Promise<LumTypes.SignMsg> => {

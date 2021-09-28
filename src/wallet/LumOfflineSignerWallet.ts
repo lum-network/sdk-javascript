@@ -42,7 +42,7 @@ export class LumOfflineSignerWallet extends LumWallet {
         throw new Error('Feature not supported.');
     };
 
-    signTransaction = async (doc: LumTypes.Doc): Promise<Uint8Array> => {
+    signTransaction = async (doc: LumTypes.Doc): Promise<[LumTypes.SignDoc, Uint8Array]> => {
         if (!this.address || !this.publicKey) {
             throw new Error('No account selected.');
         }
@@ -55,7 +55,7 @@ export class LumOfflineSignerWallet extends LumWallet {
         }
         const signDoc = LumUtils.generateSignDoc(doc, signerIndex, this.signingMode());
         const response = await this.offlineSigner.signDirect(this.address, signDoc);
-        return LumUtils.fromBase64(response.signature.signature);
+        return [response.signed, LumUtils.fromBase64(response.signature.signature)];
     };
 
     signMessage = async (msg: string): Promise<LumTypes.SignMsg> => {
