@@ -9,6 +9,7 @@ Signing wallets
 ### Enumeration members
 
 - [LEDGER](LumConstants.LumMessageSigner.md#ledger)
+- [OFFLINE](LumConstants.LumMessageSigner.md#offline)
 - [PAPER](LumConstants.LumMessageSigner.md#paper)
 
 ## Enumeration members
@@ -16,6 +17,12 @@ Signing wallets
 ### LEDGER
 
 • **LEDGER** = `"lum-sdk/ledger"`
+
+___
+
+### OFFLINE
+
+• **OFFLINE** = `"lum-sdk/offline"`
 
 ___
 

@@ -90,7 +90,7 @@ export class LumLedgerWallet extends LumWallet {
         // that is only provided for basic message signature and verification
         const msgToSign = {
             'account_number': '0',
-            'chain_id': 'lum-signature-only',
+            'chain_id': LumConstants.LumSignOnlyChainId,
             'fee': {},
             'memo': msg,
             'msgs': [],
