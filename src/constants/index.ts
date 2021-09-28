@@ -77,4 +77,10 @@ export const LumWalletSigningVersion = '1';
 export enum LumMessageSigner {
     PAPER = 'lum-sdk/paper',
     LEDGER = 'lum-sdk/ledger',
+    OFFLINE = 'lum-sdk/offline',
 }
+
+/**
+ * Chain ID used for message signature by wallet implementations that require one
+ */
+export const LumSignOnlyChainId = 'lum-signature-only';

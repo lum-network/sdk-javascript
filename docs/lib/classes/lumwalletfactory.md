@@ -11,6 +11,7 @@
 - [fromKeyStore](LumWalletFactory.md#fromkeystore)
 - [fromLedgerTransport](LumWalletFactory.md#fromledgertransport)
 - [fromMnemonic](LumWalletFactory.md#frommnemonic)
+- [fromOfflineSigner](LumWalletFactory.md#fromofflinesigner)
 - [fromPrivateKey](LumWalletFactory.md#fromprivatekey)
 
 ## Constructors
@@ -74,6 +75,24 @@ Create a LumWallet instance based on a mnemonic and a derivation path
 | `mnemonic` | `string` | mnemonic used to derive the private key |
 | `hdPath` | `string` | BIP44 derivation path |
 | `addressPrefix` | `string` | prefix to use to derive the address from the public key (ex: lum) |
+
+#### Returns
+
+`Promise`<[`LumWallet`](LumWallet.md)\>
+
+___
+
+### fromOfflineSigner
+
+▸ `Static` **fromOfflineSigner**(`offlineSigner`): `Promise`<[`LumWallet`](LumWallet.md)\>
+
+Create a LumWallet instance based on an OfflineDirectSigner instance compatible with Comsjs based implementations.
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `offlineSigner` | `OfflineDirectSigner` | OfflineDirectSigner instance compatible with Comsjs based implementations |
 
 #### Returns
 

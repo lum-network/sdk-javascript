@@ -17,6 +17,7 @@
 - [LumBech32PrefixValPub](LumConstants.md#lumbech32prefixvalpub)
 - [LumDenom](LumConstants.md#lumdenom)
 - [LumExponent](LumConstants.md#lumexponent)
+- [LumSignOnlyChainId](LumConstants.md#lumsignonlychainid)
 - [LumWalletSigningVersion](LumConstants.md#lumwalletsigningversion)
 - [MicroLumDenom](LumConstants.md#microlumdenom)
 - [PrivateKeyLength](LumConstants.md#privatekeylength)
@@ -101,6 +102,14 @@ ___
 
 Lum Exponent
 1 lum = 10^6 ulum
+
+___
+
+### LumSignOnlyChainId
+
+• **LumSignOnlyChainId**: ``"lum-signature-only"``
+
+Chain ID used for message signature by wallet implementations that require one
 
 ___
 

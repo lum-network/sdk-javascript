@@ -6,7 +6,7 @@ import { makeSignBytes } from '@cosmjs/proto-signing';
 import { TxRaw, AuthInfo } from '../codec/cosmos/tx/v1beta1/tx';
 import { SignMode } from '../codec/cosmos/tx/signing/v1beta1/signing';
 
-import { LumMessageSigner } from '../constants';
+import { LumMessageSigner, LumSignOnlyChainId } from '../constants';
 import { Fee, Doc, SignDoc, SignMsg, DocSigner } from '../types';
 import { LumRegistry } from '../registry';
 import { sortJSON } from './commons';
@@ -125,13 +125,22 @@ export const verifySignMsg = async (msg: SignMsg): Promise<boolean> => {
     }
     if (msg.signer === LumMessageSigner.PAPER) {
         return verifySignature(msg.sig, toAscii(msg.msg), msg.publicKey);
+    } else if (msg.signer === LumMessageSigner.OFFLINE) {
+        const signDoc = {
+            bodyBytes: toAscii(msg.msg),
+            authInfoBytes: generateAuthInfoBytes([{ accountNumber: 0, sequence: 0, publicKey: msg.publicKey }], { amount: [], gas: '0' }, SignMode.SIGN_MODE_DIRECT),
+            chainId: LumSignOnlyChainId,
+            accountNumber: Long.fromNumber(0),
+        };
+        const signedBytes = generateSignDocBytes(signDoc);
+        return verifySignature(msg.sig, signedBytes, msg.publicKey);
     } else if (msg.signer === LumMessageSigner.LEDGER) {
         // Re-generate ledger required amino payload to sign messages
         // This is basically an empty transaction payload
         // Same a used in the LumLedgerWallet > signMessage method
         const msgToSign = {
             'account_number': '0',
-            'chain_id': 'lum-signature-only',
+            'chain_id': LumSignOnlyChainId,
             'fee': {},
             'memo': msg.msg,
             'msgs': [],
