@@ -614,6 +614,10 @@ export class MsgClientImpl implements Msg {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.SubmitProposal = this.SubmitProposal.bind(this);
+        this.Vote = this.Vote.bind(this);
+        this.VoteWeighted = this.VoteWeighted.bind(this);
+        this.Deposit = this.Deposit.bind(this);
     }
     SubmitProposal(request: MsgSubmitProposal): Promise<MsgSubmitProposalResponse> {
         const data = MsgSubmitProposal.encode(request).finish();

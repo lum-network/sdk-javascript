@@ -119,6 +119,7 @@ export class MsgClientImpl implements Msg {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.Unjail = this.Unjail.bind(this);
     }
     Unjail(request: MsgUnjail): Promise<MsgUnjailResponse> {
         const data = MsgUnjail.encode(request).finish();

@@ -4809,6 +4809,21 @@ export class ABCIApplicationClientImpl implements ABCIApplication {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.Echo = this.Echo.bind(this);
+        this.Flush = this.Flush.bind(this);
+        this.Info = this.Info.bind(this);
+        this.SetOption = this.SetOption.bind(this);
+        this.DeliverTx = this.DeliverTx.bind(this);
+        this.CheckTx = this.CheckTx.bind(this);
+        this.Query = this.Query.bind(this);
+        this.Commit = this.Commit.bind(this);
+        this.InitChain = this.InitChain.bind(this);
+        this.BeginBlock = this.BeginBlock.bind(this);
+        this.EndBlock = this.EndBlock.bind(this);
+        this.ListSnapshots = this.ListSnapshots.bind(this);
+        this.OfferSnapshot = this.OfferSnapshot.bind(this);
+        this.LoadSnapshotChunk = this.LoadSnapshotChunk.bind(this);
+        this.ApplySnapshotChunk = this.ApplySnapshotChunk.bind(this);
     }
     Echo(request: RequestEcho): Promise<ResponseEcho> {
         const data = RequestEcho.encode(request).finish();
@@ -4907,6 +4922,7 @@ interface Rpc {
 
 declare var self: any | undefined;
 declare var window: any | undefined;
+declare var global: any | undefined;
 var globalThis: any = (() => {
     if (typeof globalThis !== 'undefined') return globalThis;
     if (typeof self !== 'undefined') return self;
@@ -4928,8 +4944,8 @@ function bytesFromBase64(b64: string): Uint8Array {
 const btoa: (bin: string) => string = globalThis.btoa || ((bin) => globalThis.Buffer.from(bin, 'binary').toString('base64'));
 function base64FromBytes(arr: Uint8Array): string {
     const bin: string[] = [];
-    for (let i = 0; i < arr.byteLength; ++i) {
-        bin.push(String.fromCharCode(arr[i]));
+    for (const byte of arr) {
+        bin.push(String.fromCharCode(byte));
     }
     return btoa(bin.join(''));
 }

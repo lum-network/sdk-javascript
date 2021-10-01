@@ -393,6 +393,9 @@ export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.Accounts = this.Accounts.bind(this);
+        this.Account = this.Account.bind(this);
+        this.Params = this.Params.bind(this);
     }
     Accounts(request: QueryAccountsRequest): Promise<QueryAccountsResponse> {
         const data = QueryAccountsRequest.encode(request).finish();

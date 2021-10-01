@@ -2724,6 +2724,19 @@ export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.Channel = this.Channel.bind(this);
+        this.Channels = this.Channels.bind(this);
+        this.ConnectionChannels = this.ConnectionChannels.bind(this);
+        this.ChannelClientState = this.ChannelClientState.bind(this);
+        this.ChannelConsensusState = this.ChannelConsensusState.bind(this);
+        this.PacketCommitment = this.PacketCommitment.bind(this);
+        this.PacketCommitments = this.PacketCommitments.bind(this);
+        this.PacketReceipt = this.PacketReceipt.bind(this);
+        this.PacketAcknowledgement = this.PacketAcknowledgement.bind(this);
+        this.PacketAcknowledgements = this.PacketAcknowledgements.bind(this);
+        this.UnreceivedPackets = this.UnreceivedPackets.bind(this);
+        this.UnreceivedAcks = this.UnreceivedAcks.bind(this);
+        this.NextSequenceReceive = this.NextSequenceReceive.bind(this);
     }
     Channel(request: QueryChannelRequest): Promise<QueryChannelResponse> {
         const data = QueryChannelRequest.encode(request).finish();
@@ -2810,6 +2823,7 @@ interface Rpc {
 
 declare var self: any | undefined;
 declare var window: any | undefined;
+declare var global: any | undefined;
 var globalThis: any = (() => {
     if (typeof globalThis !== 'undefined') return globalThis;
     if (typeof self !== 'undefined') return self;
@@ -2831,8 +2845,8 @@ function bytesFromBase64(b64: string): Uint8Array {
 const btoa: (bin: string) => string = globalThis.btoa || ((bin) => globalThis.Buffer.from(bin, 'binary').toString('base64'));
 function base64FromBytes(arr: Uint8Array): string {
     const bin: string[] = [];
-    for (let i = 0; i < arr.byteLength; ++i) {
-        bin.push(String.fromCharCode(arr[i]));
+    for (const byte of arr) {
+        bin.push(String.fromCharCode(byte));
     }
     return btoa(bin.join(''));
 }

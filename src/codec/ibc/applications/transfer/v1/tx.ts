@@ -242,6 +242,7 @@ export class MsgClientImpl implements Msg {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.Transfer = this.Transfer.bind(this);
     }
     Transfer(request: MsgTransfer): Promise<MsgTransferResponse> {
         const data = MsgTransfer.encode(request).finish();
