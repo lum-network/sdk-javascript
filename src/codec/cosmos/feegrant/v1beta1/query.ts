@@ -325,6 +325,8 @@ export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.Allowance = this.Allowance.bind(this);
+        this.Allowances = this.Allowances.bind(this);
     }
     Allowance(request: QueryAllowanceRequest): Promise<QueryAllowanceResponse> {
         const data = QueryAllowanceRequest.encode(request).finish();

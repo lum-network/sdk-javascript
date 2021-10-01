@@ -934,6 +934,11 @@ export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.Connection = this.Connection.bind(this);
+        this.Connections = this.Connections.bind(this);
+        this.ClientConnections = this.ClientConnections.bind(this);
+        this.ConnectionClientState = this.ConnectionClientState.bind(this);
+        this.ConnectionConsensusState = this.ConnectionConsensusState.bind(this);
     }
     Connection(request: QueryConnectionRequest): Promise<QueryConnectionResponse> {
         const data = QueryConnectionRequest.encode(request).finish();
@@ -972,6 +977,7 @@ interface Rpc {
 
 declare var self: any | undefined;
 declare var window: any | undefined;
+declare var global: any | undefined;
 var globalThis: any = (() => {
     if (typeof globalThis !== 'undefined') return globalThis;
     if (typeof self !== 'undefined') return self;
@@ -993,8 +999,8 @@ function bytesFromBase64(b64: string): Uint8Array {
 const btoa: (bin: string) => string = globalThis.btoa || ((bin) => globalThis.Buffer.from(bin, 'binary').toString('base64'));
 function base64FromBytes(arr: Uint8Array): string {
     const bin: string[] = [];
-    for (let i = 0; i < arr.byteLength; ++i) {
-        bin.push(String.fromCharCode(arr[i]));
+    for (const byte of arr) {
+        bin.push(String.fromCharCode(byte));
     }
     return btoa(bin.join(''));
 }

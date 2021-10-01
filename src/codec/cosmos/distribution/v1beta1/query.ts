@@ -1297,6 +1297,15 @@ export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.Params = this.Params.bind(this);
+        this.ValidatorOutstandingRewards = this.ValidatorOutstandingRewards.bind(this);
+        this.ValidatorCommission = this.ValidatorCommission.bind(this);
+        this.ValidatorSlashes = this.ValidatorSlashes.bind(this);
+        this.DelegationRewards = this.DelegationRewards.bind(this);
+        this.DelegationTotalRewards = this.DelegationTotalRewards.bind(this);
+        this.DelegatorValidators = this.DelegatorValidators.bind(this);
+        this.DelegatorWithdrawAddress = this.DelegatorWithdrawAddress.bind(this);
+        this.CommunityPool = this.CommunityPool.bind(this);
     }
     Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
         const data = QueryParamsRequest.encode(request).finish();

@@ -993,6 +993,13 @@ export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.Balance = this.Balance.bind(this);
+        this.AllBalances = this.AllBalances.bind(this);
+        this.TotalSupply = this.TotalSupply.bind(this);
+        this.SupplyOf = this.SupplyOf.bind(this);
+        this.Params = this.Params.bind(this);
+        this.DenomMetadata = this.DenomMetadata.bind(this);
+        this.DenomsMetadata = this.DenomsMetadata.bind(this);
     }
     Balance(request: QueryBalanceRequest): Promise<QueryBalanceResponse> {
         const data = QueryBalanceRequest.encode(request).finish();

@@ -287,6 +287,8 @@ export class MsgClientImpl implements Msg {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.GrantAllowance = this.GrantAllowance.bind(this);
+        this.RevokeAllowance = this.RevokeAllowance.bind(this);
     }
     GrantAllowance(request: MsgGrantAllowance): Promise<MsgGrantAllowanceResponse> {
         const data = MsgGrantAllowance.encode(request).finish();

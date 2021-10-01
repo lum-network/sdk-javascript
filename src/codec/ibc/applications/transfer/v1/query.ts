@@ -404,6 +404,9 @@ export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.DenomTrace = this.DenomTrace.bind(this);
+        this.DenomTraces = this.DenomTraces.bind(this);
+        this.Params = this.Params.bind(this);
     }
     DenomTrace(request: QueryDenomTraceRequest): Promise<QueryDenomTraceResponse> {
         const data = QueryDenomTraceRequest.encode(request).finish();

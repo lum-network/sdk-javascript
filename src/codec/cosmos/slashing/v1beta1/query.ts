@@ -401,6 +401,9 @@ export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.Params = this.Params.bind(this);
+        this.SigningInfo = this.SigningInfo.bind(this);
+        this.SigningInfos = this.SigningInfos.bind(this);
     }
     Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
         const data = QueryParamsRequest.encode(request).finish();

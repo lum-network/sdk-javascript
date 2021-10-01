@@ -295,6 +295,8 @@ export class MsgClientImpl implements Msg {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.Send = this.Send.bind(this);
+        this.MultiSend = this.MultiSend.bind(this);
     }
     Send(request: MsgSend): Promise<MsgSendResponse> {
         const data = MsgSend.encode(request).finish();

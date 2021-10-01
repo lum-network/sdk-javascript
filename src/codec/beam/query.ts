@@ -277,6 +277,8 @@ export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.Beam = this.Beam.bind(this);
+        this.Beams = this.Beams.bind(this);
     }
     Beam(request: QueryGetBeamRequest): Promise<QueryGetBeamResponse> {
         const data = QueryGetBeamRequest.encode(request).finish();

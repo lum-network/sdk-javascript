@@ -219,6 +219,7 @@ export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.Grants = this.Grants.bind(this);
     }
     Grants(request: QueryGrantsRequest): Promise<QueryGrantsResponse> {
         const data = QueryGrantsRequest.encode(request).finish();

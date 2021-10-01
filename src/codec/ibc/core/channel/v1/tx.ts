@@ -1795,6 +1795,16 @@ export class MsgClientImpl implements Msg {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.ChannelOpenInit = this.ChannelOpenInit.bind(this);
+        this.ChannelOpenTry = this.ChannelOpenTry.bind(this);
+        this.ChannelOpenAck = this.ChannelOpenAck.bind(this);
+        this.ChannelOpenConfirm = this.ChannelOpenConfirm.bind(this);
+        this.ChannelCloseInit = this.ChannelCloseInit.bind(this);
+        this.ChannelCloseConfirm = this.ChannelCloseConfirm.bind(this);
+        this.RecvPacket = this.RecvPacket.bind(this);
+        this.Timeout = this.Timeout.bind(this);
+        this.TimeoutOnClose = this.TimeoutOnClose.bind(this);
+        this.Acknowledgement = this.Acknowledgement.bind(this);
     }
     ChannelOpenInit(request: MsgChannelOpenInit): Promise<MsgChannelOpenInitResponse> {
         const data = MsgChannelOpenInit.encode(request).finish();
@@ -1863,6 +1873,7 @@ interface Rpc {
 
 declare var self: any | undefined;
 declare var window: any | undefined;
+declare var global: any | undefined;
 var globalThis: any = (() => {
     if (typeof globalThis !== 'undefined') return globalThis;
     if (typeof self !== 'undefined') return self;
@@ -1884,8 +1895,8 @@ function bytesFromBase64(b64: string): Uint8Array {
 const btoa: (bin: string) => string = globalThis.btoa || ((bin) => globalThis.Buffer.from(bin, 'binary').toString('base64'));
 function base64FromBytes(arr: Uint8Array): string {
     const bin: string[] = [];
-    for (let i = 0; i < arr.byteLength; ++i) {
-        bin.push(String.fromCharCode(arr[i]));
+    for (const byte of arr) {
+        bin.push(String.fromCharCode(byte));
     }
     return btoa(bin.join(''));
 }

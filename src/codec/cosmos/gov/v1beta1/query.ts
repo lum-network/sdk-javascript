@@ -1258,6 +1258,14 @@ export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.Proposal = this.Proposal.bind(this);
+        this.Proposals = this.Proposals.bind(this);
+        this.Vote = this.Vote.bind(this);
+        this.Votes = this.Votes.bind(this);
+        this.Params = this.Params.bind(this);
+        this.Deposit = this.Deposit.bind(this);
+        this.Deposits = this.Deposits.bind(this);
+        this.TallyResult = this.TallyResult.bind(this);
     }
     Proposal(request: QueryProposalRequest): Promise<QueryProposalResponse> {
         const data = QueryProposalRequest.encode(request).finish();
