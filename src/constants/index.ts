@@ -50,7 +50,7 @@ export const LumBech32PrefixConsPub = 'lumvalconspub';
  * @see https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
  * @see https://github.com/satoshilabs/slips/blob/master/slip-0044.md
  */
-export const HDPath = "m/44'/837'/0'/";
+export const HDPath = "m/44'/880'/0'/";
 
 /**
  * Get a Lum Network HDPath for a specified account index

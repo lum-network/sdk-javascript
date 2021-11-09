@@ -61,7 +61,7 @@ console.log(`Wallet address: ${wallet.getAddress()}`);
 
 **IMPORTANT NOTES:**
 - Transaction signature using Ledger only works with legacy amino (wich will be deprecated at some point)
-- Derivation path using the Cosmos Ledger application cannot be set to the default Lum Path for now `m/44'/837'/0'/*/*` and must remain on the Cosmos path `m/44'/'118/0'/*/*`
+- Derivation path using the Cosmos Ledger application cannot be set to the default Lum Path for now `m/44'/880'/0'/*/*` and must remain on the Cosmos path `m/44'/'118/0'/*/*`
 
 #### Ledger
 

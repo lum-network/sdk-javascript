@@ -86,7 +86,7 @@ describe('Ledger', () => {
         // Manual testing using ledger device
         // Ledger device must be unlocked and Lum app opened prior to running those tests
         const transport = await TransportNodeHid.create();
-        const w = await LumWalletFactory.fromLedgerTransport(transport, `m/44'/837'/0'/0/0`, 'lum');
+        const w = await LumWalletFactory.fromLedgerTransport(transport, `m/44'/880'/0'/0/0`, 'lum');
         expect(w).toBeTruthy();
 
         await requestCoinsIfNeeded(clt, w, 1000);
@@ -125,7 +125,7 @@ describe('Ledger', () => {
         // Ledger device must be unlocked and Lum app opened prior to running those tests
         const message = 'Lum network is an awesome decentralized protocol';
         const transport = await TransportNodeHid.create();
-        const w1 = await LumWalletFactory.fromLedgerTransport(transport, `m/44'/837'/0'/0/0`, 'lum');
+        const w1 = await LumWalletFactory.fromLedgerTransport(transport, `m/44'/880'/0'/0/0`, 'lum');
         const w2 = await LumWalletFactory.fromMnemonic(LumUtils.generateMnemonic());
         const signed = await w1.signMessage(message);
         const v1 = await LumUtils.verifySignMsg(signed);
