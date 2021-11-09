@@ -16,6 +16,7 @@ import { ParameterChangeProposal } from '../codec/cosmos/params/v1beta1/params';
 import { MsgUnjail } from '../codec/cosmos/slashing/v1beta1/tx';
 import { MsgBeginRedelegate, MsgCreateValidator, MsgDelegate, MsgEditValidator, MsgUndelegate } from '../codec/cosmos/staking/v1beta1/tx';
 import { CancelSoftwareUpgradeProposal, SoftwareUpgradeProposal } from '../codec/cosmos/upgrade/v1beta1/upgrade';
+import { MsgCreatePeriodicVestingAccount, MsgCreateVestingAccount } from '../codec/cosmos/vesting/v1beta1/tx';
 
 import {
     MsgAcknowledgement,
@@ -72,6 +73,8 @@ const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/cosmos.staking.v1beta1.MsgUndelegate', MsgUndelegate],
     ['/cosmos.upgrade.v1beta1.SoftwareUpgradeProposal', SoftwareUpgradeProposal],
     ['/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal', CancelSoftwareUpgradeProposal],
+    ['/cosmos.vesting.v1beta1.MsgCreateVestingAccount', MsgCreateVestingAccount],
+    ['/cosmos.vesting.v1beta1.MsgCreatePeriodicVestingAccount', MsgCreatePeriodicVestingAccount],
     ['/ibc.core.channel.v1.MsgChannelOpenInit', MsgChannelOpenInit],
     ['/ibc.core.channel.v1.MsgChannelOpenTry', MsgChannelOpenTry],
     ['/ibc.core.channel.v1.MsgChannelOpenAck', MsgChannelOpenAck],
