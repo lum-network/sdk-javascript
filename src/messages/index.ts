@@ -7,3 +7,4 @@ export * from './gov';
 export * from './authz';
 export * from './feegrant';
 export * from './slashing';
+export * from './vesting';

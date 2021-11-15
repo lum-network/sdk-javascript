@@ -34,7 +34,7 @@ IBC_SDK_DIR="$IBC_DIR/ibc-go"
 IBC_ZIP_FILE="$IBC_DIR/tmp.zip"
 
 # Init IBC REF
-IBC_REF=${IBC_REF:-"master"}
+IBC_REF=${IBC_REF:-"main"}
 IBC_SUFFIX=${IBC_REF}
 [[ $IBC_SUFFIX =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-.+)?$ ]] && IBC_SUFFIX=${IBC_SUFFIX#v}
 
