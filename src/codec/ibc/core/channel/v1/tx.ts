@@ -224,21 +224,13 @@ export const MsgChannelOpenInit = {
 
     fromPartial(object: DeepPartial<MsgChannelOpenInit>): MsgChannelOpenInit {
         const message = { ...baseMsgChannelOpenInit } as MsgChannelOpenInit;
-        if (object.portId !== undefined && object.portId !== null) {
-            message.portId = object.portId;
-        } else {
-            message.portId = '';
-        }
+        message.portId = object.portId ?? '';
         if (object.channel !== undefined && object.channel !== null) {
             message.channel = Channel.fromPartial(object.channel);
         } else {
             message.channel = undefined;
         }
-        if (object.signer !== undefined && object.signer !== null) {
-            message.signer = object.signer;
-        } else {
-            message.signer = '';
-        }
+        message.signer = object.signer ?? '';
         return message;
     },
 };
@@ -399,41 +391,21 @@ export const MsgChannelOpenTry = {
 
     fromPartial(object: DeepPartial<MsgChannelOpenTry>): MsgChannelOpenTry {
         const message = { ...baseMsgChannelOpenTry } as MsgChannelOpenTry;
-        if (object.portId !== undefined && object.portId !== null) {
-            message.portId = object.portId;
-        } else {
-            message.portId = '';
-        }
-        if (object.previousChannelId !== undefined && object.previousChannelId !== null) {
-            message.previousChannelId = object.previousChannelId;
-        } else {
-            message.previousChannelId = '';
-        }
+        message.portId = object.portId ?? '';
+        message.previousChannelId = object.previousChannelId ?? '';
         if (object.channel !== undefined && object.channel !== null) {
             message.channel = Channel.fromPartial(object.channel);
         } else {
             message.channel = undefined;
         }
-        if (object.counterpartyVersion !== undefined && object.counterpartyVersion !== null) {
-            message.counterpartyVersion = object.counterpartyVersion;
-        } else {
-            message.counterpartyVersion = '';
-        }
-        if (object.proofInit !== undefined && object.proofInit !== null) {
-            message.proofInit = object.proofInit;
-        } else {
-            message.proofInit = new Uint8Array();
-        }
+        message.counterpartyVersion = object.counterpartyVersion ?? '';
+        message.proofInit = object.proofInit ?? new Uint8Array();
         if (object.proofHeight !== undefined && object.proofHeight !== null) {
             message.proofHeight = Height.fromPartial(object.proofHeight);
         } else {
             message.proofHeight = undefined;
         }
-        if (object.signer !== undefined && object.signer !== null) {
-            message.signer = object.signer;
-        } else {
-            message.signer = '';
-        }
+        message.signer = object.signer ?? '';
         return message;
     },
 };
@@ -594,41 +566,17 @@ export const MsgChannelOpenAck = {
 
     fromPartial(object: DeepPartial<MsgChannelOpenAck>): MsgChannelOpenAck {
         const message = { ...baseMsgChannelOpenAck } as MsgChannelOpenAck;
-        if (object.portId !== undefined && object.portId !== null) {
-            message.portId = object.portId;
-        } else {
-            message.portId = '';
-        }
-        if (object.channelId !== undefined && object.channelId !== null) {
-            message.channelId = object.channelId;
-        } else {
-            message.channelId = '';
-        }
-        if (object.counterpartyChannelId !== undefined && object.counterpartyChannelId !== null) {
-            message.counterpartyChannelId = object.counterpartyChannelId;
-        } else {
-            message.counterpartyChannelId = '';
-        }
-        if (object.counterpartyVersion !== undefined && object.counterpartyVersion !== null) {
-            message.counterpartyVersion = object.counterpartyVersion;
-        } else {
-            message.counterpartyVersion = '';
-        }
-        if (object.proofTry !== undefined && object.proofTry !== null) {
-            message.proofTry = object.proofTry;
-        } else {
-            message.proofTry = new Uint8Array();
-        }
+        message.portId = object.portId ?? '';
+        message.channelId = object.channelId ?? '';
+        message.counterpartyChannelId = object.counterpartyChannelId ?? '';
+        message.counterpartyVersion = object.counterpartyVersion ?? '';
+        message.proofTry = object.proofTry ?? new Uint8Array();
         if (object.proofHeight !== undefined && object.proofHeight !== null) {
             message.proofHeight = Height.fromPartial(object.proofHeight);
         } else {
             message.proofHeight = undefined;
         }
-        if (object.signer !== undefined && object.signer !== null) {
-            message.signer = object.signer;
-        } else {
-            message.signer = '';
-        }
+        message.signer = object.signer ?? '';
         return message;
     },
 };
@@ -765,31 +713,15 @@ export const MsgChannelOpenConfirm = {
 
     fromPartial(object: DeepPartial<MsgChannelOpenConfirm>): MsgChannelOpenConfirm {
         const message = { ...baseMsgChannelOpenConfirm } as MsgChannelOpenConfirm;
-        if (object.portId !== undefined && object.portId !== null) {
-            message.portId = object.portId;
-        } else {
-            message.portId = '';
-        }
-        if (object.channelId !== undefined && object.channelId !== null) {
-            message.channelId = object.channelId;
-        } else {
-            message.channelId = '';
-        }
-        if (object.proofAck !== undefined && object.proofAck !== null) {
-            message.proofAck = object.proofAck;
-        } else {
-            message.proofAck = new Uint8Array();
-        }
+        message.portId = object.portId ?? '';
+        message.channelId = object.channelId ?? '';
+        message.proofAck = object.proofAck ?? new Uint8Array();
         if (object.proofHeight !== undefined && object.proofHeight !== null) {
             message.proofHeight = Height.fromPartial(object.proofHeight);
         } else {
             message.proofHeight = undefined;
         }
-        if (object.signer !== undefined && object.signer !== null) {
-            message.signer = object.signer;
-        } else {
-            message.signer = '';
-        }
+        message.signer = object.signer ?? '';
         return message;
     },
 };
@@ -902,21 +834,9 @@ export const MsgChannelCloseInit = {
 
     fromPartial(object: DeepPartial<MsgChannelCloseInit>): MsgChannelCloseInit {
         const message = { ...baseMsgChannelCloseInit } as MsgChannelCloseInit;
-        if (object.portId !== undefined && object.portId !== null) {
-            message.portId = object.portId;
-        } else {
-            message.portId = '';
-        }
-        if (object.channelId !== undefined && object.channelId !== null) {
-            message.channelId = object.channelId;
-        } else {
-            message.channelId = '';
-        }
-        if (object.signer !== undefined && object.signer !== null) {
-            message.signer = object.signer;
-        } else {
-            message.signer = '';
-        }
+        message.portId = object.portId ?? '';
+        message.channelId = object.channelId ?? '';
+        message.signer = object.signer ?? '';
         return message;
     },
 };
@@ -1053,31 +973,15 @@ export const MsgChannelCloseConfirm = {
 
     fromPartial(object: DeepPartial<MsgChannelCloseConfirm>): MsgChannelCloseConfirm {
         const message = { ...baseMsgChannelCloseConfirm } as MsgChannelCloseConfirm;
-        if (object.portId !== undefined && object.portId !== null) {
-            message.portId = object.portId;
-        } else {
-            message.portId = '';
-        }
-        if (object.channelId !== undefined && object.channelId !== null) {
-            message.channelId = object.channelId;
-        } else {
-            message.channelId = '';
-        }
-        if (object.proofInit !== undefined && object.proofInit !== null) {
-            message.proofInit = object.proofInit;
-        } else {
-            message.proofInit = new Uint8Array();
-        }
+        message.portId = object.portId ?? '';
+        message.channelId = object.channelId ?? '';
+        message.proofInit = object.proofInit ?? new Uint8Array();
         if (object.proofHeight !== undefined && object.proofHeight !== null) {
             message.proofHeight = Height.fromPartial(object.proofHeight);
         } else {
             message.proofHeight = undefined;
         }
-        if (object.signer !== undefined && object.signer !== null) {
-            message.signer = object.signer;
-        } else {
-            message.signer = '';
-        }
+        message.signer = object.signer ?? '';
         return message;
     },
 };
@@ -1207,21 +1111,13 @@ export const MsgRecvPacket = {
         } else {
             message.packet = undefined;
         }
-        if (object.proofCommitment !== undefined && object.proofCommitment !== null) {
-            message.proofCommitment = object.proofCommitment;
-        } else {
-            message.proofCommitment = new Uint8Array();
-        }
+        message.proofCommitment = object.proofCommitment ?? new Uint8Array();
         if (object.proofHeight !== undefined && object.proofHeight !== null) {
             message.proofHeight = Height.fromPartial(object.proofHeight);
         } else {
             message.proofHeight = undefined;
         }
-        if (object.signer !== undefined && object.signer !== null) {
-            message.signer = object.signer;
-        } else {
-            message.signer = '';
-        }
+        message.signer = object.signer ?? '';
         return message;
     },
 };
@@ -1363,11 +1259,7 @@ export const MsgTimeout = {
         } else {
             message.packet = undefined;
         }
-        if (object.proofUnreceived !== undefined && object.proofUnreceived !== null) {
-            message.proofUnreceived = object.proofUnreceived;
-        } else {
-            message.proofUnreceived = new Uint8Array();
-        }
+        message.proofUnreceived = object.proofUnreceived ?? new Uint8Array();
         if (object.proofHeight !== undefined && object.proofHeight !== null) {
             message.proofHeight = Height.fromPartial(object.proofHeight);
         } else {
@@ -1378,11 +1270,7 @@ export const MsgTimeout = {
         } else {
             message.nextSequenceRecv = Long.UZERO;
         }
-        if (object.signer !== undefined && object.signer !== null) {
-            message.signer = object.signer;
-        } else {
-            message.signer = '';
-        }
+        message.signer = object.signer ?? '';
         return message;
     },
 };
@@ -1536,16 +1424,8 @@ export const MsgTimeoutOnClose = {
         } else {
             message.packet = undefined;
         }
-        if (object.proofUnreceived !== undefined && object.proofUnreceived !== null) {
-            message.proofUnreceived = object.proofUnreceived;
-        } else {
-            message.proofUnreceived = new Uint8Array();
-        }
-        if (object.proofClose !== undefined && object.proofClose !== null) {
-            message.proofClose = object.proofClose;
-        } else {
-            message.proofClose = new Uint8Array();
-        }
+        message.proofUnreceived = object.proofUnreceived ?? new Uint8Array();
+        message.proofClose = object.proofClose ?? new Uint8Array();
         if (object.proofHeight !== undefined && object.proofHeight !== null) {
             message.proofHeight = Height.fromPartial(object.proofHeight);
         } else {
@@ -1556,11 +1436,7 @@ export const MsgTimeoutOnClose = {
         } else {
             message.nextSequenceRecv = Long.UZERO;
         }
-        if (object.signer !== undefined && object.signer !== null) {
-            message.signer = object.signer;
-        } else {
-            message.signer = '';
-        }
+        message.signer = object.signer ?? '';
         return message;
     },
 };
@@ -1702,26 +1578,14 @@ export const MsgAcknowledgement = {
         } else {
             message.packet = undefined;
         }
-        if (object.acknowledgement !== undefined && object.acknowledgement !== null) {
-            message.acknowledgement = object.acknowledgement;
-        } else {
-            message.acknowledgement = new Uint8Array();
-        }
-        if (object.proofAcked !== undefined && object.proofAcked !== null) {
-            message.proofAcked = object.proofAcked;
-        } else {
-            message.proofAcked = new Uint8Array();
-        }
+        message.acknowledgement = object.acknowledgement ?? new Uint8Array();
+        message.proofAcked = object.proofAcked ?? new Uint8Array();
         if (object.proofHeight !== undefined && object.proofHeight !== null) {
             message.proofHeight = Height.fromPartial(object.proofHeight);
         } else {
             message.proofHeight = undefined;
         }
-        if (object.signer !== undefined && object.signer !== null) {
-            message.signer = object.signer;
-        } else {
-            message.signer = '';
-        }
+        message.signer = object.signer ?? '';
         return message;
     },
 };

@@ -8,6 +8,8 @@ import { Coin } from '../../../cosmos/base/v1beta1/coin';
 
 export const protobufPackage = 'cosmos.feegrant.v1beta1';
 
+/** Since: cosmos-sdk 0.43 */
+
 /**
  * BasicAllowance implements Allowance with a one-time grant of tokens
  * that optionally expires. The grantee can use up to SpendLimit to cover fees.
@@ -138,11 +140,7 @@ export const BasicAllowance = {
                 message.spendLimit.push(Coin.fromPartial(e));
             }
         }
-        if (object.expiration !== undefined && object.expiration !== null) {
-            message.expiration = object.expiration;
-        } else {
-            message.expiration = undefined;
-        }
+        message.expiration = object.expiration ?? undefined;
         return message;
     },
 };
@@ -253,8 +251,6 @@ export const PeriodicAllowance = {
 
     fromPartial(object: DeepPartial<PeriodicAllowance>): PeriodicAllowance {
         const message = { ...basePeriodicAllowance } as PeriodicAllowance;
-        message.periodSpendLimit = [];
-        message.periodCanSpend = [];
         if (object.basic !== undefined && object.basic !== null) {
             message.basic = BasicAllowance.fromPartial(object.basic);
         } else {
@@ -265,21 +261,19 @@ export const PeriodicAllowance = {
         } else {
             message.period = undefined;
         }
+        message.periodSpendLimit = [];
         if (object.periodSpendLimit !== undefined && object.periodSpendLimit !== null) {
             for (const e of object.periodSpendLimit) {
                 message.periodSpendLimit.push(Coin.fromPartial(e));
             }
         }
+        message.periodCanSpend = [];
         if (object.periodCanSpend !== undefined && object.periodCanSpend !== null) {
             for (const e of object.periodCanSpend) {
                 message.periodCanSpend.push(Coin.fromPartial(e));
             }
         }
-        if (object.periodReset !== undefined && object.periodReset !== null) {
-            message.periodReset = object.periodReset;
-        } else {
-            message.periodReset = undefined;
-        }
+        message.periodReset = object.periodReset ?? undefined;
         return message;
     },
 };
@@ -348,12 +342,12 @@ export const AllowedMsgAllowance = {
 
     fromPartial(object: DeepPartial<AllowedMsgAllowance>): AllowedMsgAllowance {
         const message = { ...baseAllowedMsgAllowance } as AllowedMsgAllowance;
-        message.allowedMessages = [];
         if (object.allowance !== undefined && object.allowance !== null) {
             message.allowance = Any.fromPartial(object.allowance);
         } else {
             message.allowance = undefined;
         }
+        message.allowedMessages = [];
         if (object.allowedMessages !== undefined && object.allowedMessages !== null) {
             for (const e of object.allowedMessages) {
                 message.allowedMessages.push(e);
@@ -433,16 +427,8 @@ export const Grant = {
 
     fromPartial(object: DeepPartial<Grant>): Grant {
         const message = { ...baseGrant } as Grant;
-        if (object.granter !== undefined && object.granter !== null) {
-            message.granter = object.granter;
-        } else {
-            message.granter = '';
-        }
-        if (object.grantee !== undefined && object.grantee !== null) {
-            message.grantee = object.grantee;
-        } else {
-            message.grantee = '';
-        }
+        message.granter = object.granter ?? '';
+        message.grantee = object.grantee ?? '';
         if (object.allowance !== undefined && object.allowance !== null) {
             message.allowance = Any.fromPartial(object.allowance);
         } else {

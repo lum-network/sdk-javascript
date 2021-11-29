@@ -244,21 +244,9 @@ export const BeamMedia = {
 
     fromPartial(object: DeepPartial<BeamMedia>): BeamMedia {
         const message = { ...baseBeamMedia } as BeamMedia;
-        if (object.mimetype !== undefined && object.mimetype !== null) {
-            message.mimetype = object.mimetype;
-        } else {
-            message.mimetype = '';
-        }
-        if (object.url !== undefined && object.url !== null) {
-            message.url = object.url;
-        } else {
-            message.url = '';
-        }
-        if (object.thumbnailUrl !== undefined && object.thumbnailUrl !== null) {
-            message.thumbnailUrl = object.thumbnailUrl;
-        } else {
-            message.thumbnailUrl = '';
-        }
+        message.mimetype = object.mimetype ?? '';
+        message.url = object.url ?? '';
+        message.thumbnailUrl = object.thumbnailUrl ?? '';
         return message;
     },
 };
@@ -333,21 +321,9 @@ export const BeamReviewer = {
 
     fromPartial(object: DeepPartial<BeamReviewer>): BeamReviewer {
         const message = { ...baseBeamReviewer } as BeamReviewer;
-        if (object.reviewerId !== undefined && object.reviewerId !== null) {
-            message.reviewerId = object.reviewerId;
-        } else {
-            message.reviewerId = '';
-        }
-        if (object.name !== undefined && object.name !== null) {
-            message.name = object.name;
-        } else {
-            message.name = '';
-        }
-        if (object.isAnonymous !== undefined && object.isAnonymous !== null) {
-            message.isAnonymous = object.isAnonymous;
-        } else {
-            message.isAnonymous = false;
-        }
+        message.reviewerId = object.reviewerId ?? '';
+        message.name = object.name ?? '';
+        message.isAnonymous = object.isAnonymous ?? false;
         return message;
     },
 };
@@ -422,21 +398,9 @@ export const BeamVerifier = {
 
     fromPartial(object: DeepPartial<BeamVerifier>): BeamVerifier {
         const message = { ...baseBeamVerifier } as BeamVerifier;
-        if (object.name !== undefined && object.name !== null) {
-            message.name = object.name;
-        } else {
-            message.name = '';
-        }
-        if (object.url !== undefined && object.url !== null) {
-            message.url = object.url;
-        } else {
-            message.url = '';
-        }
-        if (object.signature !== undefined && object.signature !== null) {
-            message.signature = object.signature;
-        } else {
-            message.signature = '';
-        }
+        message.name = object.name ?? '';
+        message.url = object.url ?? '';
+        message.signature = object.signature ?? '';
         return message;
     },
 };
@@ -553,32 +517,12 @@ export const BeamReward = {
 
     fromPartial(object: DeepPartial<BeamReward>): BeamReward {
         const message = { ...baseBeamReward } as BeamReward;
+        message.trigger = object.trigger ?? '';
+        message.amount = object.amount ?? 0;
+        message.maxAmount = object.maxAmount ?? 0;
+        message.currency = object.currency ?? '';
+        message.status = object.status ?? '';
         message.details = [];
-        if (object.trigger !== undefined && object.trigger !== null) {
-            message.trigger = object.trigger;
-        } else {
-            message.trigger = '';
-        }
-        if (object.amount !== undefined && object.amount !== null) {
-            message.amount = object.amount;
-        } else {
-            message.amount = 0;
-        }
-        if (object.maxAmount !== undefined && object.maxAmount !== null) {
-            message.maxAmount = object.maxAmount;
-        } else {
-            message.maxAmount = 0;
-        }
-        if (object.currency !== undefined && object.currency !== null) {
-            message.currency = object.currency;
-        } else {
-            message.currency = '';
-        }
-        if (object.status !== undefined && object.status !== null) {
-            message.status = object.status;
-        } else {
-            message.status = '';
-        }
         if (object.details !== undefined && object.details !== null) {
             for (const e of object.details) {
                 message.details.push(BeamReward_BeamRewardDetails.fromPartial(e));
@@ -670,26 +614,10 @@ export const BeamReward_BeamRewardDetails = {
 
     fromPartial(object: DeepPartial<BeamReward_BeamRewardDetails>): BeamReward_BeamRewardDetails {
         const message = { ...baseBeamReward_BeamRewardDetails } as BeamReward_BeamRewardDetails;
-        if (object.type !== undefined && object.type !== null) {
-            message.type = object.type;
-        } else {
-            message.type = '';
-        }
-        if (object.amount !== undefined && object.amount !== null) {
-            message.amount = object.amount;
-        } else {
-            message.amount = 0;
-        }
-        if (object.maxAmount !== undefined && object.maxAmount !== null) {
-            message.maxAmount = object.maxAmount;
-        } else {
-            message.maxAmount = 0;
-        }
-        if (object.status !== undefined && object.status !== null) {
-            message.status = object.status;
-        } else {
-            message.status = '';
-        }
+        message.type = object.type ?? '';
+        message.amount = object.amount ?? 0;
+        message.maxAmount = object.maxAmount ?? 0;
+        message.status = object.status ?? '';
         return message;
     },
 };
@@ -848,51 +776,19 @@ export const BeamMerchantReview = {
 
     fromPartial(object: DeepPartial<BeamMerchantReview>): BeamMerchantReview {
         const message = { ...baseBeamMerchantReview } as BeamMerchantReview;
-        if (object.orderId !== undefined && object.orderId !== null) {
-            message.orderId = object.orderId;
-        } else {
-            message.orderId = '';
-        }
-        if (object.reviewId !== undefined && object.reviewId !== null) {
-            message.reviewId = object.reviewId;
-        } else {
-            message.reviewId = '';
-        }
-        if (object.merchantUrl !== undefined && object.merchantUrl !== null) {
-            message.merchantUrl = object.merchantUrl;
-        } else {
-            message.merchantUrl = '';
-        }
-        if (object.ratingUrl !== undefined && object.ratingUrl !== null) {
-            message.ratingUrl = object.ratingUrl;
-        } else {
-            message.ratingUrl = '';
-        }
-        if (object.reviewUrl !== undefined && object.reviewUrl !== null) {
-            message.reviewUrl = object.reviewUrl;
-        } else {
-            message.reviewUrl = '';
-        }
-        if (object.collectionMethod !== undefined && object.collectionMethod !== null) {
-            message.collectionMethod = object.collectionMethod;
-        } else {
-            message.collectionMethod = '';
-        }
-        if (object.timestamp !== undefined && object.timestamp !== null) {
-            message.timestamp = object.timestamp;
-        } else {
-            message.timestamp = '';
-        }
+        message.orderId = object.orderId ?? '';
+        message.reviewId = object.reviewId ?? '';
+        message.merchantUrl = object.merchantUrl ?? '';
+        message.ratingUrl = object.ratingUrl ?? '';
+        message.reviewUrl = object.reviewUrl ?? '';
+        message.collectionMethod = object.collectionMethod ?? '';
+        message.timestamp = object.timestamp ?? '';
         if (object.ratings !== undefined && object.ratings !== null) {
             message.ratings = BeamMerchantReview_BeamMerchantReviewRating.fromPartial(object.ratings);
         } else {
             message.ratings = undefined;
         }
-        if (object.title !== undefined && object.title !== null) {
-            message.title = object.title;
-        } else {
-            message.title = '';
-        }
+        message.title = object.title ?? '';
         if (object.content !== undefined && object.content !== null) {
             message.content = BeamMerchantReview_BeamMerchantReviewContent.fromPartial(object.content);
         } else {
@@ -972,21 +868,9 @@ export const BeamMerchantReview_BeamMerchantReviewRating = {
 
     fromPartial(object: DeepPartial<BeamMerchantReview_BeamMerchantReviewRating>): BeamMerchantReview_BeamMerchantReviewRating {
         const message = { ...baseBeamMerchantReview_BeamMerchantReviewRating } as BeamMerchantReview_BeamMerchantReviewRating;
-        if (object.overall !== undefined && object.overall !== null) {
-            message.overall = object.overall;
-        } else {
-            message.overall = 0;
-        }
-        if (object.customerService !== undefined && object.customerService !== null) {
-            message.customerService = object.customerService;
-        } else {
-            message.customerService = 0;
-        }
-        if (object.nps !== undefined && object.nps !== null) {
-            message.nps = object.nps;
-        } else {
-            message.nps = 0;
-        }
+        message.overall = object.overall ?? 0;
+        message.customerService = object.customerService ?? 0;
+        message.nps = object.nps ?? 0;
         return message;
     },
 };
@@ -1049,16 +933,8 @@ export const BeamMerchantReview_BeamMerchantReviewContent = {
 
     fromPartial(object: DeepPartial<BeamMerchantReview_BeamMerchantReviewContent>): BeamMerchantReview_BeamMerchantReviewContent {
         const message = { ...baseBeamMerchantReview_BeamMerchantReviewContent } as BeamMerchantReview_BeamMerchantReviewContent;
-        if (object.overall !== undefined && object.overall !== null) {
-            message.overall = object.overall;
-        } else {
-            message.overall = '';
-        }
-        if (object.customerService !== undefined && object.customerService !== null) {
-            message.customerService = object.customerService;
-        } else {
-            message.customerService = '';
-        }
+        message.overall = object.overall ?? '';
+        message.customerService = object.customerService ?? '';
         return message;
     },
 };
@@ -1241,58 +1117,30 @@ export const BeamProductReview = {
 
     fromPartial(object: DeepPartial<BeamProductReview>): BeamProductReview {
         const message = { ...baseBeamProductReview } as BeamProductReview;
-        message.medias = [];
-        message.products = [];
-        if (object.orderId !== undefined && object.orderId !== null) {
-            message.orderId = object.orderId;
-        } else {
-            message.orderId = '';
-        }
-        if (object.reviewId !== undefined && object.reviewId !== null) {
-            message.reviewId = object.reviewId;
-        } else {
-            message.reviewId = '';
-        }
-        if (object.ratingUrl !== undefined && object.ratingUrl !== null) {
-            message.ratingUrl = object.ratingUrl;
-        } else {
-            message.ratingUrl = '';
-        }
-        if (object.reviewUrl !== undefined && object.reviewUrl !== null) {
-            message.reviewUrl = object.reviewUrl;
-        } else {
-            message.reviewUrl = '';
-        }
-        if (object.collectionMethod !== undefined && object.collectionMethod !== null) {
-            message.collectionMethod = object.collectionMethod;
-        } else {
-            message.collectionMethod = '';
-        }
-        if (object.timestamp !== undefined && object.timestamp !== null) {
-            message.timestamp = object.timestamp;
-        } else {
-            message.timestamp = '';
-        }
+        message.orderId = object.orderId ?? '';
+        message.reviewId = object.reviewId ?? '';
+        message.ratingUrl = object.ratingUrl ?? '';
+        message.reviewUrl = object.reviewUrl ?? '';
+        message.collectionMethod = object.collectionMethod ?? '';
+        message.timestamp = object.timestamp ?? '';
         if (object.ratings !== undefined && object.ratings !== null) {
             message.ratings = BeamProductReview_BeamProductReviewRating.fromPartial(object.ratings);
         } else {
             message.ratings = undefined;
         }
-        if (object.title !== undefined && object.title !== null) {
-            message.title = object.title;
-        } else {
-            message.title = '';
-        }
+        message.title = object.title ?? '';
         if (object.content !== undefined && object.content !== null) {
             message.content = BeamProductReview_BeamProductReviewContent.fromPartial(object.content);
         } else {
             message.content = undefined;
         }
+        message.medias = [];
         if (object.medias !== undefined && object.medias !== null) {
             for (const e of object.medias) {
                 message.medias.push(BeamMedia.fromPartial(e));
             }
         }
+        message.products = [];
         if (object.products !== undefined && object.products !== null) {
             for (const e of object.products) {
                 message.products.push(BeamProductReview_BeamProduct.fromPartial(e));
@@ -1360,16 +1208,8 @@ export const BeamProductReview_BeamProductReviewRating = {
 
     fromPartial(object: DeepPartial<BeamProductReview_BeamProductReviewRating>): BeamProductReview_BeamProductReviewRating {
         const message = { ...baseBeamProductReview_BeamProductReviewRating } as BeamProductReview_BeamProductReviewRating;
-        if (object.overall !== undefined && object.overall !== null) {
-            message.overall = object.overall;
-        } else {
-            message.overall = 0;
-        }
-        if (object.quality !== undefined && object.quality !== null) {
-            message.quality = object.quality;
-        } else {
-            message.quality = 0;
-        }
+        message.overall = object.overall ?? 0;
+        message.quality = object.quality ?? 0;
         return message;
     },
 };
@@ -1444,21 +1284,9 @@ export const BeamProductReview_BeamProductReviewContent = {
 
     fromPartial(object: DeepPartial<BeamProductReview_BeamProductReviewContent>): BeamProductReview_BeamProductReviewContent {
         const message = { ...baseBeamProductReview_BeamProductReviewContent } as BeamProductReview_BeamProductReviewContent;
-        if (object.overall !== undefined && object.overall !== null) {
-            message.overall = object.overall;
-        } else {
-            message.overall = '';
-        }
-        if (object.pros !== undefined && object.pros !== null) {
-            message.pros = object.pros;
-        } else {
-            message.pros = '';
-        }
-        if (object.cons !== undefined && object.cons !== null) {
-            message.cons = object.cons;
-        } else {
-            message.cons = '';
-        }
+        message.overall = object.overall ?? '';
+        message.pros = object.pros ?? '';
+        message.cons = object.cons ?? '';
         return message;
     },
 };
@@ -1551,17 +1379,9 @@ export const BeamProductReview_BeamProduct = {
 
     fromPartial(object: DeepPartial<BeamProductReview_BeamProduct>): BeamProductReview_BeamProduct {
         const message = { ...baseBeamProductReview_BeamProduct } as BeamProductReview_BeamProduct;
+        message.name = object.name ?? '';
+        message.url = object.url ?? '';
         message.urls = [];
-        if (object.name !== undefined && object.name !== null) {
-            message.name = object.name;
-        } else {
-            message.name = '';
-        }
-        if (object.url !== undefined && object.url !== null) {
-            message.url = object.url;
-        } else {
-            message.url = '';
-        }
         if (object.urls !== undefined && object.urls !== null) {
             for (const e of object.urls) {
                 message.urls.push(e);
@@ -1683,24 +1503,24 @@ export const BeamProductReview_BeamProduct_BeamProductIds = {
     fromPartial(object: DeepPartial<BeamProductReview_BeamProduct_BeamProductIds>): BeamProductReview_BeamProduct_BeamProductIds {
         const message = { ...baseBeamProductReview_BeamProduct_BeamProductIds } as BeamProductReview_BeamProduct_BeamProductIds;
         message.gtins = [];
-        message.mpns = [];
-        message.skus = [];
-        message.asins = [];
         if (object.gtins !== undefined && object.gtins !== null) {
             for (const e of object.gtins) {
                 message.gtins.push(e);
             }
         }
+        message.mpns = [];
         if (object.mpns !== undefined && object.mpns !== null) {
             for (const e of object.mpns) {
                 message.mpns.push(e);
             }
         }
+        message.skus = [];
         if (object.skus !== undefined && object.skus !== null) {
             for (const e of object.skus) {
                 message.skus.push(e);
             }
         }
+        message.asins = [];
         if (object.asins !== undefined && object.asins !== null) {
             for (const e of object.asins) {
                 message.asins.push(e);
@@ -1810,7 +1630,6 @@ export const BeamData = {
 
     fromPartial(object: DeepPartial<BeamData>): BeamData {
         const message = { ...baseBeamData } as BeamData;
-        message.productsReviews = [];
         if (object.reward !== undefined && object.reward !== null) {
             message.reward = BeamReward.fromPartial(object.reward);
         } else {
@@ -1831,6 +1650,7 @@ export const BeamData = {
         } else {
             message.merchantReview = undefined;
         }
+        message.productsReviews = [];
         if (object.productsReviews !== undefined && object.productsReviews !== null) {
             for (const e of object.productsReviews) {
                 message.productsReviews.push(BeamProductReview.fromPartial(e));
@@ -2079,86 +1899,30 @@ export const Beam = {
 
     fromPartial(object: DeepPartial<Beam>): Beam {
         const message = { ...baseBeam } as Beam;
-        if (object.creatorAddress !== undefined && object.creatorAddress !== null) {
-            message.creatorAddress = object.creatorAddress;
-        } else {
-            message.creatorAddress = '';
-        }
-        if (object.id !== undefined && object.id !== null) {
-            message.id = object.id;
-        } else {
-            message.id = '';
-        }
+        message.creatorAddress = object.creatorAddress ?? '';
+        message.id = object.id ?? '';
         if (object.amount !== undefined && object.amount !== null) {
             message.amount = Coin.fromPartial(object.amount);
         } else {
             message.amount = undefined;
         }
-        if (object.status !== undefined && object.status !== null) {
-            message.status = object.status;
-        } else {
-            message.status = 0;
-        }
-        if (object.secret !== undefined && object.secret !== null) {
-            message.secret = object.secret;
-        } else {
-            message.secret = '';
-        }
-        if (object.claimAddress !== undefined && object.claimAddress !== null) {
-            message.claimAddress = object.claimAddress;
-        } else {
-            message.claimAddress = '';
-        }
-        if (object.fundsWithdrawn !== undefined && object.fundsWithdrawn !== null) {
-            message.fundsWithdrawn = object.fundsWithdrawn;
-        } else {
-            message.fundsWithdrawn = false;
-        }
-        if (object.claimed !== undefined && object.claimed !== null) {
-            message.claimed = object.claimed;
-        } else {
-            message.claimed = false;
-        }
-        if (object.cancelReason !== undefined && object.cancelReason !== null) {
-            message.cancelReason = object.cancelReason;
-        } else {
-            message.cancelReason = '';
-        }
-        if (object.hideContent !== undefined && object.hideContent !== null) {
-            message.hideContent = object.hideContent;
-        } else {
-            message.hideContent = false;
-        }
-        if (object.schema !== undefined && object.schema !== null) {
-            message.schema = object.schema;
-        } else {
-            message.schema = '';
-        }
+        message.status = object.status ?? 0;
+        message.secret = object.secret ?? '';
+        message.claimAddress = object.claimAddress ?? '';
+        message.fundsWithdrawn = object.fundsWithdrawn ?? false;
+        message.claimed = object.claimed ?? false;
+        message.cancelReason = object.cancelReason ?? '';
+        message.hideContent = object.hideContent ?? false;
+        message.schema = object.schema ?? '';
         if (object.data !== undefined && object.data !== null) {
             message.data = BeamData.fromPartial(object.data);
         } else {
             message.data = undefined;
         }
-        if (object.claimExpiresAtBlock !== undefined && object.claimExpiresAtBlock !== null) {
-            message.claimExpiresAtBlock = object.claimExpiresAtBlock;
-        } else {
-            message.claimExpiresAtBlock = 0;
-        }
-        if (object.closesAtBlock !== undefined && object.closesAtBlock !== null) {
-            message.closesAtBlock = object.closesAtBlock;
-        } else {
-            message.closesAtBlock = 0;
-        }
-        if (object.createdAt !== undefined && object.createdAt !== null) {
-            message.createdAt = object.createdAt;
-        } else {
-            message.createdAt = undefined;
-        }
-        if (object.closedAt !== undefined && object.closedAt !== null) {
-            message.closedAt = object.closedAt;
-        } else {
-            message.closedAt = undefined;
-        }
+        message.claimExpiresAtBlock = object.claimExpiresAtBlock ?? 0;
+        message.closesAtBlock = object.closesAtBlock ?? 0;
+        message.createdAt = object.createdAt ?? undefined;
+        message.closedAt = object.closedAt ?? undefined;
         return message;
     },
 };

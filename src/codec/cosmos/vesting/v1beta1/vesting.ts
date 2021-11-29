@@ -56,6 +56,8 @@ export interface PeriodicVestingAccount {
  * PermanentLockedAccount implements the VestingAccount interface. It does
  * not ever release coins, locking them indefinitely. Coins in this account can
  * still be used for delegating and for governance votes even while locked.
+ *
+ * Since: cosmos-sdk 0.43
  */
 export interface PermanentLockedAccount {
     baseVestingAccount?: BaseVestingAccount;
@@ -173,24 +175,24 @@ export const BaseVestingAccount = {
 
     fromPartial(object: DeepPartial<BaseVestingAccount>): BaseVestingAccount {
         const message = { ...baseBaseVestingAccount } as BaseVestingAccount;
-        message.originalVesting = [];
-        message.delegatedFree = [];
-        message.delegatedVesting = [];
         if (object.baseAccount !== undefined && object.baseAccount !== null) {
             message.baseAccount = BaseAccount.fromPartial(object.baseAccount);
         } else {
             message.baseAccount = undefined;
         }
+        message.originalVesting = [];
         if (object.originalVesting !== undefined && object.originalVesting !== null) {
             for (const e of object.originalVesting) {
                 message.originalVesting.push(Coin.fromPartial(e));
             }
         }
+        message.delegatedFree = [];
         if (object.delegatedFree !== undefined && object.delegatedFree !== null) {
             for (const e of object.delegatedFree) {
                 message.delegatedFree.push(Coin.fromPartial(e));
             }
         }
+        message.delegatedVesting = [];
         if (object.delegatedVesting !== undefined && object.delegatedVesting !== null) {
             for (const e of object.delegatedVesting) {
                 message.delegatedVesting.push(Coin.fromPartial(e));
@@ -396,12 +398,12 @@ export const Period = {
 
     fromPartial(object: DeepPartial<Period>): Period {
         const message = { ...basePeriod } as Period;
-        message.amount = [];
         if (object.length !== undefined && object.length !== null) {
             message.length = object.length as Long;
         } else {
             message.length = Long.ZERO;
         }
+        message.amount = [];
         if (object.amount !== undefined && object.amount !== null) {
             for (const e of object.amount) {
                 message.amount.push(Coin.fromPartial(e));
@@ -487,7 +489,6 @@ export const PeriodicVestingAccount = {
 
     fromPartial(object: DeepPartial<PeriodicVestingAccount>): PeriodicVestingAccount {
         const message = { ...basePeriodicVestingAccount } as PeriodicVestingAccount;
-        message.vestingPeriods = [];
         if (object.baseVestingAccount !== undefined && object.baseVestingAccount !== null) {
             message.baseVestingAccount = BaseVestingAccount.fromPartial(object.baseVestingAccount);
         } else {
@@ -498,6 +499,7 @@ export const PeriodicVestingAccount = {
         } else {
             message.startTime = Long.ZERO;
         }
+        message.vestingPeriods = [];
         if (object.vestingPeriods !== undefined && object.vestingPeriods !== null) {
             for (const e of object.vestingPeriods) {
                 message.vestingPeriods.push(Period.fromPartial(e));

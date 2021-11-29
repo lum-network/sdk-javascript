@@ -6,6 +6,8 @@ import { PageRequest, PageResponse } from '../../../cosmos/base/query/v1beta1/pa
 
 export const protobufPackage = 'cosmos.feegrant.v1beta1';
 
+/** Since: cosmos-sdk 0.43 */
+
 /** QueryAllowanceRequest is the request type for the Query/Allowance RPC method. */
 export interface QueryAllowanceRequest {
     /** granter is the address of the user granting an allowance of their funds. */
@@ -93,16 +95,8 @@ export const QueryAllowanceRequest = {
 
     fromPartial(object: DeepPartial<QueryAllowanceRequest>): QueryAllowanceRequest {
         const message = { ...baseQueryAllowanceRequest } as QueryAllowanceRequest;
-        if (object.granter !== undefined && object.granter !== null) {
-            message.granter = object.granter;
-        } else {
-            message.granter = '';
-        }
-        if (object.grantee !== undefined && object.grantee !== null) {
-            message.grantee = object.grantee;
-        } else {
-            message.grantee = '';
-        }
+        message.granter = object.granter ?? '';
+        message.grantee = object.grantee ?? '';
         return message;
     },
 };
@@ -220,11 +214,7 @@ export const QueryAllowancesRequest = {
 
     fromPartial(object: DeepPartial<QueryAllowancesRequest>): QueryAllowancesRequest {
         const message = { ...baseQueryAllowancesRequest } as QueryAllowancesRequest;
-        if (object.grantee !== undefined && object.grantee !== null) {
-            message.grantee = object.grantee;
-        } else {
-            message.grantee = '';
-        }
+        message.grantee = object.grantee ?? '';
         if (object.pagination !== undefined && object.pagination !== null) {
             message.pagination = PageRequest.fromPartial(object.pagination);
         } else {

@@ -6,6 +6,8 @@ import { Timestamp } from '../../../google/protobuf/timestamp';
 
 export const protobufPackage = 'cosmos.authz.v1beta1';
 
+/** Since: cosmos-sdk 0.43 */
+
 /**
  * GenericAuthorization gives the grantee unrestricted permissions to execute
  * the provided method on behalf of the granter's account.
@@ -70,11 +72,7 @@ export const GenericAuthorization = {
 
     fromPartial(object: DeepPartial<GenericAuthorization>): GenericAuthorization {
         const message = { ...baseGenericAuthorization } as GenericAuthorization;
-        if (object.msg !== undefined && object.msg !== null) {
-            message.msg = object.msg;
-        } else {
-            message.msg = '';
-        }
+        message.msg = object.msg ?? '';
         return message;
     },
 };
@@ -142,11 +140,7 @@ export const Grant = {
         } else {
             message.authorization = undefined;
         }
-        if (object.expiration !== undefined && object.expiration !== null) {
-            message.expiration = object.expiration;
-        } else {
-            message.expiration = undefined;
-        }
+        message.expiration = object.expiration ?? undefined;
         return message;
     },
 };
