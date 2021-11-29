@@ -4,6 +4,8 @@ import _m0 from 'protobufjs/minimal';
 
 export const protobufPackage = 'cosmos.authz.v1beta1';
 
+/** Since: cosmos-sdk 0.43 */
+
 /** EventGrant is emitted on Msg/Grant */
 export interface EventGrant {
     /** Msg type URL for which an autorization is granted */
@@ -94,21 +96,9 @@ export const EventGrant = {
 
     fromPartial(object: DeepPartial<EventGrant>): EventGrant {
         const message = { ...baseEventGrant } as EventGrant;
-        if (object.msgTypeUrl !== undefined && object.msgTypeUrl !== null) {
-            message.msgTypeUrl = object.msgTypeUrl;
-        } else {
-            message.msgTypeUrl = '';
-        }
-        if (object.granter !== undefined && object.granter !== null) {
-            message.granter = object.granter;
-        } else {
-            message.granter = '';
-        }
-        if (object.grantee !== undefined && object.grantee !== null) {
-            message.grantee = object.grantee;
-        } else {
-            message.grantee = '';
-        }
+        message.msgTypeUrl = object.msgTypeUrl ?? '';
+        message.granter = object.granter ?? '';
+        message.grantee = object.grantee ?? '';
         return message;
     },
 };
@@ -183,21 +173,9 @@ export const EventRevoke = {
 
     fromPartial(object: DeepPartial<EventRevoke>): EventRevoke {
         const message = { ...baseEventRevoke } as EventRevoke;
-        if (object.msgTypeUrl !== undefined && object.msgTypeUrl !== null) {
-            message.msgTypeUrl = object.msgTypeUrl;
-        } else {
-            message.msgTypeUrl = '';
-        }
-        if (object.granter !== undefined && object.granter !== null) {
-            message.granter = object.granter;
-        } else {
-            message.granter = '';
-        }
-        if (object.grantee !== undefined && object.grantee !== null) {
-            message.grantee = object.grantee;
-        } else {
-            message.grantee = '';
-        }
+        message.msgTypeUrl = object.msgTypeUrl ?? '';
+        message.granter = object.granter ?? '';
+        message.grantee = object.grantee ?? '';
         return message;
     },
 };

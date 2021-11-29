@@ -5,6 +5,8 @@ import { Any } from '../../../google/protobuf/any';
 
 export const protobufPackage = 'cosmos.feegrant.v1beta1';
 
+/** Since: cosmos-sdk 0.43 */
+
 /**
  * MsgGrantAllowance adds permission for Grantee to spend up to Allowance
  * of fees from the account of Granter.
@@ -102,16 +104,8 @@ export const MsgGrantAllowance = {
 
     fromPartial(object: DeepPartial<MsgGrantAllowance>): MsgGrantAllowance {
         const message = { ...baseMsgGrantAllowance } as MsgGrantAllowance;
-        if (object.granter !== undefined && object.granter !== null) {
-            message.granter = object.granter;
-        } else {
-            message.granter = '';
-        }
-        if (object.grantee !== undefined && object.grantee !== null) {
-            message.grantee = object.grantee;
-        } else {
-            message.grantee = '';
-        }
+        message.granter = object.granter ?? '';
+        message.grantee = object.grantee ?? '';
         if (object.allowance !== undefined && object.allowance !== null) {
             message.allowance = Any.fromPartial(object.allowance);
         } else {
@@ -217,16 +211,8 @@ export const MsgRevokeAllowance = {
 
     fromPartial(object: DeepPartial<MsgRevokeAllowance>): MsgRevokeAllowance {
         const message = { ...baseMsgRevokeAllowance } as MsgRevokeAllowance;
-        if (object.granter !== undefined && object.granter !== null) {
-            message.granter = object.granter;
-        } else {
-            message.granter = '';
-        }
-        if (object.grantee !== undefined && object.grantee !== null) {
-            message.grantee = object.grantee;
-        } else {
-            message.grantee = '';
-        }
+        message.granter = object.granter ?? '';
+        message.grantee = object.grantee ?? '';
         return message;
     },
 };

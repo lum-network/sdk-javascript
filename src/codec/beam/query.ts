@@ -69,11 +69,7 @@ export const QueryGetBeamRequest = {
 
     fromPartial(object: DeepPartial<QueryGetBeamRequest>): QueryGetBeamRequest {
         const message = { ...baseQueryGetBeamRequest } as QueryGetBeamRequest;
-        if (object.id !== undefined && object.id !== null) {
-            message.id = object.id;
-        } else {
-            message.id = '';
-        }
+        message.id = object.id ?? '';
         return message;
     },
 };

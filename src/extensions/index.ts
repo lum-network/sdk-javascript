@@ -1,3 +1,4 @@
+export * from './airdrop';
 export * from './auth';
 export * from './bank';
 export * from './beam';

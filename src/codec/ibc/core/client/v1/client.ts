@@ -161,11 +161,7 @@ export const IdentifiedClientState = {
 
     fromPartial(object: DeepPartial<IdentifiedClientState>): IdentifiedClientState {
         const message = { ...baseIdentifiedClientState } as IdentifiedClientState;
-        if (object.clientId !== undefined && object.clientId !== null) {
-            message.clientId = object.clientId;
-        } else {
-            message.clientId = '';
-        }
+        message.clientId = object.clientId ?? '';
         if (object.clientState !== undefined && object.clientState !== null) {
             message.clientState = Any.fromPartial(object.clientState);
         } else {
@@ -311,12 +307,8 @@ export const ClientConsensusStates = {
 
     fromPartial(object: DeepPartial<ClientConsensusStates>): ClientConsensusStates {
         const message = { ...baseClientConsensusStates } as ClientConsensusStates;
+        message.clientId = object.clientId ?? '';
         message.consensusStates = [];
-        if (object.clientId !== undefined && object.clientId !== null) {
-            message.clientId = object.clientId;
-        } else {
-            message.clientId = '';
-        }
         if (object.consensusStates !== undefined && object.consensusStates !== null) {
             for (const e of object.consensusStates) {
                 message.consensusStates.push(ConsensusStateWithHeight.fromPartial(e));
@@ -408,26 +400,10 @@ export const ClientUpdateProposal = {
 
     fromPartial(object: DeepPartial<ClientUpdateProposal>): ClientUpdateProposal {
         const message = { ...baseClientUpdateProposal } as ClientUpdateProposal;
-        if (object.title !== undefined && object.title !== null) {
-            message.title = object.title;
-        } else {
-            message.title = '';
-        }
-        if (object.description !== undefined && object.description !== null) {
-            message.description = object.description;
-        } else {
-            message.description = '';
-        }
-        if (object.subjectClientId !== undefined && object.subjectClientId !== null) {
-            message.subjectClientId = object.subjectClientId;
-        } else {
-            message.subjectClientId = '';
-        }
-        if (object.substituteClientId !== undefined && object.substituteClientId !== null) {
-            message.substituteClientId = object.substituteClientId;
-        } else {
-            message.substituteClientId = '';
-        }
+        message.title = object.title ?? '';
+        message.description = object.description ?? '';
+        message.subjectClientId = object.subjectClientId ?? '';
+        message.substituteClientId = object.substituteClientId ?? '';
         return message;
     },
 };
@@ -514,16 +490,8 @@ export const UpgradeProposal = {
 
     fromPartial(object: DeepPartial<UpgradeProposal>): UpgradeProposal {
         const message = { ...baseUpgradeProposal } as UpgradeProposal;
-        if (object.title !== undefined && object.title !== null) {
-            message.title = object.title;
-        } else {
-            message.title = '';
-        }
-        if (object.description !== undefined && object.description !== null) {
-            message.description = object.description;
-        } else {
-            message.description = '';
-        }
+        message.title = object.title ?? '';
+        message.description = object.description ?? '';
         if (object.plan !== undefined && object.plan !== null) {
             message.plan = Plan.fromPartial(object.plan);
         } else {

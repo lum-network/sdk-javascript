@@ -42,7 +42,7 @@ describe('LumWallet', () => {
         const keystore =
             '{"version":1,"id":"f901e6d1-021a-4ac9-b0bb-494101ac52fa","crypto":{"ciphertext":"be5d10547f3c145f08f0a9f5fbb9051ae0175c78a8865c607253460b4cbe002d","cipherparams":{"iv":"9aa1ac8e7eb398e7d13b93e91dcaa191"},"cipher":"aes-256-ctr","kdf":"pbkdf2","kdfparams":{"dklen":32,"salt":"b3eff47ff6d30ff70320bb90187b5c5948104cbda89cdae9daf7ea6d4cacbea3","c":262144,"prf":"hmac-sha256"},"mac":"7b6ce598043d65cff9c78c7fd8fd3d659b845dee56c48daef6bca4accc0e0c5cfaea79a801c4a0dfd86480cd6e792010843923fb7a498dd883c14cd2495f9920"}}';
 
-        const w1 = await LumWalletFactory.fromMnemonic(mnemonic);
+        const w1 = await LumWalletFactory.fromMnemonic(mnemonic, `m/44'/837'/0'/0/0`);
         const w2 = await LumWalletFactory.fromPrivateKey(LumUtils.keyFromHex(privateKey));
         const w3 = await LumWalletFactory.fromKeyStore(keystore, 'lumiere');
         const w4 = await LumWalletFactory.fromOfflineSigner(new FakeOfflineSigner(LumUtils.keyFromHex(privateKey)));

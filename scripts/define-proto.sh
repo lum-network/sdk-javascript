@@ -91,6 +91,9 @@ protoc \
     "$THIRD_PARTY_PROTO_DIR/tendermint/types/types.proto" \
     "$THIRD_PARTY_PROTO_DIR/tendermint/types/validator.proto" \
     "$THIRD_PARTY_PROTO_DIR/tendermint/version/types.proto" \
+    "$LUM_PROTO_DIR/airdrop/claim.proto" \
+    "$LUM_PROTO_DIR/airdrop/query.proto" \
+    "$LUM_PROTO_DIR/airdrop/params.proto" \
     "$LUM_PROTO_DIR/beam/beam.proto" \
     "$LUM_PROTO_DIR/beam/query.proto" \
     "$LUM_PROTO_DIR/beam/tx.proto"

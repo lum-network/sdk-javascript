@@ -179,51 +179,23 @@ export const MsgOpenBeam = {
 
     fromPartial(object: DeepPartial<MsgOpenBeam>): MsgOpenBeam {
         const message = { ...baseMsgOpenBeam } as MsgOpenBeam;
-        if (object.id !== undefined && object.id !== null) {
-            message.id = object.id;
-        } else {
-            message.id = '';
-        }
-        if (object.creatorAddress !== undefined && object.creatorAddress !== null) {
-            message.creatorAddress = object.creatorAddress;
-        } else {
-            message.creatorAddress = '';
-        }
-        if (object.secret !== undefined && object.secret !== null) {
-            message.secret = object.secret;
-        } else {
-            message.secret = '';
-        }
+        message.id = object.id ?? '';
+        message.creatorAddress = object.creatorAddress ?? '';
+        message.secret = object.secret ?? '';
         if (object.amount !== undefined && object.amount !== null) {
             message.amount = Coin.fromPartial(object.amount);
         } else {
             message.amount = undefined;
         }
-        if (object.schema !== undefined && object.schema !== null) {
-            message.schema = object.schema;
-        } else {
-            message.schema = '';
-        }
+        message.schema = object.schema ?? '';
         if (object.data !== undefined && object.data !== null) {
             message.data = BeamData.fromPartial(object.data);
         } else {
             message.data = undefined;
         }
-        if (object.claimAddress !== undefined && object.claimAddress !== null) {
-            message.claimAddress = object.claimAddress;
-        } else {
-            message.claimAddress = '';
-        }
-        if (object.claimExpiresAtBlock !== undefined && object.claimExpiresAtBlock !== null) {
-            message.claimExpiresAtBlock = object.claimExpiresAtBlock;
-        } else {
-            message.claimExpiresAtBlock = 0;
-        }
-        if (object.closesAtBlock !== undefined && object.closesAtBlock !== null) {
-            message.closesAtBlock = object.closesAtBlock;
-        } else {
-            message.closesAtBlock = 0;
-        }
+        message.claimAddress = object.claimAddress ?? '';
+        message.claimExpiresAtBlock = object.claimExpiresAtBlock ?? 0;
+        message.closesAtBlock = object.closesAtBlock ?? 0;
         return message;
     },
 };
@@ -382,56 +354,24 @@ export const MsgUpdateBeam = {
 
     fromPartial(object: DeepPartial<MsgUpdateBeam>): MsgUpdateBeam {
         const message = { ...baseMsgUpdateBeam } as MsgUpdateBeam;
-        if (object.id !== undefined && object.id !== null) {
-            message.id = object.id;
-        } else {
-            message.id = '';
-        }
-        if (object.updaterAddress !== undefined && object.updaterAddress !== null) {
-            message.updaterAddress = object.updaterAddress;
-        } else {
-            message.updaterAddress = '';
-        }
+        message.id = object.id ?? '';
+        message.updaterAddress = object.updaterAddress ?? '';
         if (object.amount !== undefined && object.amount !== null) {
             message.amount = Coin.fromPartial(object.amount);
         } else {
             message.amount = undefined;
         }
-        if (object.status !== undefined && object.status !== null) {
-            message.status = object.status;
-        } else {
-            message.status = 0;
-        }
-        if (object.cancelReason !== undefined && object.cancelReason !== null) {
-            message.cancelReason = object.cancelReason;
-        } else {
-            message.cancelReason = '';
-        }
-        if (object.hideContent !== undefined && object.hideContent !== null) {
-            message.hideContent = object.hideContent;
-        } else {
-            message.hideContent = false;
-        }
+        message.status = object.status ?? 0;
+        message.cancelReason = object.cancelReason ?? '';
+        message.hideContent = object.hideContent ?? false;
         if (object.data !== undefined && object.data !== null) {
             message.data = BeamData.fromPartial(object.data);
         } else {
             message.data = undefined;
         }
-        if (object.claimAddress !== undefined && object.claimAddress !== null) {
-            message.claimAddress = object.claimAddress;
-        } else {
-            message.claimAddress = '';
-        }
-        if (object.claimExpiresAtBlock !== undefined && object.claimExpiresAtBlock !== null) {
-            message.claimExpiresAtBlock = object.claimExpiresAtBlock;
-        } else {
-            message.claimExpiresAtBlock = 0;
-        }
-        if (object.closesAtBlock !== undefined && object.closesAtBlock !== null) {
-            message.closesAtBlock = object.closesAtBlock;
-        } else {
-            message.closesAtBlock = 0;
-        }
+        message.claimAddress = object.claimAddress ?? '';
+        message.claimExpiresAtBlock = object.claimExpiresAtBlock ?? 0;
+        message.closesAtBlock = object.closesAtBlock ?? 0;
         return message;
     },
 };
@@ -506,21 +446,9 @@ export const MsgClaimBeam = {
 
     fromPartial(object: DeepPartial<MsgClaimBeam>): MsgClaimBeam {
         const message = { ...baseMsgClaimBeam } as MsgClaimBeam;
-        if (object.id !== undefined && object.id !== null) {
-            message.id = object.id;
-        } else {
-            message.id = '';
-        }
-        if (object.claimerAddress !== undefined && object.claimerAddress !== null) {
-            message.claimerAddress = object.claimerAddress;
-        } else {
-            message.claimerAddress = '';
-        }
-        if (object.secret !== undefined && object.secret !== null) {
-            message.secret = object.secret;
-        } else {
-            message.secret = '';
-        }
+        message.id = object.id ?? '';
+        message.claimerAddress = object.claimerAddress ?? '';
+        message.secret = object.secret ?? '';
         return message;
     },
 };

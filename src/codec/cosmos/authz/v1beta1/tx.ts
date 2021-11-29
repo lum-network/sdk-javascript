@@ -6,6 +6,8 @@ import { Any } from '../../../google/protobuf/any';
 
 export const protobufPackage = 'cosmos.authz.v1beta1';
 
+/** Since: cosmos-sdk 0.43 */
+
 /**
  * MsgGrant is a request type for Grant method. It declares authorization to the grantee
  * on behalf of the granter with the provided expiration time.
@@ -122,16 +124,8 @@ export const MsgGrant = {
 
     fromPartial(object: DeepPartial<MsgGrant>): MsgGrant {
         const message = { ...baseMsgGrant } as MsgGrant;
-        if (object.granter !== undefined && object.granter !== null) {
-            message.granter = object.granter;
-        } else {
-            message.granter = '';
-        }
-        if (object.grantee !== undefined && object.grantee !== null) {
-            message.grantee = object.grantee;
-        } else {
-            message.grantee = '';
-        }
+        message.granter = object.granter ?? '';
+        message.grantee = object.grantee ?? '';
         if (object.grant !== undefined && object.grant !== null) {
             message.grant = Grant.fromPartial(object.grant);
         } else {
@@ -267,12 +261,8 @@ export const MsgExec = {
 
     fromPartial(object: DeepPartial<MsgExec>): MsgExec {
         const message = { ...baseMsgExec } as MsgExec;
+        message.grantee = object.grantee ?? '';
         message.msgs = [];
-        if (object.grantee !== undefined && object.grantee !== null) {
-            message.grantee = object.grantee;
-        } else {
-            message.grantee = '';
-        }
         if (object.msgs !== undefined && object.msgs !== null) {
             for (const e of object.msgs) {
                 message.msgs.push(Any.fromPartial(e));
@@ -390,21 +380,9 @@ export const MsgRevoke = {
 
     fromPartial(object: DeepPartial<MsgRevoke>): MsgRevoke {
         const message = { ...baseMsgRevoke } as MsgRevoke;
-        if (object.granter !== undefined && object.granter !== null) {
-            message.granter = object.granter;
-        } else {
-            message.granter = '';
-        }
-        if (object.grantee !== undefined && object.grantee !== null) {
-            message.grantee = object.grantee;
-        } else {
-            message.grantee = '';
-        }
-        if (object.msgTypeUrl !== undefined && object.msgTypeUrl !== null) {
-            message.msgTypeUrl = object.msgTypeUrl;
-        } else {
-            message.msgTypeUrl = '';
-        }
+        message.granter = object.granter ?? '';
+        message.grantee = object.grantee ?? '';
+        message.msgTypeUrl = object.msgTypeUrl ?? '';
         return message;
     },
 };

@@ -38,7 +38,11 @@ export interface PageRequest {
      * is set.
      */
     countTotal: boolean;
-    /** reverse is set to true if results are to be returned in the descending order. */
+    /**
+     * reverse is set to true if results are to be returned in the descending order.
+     *
+     * Since: cosmos-sdk 0.43
+     */
     reverse: boolean;
 }
 
@@ -158,11 +162,7 @@ export const PageRequest = {
 
     fromPartial(object: DeepPartial<PageRequest>): PageRequest {
         const message = { ...basePageRequest } as PageRequest;
-        if (object.key !== undefined && object.key !== null) {
-            message.key = object.key;
-        } else {
-            message.key = new Uint8Array();
-        }
+        message.key = object.key ?? new Uint8Array();
         if (object.offset !== undefined && object.offset !== null) {
             message.offset = object.offset as Long;
         } else {
@@ -173,16 +173,8 @@ export const PageRequest = {
         } else {
             message.limit = Long.UZERO;
         }
-        if (object.countTotal !== undefined && object.countTotal !== null) {
-            message.countTotal = object.countTotal;
-        } else {
-            message.countTotal = false;
-        }
-        if (object.reverse !== undefined && object.reverse !== null) {
-            message.reverse = object.reverse;
-        } else {
-            message.reverse = false;
-        }
+        message.countTotal = object.countTotal ?? false;
+        message.reverse = object.reverse ?? false;
         return message;
     },
 };
@@ -245,11 +237,7 @@ export const PageResponse = {
 
     fromPartial(object: DeepPartial<PageResponse>): PageResponse {
         const message = { ...basePageResponse } as PageResponse;
-        if (object.nextKey !== undefined && object.nextKey !== null) {
-            message.nextKey = object.nextKey;
-        } else {
-            message.nextKey = new Uint8Array();
-        }
+        message.nextKey = object.nextKey ?? new Uint8Array();
         if (object.total !== undefined && object.total !== null) {
             message.total = object.total as Long;
         } else {

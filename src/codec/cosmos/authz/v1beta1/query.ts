@@ -6,6 +6,8 @@ import { Grant } from '../../../cosmos/authz/v1beta1/authz';
 
 export const protobufPackage = 'cosmos.authz.v1beta1';
 
+/** Since: cosmos-sdk 0.43 */
+
 /** QueryGrantsRequest is the request type for the Query/Grants RPC method. */
 export interface QueryGrantsRequest {
     granter: string;
@@ -106,21 +108,9 @@ export const QueryGrantsRequest = {
 
     fromPartial(object: DeepPartial<QueryGrantsRequest>): QueryGrantsRequest {
         const message = { ...baseQueryGrantsRequest } as QueryGrantsRequest;
-        if (object.granter !== undefined && object.granter !== null) {
-            message.granter = object.granter;
-        } else {
-            message.granter = '';
-        }
-        if (object.grantee !== undefined && object.grantee !== null) {
-            message.grantee = object.grantee;
-        } else {
-            message.grantee = '';
-        }
-        if (object.msgTypeUrl !== undefined && object.msgTypeUrl !== null) {
-            message.msgTypeUrl = object.msgTypeUrl;
-        } else {
-            message.msgTypeUrl = '';
-        }
+        message.granter = object.granter ?? '';
+        message.grantee = object.grantee ?? '';
+        message.msgTypeUrl = object.msgTypeUrl ?? '';
         if (object.pagination !== undefined && object.pagination !== null) {
             message.pagination = PageRequest.fromPartial(object.pagination);
         } else {

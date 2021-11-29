@@ -1,3 +1,5 @@
+export * from './accounts';
+export * from './vestings';
 export * from './commons';
 export * from './encoding';
 export * from './wallets';

@@ -321,21 +321,9 @@ export const QueryProposalsRequest = {
 
     fromPartial(object: DeepPartial<QueryProposalsRequest>): QueryProposalsRequest {
         const message = { ...baseQueryProposalsRequest } as QueryProposalsRequest;
-        if (object.proposalStatus !== undefined && object.proposalStatus !== null) {
-            message.proposalStatus = object.proposalStatus;
-        } else {
-            message.proposalStatus = 0;
-        }
-        if (object.voter !== undefined && object.voter !== null) {
-            message.voter = object.voter;
-        } else {
-            message.voter = '';
-        }
-        if (object.depositor !== undefined && object.depositor !== null) {
-            message.depositor = object.depositor;
-        } else {
-            message.depositor = '';
-        }
+        message.proposalStatus = object.proposalStatus ?? 0;
+        message.voter = object.voter ?? '';
+        message.depositor = object.depositor ?? '';
         if (object.pagination !== undefined && object.pagination !== null) {
             message.pagination = PageRequest.fromPartial(object.pagination);
         } else {
@@ -487,11 +475,7 @@ export const QueryVoteRequest = {
         } else {
             message.proposalId = Long.UZERO;
         }
-        if (object.voter !== undefined && object.voter !== null) {
-            message.voter = object.voter;
-        } else {
-            message.voter = '';
-        }
+        message.voter = object.voter ?? '';
         return message;
     },
 };
@@ -748,11 +732,7 @@ export const QueryParamsRequest = {
 
     fromPartial(object: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
         const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
-        if (object.paramsType !== undefined && object.paramsType !== null) {
-            message.paramsType = object.paramsType;
-        } else {
-            message.paramsType = '';
-        }
+        message.paramsType = object.paramsType ?? '';
         return message;
     },
 };
@@ -909,11 +889,7 @@ export const QueryDepositRequest = {
         } else {
             message.proposalId = Long.UZERO;
         }
-        if (object.depositor !== undefined && object.depositor !== null) {
-            message.depositor = object.depositor;
-        } else {
-            message.depositor = '';
-        }
+        message.depositor = object.depositor ?? '';
         return message;
     },
 };

@@ -32,14 +32,22 @@ export interface MsgVote {
 /** MsgVoteResponse defines the Msg/Vote response type. */
 export interface MsgVoteResponse {}
 
-/** MsgVoteWeighted defines a message to cast a vote. */
+/**
+ * MsgVoteWeighted defines a message to cast a vote.
+ *
+ * Since: cosmos-sdk 0.43
+ */
 export interface MsgVoteWeighted {
     proposalId: Long;
     voter: string;
     options: WeightedVoteOption[];
 }
 
-/** MsgVoteWeightedResponse defines the Msg/VoteWeighted response type. */
+/**
+ * MsgVoteWeightedResponse defines the Msg/VoteWeighted response type.
+ *
+ * Since: cosmos-sdk 0.43
+ */
 export interface MsgVoteWeightedResponse {}
 
 /** MsgDeposit defines a message to submit a deposit to an existing proposal. */
@@ -128,22 +136,18 @@ export const MsgSubmitProposal = {
 
     fromPartial(object: DeepPartial<MsgSubmitProposal>): MsgSubmitProposal {
         const message = { ...baseMsgSubmitProposal } as MsgSubmitProposal;
-        message.initialDeposit = [];
         if (object.content !== undefined && object.content !== null) {
             message.content = Any.fromPartial(object.content);
         } else {
             message.content = undefined;
         }
+        message.initialDeposit = [];
         if (object.initialDeposit !== undefined && object.initialDeposit !== null) {
             for (const e of object.initialDeposit) {
                 message.initialDeposit.push(Coin.fromPartial(e));
             }
         }
-        if (object.proposer !== undefined && object.proposer !== null) {
-            message.proposer = object.proposer;
-        } else {
-            message.proposer = '';
-        }
+        message.proposer = object.proposer ?? '';
         return message;
     },
 };
@@ -278,16 +282,8 @@ export const MsgVote = {
         } else {
             message.proposalId = Long.UZERO;
         }
-        if (object.voter !== undefined && object.voter !== null) {
-            message.voter = object.voter;
-        } else {
-            message.voter = '';
-        }
-        if (object.option !== undefined && object.option !== null) {
-            message.option = object.option;
-        } else {
-            message.option = 0;
-        }
+        message.voter = object.voter ?? '';
+        message.option = object.option ?? 0;
         return message;
     },
 };
@@ -406,17 +402,13 @@ export const MsgVoteWeighted = {
 
     fromPartial(object: DeepPartial<MsgVoteWeighted>): MsgVoteWeighted {
         const message = { ...baseMsgVoteWeighted } as MsgVoteWeighted;
-        message.options = [];
         if (object.proposalId !== undefined && object.proposalId !== null) {
             message.proposalId = object.proposalId as Long;
         } else {
             message.proposalId = Long.UZERO;
         }
-        if (object.voter !== undefined && object.voter !== null) {
-            message.voter = object.voter;
-        } else {
-            message.voter = '';
-        }
+        message.voter = object.voter ?? '';
+        message.options = [];
         if (object.options !== undefined && object.options !== null) {
             for (const e of object.options) {
                 message.options.push(WeightedVoteOption.fromPartial(e));
@@ -540,17 +532,13 @@ export const MsgDeposit = {
 
     fromPartial(object: DeepPartial<MsgDeposit>): MsgDeposit {
         const message = { ...baseMsgDeposit } as MsgDeposit;
-        message.amount = [];
         if (object.proposalId !== undefined && object.proposalId !== null) {
             message.proposalId = object.proposalId as Long;
         } else {
             message.proposalId = Long.UZERO;
         }
-        if (object.depositor !== undefined && object.depositor !== null) {
-            message.depositor = object.depositor;
-        } else {
-            message.depositor = '';
-        }
+        message.depositor = object.depositor ?? '';
+        message.amount = [];
         if (object.amount !== undefined && object.amount !== null) {
             for (const e of object.amount) {
                 message.amount.push(Coin.fromPartial(e));
@@ -604,7 +592,11 @@ export interface Msg {
     SubmitProposal(request: MsgSubmitProposal): Promise<MsgSubmitProposalResponse>;
     /** Vote defines a method to add a vote on a specific proposal. */
     Vote(request: MsgVote): Promise<MsgVoteResponse>;
-    /** VoteWeighted defines a method to add a weighted vote on a specific proposal. */
+    /**
+     * VoteWeighted defines a method to add a weighted vote on a specific proposal.
+     *
+     * Since: cosmos-sdk 0.43
+     */
     VoteWeighted(request: MsgVoteWeighted): Promise<MsgVoteWeightedResponse>;
     /** Deposit defines a method to add deposit on a specific proposal. */
     Deposit(request: MsgDeposit): Promise<MsgDepositResponse>;

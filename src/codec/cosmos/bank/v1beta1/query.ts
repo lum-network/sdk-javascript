@@ -45,7 +45,11 @@ export interface QueryAllBalancesResponse {
  * method.
  */
 export interface QueryTotalSupplyRequest {
-    /** pagination defines an optional pagination for the request. */
+    /**
+     * pagination defines an optional pagination for the request.
+     *
+     * Since: cosmos-sdk 0.43
+     */
     pagination?: PageRequest;
 }
 
@@ -56,7 +60,11 @@ export interface QueryTotalSupplyRequest {
 export interface QueryTotalSupplyResponse {
     /** supply is the supply of the coins */
     supply: Coin[];
-    /** pagination defines the pagination in the response. */
+    /**
+     * pagination defines the pagination in the response.
+     *
+     * Since: cosmos-sdk 0.43
+     */
     pagination?: PageResponse;
 }
 
@@ -170,16 +178,8 @@ export const QueryBalanceRequest = {
 
     fromPartial(object: DeepPartial<QueryBalanceRequest>): QueryBalanceRequest {
         const message = { ...baseQueryBalanceRequest } as QueryBalanceRequest;
-        if (object.address !== undefined && object.address !== null) {
-            message.address = object.address;
-        } else {
-            message.address = '';
-        }
-        if (object.denom !== undefined && object.denom !== null) {
-            message.denom = object.denom;
-        } else {
-            message.denom = '';
-        }
+        message.address = object.address ?? '';
+        message.denom = object.denom ?? '';
         return message;
     },
 };
@@ -297,11 +297,7 @@ export const QueryAllBalancesRequest = {
 
     fromPartial(object: DeepPartial<QueryAllBalancesRequest>): QueryAllBalancesRequest {
         const message = { ...baseQueryAllBalancesRequest } as QueryAllBalancesRequest;
-        if (object.address !== undefined && object.address !== null) {
-            message.address = object.address;
-        } else {
-            message.address = '';
-        }
+        message.address = object.address ?? '';
         if (object.pagination !== undefined && object.pagination !== null) {
             message.pagination = PageRequest.fromPartial(object.pagination);
         } else {
@@ -570,11 +566,7 @@ export const QuerySupplyOfRequest = {
 
     fromPartial(object: DeepPartial<QuerySupplyOfRequest>): QuerySupplyOfRequest {
         const message = { ...baseQuerySupplyOfRequest } as QuerySupplyOfRequest;
-        if (object.denom !== undefined && object.denom !== null) {
-            message.denom = object.denom;
-        } else {
-            message.denom = '';
-        }
+        message.denom = object.denom ?? '';
         return message;
     },
 };
@@ -907,11 +899,7 @@ export const QueryDenomMetadataRequest = {
 
     fromPartial(object: DeepPartial<QueryDenomMetadataRequest>): QueryDenomMetadataRequest {
         const message = { ...baseQueryDenomMetadataRequest } as QueryDenomMetadataRequest;
-        if (object.denom !== undefined && object.denom !== null) {
-            message.denom = object.denom;
-        } else {
-            message.denom = '';
-        }
+        message.denom = object.denom ?? '';
         return message;
     },
 };

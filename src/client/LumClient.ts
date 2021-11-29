@@ -1,5 +1,5 @@
 import { Tendermint34Client, StatusResponse } from '@cosmjs/tendermint-rpc';
-import { QueryClient as StargateQueryClient, accountFromAny } from '@cosmjs/stargate';
+import { QueryClient as StargateQueryClient } from '@cosmjs/stargate';
 
 import { LumWallet, LumUtils, LumTypes } from '..';
 import {
@@ -19,6 +19,8 @@ import {
     setupMintExtension,
     StakingExtension,
     setupStakingExtension,
+    AirdropExtension,
+    setupAirdropExtension,
 } from '../extensions';
 import { setupSlashingExtension, SlashingExtension } from '../extensions/slashing';
 import { AuthzExtension, setupAuthzExtension } from '../extensions/authz';
@@ -37,7 +39,8 @@ export class LumClient {
         MintExtension &
         StakingExtension &
         SlashingExtension &
-        FeegrantExtension;
+        FeegrantExtension &
+        AirdropExtension;
     private chainId?: string;
 
     /**
@@ -60,6 +63,7 @@ export class LumClient {
             setupStakingExtension,
             setupSlashingExtension,
             setupFeegrantExtension,
+            setupAirdropExtension,
         );
 
         // Used for debugging while gasWanted, gasUsed and codespace are still waiting to be included in the code lib
@@ -162,7 +166,7 @@ export class LumClient {
         if (!anyAccount) {
             return null;
         }
-        return accountFromAny(anyAccount);
+        return LumUtils.accountFromAny(anyAccount);
     };
 
     /**

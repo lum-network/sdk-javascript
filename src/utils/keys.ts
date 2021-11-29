@@ -1,5 +1,5 @@
 import { PubKey } from '../codec/cosmos/crypto/secp256k1/keys';
-import { Any } from '..//codec/google/protobuf/any';
+import { Any } from '../codec/google/protobuf/any';
 import { Secp256k1, sha256, ripemd160, EnglishMnemonic, Bip39, Slip10, Slip10Curve, stringToPath, Random } from '@cosmjs/crypto';
 
 import { Bech32 } from './encoding';
