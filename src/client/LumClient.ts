@@ -1,5 +1,5 @@
 import { Tendermint34Client, StatusResponse } from '@cosmjs/tendermint-rpc';
-import { QueryClient as StargateQueryClient, accountFromAny } from '@cosmjs/stargate';
+import { QueryClient as StargateQueryClient } from '@cosmjs/stargate';
 
 import { LumWallet, LumUtils, LumTypes } from '..';
 import {
@@ -162,7 +162,7 @@ export class LumClient {
         if (!anyAccount) {
             return null;
         }
-        return accountFromAny(anyAccount);
+        return LumUtils.accountFromAny(anyAccount);
     };
 
     /**
