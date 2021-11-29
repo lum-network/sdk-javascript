@@ -19,6 +19,8 @@ import {
     setupMintExtension,
     StakingExtension,
     setupStakingExtension,
+    AirdropExtension,
+    setupAirdropExtension,
 } from '../extensions';
 import { setupSlashingExtension, SlashingExtension } from '../extensions/slashing';
 import { AuthzExtension, setupAuthzExtension } from '../extensions/authz';
@@ -37,7 +39,8 @@ export class LumClient {
         MintExtension &
         StakingExtension &
         SlashingExtension &
-        FeegrantExtension;
+        FeegrantExtension &
+        AirdropExtension;
     private chainId?: string;
 
     /**
@@ -60,6 +63,7 @@ export class LumClient {
             setupStakingExtension,
             setupSlashingExtension,
             setupFeegrantExtension,
+            setupAirdropExtension,
         );
 
         // Used for debugging while gasWanted, gasUsed and codespace are still waiting to be included in the code lib

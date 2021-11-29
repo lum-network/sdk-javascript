@@ -57,7 +57,7 @@ LUM_ZIP_FILE="$LUM_DIR/tmp.zip"
 
 # Init LUM REF
 LUM_REF=${LUM_REF:-"master"}
-LUM_SUFFIX=${LUM_REF}
+LUM_SUFFIX=${LUM_REF//[\/]/-}
 [[ $LUM_SUFFIX =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-.+)?$ ]] && LUM_SUFFIX=${LUM_SUFFIX#v}
 
 # Create the LUM dir
