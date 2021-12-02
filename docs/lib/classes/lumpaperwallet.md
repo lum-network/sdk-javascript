@@ -233,10 +233,10 @@ Change the wallet to use
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `hdPath` | `string` |
-| `addressPrefix` | `string` |
+| Name | Type | Default value |
+| :------ | :------ | :------ |
+| `hdPath` | `string` | `undefined` |
+| `addressPrefix` | `string` | `LumConstants.LumBech32PrefixAccAddr` |
 
 #### Returns
 

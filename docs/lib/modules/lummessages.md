@@ -11,6 +11,7 @@
 - [MsgBeginRedelegateUrl](LumMessages.md#msgbeginredelegateurl)
 - [MsgClaimBeamUrl](LumMessages.md#msgclaimbeamurl)
 - [MsgCreateValidatorUrl](LumMessages.md#msgcreatevalidatorurl)
+- [MsgCreateVestingAccountUrl](LumMessages.md#msgcreatevestingaccounturl)
 - [MsgDelegateUrl](LumMessages.md#msgdelegateurl)
 - [MsgDepositUrl](LumMessages.md#msgdepositurl)
 - [MsgEditValidatorUrl](LumMessages.md#msgeditvalidatorurl)
@@ -37,6 +38,7 @@
 - [BuildMsgBeginRedelegate](LumMessages.md#buildmsgbeginredelegate)
 - [BuildMsgClaimBeam](LumMessages.md#buildmsgclaimbeam)
 - [BuildMsgCreateValidator](LumMessages.md#buildmsgcreatevalidator)
+- [BuildMsgCreateVestingAccount](LumMessages.md#buildmsgcreatevestingaccount)
 - [BuildMsgDelegate](LumMessages.md#buildmsgdelegate)
 - [BuildMsgDeposit](LumMessages.md#buildmsgdeposit)
 - [BuildMsgEditValidator](LumMessages.md#buildmsgeditvalidator)
@@ -75,6 +77,12 @@ ___
 ### MsgCreateValidatorUrl
 
 • **MsgCreateValidatorUrl**: ``"/cosmos.staking.v1beta1.MsgCreateValidator"``
+
+___
+
+### MsgCreateVestingAccountUrl
+
+• **MsgCreateVestingAccountUrl**: ``"/cosmos.vesting.v1beta1.MsgCreateVestingAccount"``
 
 ___
 
@@ -194,7 +202,7 @@ ___
 
 ### MsgWithdrawValidatorCommissionUrl
 
-• **MsgWithdrawValidatorCommissionUrl**: ``"/cosmos.bank.v1beta1.MsgSend"``
+• **MsgWithdrawValidatorCommissionUrl**: ``"/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission"``
 
 ## Functions
 
@@ -250,6 +258,26 @@ ___
 | `description?` | [`Description`](../interfaces/LumTypes.Description.md) |
 | `value?` | [`Coin`](../interfaces/LumTypes.Coin.md) |
 | `pubkey?` | `Any` |
+
+#### Returns
+
+[`Message`](../interfaces/LumMessages.Message.md)
+
+___
+
+### BuildMsgCreateVestingAccount
+
+▸ `Const` **BuildMsgCreateVestingAccount**(`fromAddress`, `toAddress`, `amount`, `endTime`, `delayed`): [`Message`](../interfaces/LumMessages.Message.md)
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `fromAddress` | `string` |
+| `toAddress` | `string` |
+| `amount` | [`Coin`](../interfaces/LumTypes.Coin.md)[] |
+| `endTime` | `Long` |
+| `delayed` | `boolean` |
 
 #### Returns
 

@@ -8,7 +8,7 @@
 
 - [events](LumTypes.Log.md#events)
 - [log](LumTypes.Log.md#log)
-- [msg_index](LumTypes.Log.md#msg_index)
+- [msg\_index](LumTypes.Log.md#msg_index)
 
 ## Properties
 
