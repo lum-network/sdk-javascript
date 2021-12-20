@@ -1,5 +1,5 @@
 import Transport from '@ledgerhq/hw-transport';
-import { OfflineDirectSigner } from '@cosmjs/proto-signing';
+import { OfflineSigner, OfflineDirectSigner } from '@cosmjs/proto-signing';
 
 import { LumWallet } from './LumWallet';
 import { LumLedgerWallet } from './LumLedgerWallet';
@@ -52,7 +52,7 @@ export class LumWalletFactory {
      *
      * @param offlineSigner OfflineDirectSigner instance compatible with Comsjs based implementations
      */
-    static fromOfflineSigner = async (offlineSigner: OfflineDirectSigner): Promise<LumWallet> => {
+    static fromOfflineSigner = async (offlineSigner: OfflineSigner | OfflineDirectSigner): Promise<LumWallet> => {
         const wallet = new LumOfflineSignerWallet(offlineSigner);
         await wallet.useAccount();
         return wallet;

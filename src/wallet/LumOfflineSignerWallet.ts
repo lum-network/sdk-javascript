@@ -1,11 +1,11 @@
-import { OfflineDirectSigner } from '@cosmjs/proto-signing';
+import { OfflineSigner, OfflineDirectSigner } from '@cosmjs/proto-signing';
 import { SignMode } from '../codec/cosmos/tx/signing/v1beta1/signing';
 import { LumUtils, LumTypes, LumConstants } from '..';
 import { LumWallet } from '.';
 import Long from 'long';
 
 export class LumOfflineSignerWallet extends LumWallet {
-    private readonly offlineSigner: OfflineDirectSigner;
+    private readonly offlineSigner: OfflineSigner | OfflineDirectSigner;
 
     /**
      * Create a LumOfflineSignerWallet instance based on an OfflineDirectSigner instance compatible with Comsjs based
@@ -13,9 +13,9 @@ export class LumOfflineSignerWallet extends LumWallet {
      * This constructor is not intended to be used directly as it does not initialize the underlying key pair
      * Better use the provided static LumPaperWallet builders
      *
-     * @param mnemonicOrPrivateKey mnemonic (string) used to derive the private key or private key (Uint8Array)
+     * @param offlineSigner
      */
-    constructor(offlineSigner: OfflineDirectSigner) {
+    constructor(offlineSigner: OfflineSigner | OfflineDirectSigner) {
         super();
         this.offlineSigner = offlineSigner;
     }
