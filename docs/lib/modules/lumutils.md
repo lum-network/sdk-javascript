@@ -8,9 +8,11 @@
 
 ### Functions
 
+- [accountFromAny](LumUtils.md#accountfromany)
 - [broadcastTxCommitSuccess](LumUtils.md#broadcasttxcommitsuccess)
 - [broadcastTxSyncSuccess](LumUtils.md#broadcasttxsyncsuccess)
 - [convertUnit](LumUtils.md#convertunit)
+- [estimatedVesting](LumUtils.md#estimatedvesting)
 - [generateAuthInfoBytes](LumUtils.md#generateauthinfobytes)
 - [generateKeyStore](LumUtils.md#generatekeystore)
 - [generateMnemonic](LumUtils.md#generatemnemonic)
@@ -46,6 +48,22 @@
 - [verifySignature](LumUtils.md#verifysignature)
 
 ## Functions
+
+### accountFromAny
+
+▸ `Const` **accountFromAny**(`input`): [`Account`](../interfaces/LumTypes.Account.md)
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `input` | `Any` |
+
+#### Returns
+
+[`Account`](../interfaces/LumTypes.Account.md)
+
+___
 
 ### broadcastTxCommitSuccess
 
@@ -105,6 +123,37 @@ It does nothing if src denom = dst denom.
 `string`
 
 the amount converted
+
+___
+
+### estimatedVesting
+
+▸ `Const` **estimatedVesting**(`account`, `t?`, `denom?`): `Object`
+
+#### Parameters
+
+| Name | Type | Default value |
+| :------ | :------ | :------ |
+| `account` | [`Account`](../interfaces/LumTypes.Account.md) | `undefined` |
+| `t?` | `Date` | `undefined` |
+| `denom` | `string` | `LumConstants.MicroLumDenom` |
+
+#### Returns
+
+`Object`
+
+| Name | Type |
+| :------ | :------ |
+| `endsAt` | `Date` |
+| `lockedBankCoins` | [`Coin`](../interfaces/LumTypes.Coin.md) |
+| `lockedCoins` | [`Coin`](../interfaces/LumTypes.Coin.md) |
+| `lockedDelegatedCoins` | [`Coin`](../interfaces/LumTypes.Coin.md) |
+| `lockedPercentage` | `number` |
+| `startsAt` | `Date` |
+| `time` | `Date` |
+| `totalCoins` | [`Coin`](../interfaces/LumTypes.Coin.md) |
+| `unlockedCoins` | [`Coin`](../interfaces/LumTypes.Coin.md) |
+| `unlockedPercentage` | `number` |
 
 ___
 
@@ -263,10 +312,10 @@ Derives a bech32 wallet address from a public key (secp256k1)
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `publicKey` | `Uint8Array` | public key to derive the address from |
-| `prefix` | `string` | address prefix to use (ex: lum) |
+| Name | Type | Default value | Description |
+| :------ | :------ | :------ | :------ |
+| `publicKey` | `Uint8Array` | `undefined` | public key to derive the address from |
+| `prefix` | `string` | `LumBech32PrefixAccAddr` | address prefix to use (ex: lum) |
 
 #### Returns
 
@@ -377,10 +426,10 @@ Verify that a wallet address is valid
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `address` | `string` | address to check |
-| `prefix` | `undefined` \| `string` | prefix to check (will not be checked if not provided) |
+| Name | Type | Default value | Description |
+| :------ | :------ | :------ | :------ |
+| `address` | `string` | `undefined` | address to check |
+| `prefix` | `undefined` \| `string` | `LumBech32PrefixAccAddr` | prefix to check (will not be checked if not provided) |
 
 #### Returns
 
