@@ -92,7 +92,7 @@ Create a LumWallet instance based on an OfflineDirectSigner instance compatible 
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `offlineSigner` | `OfflineDirectSigner` | OfflineDirectSigner instance compatible with Comsjs based implementations |
+| `offlineSigner` | `OfflineSigner` | OfflineDirectSigner instance compatible with Comsjs based implementations |
 
 #### Returns
 
