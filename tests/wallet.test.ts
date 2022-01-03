@@ -66,7 +66,7 @@ class FakeOfflineAminoSigner implements OfflineAminoSigner {
             },
             0,
             SignMode.SIGN_MODE_DIRECT, // Simulated to enable signature comparison during tests
-        )
+        );
         const signBytes = LumUtils.generateSignDocBytes(signDoc);
         const hashedMessage = LumUtils.sha256(signBytes);
         const signature = await LumUtils.generateSignature(hashedMessage, this.privateKey);
@@ -116,7 +116,7 @@ describe('LumWallet', () => {
         };
 
         const w1Response = await w1.signTransaction(doc);
-        expect(LumUtils.verifySignature(w1Response[1], LumUtils.sha256(LumUtils.generateSignDocBytes(w1Response[0])), w5.getPublicKey()))
+        expect(LumUtils.verifySignature(w1Response[1], LumUtils.sha256(LumUtils.generateSignDocBytes(w1Response[0])), w5.getPublicKey()));
 
         expect(w1.getAddress()).toEqual(w2.getAddress());
         expect(w1.getPublicKey()).toEqual(w2.getPublicKey());
@@ -135,7 +135,7 @@ describe('LumWallet', () => {
         // Signature will differ due to the SignMode use but should still be valid
         const w5Response = await w5.signTransaction(doc);
         expect(w1Response).not.toEqual(w5Response);
-        expect(LumUtils.verifySignature(w5Response[1], LumUtils.sha256(LumUtils.generateSignDocBytes(w5Response[0])), w5.getPublicKey()))
+        expect(LumUtils.verifySignature(w5Response[1], LumUtils.sha256(LumUtils.generateSignDocBytes(w5Response[0])), w5.getPublicKey()));
 
         const randomPrivateKey = LumUtils.generatePrivateKey();
         expect(randomPrivateKey).toHaveLength(LumConstants.PrivateKeyLength);
