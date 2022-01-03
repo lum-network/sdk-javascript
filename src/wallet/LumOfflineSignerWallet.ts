@@ -22,9 +22,9 @@ export class LumOfflineSignerWallet extends LumWallet {
     }
 
     signingMode = (): SignMode => {
-        if (this.offlineSigner.hasOwnProperty('signAmino') && typeof (this.offlineSigner as OfflineAminoSigner).signAmino === 'function') {
+        if (typeof (this.offlineSigner as OfflineAminoSigner).signAmino === 'function') {
             return SignMode.SIGN_MODE_LEGACY_AMINO_JSON
-        } else if (this.offlineSigner.hasOwnProperty('signDirect') && typeof (this.offlineSigner as OfflineDirectSigner).signDirect === 'function') {
+        } else if (typeof (this.offlineSigner as OfflineDirectSigner).signDirect === 'function') {
             return SignMode.SIGN_MODE_DIRECT;
         }
         throw 'Unknown offline signer mode'
@@ -99,9 +99,9 @@ export class LumOfflineSignerWallet extends LumWallet {
                 version: LumConstants.LumWalletSigningVersion,
                 signer: LumConstants.LumMessageSigner.OFFLINE,
             };
-        } else if (this.offlineSigner.hasOwnProperty('signAmino') && typeof (this.offlineSigner as OfflineAminoSigner).signAmino === 'function') {
+        } else if (typeof (this.offlineSigner as OfflineAminoSigner).signAmino === 'function') {
             throw 'Feature not available for amino signers'
         }
-        throw 'Unknown offline signer type'
+        throw 'Unknown offline signer mode'
     };
 }
