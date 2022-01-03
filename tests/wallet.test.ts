@@ -1,10 +1,11 @@
 import { AccountData, DirectSignResponse, OfflineDirectSigner } from '@cosmjs/proto-signing';
 
 import { SignDoc } from '../src/codec/cosmos/tx/v1beta1/tx';
-import { LumWallet, LumWalletFactory, LumUtils, LumConstants, LumMessages } from '../src';
-import { encodeSecp256k1Signature } from '@cosmjs/amino';
+import { LumWallet, LumWalletFactory, LumUtils, LumConstants, LumMessages, LumRegistry, LumAminoRegistry } from '../src';
+import { AminoSignResponse, encodeSecp256k1Signature, OfflineAminoSigner, StdSignDoc } from '@cosmjs/amino';
+import { SignMode } from '../src/codec/cosmos/tx/signing/v1beta1/signing';
 
-class FakeOfflineSigner implements OfflineDirectSigner {
+class FakeOfflineDirectSigner implements OfflineDirectSigner {
     private readonly privateKey: Uint8Array;
 
     constructor(privateKey: Uint8Array) {
@@ -35,6 +36,48 @@ class FakeOfflineSigner implements OfflineDirectSigner {
     };
 }
 
+class FakeOfflineAminoSigner implements OfflineAminoSigner {
+    private readonly privateKey: Uint8Array;
+
+    constructor(privateKey: Uint8Array) {
+        this.privateKey = privateKey;
+    }
+
+    getAccounts = async (): Promise<AccountData[]> => {
+        const publicKey = await LumUtils.getPublicKeyFromPrivateKey(this.privateKey);
+        return [
+            {
+                pubkey: publicKey,
+                address: LumUtils.getAddressFromPublicKey(publicKey),
+                algo: 'secp256k1',
+            },
+        ];
+    };
+
+    signAmino = async (signerAddress: string, stdSignDoc: StdSignDoc): Promise<AminoSignResponse> => {
+        const publicKey = await LumUtils.getPublicKeyFromPrivateKey(this.privateKey);
+        const signDoc = LumUtils.generateSignDoc(
+            {
+                chainId: stdSignDoc.chain_id,
+                fee: stdSignDoc.fee,
+                memo: stdSignDoc.memo,
+                messages: stdSignDoc.msgs.map((aminoMsg) => LumAminoRegistry.fromAmino(aminoMsg)),
+                signers: [{ accountNumber: parseInt(stdSignDoc.account_number), sequence: parseInt(stdSignDoc.sequence), publicKey: publicKey }],
+            },
+            0,
+            SignMode.SIGN_MODE_DIRECT, // Simulated to enable signature comparison during tests
+        )
+        const signBytes = LumUtils.generateSignDocBytes(signDoc);
+        const hashedMessage = LumUtils.sha256(signBytes);
+        const signature = await LumUtils.generateSignature(hashedMessage, this.privateKey);
+        const stdSig = encodeSecp256k1Signature(publicKey, signature);
+        return {
+            signed: stdSignDoc,
+            signature: stdSig,
+        };
+    };
+}
+
 describe('LumWallet', () => {
     it('Should be identical from mnemonic, privatekey and keystore recovery', async () => {
         const mnemonic = 'surround miss nominee dream gap cross assault thank captain prosper drop duty group candy wealth weather scale put';
@@ -45,7 +88,8 @@ describe('LumWallet', () => {
         const w1 = await LumWalletFactory.fromMnemonic(mnemonic, `m/44'/837'/0'/0/0`);
         const w2 = await LumWalletFactory.fromPrivateKey(LumUtils.keyFromHex(privateKey));
         const w3 = await LumWalletFactory.fromKeyStore(keystore, 'lumiere');
-        const w4 = await LumWalletFactory.fromOfflineSigner(new FakeOfflineSigner(LumUtils.keyFromHex(privateKey)));
+        const w4 = await LumWalletFactory.fromOfflineSigner(new FakeOfflineDirectSigner(LumUtils.keyFromHex(privateKey)));
+        const w5 = await LumWalletFactory.fromOfflineSigner(new FakeOfflineAminoSigner(LumUtils.keyFromHex(privateKey)));
 
         expect(LumUtils.isAddressValid(w1.getAddress())).toBe(true);
         expect(LumUtils.isAddressValid(w1.getAddress(), LumConstants.LumBech32PrefixAccAddr)).toBe(true);
@@ -71,17 +115,27 @@ describe('LumWallet', () => {
             ],
         };
 
+        const w1Response = await w1.signTransaction(doc);
+        expect(LumUtils.verifySignature(w1Response[1], LumUtils.sha256(LumUtils.generateSignDocBytes(w1Response[0])), w5.getPublicKey()))
+
         expect(w1.getAddress()).toEqual(w2.getAddress());
         expect(w1.getPublicKey()).toEqual(w2.getPublicKey());
-        expect(await w1.signTransaction(doc)).toEqual(await w2.signTransaction(doc));
+        expect(w1Response).toEqual(await w2.signTransaction(doc));
 
         expect(w1.getAddress()).toEqual(w3.getAddress());
         expect(w1.getPublicKey()).toEqual(w3.getPublicKey());
-        expect(await w1.signTransaction(doc)).toEqual(await w3.signTransaction(doc));
+        expect(w1Response).toEqual(await w3.signTransaction(doc));
 
         expect(w1.getAddress()).toEqual(w4.getAddress());
         expect(w1.getPublicKey()).toEqual(w4.getPublicKey());
-        expect(await w1.signTransaction(doc)).toEqual(await w4.signTransaction(doc));
+        expect(w1Response).toEqual(await w4.signTransaction(doc));
+
+        expect(w1.getAddress()).toEqual(w5.getAddress());
+        expect(w1.getPublicKey()).toEqual(w5.getPublicKey());
+        // Signature will differ due to the SignMode use but should still be valid
+        const w5Response = await w5.signTransaction(doc);
+        expect(w1Response).not.toEqual(w5Response);
+        expect(LumUtils.verifySignature(w5Response[1], LumUtils.sha256(LumUtils.generateSignDocBytes(w5Response[0])), w5.getPublicKey()))
 
         const randomPrivateKey = LumUtils.generatePrivateKey();
         expect(randomPrivateKey).toHaveLength(LumConstants.PrivateKeyLength);
@@ -101,7 +155,7 @@ describe('LumWallet', () => {
 
         const w1 = await LumWalletFactory.fromMnemonic(mnemonic);
         const w2 = await LumWalletFactory.fromMnemonic(LumUtils.generateMnemonic());
-        const w3 = await LumWalletFactory.fromOfflineSigner(new FakeOfflineSigner(LumUtils.keyFromHex(privateKey)));
+        const w3 = await LumWalletFactory.fromOfflineSigner(new FakeOfflineDirectSigner(LumUtils.keyFromHex(privateKey)));
 
         const signedW1 = await w1.signMessage(message);
         expect(signedW1.signer).toEqual(LumConstants.LumMessageSigner.PAPER);
