@@ -11,3 +11,4 @@ export * from './MsgChannelCloseConfirm';
 export * from './MsgRecvPacket';
 export * from './MsgTimeoutOnClose';
 export * from './MsgCreateClient';
+export * from './MsgUpgradeClient';
