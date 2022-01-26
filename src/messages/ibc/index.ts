@@ -10,3 +10,4 @@ export * from './MsgChannelCloseInit';
 export * from './MsgChannelCloseConfirm';
 export * from './MsgRecvPacket';
 export * from './MsgTimeoutOnClose';
+export * from './MsgCreateClient';
