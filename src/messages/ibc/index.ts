@@ -15,3 +15,4 @@ export * from './MsgUpgradeClient';
 export * from './MsgSubmitMisbehaviour';
 export * from './MsgConnectionOpenInit';
 export * from './MsgConnectionOpenTry';
+export * from './MsgConnectionOpenAck';
