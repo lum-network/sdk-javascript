@@ -5,3 +5,4 @@ export * from './MsgTransfer';
 export * from './MsgChannelOpenInit';
 export * from './MsgChannelOpenTry';
 export * from './MsgChannelOpenAck';
+export * from './MsgChannelOpenConfirm';
