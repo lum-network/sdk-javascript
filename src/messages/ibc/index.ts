@@ -7,3 +7,4 @@ export * from './MsgChannelOpenTry';
 export * from './MsgChannelOpenAck';
 export * from './MsgChannelOpenConfirm';
 export * from './MsgChannelCloseInit';
+export * from './MsgChannelCloseConfirm';
