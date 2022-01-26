@@ -16,3 +16,4 @@ export * from './MsgSubmitMisbehaviour';
 export * from './MsgConnectionOpenInit';
 export * from './MsgConnectionOpenTry';
 export * from './MsgConnectionOpenAck';
+export * from './MsgConnectionOpenAck';
