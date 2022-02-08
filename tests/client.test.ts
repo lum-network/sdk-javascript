@@ -35,6 +35,36 @@ describe('LumClient', () => {
         wsClt.disconnect();
     });
 
+    it.only('should be able to simulate transactions', async () => {
+        const w3 = await LumWalletFactory.fromMnemonic(LumUtils.generateMnemonic());
+        // Should reject invalid bech32 addresses
+        await expect(
+            clt.queryClient.tx.simulate([LumMessages.BuildMsgSend(w1.getAddress(), 'toto', [{ denom: LumConstants.MicroLumDenom, amount: '1' }])], 'hello', w1.getPublicKey(), 0),
+        ).rejects.toThrow();
+        // Should reject invalid signer
+        await expect(
+            clt.queryClient.tx.simulate([LumMessages.BuildMsgSend(w3.getAddress(), w3.getAddress(), [{ denom: LumConstants.MicroLumDenom, amount: '1' }])], 'hello', w3.getPublicKey(), 0),
+        ).rejects.toThrow();
+        // Should reject invalid amounts
+        await expect(
+            clt.queryClient.tx.simulate([LumMessages.BuildMsgSend(w1.getAddress(), w1.getAddress(), [{ denom: LumConstants.MicroLumDenom, amount: '-1' }])], 'hello', w3.getPublicKey(), 0),
+        ).rejects.toThrow();
+        // Should reject invalid sequences
+        await expect(
+            clt.queryClient.tx.simulate([LumMessages.BuildMsgSend(w1.getAddress(), w1.getAddress(), [{ denom: LumConstants.MicroLumDenom, amount: '1' }])], 'hello', w3.getPublicKey(), -1),
+        ).rejects.toThrow();
+        // Should return simulation in case of success
+        const res = await clt.queryClient.tx.simulate(
+            [LumMessages.BuildMsgSend(w1.getAddress(), w1.getAddress(), [{ denom: LumConstants.MicroLumDenom, amount: '1' }])],
+            'hello',
+            w3.getPublicKey(),
+            0,
+        );
+        expect(res).toBeTruthy();
+        expect(res.gasInfo).toBeTruthy();
+        expect(res.result).toBeTruthy();
+    });
+
     it('should open a beam and close it', async () => {
         const beamId = randomString();
 
