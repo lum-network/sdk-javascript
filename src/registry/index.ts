@@ -36,7 +36,7 @@ import { MsgConnectionOpenAck, MsgConnectionOpenConfirm, MsgConnectionOpenInit, 
 import { MsgTransfer } from '../codec/ibc/applications/transfer/v1/tx';
 
 import { MsgClaimBeam, MsgOpenBeam, MsgUpdateBeam } from '../codec/beam/tx';
-import { MsgDepositDfract } from '../codec/dfract/tx';
+import { MsgDeposit as MsgDepositDfract } from '../codec/dfract/tx';
 
 const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/cosmos.auth.v1beta1.BaseAccount', BaseAccount],

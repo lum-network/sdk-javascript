@@ -4,10 +4,11 @@ command -v shellcheck >/dev/null && shellcheck "$0"
 
 ROOT_PROTO_DIR="./proto/cosmos/cosmos-sdk"
 COSMOS_PROTO_DIR="$ROOT_PROTO_DIR/proto"
-THIRD_PARTY_PROTO_DIR="$ROOT_PROTO_DIR/third_party/proto"
+COSMOS_THIRD_PARTY_PROTO_DIR="$ROOT_PROTO_DIR/third_party/proto"
 
 ROOT_IBC_PROTO_DIR="./proto/ibc/ibc-go"
 IBC_PROTO_DIR="$ROOT_IBC_PROTO_DIR/proto"
+IBC_THIRD_PARTY_PROTO_DIR="$ROOT_IBC_PROTO_DIR/third_party/proto"
 
 ROOT_LUM_PROTO_DIR="./proto/lum-network/chain"
 LUM_PROTO_DIR="$ROOT_LUM_PROTO_DIR/proto"
@@ -20,7 +21,8 @@ protoc \
     --plugin="$(yarn bin protoc-gen-ts_proto)" \
     --ts_proto_out="$OUT_DIR" \
     --proto_path="$COSMOS_PROTO_DIR" \
-    --proto_path="$THIRD_PARTY_PROTO_DIR" \
+    --proto_path="$COSMOS_THIRD_PARTY_PROTO_DIR" \
+    --proto_path="$IBC_THIRD_PARTY_PROTO_DIR" \
     --proto_path="$LUM_PROTO_DIR" \
     --proto_path="$IBC_PROTO_DIR" \
     --ts_proto_opt="esModuleInterop=true,forceLong=long,useOptionals=true" \
@@ -68,9 +70,17 @@ protoc \
     "$COSMOS_PROTO_DIR/cosmos/upgrade/v1beta1/upgrade.proto" \
     "$COSMOS_PROTO_DIR/cosmos/vesting/v1beta1/tx.proto" \
     "$COSMOS_PROTO_DIR/cosmos/vesting/v1beta1/vesting.proto" \
+    "$IBC_PROTO_DIR/ibc/applications/interchain_accounts/controller/v1/controller.proto" \
+    "$IBC_PROTO_DIR/ibc/applications/interchain_accounts/controller/v1/query.proto" \
+    "$IBC_PROTO_DIR/ibc/applications/interchain_accounts/host/v1/host.proto" \
+    "$IBC_PROTO_DIR/ibc/applications/interchain_accounts/host/v1/query.proto" \
+    "$IBC_PROTO_DIR/ibc/applications/interchain_accounts/v1/account.proto" \
+    "$IBC_PROTO_DIR/ibc/applications/interchain_accounts/v1/metadata.proto" \
+    "$IBC_PROTO_DIR/ibc/applications/interchain_accounts/v1/packet.proto" \
     "$IBC_PROTO_DIR/ibc/applications/transfer/v1/query.proto" \
     "$IBC_PROTO_DIR/ibc/applications/transfer/v1/transfer.proto" \
     "$IBC_PROTO_DIR/ibc/applications/transfer/v1/tx.proto" \
+    "$IBC_PROTO_DIR/ibc/applications/transfer/v2/packet.proto" \
     "$IBC_PROTO_DIR/ibc/core/channel/v1/channel.proto" \
     "$IBC_PROTO_DIR/ibc/core/channel/v1/query.proto" \
     "$IBC_PROTO_DIR/ibc/core/channel/v1/tx.proto" \
@@ -82,21 +92,26 @@ protoc \
     "$IBC_PROTO_DIR/ibc/core/connection/v1/query.proto" \
     "$IBC_PROTO_DIR/ibc/core/connection/v1/tx.proto" \
     "$IBC_PROTO_DIR/ibc/lightclients/tendermint/v1/tendermint.proto" \
-    "$THIRD_PARTY_PROTO_DIR/confio/proofs.proto" \
-    "$THIRD_PARTY_PROTO_DIR/tendermint/abci/types.proto" \
-    "$THIRD_PARTY_PROTO_DIR/tendermint/crypto/keys.proto" \
-    "$THIRD_PARTY_PROTO_DIR/tendermint/crypto/proof.proto" \
-    "$THIRD_PARTY_PROTO_DIR/tendermint/libs/bits/types.proto" \
-    "$THIRD_PARTY_PROTO_DIR/tendermint/types/params.proto" \
-    "$THIRD_PARTY_PROTO_DIR/tendermint/types/types.proto" \
-    "$THIRD_PARTY_PROTO_DIR/tendermint/types/validator.proto" \
-    "$THIRD_PARTY_PROTO_DIR/tendermint/version/types.proto" \
+    "$COSMOS_THIRD_PARTY_PROTO_DIR/tendermint/abci/types.proto" \
+    "$COSMOS_THIRD_PARTY_PROTO_DIR/tendermint/crypto/keys.proto" \
+    "$COSMOS_THIRD_PARTY_PROTO_DIR/tendermint/crypto/proof.proto" \
+    "$COSMOS_THIRD_PARTY_PROTO_DIR/tendermint/libs/bits/types.proto" \
+    "$COSMOS_THIRD_PARTY_PROTO_DIR/tendermint/types/params.proto" \
+    "$COSMOS_THIRD_PARTY_PROTO_DIR/tendermint/types/types.proto" \
+    "$COSMOS_THIRD_PARTY_PROTO_DIR/tendermint/types/validator.proto" \
+    "$COSMOS_THIRD_PARTY_PROTO_DIR/tendermint/version/types.proto" \
+    "$IBC_THIRD_PARTY_PROTO_DIR/proofs.proto" \
     "$LUM_PROTO_DIR/airdrop/claim.proto" \
     "$LUM_PROTO_DIR/airdrop/query.proto" \
     "$LUM_PROTO_DIR/airdrop/params.proto" \
     "$LUM_PROTO_DIR/beam/beam.proto" \
     "$LUM_PROTO_DIR/beam/query.proto" \
-    "$LUM_PROTO_DIR/beam/tx.proto"
+    "$LUM_PROTO_DIR/beam/tx.proto" \
+    "$LUM_PROTO_DIR/dfract/deposit.proto" \
+    "$LUM_PROTO_DIR/dfract/query.proto" \
+    "$LUM_PROTO_DIR/dfract/tx.proto" \
+    "$LUM_PROTO_DIR/dfract/params.proto" \
+    "$LUM_PROTO_DIR/dfract/proposal.proto"
 
 # Remove unnecessary codec files
 rm -rf \

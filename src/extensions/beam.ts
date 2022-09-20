@@ -1,14 +1,14 @@
 import { QueryClient } from '@cosmjs/stargate';
 import { assert } from '@cosmjs/utils';
 
-import { Beam } from '../codec/beam/beam';
+import { Beam, BeamState } from '../codec/beam/beam';
 import { QueryClientImpl } from '../codec/beam/query';
 import { createProtobufRpcClient } from './utils';
 
 export interface BeamExtension {
     readonly beam: {
         readonly get: (id: string) => Promise<Beam>;
-        readonly fetch: () => Promise<Beam[]>;
+        readonly fetch: (state: BeamState) => Promise<Beam[]>;
     };
 }
 
@@ -23,8 +23,8 @@ export const setupBeamExtension = (base: QueryClient): BeamExtension => {
                 assert(beam);
                 return beam;
             },
-            fetch: async () => {
-                const { beams } = await queryService.Beams({});
+            fetch: async (state: BeamState) => {
+                const { beams } = await queryService.Beams({ state });
                 assert(beams);
                 return beams;
             },
