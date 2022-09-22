@@ -198,7 +198,7 @@ ___
 
 ### MsgDepositDfractUrl
 
-• **MsgDepositDfractUrl**: ``"/lum.network.dfract.MsgDepositDfract"``
+• **MsgDepositDfractUrl**: ``"/lum.network.dfract.MsgDeposit"``
 
 ___
 

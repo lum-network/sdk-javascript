@@ -3,7 +3,7 @@ import { MsgDeposit as MsgDepositDfract } from '../codec/dfract/tx';
 import { AminoMsg, Coin } from '@cosmjs/amino';
 
 export interface AminoMsgDepositDfract extends AminoMsg {
-    readonly type: 'lum-network/MsgDepositDfract';
+    readonly type: 'lum-network/MsgDeposit';
     readonly value: {
         readonly depositor_address: string;
         readonly amount?: Coin;
@@ -11,15 +11,15 @@ export interface AminoMsgDepositDfract extends AminoMsg {
 }
 
 export function isAminoMsgSend(msg: AminoMsg): msg is AminoMsgDepositDfract {
-    return msg.type === 'lum-network/MsgDepositDfract';
+    return msg.type === 'lum-network/MsgDeposit';
 }
 
 export const createAdditionalAminoTypes = (): Record<string, AminoConverter> => {
     return {
         // DFract
 
-        '/lum.network.dfract.MsgDepositDfract': {
-            aminoType: 'lum-network/MsgDepositDfract',
+        '/lum.network.dfract.MsgDeposit': {
+            aminoType: 'lum-network/MsgDeposit',
             toAmino: ({ depositorAddress, amount }: MsgDepositDfract): AminoMsgDepositDfract['value'] => ({
                 depositor_address: depositorAddress,
                 amount,
