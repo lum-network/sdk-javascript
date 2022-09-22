@@ -9,6 +9,8 @@ import {
     setupBankExtension,
     BeamExtension,
     setupBeamExtension,
+    DfractExtension,
+    setupDfractExtension,
     DistributionExtension,
     setupDistributionExtension,
     GovExtension,
@@ -35,6 +37,7 @@ export class LumClient {
         AuthzExtension &
         BankExtension &
         BeamExtension &
+        DfractExtension &
         DistributionExtension &
         GovExtension &
         IbcExtension &
@@ -59,6 +62,7 @@ export class LumClient {
             setupAuthzExtension,
             setupBankExtension,
             setupBeamExtension,
+            setupDfractExtension,
             setupDistributionExtension,
             setupGovExtension,
             setupIbcExtension,

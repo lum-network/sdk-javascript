@@ -24,6 +24,7 @@
 - [MsgCreateValidatorUrl](LumMessages.md#msgcreatevalidatorurl)
 - [MsgCreateVestingAccountUrl](LumMessages.md#msgcreatevestingaccounturl)
 - [MsgDelegateUrl](LumMessages.md#msgdelegateurl)
+- [MsgDepositDfractUrl](LumMessages.md#msgdepositdfracturl)
 - [MsgDepositUrl](LumMessages.md#msgdepositurl)
 - [MsgEditValidatorUrl](LumMessages.md#msgeditvalidatorurl)
 - [MsgExecUrl](LumMessages.md#msgexecurl)
@@ -70,6 +71,7 @@
 - [BuildMsgCreateVestingAccount](LumMessages.md#buildmsgcreatevestingaccount)
 - [BuildMsgDelegate](LumMessages.md#buildmsgdelegate)
 - [BuildMsgDeposit](LumMessages.md#buildmsgdeposit)
+- [BuildMsgDepositDfract](LumMessages.md#buildmsgdepositdfract)
 - [BuildMsgEditValidator](LumMessages.md#buildmsgeditvalidator)
 - [BuildMsgExec](LumMessages.md#buildmsgexec)
 - [BuildMsgFundCommunityPool](LumMessages.md#buildmsgfundcommunitypool)
@@ -191,6 +193,12 @@ ___
 ### MsgDelegateUrl
 
 • **MsgDelegateUrl**: ``"/cosmos.staking.v1beta1.MsgDelegate"``
+
+___
+
+### MsgDepositDfractUrl
+
+• **MsgDepositDfractUrl**: ``"/lum.network.dfract.MsgDepositDfract"``
 
 ___
 
@@ -688,6 +696,24 @@ ___
 | `proposalId` | `Long` |
 | `depositor` | `string` |
 | `amount` | [`Coin`](../interfaces/LumTypes.Coin.md)[] |
+
+#### Returns
+
+[`Message`](../interfaces/LumMessages.Message.md)
+
+___
+
+### BuildMsgDepositDfract
+
+▸ `Const` **BuildMsgDepositDfract**(`depositorAddress`, `amount`, `createdAt`): [`Message`](../interfaces/LumMessages.Message.md)
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `depositorAddress` | `string` |
+| `amount` | [`Coin`](../interfaces/LumTypes.Coin.md) |
+| `createdAt` | `Date` |
 
 #### Returns
 
