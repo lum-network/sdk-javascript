@@ -705,7 +705,7 @@ ___
 
 ### BuildMsgDepositDfract
 
-▸ `Const` **BuildMsgDepositDfract**(`depositorAddress`, `amount`, `createdAt`): [`Message`](../interfaces/LumMessages.Message.md)
+▸ `Const` **BuildMsgDepositDfract**(`depositorAddress`, `amount`): [`Message`](../interfaces/LumMessages.Message.md)
 
 #### Parameters
 
@@ -713,7 +713,6 @@ ___
 | :------ | :------ |
 | `depositorAddress` | `string` |
 | `amount` | [`Coin`](../interfaces/LumTypes.Coin.md) |
-| `createdAt` | `Date` |
 
 #### Returns
 
