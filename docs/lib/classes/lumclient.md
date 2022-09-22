@@ -56,7 +56,7 @@ ___
 
 ### queryClient
 
-• `Readonly` **queryClient**: `QueryClient` & `AuthExtension` & `AuthzExtension` & `BankExtension` & `BeamExtension` & `DistributionExtension` & `GovExtension` & `IbcExtension` & `MintExtension` & `StakingExtension` & `SlashingExtension` & `FeegrantExtension` & `AirdropExtension` & `TxExtension`
+• `Readonly` **queryClient**: `QueryClient` & `AuthExtension` & `AuthzExtension` & `BankExtension` & `BeamExtension` & `DfractExtension` & `DistributionExtension` & `GovExtension` & `IbcExtension` & `MintExtension` & `StakingExtension` & `SlashingExtension` & `FeegrantExtension` & `AirdropExtension` & `TxExtension`
 
 ___
 

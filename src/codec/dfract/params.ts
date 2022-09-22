@@ -6,22 +6,18 @@ export const protobufPackage = 'lum.network.dfract';
 
 export interface Params {
     depositDenom: string;
-    mintDenom: string;
-    minDepositAmount: Long;
+    minDepositAmount: number;
 }
 
-const baseParams: object = { depositDenom: '', mintDenom: '', minDepositAmount: Long.ZERO };
+const baseParams: object = { depositDenom: '', minDepositAmount: 0 };
 
 export const Params = {
     encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
         if (message.depositDenom !== '') {
             writer.uint32(10).string(message.depositDenom);
         }
-        if (message.mintDenom !== '') {
-            writer.uint32(18).string(message.mintDenom);
-        }
-        if (!message.minDepositAmount.isZero()) {
-            writer.uint32(24).int64(message.minDepositAmount);
+        if (message.minDepositAmount !== 0) {
+            writer.uint32(16).uint32(message.minDepositAmount);
         }
         return writer;
     },
@@ -37,10 +33,7 @@ export const Params = {
                     message.depositDenom = reader.string();
                     break;
                 case 2:
-                    message.mintDenom = reader.string();
-                    break;
-                case 3:
-                    message.minDepositAmount = reader.int64() as Long;
+                    message.minDepositAmount = reader.uint32();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -57,15 +50,10 @@ export const Params = {
         } else {
             message.depositDenom = '';
         }
-        if (object.mintDenom !== undefined && object.mintDenom !== null) {
-            message.mintDenom = String(object.mintDenom);
-        } else {
-            message.mintDenom = '';
-        }
         if (object.minDepositAmount !== undefined && object.minDepositAmount !== null) {
-            message.minDepositAmount = Long.fromString(object.minDepositAmount);
+            message.minDepositAmount = Number(object.minDepositAmount);
         } else {
-            message.minDepositAmount = Long.ZERO;
+            message.minDepositAmount = 0;
         }
         return message;
     },
@@ -73,20 +61,14 @@ export const Params = {
     toJSON(message: Params): unknown {
         const obj: any = {};
         message.depositDenom !== undefined && (obj.depositDenom = message.depositDenom);
-        message.mintDenom !== undefined && (obj.mintDenom = message.mintDenom);
-        message.minDepositAmount !== undefined && (obj.minDepositAmount = (message.minDepositAmount || Long.ZERO).toString());
+        message.minDepositAmount !== undefined && (obj.minDepositAmount = message.minDepositAmount);
         return obj;
     },
 
     fromPartial(object: DeepPartial<Params>): Params {
         const message = { ...baseParams } as Params;
         message.depositDenom = object.depositDenom ?? '';
-        message.mintDenom = object.mintDenom ?? '';
-        if (object.minDepositAmount !== undefined && object.minDepositAmount !== null) {
-            message.minDepositAmount = object.minDepositAmount as Long;
-        } else {
-            message.minDepositAmount = Long.ZERO;
-        }
+        message.minDepositAmount = object.minDepositAmount ?? 0;
         return message;
     },
 };
