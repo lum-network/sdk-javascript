@@ -1,8 +1,10 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
+import { Params } from '../dfract/params';
 import { PageRequest, PageResponse } from '../cosmos/base/query/v1beta1/pagination';
 import { Deposit } from '../dfract/deposit';
+import { Coin } from '../cosmos/base/v1beta1/coin';
 
 export const protobufPackage = 'lum.network.dfract';
 
@@ -44,6 +46,18 @@ export function depositsQueryTypeToJSON(object: DepositsQueryType): string {
     }
 }
 
+export interface QueryModuleAccountBalanceRequest {}
+
+export interface QueryModuleAccountBalanceResponse {
+    moduleAccountBalance: Coin[];
+}
+
+export interface QueryParamsRequest {}
+
+export interface QueryParamsResponse {
+    params?: Params;
+}
+
 export interface QueryGetDepositsForAddressRequest {
     address: string;
 }
@@ -63,6 +77,199 @@ export interface QueryFetchDepositsResponse {
     deposits: Deposit[];
     pagination?: PageResponse;
 }
+
+const baseQueryModuleAccountBalanceRequest: object = {};
+
+export const QueryModuleAccountBalanceRequest = {
+    encode(_: QueryModuleAccountBalanceRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): QueryModuleAccountBalanceRequest {
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = { ...baseQueryModuleAccountBalanceRequest } as QueryModuleAccountBalanceRequest;
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+
+    fromJSON(_: any): QueryModuleAccountBalanceRequest {
+        const message = { ...baseQueryModuleAccountBalanceRequest } as QueryModuleAccountBalanceRequest;
+        return message;
+    },
+
+    toJSON(_: QueryModuleAccountBalanceRequest): unknown {
+        const obj: any = {};
+        return obj;
+    },
+
+    fromPartial(_: DeepPartial<QueryModuleAccountBalanceRequest>): QueryModuleAccountBalanceRequest {
+        const message = { ...baseQueryModuleAccountBalanceRequest } as QueryModuleAccountBalanceRequest;
+        return message;
+    },
+};
+
+const baseQueryModuleAccountBalanceResponse: object = {};
+
+export const QueryModuleAccountBalanceResponse = {
+    encode(message: QueryModuleAccountBalanceResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        for (const v of message.moduleAccountBalance) {
+            Coin.encode(v!, writer.uint32(10).fork()).ldelim();
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): QueryModuleAccountBalanceResponse {
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = { ...baseQueryModuleAccountBalanceResponse } as QueryModuleAccountBalanceResponse;
+        message.moduleAccountBalance = [];
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.moduleAccountBalance.push(Coin.decode(reader, reader.uint32()));
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+
+    fromJSON(object: any): QueryModuleAccountBalanceResponse {
+        const message = { ...baseQueryModuleAccountBalanceResponse } as QueryModuleAccountBalanceResponse;
+        message.moduleAccountBalance = [];
+        if (object.moduleAccountBalance !== undefined && object.moduleAccountBalance !== null) {
+            for (const e of object.moduleAccountBalance) {
+                message.moduleAccountBalance.push(Coin.fromJSON(e));
+            }
+        }
+        return message;
+    },
+
+    toJSON(message: QueryModuleAccountBalanceResponse): unknown {
+        const obj: any = {};
+        if (message.moduleAccountBalance) {
+            obj.moduleAccountBalance = message.moduleAccountBalance.map((e) => (e ? Coin.toJSON(e) : undefined));
+        } else {
+            obj.moduleAccountBalance = [];
+        }
+        return obj;
+    },
+
+    fromPartial(object: DeepPartial<QueryModuleAccountBalanceResponse>): QueryModuleAccountBalanceResponse {
+        const message = { ...baseQueryModuleAccountBalanceResponse } as QueryModuleAccountBalanceResponse;
+        message.moduleAccountBalance = [];
+        if (object.moduleAccountBalance !== undefined && object.moduleAccountBalance !== null) {
+            for (const e of object.moduleAccountBalance) {
+                message.moduleAccountBalance.push(Coin.fromPartial(e));
+            }
+        }
+        return message;
+    },
+};
+
+const baseQueryParamsRequest: object = {};
+
+export const QueryParamsRequest = {
+    encode(_: QueryParamsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsRequest {
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+
+    fromJSON(_: any): QueryParamsRequest {
+        const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+        return message;
+    },
+
+    toJSON(_: QueryParamsRequest): unknown {
+        const obj: any = {};
+        return obj;
+    },
+
+    fromPartial(_: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
+        const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+        return message;
+    },
+};
+
+const baseQueryParamsResponse: object = {};
+
+export const QueryParamsResponse = {
+    encode(message: QueryParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (message.params !== undefined) {
+            Params.encode(message.params, writer.uint32(10).fork()).ldelim();
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsResponse {
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.params = Params.decode(reader, reader.uint32());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+
+    fromJSON(object: any): QueryParamsResponse {
+        const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+        if (object.params !== undefined && object.params !== null) {
+            message.params = Params.fromJSON(object.params);
+        } else {
+            message.params = undefined;
+        }
+        return message;
+    },
+
+    toJSON(message: QueryParamsResponse): unknown {
+        const obj: any = {};
+        message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+        return obj;
+    },
+
+    fromPartial(object: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
+        const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+        if (object.params !== undefined && object.params !== null) {
+            message.params = Params.fromPartial(object.params);
+        } else {
+            message.params = undefined;
+        }
+        return message;
+    },
+};
 
 const baseQueryGetDepositsForAddressRequest: object = { address: '' };
 
@@ -352,6 +559,8 @@ export const QueryFetchDepositsResponse = {
 };
 
 export interface Query {
+    ModuleAccountBalance(request: QueryModuleAccountBalanceRequest): Promise<QueryModuleAccountBalanceResponse>;
+    Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
     GetDepositsForAddress(request: QueryGetDepositsForAddressRequest): Promise<QueryGetDepositsForAddressResponse>;
     FetchDeposits(request: QueryFetchDepositsRequest): Promise<QueryFetchDepositsResponse>;
 }
@@ -360,9 +569,23 @@ export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
+        this.ModuleAccountBalance = this.ModuleAccountBalance.bind(this);
+        this.Params = this.Params.bind(this);
         this.GetDepositsForAddress = this.GetDepositsForAddress.bind(this);
         this.FetchDeposits = this.FetchDeposits.bind(this);
     }
+    ModuleAccountBalance(request: QueryModuleAccountBalanceRequest): Promise<QueryModuleAccountBalanceResponse> {
+        const data = QueryModuleAccountBalanceRequest.encode(request).finish();
+        const promise = this.rpc.request('lum.network.dfract.Query', 'ModuleAccountBalance', data);
+        return promise.then((data) => QueryModuleAccountBalanceResponse.decode(new _m0.Reader(data)));
+    }
+
+    Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
+        const data = QueryParamsRequest.encode(request).finish();
+        const promise = this.rpc.request('lum.network.dfract.Query', 'Params', data);
+        return promise.then((data) => QueryParamsResponse.decode(new _m0.Reader(data)));
+    }
+
     GetDepositsForAddress(request: QueryGetDepositsForAddressRequest): Promise<QueryGetDepositsForAddressResponse> {
         const data = QueryGetDepositsForAddressRequest.encode(request).finish();
         const promise = this.rpc.request('lum.network.dfract.Query', 'GetDepositsForAddress', data);
