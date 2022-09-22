@@ -7,9 +7,10 @@ export const protobufPackage = 'lum.network.dfract';
 export interface Params {
     depositDenom: string;
     mintDenom: string;
+    minDepositAmount: Long;
 }
 
-const baseParams: object = { depositDenom: '', mintDenom: '' };
+const baseParams: object = { depositDenom: '', mintDenom: '', minDepositAmount: Long.ZERO };
 
 export const Params = {
     encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -18,6 +19,9 @@ export const Params = {
         }
         if (message.mintDenom !== '') {
             writer.uint32(18).string(message.mintDenom);
+        }
+        if (!message.minDepositAmount.isZero()) {
+            writer.uint32(24).int64(message.minDepositAmount);
         }
         return writer;
     },
@@ -34,6 +38,9 @@ export const Params = {
                     break;
                 case 2:
                     message.mintDenom = reader.string();
+                    break;
+                case 3:
+                    message.minDepositAmount = reader.int64() as Long;
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -55,6 +62,11 @@ export const Params = {
         } else {
             message.mintDenom = '';
         }
+        if (object.minDepositAmount !== undefined && object.minDepositAmount !== null) {
+            message.minDepositAmount = Long.fromString(object.minDepositAmount);
+        } else {
+            message.minDepositAmount = Long.ZERO;
+        }
         return message;
     },
 
@@ -62,6 +74,7 @@ export const Params = {
         const obj: any = {};
         message.depositDenom !== undefined && (obj.depositDenom = message.depositDenom);
         message.mintDenom !== undefined && (obj.mintDenom = message.mintDenom);
+        message.minDepositAmount !== undefined && (obj.minDepositAmount = (message.minDepositAmount || Long.ZERO).toString());
         return obj;
     },
 
@@ -69,6 +82,11 @@ export const Params = {
         const message = { ...baseParams } as Params;
         message.depositDenom = object.depositDenom ?? '';
         message.mintDenom = object.mintDenom ?? '';
+        if (object.minDepositAmount !== undefined && object.minDepositAmount !== null) {
+            message.minDepositAmount = object.minDepositAmount as Long;
+        } else {
+            message.minDepositAmount = Long.ZERO;
+        }
         return message;
     },
 };

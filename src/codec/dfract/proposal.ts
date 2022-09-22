@@ -4,36 +4,36 @@ import _m0 from 'protobufjs/minimal';
 
 export const protobufPackage = 'lum.network.dfract';
 
-export interface SpendAndAdjustProposal {
+export interface WithdrawAndMintProposal {
     title: string;
     description: string;
-    spendDestination: string;
-    mintRate: Long;
+    withdrawalAddress: string;
+    microMintRate: Long;
 }
 
-const baseSpendAndAdjustProposal: object = { title: '', description: '', spendDestination: '', mintRate: Long.ZERO };
+const baseWithdrawAndMintProposal: object = { title: '', description: '', withdrawalAddress: '', microMintRate: Long.ZERO };
 
-export const SpendAndAdjustProposal = {
-    encode(message: SpendAndAdjustProposal, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const WithdrawAndMintProposal = {
+    encode(message: WithdrawAndMintProposal, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
         if (message.title !== '') {
             writer.uint32(10).string(message.title);
         }
         if (message.description !== '') {
             writer.uint32(18).string(message.description);
         }
-        if (message.spendDestination !== '') {
-            writer.uint32(26).string(message.spendDestination);
+        if (message.withdrawalAddress !== '') {
+            writer.uint32(26).string(message.withdrawalAddress);
         }
-        if (!message.mintRate.isZero()) {
-            writer.uint32(32).int64(message.mintRate);
+        if (!message.microMintRate.isZero()) {
+            writer.uint32(32).int64(message.microMintRate);
         }
         return writer;
     },
 
-    decode(input: _m0.Reader | Uint8Array, length?: number): SpendAndAdjustProposal {
+    decode(input: _m0.Reader | Uint8Array, length?: number): WithdrawAndMintProposal {
         const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseSpendAndAdjustProposal } as SpendAndAdjustProposal;
+        const message = { ...baseWithdrawAndMintProposal } as WithdrawAndMintProposal;
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -44,10 +44,10 @@ export const SpendAndAdjustProposal = {
                     message.description = reader.string();
                     break;
                 case 3:
-                    message.spendDestination = reader.string();
+                    message.withdrawalAddress = reader.string();
                     break;
                 case 4:
-                    message.mintRate = reader.int64() as Long;
+                    message.microMintRate = reader.int64() as Long;
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -57,8 +57,8 @@ export const SpendAndAdjustProposal = {
         return message;
     },
 
-    fromJSON(object: any): SpendAndAdjustProposal {
-        const message = { ...baseSpendAndAdjustProposal } as SpendAndAdjustProposal;
+    fromJSON(object: any): WithdrawAndMintProposal {
+        const message = { ...baseWithdrawAndMintProposal } as WithdrawAndMintProposal;
         if (object.title !== undefined && object.title !== null) {
             message.title = String(object.title);
         } else {
@@ -69,37 +69,37 @@ export const SpendAndAdjustProposal = {
         } else {
             message.description = '';
         }
-        if (object.spendDestination !== undefined && object.spendDestination !== null) {
-            message.spendDestination = String(object.spendDestination);
+        if (object.withdrawalAddress !== undefined && object.withdrawalAddress !== null) {
+            message.withdrawalAddress = String(object.withdrawalAddress);
         } else {
-            message.spendDestination = '';
+            message.withdrawalAddress = '';
         }
-        if (object.mintRate !== undefined && object.mintRate !== null) {
-            message.mintRate = Long.fromString(object.mintRate);
+        if (object.microMintRate !== undefined && object.microMintRate !== null) {
+            message.microMintRate = Long.fromString(object.microMintRate);
         } else {
-            message.mintRate = Long.ZERO;
+            message.microMintRate = Long.ZERO;
         }
         return message;
     },
 
-    toJSON(message: SpendAndAdjustProposal): unknown {
+    toJSON(message: WithdrawAndMintProposal): unknown {
         const obj: any = {};
         message.title !== undefined && (obj.title = message.title);
         message.description !== undefined && (obj.description = message.description);
-        message.spendDestination !== undefined && (obj.spendDestination = message.spendDestination);
-        message.mintRate !== undefined && (obj.mintRate = (message.mintRate || Long.ZERO).toString());
+        message.withdrawalAddress !== undefined && (obj.withdrawalAddress = message.withdrawalAddress);
+        message.microMintRate !== undefined && (obj.microMintRate = (message.microMintRate || Long.ZERO).toString());
         return obj;
     },
 
-    fromPartial(object: DeepPartial<SpendAndAdjustProposal>): SpendAndAdjustProposal {
-        const message = { ...baseSpendAndAdjustProposal } as SpendAndAdjustProposal;
+    fromPartial(object: DeepPartial<WithdrawAndMintProposal>): WithdrawAndMintProposal {
+        const message = { ...baseWithdrawAndMintProposal } as WithdrawAndMintProposal;
         message.title = object.title ?? '';
         message.description = object.description ?? '';
-        message.spendDestination = object.spendDestination ?? '';
-        if (object.mintRate !== undefined && object.mintRate !== null) {
-            message.mintRate = object.mintRate as Long;
+        message.withdrawalAddress = object.withdrawalAddress ?? '';
+        if (object.microMintRate !== undefined && object.microMintRate !== null) {
+            message.microMintRate = object.microMintRate as Long;
         } else {
-            message.mintRate = Long.ZERO;
+            message.microMintRate = Long.ZERO;
         }
         return message;
     },
