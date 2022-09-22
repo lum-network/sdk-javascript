@@ -36,6 +36,7 @@ import { MsgConnectionOpenAck, MsgConnectionOpenConfirm, MsgConnectionOpenInit, 
 import { MsgTransfer } from '../codec/ibc/applications/transfer/v1/tx';
 
 import { MsgClaimBeam, MsgOpenBeam, MsgUpdateBeam } from '../codec/beam/tx';
+import { MsgDeposit as MsgDepositDfract } from '../codec/dfract/tx';
 
 const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/cosmos.auth.v1beta1.BaseAccount', BaseAccount],
@@ -101,6 +102,7 @@ const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/lum.network.beam.MsgOpenBeam', MsgOpenBeam],
     ['/lum.network.beam.MsgUpdateBeam', MsgUpdateBeam],
     ['/lum.network.beam.MsgClaimBeam', MsgClaimBeam],
+    ['/lum.network.dfract.MsgDepositDfract', MsgDepositDfract],
 ];
 
 class ExtendedRegistry extends Registry {
