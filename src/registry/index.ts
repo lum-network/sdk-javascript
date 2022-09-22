@@ -103,7 +103,7 @@ const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/lum.network.beam.MsgOpenBeam', MsgOpenBeam],
     ['/lum.network.beam.MsgUpdateBeam', MsgUpdateBeam],
     ['/lum.network.beam.MsgClaimBeam', MsgClaimBeam],
-    ['/lum.network.dfract.MsgDepositDfract', MsgDepositDfract],
+    ['/lum.network.dfract.MsgDeposit', MsgDepositDfract],
 ];
 
 class ExtendedRegistry extends Registry {
