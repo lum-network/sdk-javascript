@@ -10,6 +10,8 @@ export interface MsgDeposit {
     amount?: Coin;
 }
 
+export interface MsgDepositResponse {}
+
 const baseMsgDeposit: object = { depositorAddress: '' };
 
 export const MsgDeposit = {
@@ -77,6 +79,65 @@ export const MsgDeposit = {
         return message;
     },
 };
+
+const baseMsgDepositResponse: object = {};
+
+export const MsgDepositResponse = {
+    encode(_: MsgDepositResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): MsgDepositResponse {
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = { ...baseMsgDepositResponse } as MsgDepositResponse;
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+
+    fromJSON(_: any): MsgDepositResponse {
+        const message = { ...baseMsgDepositResponse } as MsgDepositResponse;
+        return message;
+    },
+
+    toJSON(_: MsgDepositResponse): unknown {
+        const obj: any = {};
+        return obj;
+    },
+
+    fromPartial(_: DeepPartial<MsgDepositResponse>): MsgDepositResponse {
+        const message = { ...baseMsgDepositResponse } as MsgDepositResponse;
+        return message;
+    },
+};
+
+export interface Msg {
+    Deposit(request: MsgDeposit): Promise<MsgDepositResponse>;
+}
+
+export class MsgClientImpl implements Msg {
+    private readonly rpc: Rpc;
+    constructor(rpc: Rpc) {
+        this.rpc = rpc;
+        this.Deposit = this.Deposit.bind(this);
+    }
+    Deposit(request: MsgDeposit): Promise<MsgDepositResponse> {
+        const data = MsgDeposit.encode(request).finish();
+        const promise = this.rpc.request('lum.network.dfract.Msg', 'Deposit', data);
+        return promise.then((data) => MsgDepositResponse.decode(new _m0.Reader(data)));
+    }
+}
+
+interface Rpc {
+    request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
+}
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
 export type DeepPartial<T> = T extends Builtin
