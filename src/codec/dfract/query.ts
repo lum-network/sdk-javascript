@@ -68,9 +68,9 @@ export interface QueryFetchDepositsRequest {
 }
 
 export interface QueryGetDepositsForAddressResponse {
-    waitingProposalDeposits?: Deposit;
-    waitingMintDeposits?: Deposit;
-    mintedDeposits?: Deposit;
+    depositsPendingWithdrawal?: Deposit;
+    depositsPendingMint?: Deposit;
+    depositsMinted?: Deposit;
 }
 
 export interface QueryFetchDepositsResponse {
@@ -394,14 +394,14 @@ const baseQueryGetDepositsForAddressResponse: object = {};
 
 export const QueryGetDepositsForAddressResponse = {
     encode(message: QueryGetDepositsForAddressResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-        if (message.waitingProposalDeposits !== undefined) {
-            Deposit.encode(message.waitingProposalDeposits, writer.uint32(10).fork()).ldelim();
+        if (message.depositsPendingWithdrawal !== undefined) {
+            Deposit.encode(message.depositsPendingWithdrawal, writer.uint32(10).fork()).ldelim();
         }
-        if (message.waitingMintDeposits !== undefined) {
-            Deposit.encode(message.waitingMintDeposits, writer.uint32(18).fork()).ldelim();
+        if (message.depositsPendingMint !== undefined) {
+            Deposit.encode(message.depositsPendingMint, writer.uint32(18).fork()).ldelim();
         }
-        if (message.mintedDeposits !== undefined) {
-            Deposit.encode(message.mintedDeposits, writer.uint32(26).fork()).ldelim();
+        if (message.depositsMinted !== undefined) {
+            Deposit.encode(message.depositsMinted, writer.uint32(26).fork()).ldelim();
         }
         return writer;
     },
@@ -414,13 +414,13 @@ export const QueryGetDepositsForAddressResponse = {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
-                    message.waitingProposalDeposits = Deposit.decode(reader, reader.uint32());
+                    message.depositsPendingWithdrawal = Deposit.decode(reader, reader.uint32());
                     break;
                 case 2:
-                    message.waitingMintDeposits = Deposit.decode(reader, reader.uint32());
+                    message.depositsPendingMint = Deposit.decode(reader, reader.uint32());
                     break;
                 case 3:
-                    message.mintedDeposits = Deposit.decode(reader, reader.uint32());
+                    message.depositsMinted = Deposit.decode(reader, reader.uint32());
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -432,48 +432,48 @@ export const QueryGetDepositsForAddressResponse = {
 
     fromJSON(object: any): QueryGetDepositsForAddressResponse {
         const message = { ...baseQueryGetDepositsForAddressResponse } as QueryGetDepositsForAddressResponse;
-        if (object.waitingProposalDeposits !== undefined && object.waitingProposalDeposits !== null) {
-            message.waitingProposalDeposits = Deposit.fromJSON(object.waitingProposalDeposits);
+        if (object.depositsPendingWithdrawal !== undefined && object.depositsPendingWithdrawal !== null) {
+            message.depositsPendingWithdrawal = Deposit.fromJSON(object.depositsPendingWithdrawal);
         } else {
-            message.waitingProposalDeposits = undefined;
+            message.depositsPendingWithdrawal = undefined;
         }
-        if (object.waitingMintDeposits !== undefined && object.waitingMintDeposits !== null) {
-            message.waitingMintDeposits = Deposit.fromJSON(object.waitingMintDeposits);
+        if (object.depositsPendingMint !== undefined && object.depositsPendingMint !== null) {
+            message.depositsPendingMint = Deposit.fromJSON(object.depositsPendingMint);
         } else {
-            message.waitingMintDeposits = undefined;
+            message.depositsPendingMint = undefined;
         }
-        if (object.mintedDeposits !== undefined && object.mintedDeposits !== null) {
-            message.mintedDeposits = Deposit.fromJSON(object.mintedDeposits);
+        if (object.depositsMinted !== undefined && object.depositsMinted !== null) {
+            message.depositsMinted = Deposit.fromJSON(object.depositsMinted);
         } else {
-            message.mintedDeposits = undefined;
+            message.depositsMinted = undefined;
         }
         return message;
     },
 
     toJSON(message: QueryGetDepositsForAddressResponse): unknown {
         const obj: any = {};
-        message.waitingProposalDeposits !== undefined && (obj.waitingProposalDeposits = message.waitingProposalDeposits ? Deposit.toJSON(message.waitingProposalDeposits) : undefined);
-        message.waitingMintDeposits !== undefined && (obj.waitingMintDeposits = message.waitingMintDeposits ? Deposit.toJSON(message.waitingMintDeposits) : undefined);
-        message.mintedDeposits !== undefined && (obj.mintedDeposits = message.mintedDeposits ? Deposit.toJSON(message.mintedDeposits) : undefined);
+        message.depositsPendingWithdrawal !== undefined && (obj.depositsPendingWithdrawal = message.depositsPendingWithdrawal ? Deposit.toJSON(message.depositsPendingWithdrawal) : undefined);
+        message.depositsPendingMint !== undefined && (obj.depositsPendingMint = message.depositsPendingMint ? Deposit.toJSON(message.depositsPendingMint) : undefined);
+        message.depositsMinted !== undefined && (obj.depositsMinted = message.depositsMinted ? Deposit.toJSON(message.depositsMinted) : undefined);
         return obj;
     },
 
     fromPartial(object: DeepPartial<QueryGetDepositsForAddressResponse>): QueryGetDepositsForAddressResponse {
         const message = { ...baseQueryGetDepositsForAddressResponse } as QueryGetDepositsForAddressResponse;
-        if (object.waitingProposalDeposits !== undefined && object.waitingProposalDeposits !== null) {
-            message.waitingProposalDeposits = Deposit.fromPartial(object.waitingProposalDeposits);
+        if (object.depositsPendingWithdrawal !== undefined && object.depositsPendingWithdrawal !== null) {
+            message.depositsPendingWithdrawal = Deposit.fromPartial(object.depositsPendingWithdrawal);
         } else {
-            message.waitingProposalDeposits = undefined;
+            message.depositsPendingWithdrawal = undefined;
         }
-        if (object.waitingMintDeposits !== undefined && object.waitingMintDeposits !== null) {
-            message.waitingMintDeposits = Deposit.fromPartial(object.waitingMintDeposits);
+        if (object.depositsPendingMint !== undefined && object.depositsPendingMint !== null) {
+            message.depositsPendingMint = Deposit.fromPartial(object.depositsPendingMint);
         } else {
-            message.waitingMintDeposits = undefined;
+            message.depositsPendingMint = undefined;
         }
-        if (object.mintedDeposits !== undefined && object.mintedDeposits !== null) {
-            message.mintedDeposits = Deposit.fromPartial(object.mintedDeposits);
+        if (object.depositsMinted !== undefined && object.depositsMinted !== null) {
+            message.depositsMinted = Deposit.fromPartial(object.depositsMinted);
         } else {
-            message.mintedDeposits = undefined;
+            message.depositsMinted = undefined;
         }
         return message;
     },

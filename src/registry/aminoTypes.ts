@@ -10,11 +10,11 @@ export interface AminoMsgDepositDfract extends AminoMsg {
     };
 }
 
-export function isAminoMsgSend(msg: AminoMsg): msg is AminoMsgDepositDfract {
+export function isAminoMsgDeposit(msg: AminoMsg): msg is AminoMsgDepositDfract {
     return msg.type === 'lum-network/MsgDeposit';
 }
 
-export const createAdditionalAminoTypes = (): Record<string, AminoConverter> => {
+export const createAminoTypes = (): Record<string, AminoConverter> => {
     return {
         // DFract
 

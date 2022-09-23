@@ -1,6 +1,6 @@
 import { Registry, GeneratedType } from '@cosmjs/proto-signing';
 import { AminoTypes } from '@cosmjs/stargate';
-import { createAdditionalAminoTypes } from './aminoTypes';
+import { createAminoTypes } from './aminoTypes';
 
 import { Tx } from '../codec/cosmos/tx/v1beta1/tx';
 import { PubKey } from '../codec/cosmos/crypto/secp256k1/keys';
@@ -112,5 +112,5 @@ class ExtendedRegistry extends Registry {
     };
 }
 
-export const LumAminoRegistry = new AminoTypes(createAdditionalAminoTypes());
+export const LumAminoRegistry = new AminoTypes(createAminoTypes());
 export const LumRegistry = new ExtendedRegistry(registryTypes);
