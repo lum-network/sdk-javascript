@@ -95,10 +95,20 @@ export class LumClient {
      * Uses HTTP when the URL schema is http or https, uses WebSockets otherwise
      *
      * @param endpoint Blockchain node RPC url
+     * @param onError Callback for errors
      */
-    static connect = async (endpoint: string): Promise<LumClient> => {
-        const tmClient = await Tendermint34Client.connect(endpoint);
-        return new LumClient(tmClient);
+    static connect = async (endpoint: string, onError?: (e: unknown) => void): Promise<LumClient> => {
+        try {
+            const tmClient = await Tendermint34Client.connect(endpoint);
+
+            return new LumClient(tmClient);
+        } catch (e) {
+            if (onError) {
+                onError(e);
+            }
+
+            throw e;
+        }
     };
 
     /**
