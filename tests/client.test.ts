@@ -1,5 +1,5 @@
 import { LumWallet, LumWalletFactory, LumClient, LumUtils, LumConstants, LumRegistry, LumTypes, LumMessages } from '../src';
-import { BeamData, BeamState } from '../src/codec/beam/beam';
+import { BeamData, BeamState } from '../src/codec/lum-network/beam/beam';
 import { requestCoinsFromFaucet } from './utils';
 
 const randomString = (): string => {
