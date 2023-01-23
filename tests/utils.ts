@@ -20,7 +20,7 @@ export const requestCoinsFromFaucet = async (clt: LumClient, addr: string): Prom
     } catch (e) {}
     if (!res || res.status !== 200) {
         // Otherwise query the testnet official faucet
-        res = await axios.get(`https://bridge.testnet.lum.network/faucet/${addr}`);
+        res = await axios.get(`https://explorer-testnet.infra.lum.network/faucet/${addr}`);
     }
     expect(res).toBeTruthy();
     expect(res.status).toEqual(200);
