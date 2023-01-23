@@ -1,8 +1,8 @@
 import { QueryClient } from '@cosmjs/stargate';
 import { assert } from '@cosmjs/utils';
 import { createProtobufRpcClient } from './utils';
-import { DepositsQueryType, QueryClientImpl, QueryGetDepositsForAddressResponse } from '../codec/dfract/query';
-import { Deposit } from '../codec/dfract/deposit';
+import { DepositsQueryType, QueryClientImpl, QueryGetDepositsForAddressResponse } from '../codec/lum-network/dfract/query';
+import { Deposit } from '../codec/lum-network/dfract/deposit';
 import { Coin } from '../codec/cosmos/base/v1beta1/coin';
 
 export interface DfractExtension {

@@ -1,8 +1,8 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
-import { Beam, BeamState, beamStateFromJSON, beamStateToJSON } from '../beam/beam';
-import { PageRequest, PageResponse } from '../cosmos/base/query/v1beta1/pagination';
+import { Beam, BeamState, beamStateFromJSON, beamStateToJSON } from '../../lum-network/beam/beam';
+import { PageRequest, PageResponse } from '../../cosmos/base/query/v1beta1/pagination';
 
 export const protobufPackage = 'lum.network.beam';
 

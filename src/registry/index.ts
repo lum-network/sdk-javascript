@@ -36,9 +36,9 @@ import { MsgCreateClient, MsgSubmitMisbehaviour, MsgUpdateClient, MsgUpgradeClie
 import { MsgConnectionOpenAck, MsgConnectionOpenConfirm, MsgConnectionOpenInit, MsgConnectionOpenTry } from '../codec/ibc/core/connection/v1/tx';
 import { MsgTransfer } from '../codec/ibc/applications/transfer/v1/tx';
 
-import { MsgClaimBeam, MsgOpenBeam, MsgUpdateBeam } from '../codec/beam/tx';
-import { MsgDeposit as MsgDepositDfract } from '../codec/dfract/tx';
-import { WithdrawAndMintProposal } from '../codec/dfract/proposal';
+import { MsgClaimBeam, MsgOpenBeam, MsgUpdateBeam } from '../codec/lum-network/beam/tx';
+import { MsgDeposit as MsgDepositDfract } from '../codec/lum-network/dfract/tx';
+import { WithdrawAndMintProposal } from '../codec/lum-network/dfract/proposal';
 
 const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/cosmos.auth.v1beta1.BaseAccount', BaseAccount],

@@ -1,5 +1,5 @@
 import { AminoConverter } from '@cosmjs/stargate';
-import { MsgDeposit as MsgDepositDfract } from '../codec/dfract/tx';
+import { MsgDeposit as MsgDepositDfract } from '../codec/lum-network/dfract/tx';
 import { AminoMsg, Coin } from '@cosmjs/amino';
 
 export interface AminoMsgDepositDfract extends AminoMsg {
