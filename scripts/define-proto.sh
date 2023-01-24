@@ -52,6 +52,9 @@ protoc \
     "$COSMOS_PROTO_DIR/cosmos/gov/v1/gov.proto" \
     "$COSMOS_PROTO_DIR/cosmos/gov/v1/query.proto" \
     "$COSMOS_PROTO_DIR/cosmos/gov/v1/tx.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/gov/v1beta1/gov.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/gov/v1beta1/query.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/gov/v1beta1/tx.proto" \
     "$COSMOS_PROTO_DIR/cosmos/mint/v1beta1/mint.proto" \
     "$COSMOS_PROTO_DIR/cosmos/mint/v1beta1/query.proto" \
     "$COSMOS_PROTO_DIR/cosmos/params/v1beta1/params.proto" \
