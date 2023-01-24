@@ -1,12 +1,14 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
-import { Any } from '../../../google/protobuf/any';
 import { Duration } from '../../../google/protobuf/duration';
 import { Timestamp } from '../../../google/protobuf/timestamp';
 import { Coin } from '../../../cosmos/base/v1beta1/coin';
+import { Any } from '../../../google/protobuf/any';
 
-export const protobufPackage = 'cosmos.gov.v1beta1';
+export const protobufPackage = 'cosmos.gov.v1';
+
+/** Since: cosmos-sdk 0.46 */
 
 /** VoteOption enumerates the valid vote options for a given governance proposal. */
 export enum VoteOption {
@@ -142,23 +144,10 @@ export function proposalStatusToJSON(object: ProposalStatus): string {
     }
 }
 
-/**
- * WeightedVoteOption defines a unit of vote for vote split.
- *
- * Since: cosmos-sdk 0.43
- */
+/** WeightedVoteOption defines a unit of vote for vote split. */
 export interface WeightedVoteOption {
     option: VoteOption;
     weight: string;
-}
-
-/**
- * TextProposal defines a standard text proposal whose changes need to be
- * manually updated in case of approval.
- */
-export interface TextProposal {
-    title: string;
-    description: string;
 }
 
 /**
@@ -173,8 +162,8 @@ export interface Deposit {
 
 /** Proposal defines the core field members of a governance proposal. */
 export interface Proposal {
-    proposalId: Long;
-    content?: Any;
+    id: Long;
+    messages: Any[];
     status: ProposalStatus;
     /**
      * final_tally_result is the final tally result of the proposal. When
@@ -187,14 +176,16 @@ export interface Proposal {
     totalDeposit: Coin[];
     votingStartTime?: Date;
     votingEndTime?: Date;
+    /** metadata is any arbitrary metadata attached to the proposal. */
+    metadata: string;
 }
 
 /** TallyResult defines a standard tally for a governance proposal. */
 export interface TallyResult {
-    yes: string;
-    abstain: string;
-    no: string;
-    noWithVeto: string;
+    yesCount: string;
+    abstainCount: string;
+    noCount: string;
+    noWithVetoCount: string;
 }
 
 /**
@@ -204,16 +195,9 @@ export interface TallyResult {
 export interface Vote {
     proposalId: Long;
     voter: string;
-    /**
-     * Deprecated: Prefer to use `options` instead. This field is set in queries
-     * if and only if `len(options) == 1` and that option has weight 1. In all
-     * other cases, this field will default to VOTE_OPTION_UNSPECIFIED.
-     *
-     * @deprecated
-     */
-    option: VoteOption;
-    /** Since: cosmos-sdk 0.43 */
     options: WeightedVoteOption[];
+    /** metadata is any  arbitrary metadata to attached to the vote. */
+    metadata: string;
 }
 
 /** DepositParams defines the params for deposits on governance proposals. */
@@ -239,14 +223,14 @@ export interface TallyParams {
      * Minimum percentage of total stake needed to vote for a result to be
      *  considered valid.
      */
-    quorum: Uint8Array;
+    quorum: string;
     /** Minimum proportion of Yes votes for proposal to pass. Default value: 0.5. */
-    threshold: Uint8Array;
+    threshold: string;
     /**
      * Minimum value of Veto votes to Total votes ratio for proposal to be
      *  vetoed. Default value: 1/3.
      */
-    vetoThreshold: Uint8Array;
+    vetoThreshold: string;
 }
 
 const baseWeightedVoteOption: object = { option: 0, weight: '' };
@@ -309,70 +293,6 @@ export const WeightedVoteOption = {
         const message = { ...baseWeightedVoteOption } as WeightedVoteOption;
         message.option = object.option ?? 0;
         message.weight = object.weight ?? '';
-        return message;
-    },
-};
-
-const baseTextProposal: object = { title: '', description: '' };
-
-export const TextProposal = {
-    encode(message: TextProposal, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-        if (message.title !== '') {
-            writer.uint32(10).string(message.title);
-        }
-        if (message.description !== '') {
-            writer.uint32(18).string(message.description);
-        }
-        return writer;
-    },
-
-    decode(input: _m0.Reader | Uint8Array, length?: number): TextProposal {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseTextProposal } as TextProposal;
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.title = reader.string();
-                    break;
-                case 2:
-                    message.description = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-
-    fromJSON(object: any): TextProposal {
-        const message = { ...baseTextProposal } as TextProposal;
-        if (object.title !== undefined && object.title !== null) {
-            message.title = String(object.title);
-        } else {
-            message.title = '';
-        }
-        if (object.description !== undefined && object.description !== null) {
-            message.description = String(object.description);
-        } else {
-            message.description = '';
-        }
-        return message;
-    },
-
-    toJSON(message: TextProposal): unknown {
-        const obj: any = {};
-        message.title !== undefined && (obj.title = message.title);
-        message.description !== undefined && (obj.description = message.description);
-        return obj;
-    },
-
-    fromPartial(object: DeepPartial<TextProposal>): TextProposal {
-        const message = { ...baseTextProposal } as TextProposal;
-        message.title = object.title ?? '';
-        message.description = object.description ?? '';
         return message;
     },
 };
@@ -469,15 +389,15 @@ export const Deposit = {
     },
 };
 
-const baseProposal: object = { proposalId: Long.UZERO, status: 0 };
+const baseProposal: object = { id: Long.UZERO, status: 0, metadata: '' };
 
 export const Proposal = {
     encode(message: Proposal, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-        if (!message.proposalId.isZero()) {
-            writer.uint32(8).uint64(message.proposalId);
+        if (!message.id.isZero()) {
+            writer.uint32(8).uint64(message.id);
         }
-        if (message.content !== undefined) {
-            Any.encode(message.content, writer.uint32(18).fork()).ldelim();
+        for (const v of message.messages) {
+            Any.encode(v!, writer.uint32(18).fork()).ldelim();
         }
         if (message.status !== 0) {
             writer.uint32(24).int32(message.status);
@@ -500,6 +420,9 @@ export const Proposal = {
         if (message.votingEndTime !== undefined) {
             Timestamp.encode(toTimestamp(message.votingEndTime), writer.uint32(74).fork()).ldelim();
         }
+        if (message.metadata !== '') {
+            writer.uint32(82).string(message.metadata);
+        }
         return writer;
     },
 
@@ -507,15 +430,16 @@ export const Proposal = {
         const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseProposal } as Proposal;
+        message.messages = [];
         message.totalDeposit = [];
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
-                    message.proposalId = reader.uint64() as Long;
+                    message.id = reader.uint64() as Long;
                     break;
                 case 2:
-                    message.content = Any.decode(reader, reader.uint32());
+                    message.messages.push(Any.decode(reader, reader.uint32()));
                     break;
                 case 3:
                     message.status = reader.int32() as any;
@@ -538,6 +462,9 @@ export const Proposal = {
                 case 9:
                     message.votingEndTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
                     break;
+                case 10:
+                    message.metadata = reader.string();
+                    break;
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -548,16 +475,17 @@ export const Proposal = {
 
     fromJSON(object: any): Proposal {
         const message = { ...baseProposal } as Proposal;
+        message.messages = [];
         message.totalDeposit = [];
-        if (object.proposalId !== undefined && object.proposalId !== null) {
-            message.proposalId = Long.fromString(object.proposalId);
+        if (object.id !== undefined && object.id !== null) {
+            message.id = Long.fromString(object.id);
         } else {
-            message.proposalId = Long.UZERO;
+            message.id = Long.UZERO;
         }
-        if (object.content !== undefined && object.content !== null) {
-            message.content = Any.fromJSON(object.content);
-        } else {
-            message.content = undefined;
+        if (object.messages !== undefined && object.messages !== null) {
+            for (const e of object.messages) {
+                message.messages.push(Any.fromJSON(e));
+            }
         }
         if (object.status !== undefined && object.status !== null) {
             message.status = proposalStatusFromJSON(object.status);
@@ -594,13 +522,22 @@ export const Proposal = {
         } else {
             message.votingEndTime = undefined;
         }
+        if (object.metadata !== undefined && object.metadata !== null) {
+            message.metadata = String(object.metadata);
+        } else {
+            message.metadata = '';
+        }
         return message;
     },
 
     toJSON(message: Proposal): unknown {
         const obj: any = {};
-        message.proposalId !== undefined && (obj.proposalId = (message.proposalId || Long.UZERO).toString());
-        message.content !== undefined && (obj.content = message.content ? Any.toJSON(message.content) : undefined);
+        message.id !== undefined && (obj.id = (message.id || Long.UZERO).toString());
+        if (message.messages) {
+            obj.messages = message.messages.map((e) => (e ? Any.toJSON(e) : undefined));
+        } else {
+            obj.messages = [];
+        }
         message.status !== undefined && (obj.status = proposalStatusToJSON(message.status));
         message.finalTallyResult !== undefined && (obj.finalTallyResult = message.finalTallyResult ? TallyResult.toJSON(message.finalTallyResult) : undefined);
         message.submitTime !== undefined && (obj.submitTime = message.submitTime.toISOString());
@@ -612,20 +549,22 @@ export const Proposal = {
         }
         message.votingStartTime !== undefined && (obj.votingStartTime = message.votingStartTime.toISOString());
         message.votingEndTime !== undefined && (obj.votingEndTime = message.votingEndTime.toISOString());
+        message.metadata !== undefined && (obj.metadata = message.metadata);
         return obj;
     },
 
     fromPartial(object: DeepPartial<Proposal>): Proposal {
         const message = { ...baseProposal } as Proposal;
-        if (object.proposalId !== undefined && object.proposalId !== null) {
-            message.proposalId = object.proposalId as Long;
+        if (object.id !== undefined && object.id !== null) {
+            message.id = object.id as Long;
         } else {
-            message.proposalId = Long.UZERO;
+            message.id = Long.UZERO;
         }
-        if (object.content !== undefined && object.content !== null) {
-            message.content = Any.fromPartial(object.content);
-        } else {
-            message.content = undefined;
+        message.messages = [];
+        if (object.messages !== undefined && object.messages !== null) {
+            for (const e of object.messages) {
+                message.messages.push(Any.fromPartial(e));
+            }
         }
         message.status = object.status ?? 0;
         if (object.finalTallyResult !== undefined && object.finalTallyResult !== null) {
@@ -643,25 +582,26 @@ export const Proposal = {
         }
         message.votingStartTime = object.votingStartTime ?? undefined;
         message.votingEndTime = object.votingEndTime ?? undefined;
+        message.metadata = object.metadata ?? '';
         return message;
     },
 };
 
-const baseTallyResult: object = { yes: '', abstain: '', no: '', noWithVeto: '' };
+const baseTallyResult: object = { yesCount: '', abstainCount: '', noCount: '', noWithVetoCount: '' };
 
 export const TallyResult = {
     encode(message: TallyResult, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-        if (message.yes !== '') {
-            writer.uint32(10).string(message.yes);
+        if (message.yesCount !== '') {
+            writer.uint32(10).string(message.yesCount);
         }
-        if (message.abstain !== '') {
-            writer.uint32(18).string(message.abstain);
+        if (message.abstainCount !== '') {
+            writer.uint32(18).string(message.abstainCount);
         }
-        if (message.no !== '') {
-            writer.uint32(26).string(message.no);
+        if (message.noCount !== '') {
+            writer.uint32(26).string(message.noCount);
         }
-        if (message.noWithVeto !== '') {
-            writer.uint32(34).string(message.noWithVeto);
+        if (message.noWithVetoCount !== '') {
+            writer.uint32(34).string(message.noWithVetoCount);
         }
         return writer;
     },
@@ -674,16 +614,16 @@ export const TallyResult = {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
-                    message.yes = reader.string();
+                    message.yesCount = reader.string();
                     break;
                 case 2:
-                    message.abstain = reader.string();
+                    message.abstainCount = reader.string();
                     break;
                 case 3:
-                    message.no = reader.string();
+                    message.noCount = reader.string();
                     break;
                 case 4:
-                    message.noWithVeto = reader.string();
+                    message.noWithVetoCount = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -695,49 +635,49 @@ export const TallyResult = {
 
     fromJSON(object: any): TallyResult {
         const message = { ...baseTallyResult } as TallyResult;
-        if (object.yes !== undefined && object.yes !== null) {
-            message.yes = String(object.yes);
+        if (object.yesCount !== undefined && object.yesCount !== null) {
+            message.yesCount = String(object.yesCount);
         } else {
-            message.yes = '';
+            message.yesCount = '';
         }
-        if (object.abstain !== undefined && object.abstain !== null) {
-            message.abstain = String(object.abstain);
+        if (object.abstainCount !== undefined && object.abstainCount !== null) {
+            message.abstainCount = String(object.abstainCount);
         } else {
-            message.abstain = '';
+            message.abstainCount = '';
         }
-        if (object.no !== undefined && object.no !== null) {
-            message.no = String(object.no);
+        if (object.noCount !== undefined && object.noCount !== null) {
+            message.noCount = String(object.noCount);
         } else {
-            message.no = '';
+            message.noCount = '';
         }
-        if (object.noWithVeto !== undefined && object.noWithVeto !== null) {
-            message.noWithVeto = String(object.noWithVeto);
+        if (object.noWithVetoCount !== undefined && object.noWithVetoCount !== null) {
+            message.noWithVetoCount = String(object.noWithVetoCount);
         } else {
-            message.noWithVeto = '';
+            message.noWithVetoCount = '';
         }
         return message;
     },
 
     toJSON(message: TallyResult): unknown {
         const obj: any = {};
-        message.yes !== undefined && (obj.yes = message.yes);
-        message.abstain !== undefined && (obj.abstain = message.abstain);
-        message.no !== undefined && (obj.no = message.no);
-        message.noWithVeto !== undefined && (obj.noWithVeto = message.noWithVeto);
+        message.yesCount !== undefined && (obj.yesCount = message.yesCount);
+        message.abstainCount !== undefined && (obj.abstainCount = message.abstainCount);
+        message.noCount !== undefined && (obj.noCount = message.noCount);
+        message.noWithVetoCount !== undefined && (obj.noWithVetoCount = message.noWithVetoCount);
         return obj;
     },
 
     fromPartial(object: DeepPartial<TallyResult>): TallyResult {
         const message = { ...baseTallyResult } as TallyResult;
-        message.yes = object.yes ?? '';
-        message.abstain = object.abstain ?? '';
-        message.no = object.no ?? '';
-        message.noWithVeto = object.noWithVeto ?? '';
+        message.yesCount = object.yesCount ?? '';
+        message.abstainCount = object.abstainCount ?? '';
+        message.noCount = object.noCount ?? '';
+        message.noWithVetoCount = object.noWithVetoCount ?? '';
         return message;
     },
 };
 
-const baseVote: object = { proposalId: Long.UZERO, voter: '', option: 0 };
+const baseVote: object = { proposalId: Long.UZERO, voter: '', metadata: '' };
 
 export const Vote = {
     encode(message: Vote, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -747,11 +687,11 @@ export const Vote = {
         if (message.voter !== '') {
             writer.uint32(18).string(message.voter);
         }
-        if (message.option !== 0) {
-            writer.uint32(24).int32(message.option);
-        }
         for (const v of message.options) {
             WeightedVoteOption.encode(v!, writer.uint32(34).fork()).ldelim();
+        }
+        if (message.metadata !== '') {
+            writer.uint32(42).string(message.metadata);
         }
         return writer;
     },
@@ -770,11 +710,11 @@ export const Vote = {
                 case 2:
                     message.voter = reader.string();
                     break;
-                case 3:
-                    message.option = reader.int32() as any;
-                    break;
                 case 4:
                     message.options.push(WeightedVoteOption.decode(reader, reader.uint32()));
+                    break;
+                case 5:
+                    message.metadata = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -797,15 +737,15 @@ export const Vote = {
         } else {
             message.voter = '';
         }
-        if (object.option !== undefined && object.option !== null) {
-            message.option = voteOptionFromJSON(object.option);
-        } else {
-            message.option = 0;
-        }
         if (object.options !== undefined && object.options !== null) {
             for (const e of object.options) {
                 message.options.push(WeightedVoteOption.fromJSON(e));
             }
+        }
+        if (object.metadata !== undefined && object.metadata !== null) {
+            message.metadata = String(object.metadata);
+        } else {
+            message.metadata = '';
         }
         return message;
     },
@@ -814,12 +754,12 @@ export const Vote = {
         const obj: any = {};
         message.proposalId !== undefined && (obj.proposalId = (message.proposalId || Long.UZERO).toString());
         message.voter !== undefined && (obj.voter = message.voter);
-        message.option !== undefined && (obj.option = voteOptionToJSON(message.option));
         if (message.options) {
             obj.options = message.options.map((e) => (e ? WeightedVoteOption.toJSON(e) : undefined));
         } else {
             obj.options = [];
         }
+        message.metadata !== undefined && (obj.metadata = message.metadata);
         return obj;
     },
 
@@ -831,13 +771,13 @@ export const Vote = {
             message.proposalId = Long.UZERO;
         }
         message.voter = object.voter ?? '';
-        message.option = object.option ?? 0;
         message.options = [];
         if (object.options !== undefined && object.options !== null) {
             for (const e of object.options) {
                 message.options.push(WeightedVoteOption.fromPartial(e));
             }
         }
+        message.metadata = object.metadata ?? '';
         return message;
     },
 };
@@ -976,18 +916,18 @@ export const VotingParams = {
     },
 };
 
-const baseTallyParams: object = {};
+const baseTallyParams: object = { quorum: '', threshold: '', vetoThreshold: '' };
 
 export const TallyParams = {
     encode(message: TallyParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-        if (message.quorum.length !== 0) {
-            writer.uint32(10).bytes(message.quorum);
+        if (message.quorum !== '') {
+            writer.uint32(10).string(message.quorum);
         }
-        if (message.threshold.length !== 0) {
-            writer.uint32(18).bytes(message.threshold);
+        if (message.threshold !== '') {
+            writer.uint32(18).string(message.threshold);
         }
-        if (message.vetoThreshold.length !== 0) {
-            writer.uint32(26).bytes(message.vetoThreshold);
+        if (message.vetoThreshold !== '') {
+            writer.uint32(26).string(message.vetoThreshold);
         }
         return writer;
     },
@@ -996,20 +936,17 @@ export const TallyParams = {
         const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseTallyParams } as TallyParams;
-        message.quorum = new Uint8Array();
-        message.threshold = new Uint8Array();
-        message.vetoThreshold = new Uint8Array();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
-                    message.quorum = reader.bytes();
+                    message.quorum = reader.string();
                     break;
                 case 2:
-                    message.threshold = reader.bytes();
+                    message.threshold = reader.string();
                     break;
                 case 3:
-                    message.vetoThreshold = reader.bytes();
+                    message.vetoThreshold = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -1021,67 +958,40 @@ export const TallyParams = {
 
     fromJSON(object: any): TallyParams {
         const message = { ...baseTallyParams } as TallyParams;
-        message.quorum = new Uint8Array();
-        message.threshold = new Uint8Array();
-        message.vetoThreshold = new Uint8Array();
         if (object.quorum !== undefined && object.quorum !== null) {
-            message.quorum = bytesFromBase64(object.quorum);
+            message.quorum = String(object.quorum);
+        } else {
+            message.quorum = '';
         }
         if (object.threshold !== undefined && object.threshold !== null) {
-            message.threshold = bytesFromBase64(object.threshold);
+            message.threshold = String(object.threshold);
+        } else {
+            message.threshold = '';
         }
         if (object.vetoThreshold !== undefined && object.vetoThreshold !== null) {
-            message.vetoThreshold = bytesFromBase64(object.vetoThreshold);
+            message.vetoThreshold = String(object.vetoThreshold);
+        } else {
+            message.vetoThreshold = '';
         }
         return message;
     },
 
     toJSON(message: TallyParams): unknown {
         const obj: any = {};
-        message.quorum !== undefined && (obj.quorum = base64FromBytes(message.quorum !== undefined ? message.quorum : new Uint8Array()));
-        message.threshold !== undefined && (obj.threshold = base64FromBytes(message.threshold !== undefined ? message.threshold : new Uint8Array()));
-        message.vetoThreshold !== undefined && (obj.vetoThreshold = base64FromBytes(message.vetoThreshold !== undefined ? message.vetoThreshold : new Uint8Array()));
+        message.quorum !== undefined && (obj.quorum = message.quorum);
+        message.threshold !== undefined && (obj.threshold = message.threshold);
+        message.vetoThreshold !== undefined && (obj.vetoThreshold = message.vetoThreshold);
         return obj;
     },
 
     fromPartial(object: DeepPartial<TallyParams>): TallyParams {
         const message = { ...baseTallyParams } as TallyParams;
-        message.quorum = object.quorum ?? new Uint8Array();
-        message.threshold = object.threshold ?? new Uint8Array();
-        message.vetoThreshold = object.vetoThreshold ?? new Uint8Array();
+        message.quorum = object.quorum ?? '';
+        message.threshold = object.threshold ?? '';
+        message.vetoThreshold = object.vetoThreshold ?? '';
         return message;
     },
 };
-
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var globalThis: any = (() => {
-    if (typeof globalThis !== 'undefined') return globalThis;
-    if (typeof self !== 'undefined') return self;
-    if (typeof window !== 'undefined') return window;
-    if (typeof global !== 'undefined') return global;
-    throw 'Unable to locate global object';
-})();
-
-const atob: (b64: string) => string = globalThis.atob || ((b64) => globalThis.Buffer.from(b64, 'base64').toString('binary'));
-function bytesFromBase64(b64: string): Uint8Array {
-    const bin = atob(b64);
-    const arr = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; ++i) {
-        arr[i] = bin.charCodeAt(i);
-    }
-    return arr;
-}
-
-const btoa: (bin: string) => string = globalThis.btoa || ((bin) => globalThis.Buffer.from(bin, 'binary').toString('base64'));
-function base64FromBytes(arr: Uint8Array): string {
-    const bin: string[] = [];
-    for (const byte of arr) {
-        bin.push(String.fromCharCode(byte));
-    }
-    return btoa(bin.join(''));
-}
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
 export type DeepPartial<T> = T extends Builtin

@@ -1,8 +1,8 @@
 import { QueryClient } from '@cosmjs/stargate';
 import { assert } from '@cosmjs/utils';
 
-import { Beam, BeamState } from '../codec/beam/beam';
-import { QueryClientImpl } from '../codec/beam/query';
+import { Beam, BeamState } from '../codec/lum-network/beam/beam';
+import { QueryClientImpl } from '../codec/lum-network/beam/query';
 import { createProtobufRpcClient } from './utils';
 
 export interface BeamExtension {

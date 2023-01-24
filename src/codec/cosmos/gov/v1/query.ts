@@ -1,10 +1,12 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
-import { Proposal, ProposalStatus, Vote, VotingParams, DepositParams, TallyParams, Deposit, TallyResult, proposalStatusFromJSON, proposalStatusToJSON } from '../../../cosmos/gov/v1beta1/gov';
+import { Proposal, ProposalStatus, Vote, VotingParams, DepositParams, TallyParams, Deposit, TallyResult, proposalStatusFromJSON, proposalStatusToJSON } from '../../../cosmos/gov/v1/gov';
 import { PageRequest, PageResponse } from '../../../cosmos/base/query/v1beta1/pagination';
 
-export const protobufPackage = 'cosmos.gov.v1beta1';
+export const protobufPackage = 'cosmos.gov.v1';
+
+/** Since: cosmos-sdk 0.46 */
 
 /** QueryProposalRequest is the request type for the Query/Proposal RPC method. */
 export interface QueryProposalRequest {
@@ -1245,49 +1247,49 @@ export class QueryClientImpl implements Query {
     }
     Proposal(request: QueryProposalRequest): Promise<QueryProposalResponse> {
         const data = QueryProposalRequest.encode(request).finish();
-        const promise = this.rpc.request('cosmos.gov.v1beta1.Query', 'Proposal', data);
+        const promise = this.rpc.request('cosmos.gov.v1.Query', 'Proposal', data);
         return promise.then((data) => QueryProposalResponse.decode(new _m0.Reader(data)));
     }
 
     Proposals(request: QueryProposalsRequest): Promise<QueryProposalsResponse> {
         const data = QueryProposalsRequest.encode(request).finish();
-        const promise = this.rpc.request('cosmos.gov.v1beta1.Query', 'Proposals', data);
+        const promise = this.rpc.request('cosmos.gov.v1.Query', 'Proposals', data);
         return promise.then((data) => QueryProposalsResponse.decode(new _m0.Reader(data)));
     }
 
     Vote(request: QueryVoteRequest): Promise<QueryVoteResponse> {
         const data = QueryVoteRequest.encode(request).finish();
-        const promise = this.rpc.request('cosmos.gov.v1beta1.Query', 'Vote', data);
+        const promise = this.rpc.request('cosmos.gov.v1.Query', 'Vote', data);
         return promise.then((data) => QueryVoteResponse.decode(new _m0.Reader(data)));
     }
 
     Votes(request: QueryVotesRequest): Promise<QueryVotesResponse> {
         const data = QueryVotesRequest.encode(request).finish();
-        const promise = this.rpc.request('cosmos.gov.v1beta1.Query', 'Votes', data);
+        const promise = this.rpc.request('cosmos.gov.v1.Query', 'Votes', data);
         return promise.then((data) => QueryVotesResponse.decode(new _m0.Reader(data)));
     }
 
     Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
         const data = QueryParamsRequest.encode(request).finish();
-        const promise = this.rpc.request('cosmos.gov.v1beta1.Query', 'Params', data);
+        const promise = this.rpc.request('cosmos.gov.v1.Query', 'Params', data);
         return promise.then((data) => QueryParamsResponse.decode(new _m0.Reader(data)));
     }
 
     Deposit(request: QueryDepositRequest): Promise<QueryDepositResponse> {
         const data = QueryDepositRequest.encode(request).finish();
-        const promise = this.rpc.request('cosmos.gov.v1beta1.Query', 'Deposit', data);
+        const promise = this.rpc.request('cosmos.gov.v1.Query', 'Deposit', data);
         return promise.then((data) => QueryDepositResponse.decode(new _m0.Reader(data)));
     }
 
     Deposits(request: QueryDepositsRequest): Promise<QueryDepositsResponse> {
         const data = QueryDepositsRequest.encode(request).finish();
-        const promise = this.rpc.request('cosmos.gov.v1beta1.Query', 'Deposits', data);
+        const promise = this.rpc.request('cosmos.gov.v1.Query', 'Deposits', data);
         return promise.then((data) => QueryDepositsResponse.decode(new _m0.Reader(data)));
     }
 
     TallyResult(request: QueryTallyResultRequest): Promise<QueryTallyResultResponse> {
         const data = QueryTallyResultRequest.encode(request).finish();
-        const promise = this.rpc.request('cosmos.gov.v1beta1.Query', 'TallyResult', data);
+        const promise = this.rpc.request('cosmos.gov.v1.Query', 'TallyResult', data);
         return promise.then((data) => QueryTallyResultResponse.decode(new _m0.Reader(data)));
     }
 }

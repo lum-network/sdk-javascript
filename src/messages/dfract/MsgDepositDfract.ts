@@ -1,4 +1,4 @@
-import { MsgDeposit as MsgDepositDfract } from '../../codec/dfract/tx';
+import { MsgDeposit as MsgDepositDfract } from '../../codec/lum-network/dfract/tx';
 import { Message } from '../Message';
 import { Coin } from '../../types';
 

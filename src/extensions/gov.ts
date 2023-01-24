@@ -2,7 +2,7 @@ import Long from 'long';
 import { QueryClient } from '@cosmjs/stargate';
 import { Uint64 } from '@cosmjs/math';
 
-import { ProposalStatus } from '../codec/cosmos/gov/v1beta1/gov';
+import { ProposalStatus } from '../codec/cosmos/gov/v1/gov';
 import {
     QueryClientImpl,
     QueryDepositResponse,
@@ -13,7 +13,7 @@ import {
     QueryTallyResultResponse,
     QueryVoteResponse,
     QueryVotesResponse,
-} from '../codec/cosmos/gov/v1beta1/query';
+} from '../codec/cosmos/gov/v1/query';
 import { createPagination, longify, createProtobufRpcClient } from './utils';
 
 export type GovParamsType = 'deposit' | 'tallying' | 'voting';

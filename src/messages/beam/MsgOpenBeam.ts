@@ -1,6 +1,6 @@
 import { Message } from '../Message';
-import { BeamData } from '../../codec/beam/beam';
-import { MsgOpenBeam } from '../../codec/beam/tx';
+import { BeamData } from '../../codec/lum-network/beam/beam';
+import { MsgOpenBeam } from '../../codec/lum-network/beam/tx';
 import { Coin } from '../../types';
 
 export const MsgOpenBeamUrl = '/lum.network.beam.MsgOpenBeam';

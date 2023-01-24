@@ -1,9 +1,9 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
-import { Params } from '../airdrop/params';
-import { ClaimRecord, Action, actionFromJSON, actionToJSON } from '../airdrop/claim';
-import { Coin } from '../cosmos/base/v1beta1/coin';
+import { Params } from '../../lum-network/airdrop/params';
+import { ClaimRecord, Action, actionFromJSON, actionToJSON } from '../../lum-network/airdrop/claim';
+import { Coin } from '../../cosmos/base/v1beta1/coin';
 
 export const protobufPackage = 'lum.network.airdrop';
 

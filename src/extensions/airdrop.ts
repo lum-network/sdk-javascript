@@ -1,5 +1,5 @@
 import { QueryClient } from '@cosmjs/stargate';
-import { Action } from '../codec/airdrop/claim';
+import { Action } from '../codec/lum-network/airdrop/claim';
 
 import {
     QueryClaimableForActionResponse,
@@ -8,7 +8,7 @@ import {
     QueryModuleAccountBalanceResponse,
     QueryParamsResponse,
     QueryTotalClaimableResponse,
-} from '../codec/airdrop/query';
+} from '../codec/lum-network/airdrop/query';
 import { createProtobufRpcClient } from './utils';
 
 export interface AirdropExtension {
