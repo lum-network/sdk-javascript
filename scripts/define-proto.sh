@@ -71,6 +71,7 @@ protoc \
     "$COSMOS_PROTO_DIR/cosmos/tx/v1beta1/tx.proto" \
     "$COSMOS_PROTO_DIR/cosmos/upgrade/v1beta1/query.proto" \
     "$COSMOS_PROTO_DIR/cosmos/upgrade/v1beta1/upgrade.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/upgrade/v1beta1/tx.proto" \
     "$COSMOS_PROTO_DIR/cosmos/vesting/v1beta1/tx.proto" \
     "$COSMOS_PROTO_DIR/cosmos/vesting/v1beta1/vesting.proto" \
     "$IBC_PROTO_DIR/ibc/applications/interchain_accounts/controller/v1/controller.proto" \

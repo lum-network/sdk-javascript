@@ -18,6 +18,7 @@ import { Proposal as ProposalV1 } from '../codec/cosmos/gov/v1/gov';
 import { ParameterChangeProposal } from '../codec/cosmos/params/v1beta1/params';
 import { MsgUnjail } from '../codec/cosmos/slashing/v1beta1/tx';
 import { MsgBeginRedelegate, MsgCreateValidator, MsgDelegate, MsgEditValidator, MsgUndelegate } from '../codec/cosmos/staking/v1beta1/tx';
+import { MsgCancelUpgrade, MsgSoftwareUpgrade } from '../codec/cosmos/upgrade/v1beta1/tx';
 import { CancelSoftwareUpgradeProposal, SoftwareUpgradeProposal } from '../codec/cosmos/upgrade/v1beta1/upgrade';
 import { BaseVestingAccount, ContinuousVestingAccount, DelayedVestingAccount, PeriodicVestingAccount } from '../codec/cosmos/vesting/v1beta1/vesting';
 import { MsgCreateVestingAccount } from '../codec/cosmos/vesting/v1beta1/tx';
@@ -82,6 +83,8 @@ const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/cosmos.staking.v1beta1.MsgDelegate', MsgDelegate],
     ['/cosmos.staking.v1beta1.MsgEditValidator', MsgEditValidator],
     ['/cosmos.staking.v1beta1.MsgUndelegate', MsgUndelegate],
+    ['/cosmos.upgrade.v1beta1.MsgCancelUpgrade', MsgCancelUpgrade],
+    ['/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade', MsgSoftwareUpgrade],
     ['/cosmos.upgrade.v1beta1.SoftwareUpgradeProposal', SoftwareUpgradeProposal],
     ['/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal', CancelSoftwareUpgradeProposal],
     ['/cosmos.vesting.v1beta1.BaseVestingAccount', BaseVestingAccount],
