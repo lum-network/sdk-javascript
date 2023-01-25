@@ -13,6 +13,8 @@ import { MsgFundCommunityPool, MsgSetWithdrawAddress, MsgWithdrawDelegatorReward
 import { MsgGrantAllowance, MsgRevokeAllowance } from '../codec/cosmos/feegrant/v1beta1/tx';
 import { Proposal, TextProposal } from '../codec/cosmos/gov/v1beta1/gov';
 import { MsgDeposit, MsgSubmitProposal, MsgVote } from '../codec/cosmos/gov/v1beta1/tx';
+import { MsgDeposit as MsgDepositV1, MsgSubmitProposal as MsgSubmitProposalV1, MsgVote as MsgVoteV1, MsgExecLegacyContent } from '../codec/cosmos/gov/v1/tx';
+import { Proposal as ProposalV1 } from '../codec/cosmos/gov/v1/gov';
 import { ParameterChangeProposal } from '../codec/cosmos/params/v1beta1/params';
 import { MsgUnjail } from '../codec/cosmos/slashing/v1beta1/tx';
 import { MsgBeginRedelegate, MsgCreateValidator, MsgDelegate, MsgEditValidator, MsgUndelegate } from '../codec/cosmos/staking/v1beta1/tx';
@@ -68,6 +70,11 @@ const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/cosmos.gov.v1beta1.MsgVote', MsgVote],
     ['/cosmos.gov.v1beta1.Proposal', Proposal],
     ['/cosmos.gov.v1beta1.TextProposal', TextProposal],
+    ['/cosmos.gov.v1.MsgExecLegacyContent', MsgExecLegacyContent],
+    ['/cosmos.gov.v1.MsgDeposit', MsgDepositV1],
+    ['/cosmos.gov.v1.MsgSubmitProposal', MsgSubmitProposalV1],
+    ['/cosmos.gov.v1.MsgVote', MsgVoteV1],
+    ['/cosmos.gov.v1.Proposal', ProposalV1],
     ['/cosmos.params.v1beta1.ParameterChangeProposal', ParameterChangeProposal],
     ['/cosmos.slashing.v1beta1.MsgUnjail', MsgUnjail],
     ['/cosmos.staking.v1beta1.MsgBeginRedelegate', MsgBeginRedelegate],
