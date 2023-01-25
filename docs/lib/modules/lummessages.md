@@ -204,7 +204,7 @@ ___
 
 ### MsgDepositUrl
 
-• **MsgDepositUrl**: ``"/cosmos.gov.v1beta1.MsgDeposit"``
+• **MsgDepositUrl**: ``"/cosmos.gov.v1.MsgDeposit"``
 
 ___
 
@@ -288,7 +288,7 @@ ___
 
 ### MsgSubmitProposalUrl
 
-• **MsgSubmitProposalUrl**: ``"/cosmos.gov.v1beta1.MsgSubmitProposal"``
+• **MsgSubmitProposalUrl**: ``"/cosmos.gov.v1.MsgSubmitProposal"``
 
 ___
 
@@ -342,7 +342,7 @@ ___
 
 ### MsgVoteUrl
 
-• **MsgVoteUrl**: ``"/cosmos.gov.v1beta1.MsgVote"``
+• **MsgVoteUrl**: ``"/cosmos.gov.v1.MsgVote"``
 
 ___
 
@@ -959,15 +959,16 @@ ___
 
 ### BuildMsgSubmitProposal
 
-▸ `Const` **BuildMsgSubmitProposal**(`proposer`, `initialDeposit`, `content?`): [`Message`](../interfaces/LumMessages.Message.md)
+▸ `Const` **BuildMsgSubmitProposal**(`messages`, `proposer`, `initialDeposit`, `metadata`): [`Message`](../interfaces/LumMessages.Message.md)
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
+| `messages` | `Any`[] |
 | `proposer` | `string` |
 | `initialDeposit` | [`Coin`](../interfaces/LumTypes.Coin.md)[] |
-| `content?` | `Any` |
+| `metadata` | `string` |
 
 #### Returns
 
@@ -1138,7 +1139,7 @@ ___
 
 ### BuildMsgVote
 
-▸ `Const` **BuildMsgVote**(`proposalId`, `voter`, `option`): [`Message`](../interfaces/LumMessages.Message.md)
+▸ `Const` **BuildMsgVote**(`proposalId`, `voter`, `option`, `metadata`): [`Message`](../interfaces/LumMessages.Message.md)
 
 #### Parameters
 
@@ -1147,6 +1148,7 @@ ___
 | `proposalId` | `Long` |
 | `voter` | `string` |
 | `option` | `VoteOption` |
+| `metadata` | `string` |
 
 #### Returns
 
