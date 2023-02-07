@@ -137,7 +137,7 @@ ___
 
 ### signTransaction
 
-▸ `Abstract` **signTransaction**(`doc`): `Promise`<[[`SignDoc`](../interfaces/LumTypes.SignDoc.md), `Uint8Array`]\>
+▸ `Abstract` **signTransaction**(`doc`): `Promise`<[`SignDoc`, `Uint8Array`]\>
 
 Sign a transaction document using a LumWallet
 
@@ -149,7 +149,7 @@ Sign a transaction document using a LumWallet
 
 #### Returns
 
-`Promise`<[[`SignDoc`](../interfaces/LumTypes.SignDoc.md), `Uint8Array`]\>
+`Promise`<[`SignDoc`, `Uint8Array`]\>
 
 ___
 

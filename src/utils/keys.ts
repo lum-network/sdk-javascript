@@ -2,7 +2,7 @@ import { PubKey } from '../codec/cosmos/crypto/secp256k1/keys';
 import { Any } from '../codec/google/protobuf/any';
 import { Secp256k1, sha256, ripemd160, EnglishMnemonic, Bip39, Slip10, Slip10Curve, stringToPath, Random } from '@cosmjs/crypto';
 
-import { Bech32 } from './encoding';
+import { fromBech32, toBech32 } from './encoding';
 import { LumBech32PrefixAccAddr, getLumHdPath, PrivateKeyLength } from '../constants';
 
 /**
@@ -17,7 +17,7 @@ export const getAddressFromPublicKey = (publicKey: Uint8Array, prefix = LumBech3
     }
     const hash1 = sha256(publicKey);
     const hash2 = ripemd160(hash1);
-    return Bech32.encode(prefix, hash2);
+    return toBech32(prefix, hash2);
 };
 
 /**
@@ -80,7 +80,7 @@ export const generatePrivateKey = (): Uint8Array => {
  */
 export const isAddressValid = (address: string, prefix: string | undefined = LumBech32PrefixAccAddr): boolean => {
     try {
-        const decoded = Bech32.decode(address);
+        const decoded = fromBech32(address);
         return (!prefix || prefix === decoded.prefix) && decoded.data.length === 20;
     } catch (err) {
         return false;

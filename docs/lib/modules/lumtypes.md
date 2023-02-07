@@ -16,14 +16,23 @@
 - [LogAttribute](../interfaces/LumTypes.LogAttribute.md)
 - [LogEvent](../interfaces/LumTypes.LogEvent.md)
 - [PubKey](../interfaces/LumTypes.PubKey.md)
-- [SignDoc](../interfaces/LumTypes.SignDoc.md)
 - [SignMsg](../interfaces/LumTypes.SignMsg.md)
 - [Tx](../interfaces/LumTypes.Tx.md)
+
+### Type aliases
+
+- [SignDoc](LumTypes.md#signdoc)
 
 ### Variables
 
 - [PubKey](LumTypes.md#pubkey)
 - [Tx](LumTypes.md#tx)
+
+## Type aliases
+
+### SignDoc
+
+Ƭ **SignDoc**: `SignDocCosmos`
 
 ## Variables
 

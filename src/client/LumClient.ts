@@ -29,6 +29,7 @@ import {
 import { setupSlashingExtension, SlashingExtension } from '../extensions/slashing';
 import { AuthzExtension, setupAuthzExtension } from '../extensions/authz';
 import { FeegrantExtension, setupFeegrantExtension } from '../extensions/feegrant';
+import { createAminoTypes } from '../registry/aminoTypes';
 
 export class LumClient {
     readonly tmClient: Tendermint34Client;
@@ -98,6 +99,8 @@ export class LumClient {
      */
     static connect = async (endpoint: string): Promise<LumClient> => {
         const tmClient = await Tendermint34Client.connect(endpoint);
+        console.log(createAminoTypes());
+
         return new LumClient(tmClient);
     };
 
@@ -127,8 +130,7 @@ export class LumClient {
      * Get the connected node status information
      */
     status = async (): Promise<StatusResponse> => {
-        const status = await this.tmClient.status();
-        return status;
+        return this.tmClient.status();
     };
 
     /**
@@ -194,8 +196,7 @@ export class LumClient {
      * @param address wallet address
      */
     getAllBalances = async (address: string): Promise<LumTypes.Coin[]> => {
-        const balances = await this.queryClient.bank.allBalances(address);
-        return balances;
+        return this.queryClient.bank.allBalances(address);
     };
 
     /**
@@ -212,8 +213,7 @@ export class LumClient {
      * Get all coins supplies
      */
     getAllSupplies = async (): Promise<LumTypes.Coin[]> => {
-        const supplies = await this.queryClient.bank.totalSupply();
-        return supplies;
+        return this.queryClient.bank.totalSupply();
     };
 
     /**
@@ -223,8 +223,7 @@ export class LumClient {
      * @param includeProof whether or not to include proof of the transaction inclusion in the block
      */
     getTx = async (hash: Uint8Array, includeProof?: boolean): Promise<LumTypes.TxResponse | null> => {
-        const result = await this.tmClient.tx({ hash: hash, prove: includeProof });
-        return result;
+        return this.tmClient.tx({ hash: hash, prove: includeProof });
     };
 
     /**
@@ -274,7 +273,7 @@ export class LumClient {
      * @param doc document to sign
      */
     signTx = async (wallet: LumWallet | LumWallet[], doc: LumTypes.Doc): Promise<Uint8Array> => {
-        let wallets: LumWallet[] = [];
+        let wallets: LumWallet[];
         if (Array.isArray(wallet)) {
             wallets = wallet;
         } else {
@@ -312,8 +311,7 @@ export class LumClient {
      * @param tx signed transaction to broadcast
      */
     broadcastTx = async (tx: Uint8Array): Promise<LumTypes.BroadcastTxCommitResponse> => {
-        const response = await this.tmClient.broadcastTxCommit({ tx });
-        return response;
+        return this.tmClient.broadcastTxCommit({ tx });
     };
 
     /**
