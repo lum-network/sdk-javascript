@@ -267,39 +267,47 @@ export class LumClient {
     /**
      * Signs the messages using the provided wallet and builds the transaction
      *
-     * @param wallet signing wallet or wallets for multi signature
+     * @param wallets signing wallets for multi signature
      * @param doc document to sign
      */
-    signTx = async (wallet: LumWallet | LumWallet[], doc: LumTypes.Doc): Promise<Uint8Array> => {
-        let wallets: LumWallet[];
-        if (Array.isArray(wallet)) {
-            wallets = wallet;
-        } else {
-            wallets = [wallet];
-        }
-
-        if (wallets.length < 1) {
-            throw new Error('At least one wallet is required to sign the transaction');
-        }
-
+    signTx = async <T>(wallets: T, doc: LumTypes.Doc): Promise<Uint8Array> => {
         let signDoc: LumTypes.SignDoc | undefined = undefined;
         const signatures: Uint8Array[] = [];
 
-        for (let i = 0; i < wallets.length; i++) {
-            const account = await this.getAccount(wallets[i].getAddress());
-            if (!account) {
-                throw new Error(`Account not found for wallet at index ${i}`);
-            }
-            const [walletSignedDoc, signature] = await wallets[i].signTransaction(doc);
-            if (i === 0) {
-                signDoc = walletSignedDoc;
-            }
+        if (wallets instanceof LumWallet) {
+            const [walletSignedDoc, signature] = await this.signTxFromWallet(wallets, doc);
+
             signatures.push(signature);
+            signDoc = walletSignedDoc;
         }
-        if (!signDoc) {
-            throw new Error('Impossible error to avoid typescript warnings');
+
+        if (wallets instanceof Array) {
+            for (const wallet of wallets) {
+                const [walletSignedDoc, signature] = await this.signTxFromWallet(wallet, doc);
+
+                signatures.push(signature);
+
+                if (!signDoc) {
+                    signDoc = walletSignedDoc;
+                }
+            }
         }
+
+        if (!signDoc || signatures.length === 0) {
+            throw new Error('No wallet provided');
+        }
+
         return LumUtils.generateTxBytes(signDoc, signatures);
+    };
+
+    signTxFromWallet = async (wallet: LumWallet, doc: LumTypes.Doc) => {
+        const account = await this.getAccount(wallet.getAddress());
+
+        if (!account) {
+            throw new Error(`Account not found for wallet ${wallet.getAddress()}`);
+        }
+
+        return wallet.signTransaction(doc);
     };
 
     /**
