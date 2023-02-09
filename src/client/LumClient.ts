@@ -294,7 +294,7 @@ export class LumClient {
         }
 
         if (!signDoc || signatures.length === 0) {
-            throw new Error('No wallet provided');
+            throw new Error('Failed to sign the document: no signature provided');
         }
 
         return LumUtils.generateTxBytes(signDoc, signatures);
