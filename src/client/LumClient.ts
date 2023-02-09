@@ -29,7 +29,6 @@ import {
 import { setupSlashingExtension, SlashingExtension } from '../extensions/slashing';
 import { AuthzExtension, setupAuthzExtension } from '../extensions/authz';
 import { FeegrantExtension, setupFeegrantExtension } from '../extensions/feegrant';
-import { createAminoTypes } from '../registry/aminoTypes';
 
 export class LumClient {
     readonly tmClient: Tendermint34Client;
@@ -99,7 +98,6 @@ export class LumClient {
      */
     static connect = async (endpoint: string): Promise<LumClient> => {
         const tmClient = await Tendermint34Client.connect(endpoint);
-        console.log(createAminoTypes());
 
         return new LumClient(tmClient);
     };
