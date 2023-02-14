@@ -39,7 +39,6 @@ export const createDefaultAminoTypes = (): { [p: string]: AminoConverter | 'not_
 
 export const createAminoTypes = (): { [p: string]: AminoConverter | 'not_supported_by_chain' } => {
     return {
-        ...createDefaultAminoTypes(),
         // DFract
 
         '/lum.network.dfract.MsgDeposit': {

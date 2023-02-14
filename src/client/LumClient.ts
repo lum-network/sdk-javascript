@@ -267,29 +267,39 @@ export class LumClient {
     /**
      * Signs the messages using the provided wallet and builds the transaction
      *
+     * @param wallet signing wallet for multi signature
+     * @param doc document to sign
+     */
+    signTx = async (wallet: LumWallet, doc: LumTypes.Doc): Promise<Uint8Array> => {
+        const signatures: Uint8Array[] = [];
+        const [signedDoc, signature] = await this.signTxFromWallet(wallet, doc);
+
+        signatures.push(signature);
+
+        if (!signedDoc || signatures.length === 0) {
+            throw new Error('Failed to sign the document: no signature provided');
+        }
+
+        return LumUtils.generateTxBytes(signedDoc, signatures);
+    };
+
+    /**
+     * Signs the messages using the provided wallets and builds the transaction
+     *
      * @param wallets signing wallets for multi signature
      * @param doc document to sign
      */
-    signTx = async <T>(wallets: T, doc: LumTypes.Doc): Promise<Uint8Array> => {
+    signTxForMultiWallet = async (wallets: LumWallet[], doc: LumTypes.Doc): Promise<Uint8Array> => {
         let signDoc: LumTypes.SignDoc | undefined = undefined;
         const signatures: Uint8Array[] = [];
 
-        if (wallets instanceof LumWallet) {
-            const [walletSignedDoc, signature] = await this.signTxFromWallet(wallets, doc);
+        for (const wallet of wallets) {
+            const [walletSignedDoc, signature] = await this.signTxFromWallet(wallet, doc);
 
             signatures.push(signature);
-            signDoc = walletSignedDoc;
-        }
 
-        if (wallets instanceof Array) {
-            for (const wallet of wallets) {
-                const [walletSignedDoc, signature] = await this.signTxFromWallet(wallet, doc);
-
-                signatures.push(signature);
-
-                if (!signDoc) {
-                    signDoc = walletSignedDoc;
-                }
+            if (!signDoc) {
+                signDoc = walletSignedDoc;
             }
         }
 
@@ -326,8 +336,15 @@ export class LumClient {
      * @param wallet signing wallet or wallets for multi signature
      * @param doc document to sign and broadcast as a transaction
      */
-    signAndBroadcastTx = async (wallet: LumWallet | LumWallet[], doc: LumTypes.Doc): Promise<LumTypes.BroadcastTxCommitResponse> => {
+    signAndBroadcastTx = async (wallet: LumWallet, doc: LumTypes.Doc): Promise<LumTypes.BroadcastTxCommitResponse> => {
         const signedTx = await this.signTx(wallet, doc);
+
+        return this.broadcastTx(signedTx);
+    };
+
+    signAndBroadcastTxForMultiWallet = async (wallets: LumWallet[], doc: LumTypes.Doc): Promise<LumTypes.BroadcastTxCommitResponse> => {
+        const signedTx = await this.signTxForMultiWallet(wallets, doc);
+
         return this.broadcastTx(signedTx);
     };
 }
