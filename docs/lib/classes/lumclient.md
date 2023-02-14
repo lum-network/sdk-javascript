@@ -27,7 +27,9 @@
 - [getTx](LumClient.md#gettx)
 - [searchTx](LumClient.md#searchtx)
 - [signAndBroadcastTx](LumClient.md#signandbroadcasttx)
+- [signAndBroadcastTxForMultiWallet](LumClient.md#signandbroadcasttxformultiwallet)
 - [signTx](LumClient.md#signtx)
+- [signTxForMultiWallet](LumClient.md#signtxformultiwallet)
 - [signTxFromWallet](LumClient.md#signtxfromwallet)
 - [status](LumClient.md#status)
 - [txsQuery](LumClient.md#txsquery)
@@ -281,8 +283,25 @@ Signs and broadcast the transaction using the specified wallet and messages
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `wallet` | [`LumWallet`](LumWallet.md) \| [`LumWallet`](LumWallet.md)[] | signing wallet or wallets for multi signature |
+| `wallet` | [`LumWallet`](LumWallet.md) | signing wallet or wallets for multi signature |
 | `doc` | [`Doc`](../interfaces/LumTypes.Doc.md) | document to sign and broadcast as a transaction |
+
+#### Returns
+
+`Promise`<`BroadcastTxCommitResponse`\>
+
+___
+
+### signAndBroadcastTxForMultiWallet
+
+▸ **signAndBroadcastTxForMultiWallet**(`wallets`, `doc`): `Promise`<`BroadcastTxCommitResponse`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `wallets` | [`LumWallet`](LumWallet.md)[] |
+| `doc` | [`Doc`](../interfaces/LumTypes.Doc.md) |
 
 #### Returns
 
@@ -292,21 +311,34 @@ ___
 
 ### signTx
 
-▸ **signTx**<`T`\>(`wallets`, `doc`): `Promise`<`Uint8Array`\>
+▸ **signTx**(`wallet`, `doc`): `Promise`<`Uint8Array`\>
 
 Signs the messages using the provided wallet and builds the transaction
-
-#### Type parameters
-
-| Name |
-| :------ |
-| `T` |
 
 #### Parameters
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `wallets` | `T` | signing wallets for multi signature |
+| `wallet` | [`LumWallet`](LumWallet.md) | signing wallet for multi signature |
+| `doc` | [`Doc`](../interfaces/LumTypes.Doc.md) | document to sign |
+
+#### Returns
+
+`Promise`<`Uint8Array`\>
+
+___
+
+### signTxForMultiWallet
+
+▸ **signTxForMultiWallet**(`wallets`, `doc`): `Promise`<`Uint8Array`\>
+
+Signs the messages using the provided wallets and builds the transaction
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `wallets` | [`LumWallet`](LumWallet.md)[] | signing wallets for multi signature |
 | `doc` | [`Doc`](../interfaces/LumTypes.Doc.md) | document to sign |
 
 #### Returns
