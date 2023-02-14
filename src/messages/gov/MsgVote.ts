@@ -13,7 +13,7 @@ export const BuildMsgVote = (proposalId: Long, voter: string, option: VoteOption
             proposalId,
             voter,
             option,
-            metadata
+            metadata,
         } as MsgVote,
     };
 };

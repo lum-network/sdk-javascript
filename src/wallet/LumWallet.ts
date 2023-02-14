@@ -1,5 +1,6 @@
 import { SignMode } from '../codec/cosmos/tx/signing/v1beta1/signing';
 import { LumTypes } from '..';
+import { SignDoc } from '../codec/cosmos/tx/v1beta1/tx';
 
 export abstract class LumWallet {
     protected publicKey?: Uint8Array;
@@ -64,7 +65,7 @@ export abstract class LumWallet {
      *
      * @param doc document to sign
      */
-    abstract signTransaction(doc: LumTypes.Doc): Promise<[LumTypes.SignDoc, Uint8Array]>;
+    abstract signTransaction(doc: LumTypes.Doc): Promise<[SignDoc, Uint8Array]>;
 
     /**
      * Sign a message using a LumWallet

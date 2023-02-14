@@ -1,4 +1,14 @@
-import { AminoConverter } from '@cosmjs/stargate';
+import {
+    AminoConverter,
+    createAuthzAminoConverters,
+    createBankAminoConverters,
+    createDistributionAminoConverters,
+    createFeegrantAminoConverters,
+    createGovAminoConverters,
+    createIbcAminoConverters,
+    createStakingAminoConverters,
+    createVestingAminoConverters,
+} from '@cosmjs/stargate';
 import { MsgDeposit as MsgDepositDfract } from '../codec/lum-network/dfract/tx';
 import { AminoMsg, Coin } from '@cosmjs/amino';
 
@@ -14,7 +24,20 @@ export function isAminoMsgDeposit(msg: AminoMsg): msg is AminoMsgDepositDfract {
     return msg.type === 'lum-network/MsgDeposit';
 }
 
-export const createAminoTypes = (): Record<string, AminoConverter> => {
+export const createDefaultAminoTypes = (): { [p: string]: AminoConverter | 'not_supported_by_chain' } => {
+    return {
+        ...createBankAminoConverters(),
+        ...createAuthzAminoConverters(),
+        ...createDistributionAminoConverters(),
+        ...createGovAminoConverters(),
+        ...createStakingAminoConverters('lum'),
+        ...createIbcAminoConverters(),
+        ...createFeegrantAminoConverters(),
+        ...createVestingAminoConverters(),
+    };
+};
+
+export const createAminoTypes = (): { [p: string]: AminoConverter | 'not_supported_by_chain' } => {
     return {
         // DFract
 

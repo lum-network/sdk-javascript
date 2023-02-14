@@ -12,7 +12,7 @@ describe('LumClient', () => {
     let w2: LumWallet;
 
     beforeAll(async () => {
-        clt = await LumClient.connect('http://node0.testnet.lum.network/rpc');
+        clt = await LumClient.connect('https://node0.testnet.lum.network/rpc');
 
         // Prepare the wallets
         w1 = await LumWalletFactory.fromMnemonic(LumUtils.generateMnemonic());
@@ -351,7 +351,7 @@ describe('LumClient', () => {
         expect(bootVal).toBeTruthy();
 
         // Get account information by deriving the address from the operator address
-        const delegAddress = LumUtils.Bech32.encode(LumConstants.LumBech32PrefixAccAddr, LumUtils.Bech32.decode(bootStak.operatorAddress).data);
+        const delegAddress = LumUtils.toBech32(LumConstants.LumBech32PrefixAccAddr, LumUtils.fromBech32(bootStak.operatorAddress).data);
         const account = await clt.getAccount(delegAddress);
         expect(account).toBeTruthy();
 
@@ -382,7 +382,7 @@ describe('LumClient', () => {
         expect(bootVal).toBeTruthy();
 
         // Get account information by deriving the address from the operator address
-        const delegAddress = LumUtils.Bech32.encode(LumConstants.LumBech32PrefixAccAddr, LumUtils.Bech32.decode(bootStak.operatorAddress).data);
+        const delegAddress = LumUtils.toBech32(LumConstants.LumBech32PrefixAccAddr, LumUtils.fromBech32(bootStak.operatorAddress).data);
         const account = await clt.getAccount(delegAddress);
         expect(account).toBeTruthy();
 
