@@ -9,3 +9,4 @@ export * from './mint';
 export * from './staking';
 export * from './tx';
 export * from './dfract';
+export * from './millions';

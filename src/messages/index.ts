@@ -10,3 +10,4 @@ export * from './slashing';
 export * from './vesting';
 export * from './ibc';
 export * from './dfract';
+export * from './millions';
