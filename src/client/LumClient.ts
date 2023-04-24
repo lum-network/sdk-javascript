@@ -17,6 +17,8 @@ import {
     setupGovExtension,
     IbcExtension,
     setupIbcExtension,
+    MillionsExtension,
+    setupMillionsExtension,
     MintExtension,
     setupMintExtension,
     StakingExtension,
@@ -41,6 +43,7 @@ export class LumClient {
         DistributionExtension &
         GovExtension &
         IbcExtension &
+        MillionsExtension &
         MintExtension &
         StakingExtension &
         SlashingExtension &
@@ -66,6 +69,7 @@ export class LumClient {
             setupDistributionExtension,
             setupGovExtension,
             setupIbcExtension,
+            setupMillionsExtension,
             setupMintExtension,
             setupStakingExtension,
             setupSlashingExtension,

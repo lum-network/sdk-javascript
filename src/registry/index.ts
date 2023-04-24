@@ -1,6 +1,6 @@
 import { Registry, GeneratedType } from '@cosmjs/proto-signing';
 import { AminoTypes } from '@cosmjs/stargate';
-import { createAminoTypes } from './aminoTypes';
+import { createAminoConverters } from './aminoTypes';
 
 import { Tx } from '../codec/cosmos/tx/v1beta1/tx';
 import { PubKey } from '../codec/cosmos/crypto/secp256k1/keys';
@@ -42,6 +42,7 @@ import { MsgTransfer } from '../codec/ibc/applications/transfer/v1/tx';
 import { MsgClaimBeam, MsgOpenBeam, MsgUpdateBeam } from '../codec/lum-network/beam/tx';
 import { MsgDeposit as MsgDepositDfract } from '../codec/lum-network/dfract/tx';
 import { WithdrawAndMintProposal } from '../codec/lum-network/dfract/proposal';
+import { MsgClaimPrize, MsgDeposit as MsgDepositMillions, MsgDepositRetry, MsgDrawRetry, MsgUpdateParams, MsgWithdrawDeposit, MsgWithdrawDepositRetry } from '../codec/lum-network/millions/tx';
 
 const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/cosmos.auth.v1beta1.BaseAccount', BaseAccount],
@@ -116,6 +117,13 @@ const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/lum.network.beam.MsgClaimBeam', MsgClaimBeam],
     ['/lum.network.dfract.MsgDeposit', MsgDepositDfract],
     ['/lum.network.dfract.WithdrawAndMintProposal', WithdrawAndMintProposal],
+    ['/lum.network.millions.MsgClaimPrize', MsgClaimPrize],
+    ['/lum.network.millions.MsgDeposit', MsgDepositMillions],
+    ['/lum.network.millions.MsgDepositRetry', MsgDepositRetry],
+    ['/lum.network.millions.MsgDrawRetry', MsgDrawRetry],
+    ['/lum.network.millions.MsgUpdateParams', MsgUpdateParams],
+    ['/lum.network.millions.MsgWithdrawDeposit', MsgWithdrawDeposit],
+    ['/lum.network.millions.MsgWithdrawDepositRetry', MsgWithdrawDepositRetry],
 ];
 
 class ExtendedRegistry extends Registry {
@@ -124,5 +132,5 @@ class ExtendedRegistry extends Registry {
     };
 }
 
-export const LumAminoRegistry = new AminoTypes(createAminoTypes());
+export const LumAminoRegistry = new AminoTypes({ ...createAminoConverters() });
 export const LumRegistry = new ExtendedRegistry(registryTypes);

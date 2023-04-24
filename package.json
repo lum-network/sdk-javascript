@@ -1,6 +1,6 @@
 {
     "name": "@lum-network/sdk-javascript",
-    "version": "0.7.16",
+    "version": "0.8.0",
     "license": "Apache-2.0",
     "description": "Javascript SDK library for NodeJS and Web browsers to interact with the Lum Network.",
     "homepage": "https://github.com/lum-network/sdk-javascript#readme",
@@ -55,7 +55,7 @@
         "@types/uuid": "^9.0.0",
         "crypto-browserify": "^3.12.0",
         "crypto-js": "^4.1.1",
-        "long": "^5.2.1",
+        "long": "^4.0.0",
         "uuid": "^9.0.0"
     },
     "optionalDependencies": {},

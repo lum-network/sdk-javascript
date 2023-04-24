@@ -445,7 +445,7 @@ describe('LumClient', () => {
             ],
         };
 
-        const res = await clt.signAndBroadcastTx([w1, w2], doc);
+        const res = await clt.signAndBroadcastTxForMultiWallet([w1, w2], doc);
         expect(LumUtils.broadcastTxCommitSuccess(res));
     });
 });
