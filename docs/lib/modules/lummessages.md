@@ -17,6 +17,7 @@
 - [MsgChannelOpenInitUrl](LumMessages.md#msgchannelopeniniturl)
 - [MsgChannelOpenTryUrl](LumMessages.md#msgchannelopentryurl)
 - [MsgClaimBeamUrl](LumMessages.md#msgclaimbeamurl)
+- [MsgClaimPrizeUrl](LumMessages.md#msgclaimprizeurl)
 - [MsgConnectionOpenAckUrl](LumMessages.md#msgconnectionopenackurl)
 - [MsgConnectionOpenInitUrl](LumMessages.md#msgconnectionopeniniturl)
 - [MsgConnectionOpenTryUrl](LumMessages.md#msgconnectionopentryurl)
@@ -25,12 +26,15 @@
 - [MsgCreateVestingAccountUrl](LumMessages.md#msgcreatevestingaccounturl)
 - [MsgDelegateUrl](LumMessages.md#msgdelegateurl)
 - [MsgDepositDfractUrl](LumMessages.md#msgdepositdfracturl)
+- [MsgDepositRetryUrl](LumMessages.md#msgdepositretryurl)
 - [MsgDepositUrl](LumMessages.md#msgdepositurl)
+- [MsgDrawRetryUrl](LumMessages.md#msgdrawretryurl)
 - [MsgEditValidatorUrl](LumMessages.md#msgeditvalidatorurl)
 - [MsgExecUrl](LumMessages.md#msgexecurl)
 - [MsgFundCommunityPoolUrl](LumMessages.md#msgfundcommunitypoolurl)
 - [MsgGrantAllowanceUrl](LumMessages.md#msggrantallowanceurl)
 - [MsgGrantUrl](LumMessages.md#msggranturl)
+- [MsgMillionsDepositUrl](LumMessages.md#msgmillionsdepositurl)
 - [MsgMultiSendUrl](LumMessages.md#msgmultisendurl)
 - [MsgOpenBeamUrl](LumMessages.md#msgopenbeamurl)
 - [MsgRecvPacketUrl](LumMessages.md#msgrecvpacketurl)
@@ -47,9 +51,12 @@
 - [MsgUnjailUrl](LumMessages.md#msgunjailurl)
 - [MsgUpdateBeamUrl](LumMessages.md#msgupdatebeamurl)
 - [MsgUpdateClientUrl](LumMessages.md#msgupdateclienturl)
+- [MsgUpdateParamsUrl](LumMessages.md#msgupdateparamsurl)
 - [MsgUpgradeClientUrl](LumMessages.md#msgupgradeclienturl)
 - [MsgVoteUrl](LumMessages.md#msgvoteurl)
 - [MsgWithdrawDelegatorRewardUrl](LumMessages.md#msgwithdrawdelegatorrewardurl)
+- [MsgWithdrawDepositRetryUrl](LumMessages.md#msgwithdrawdepositretryurl)
+- [MsgWithdrawDepositUrl](LumMessages.md#msgwithdrawdepositurl)
 - [MsgWithdrawValidatorCommissionUrl](LumMessages.md#msgwithdrawvalidatorcommissionurl)
 
 ### Functions
@@ -63,6 +70,7 @@
 - [BuildMsgChannelOpenInit](LumMessages.md#buildmsgchannelopeninit)
 - [BuildMsgChannelOpenTry](LumMessages.md#buildmsgchannelopentry)
 - [BuildMsgClaimBeam](LumMessages.md#buildmsgclaimbeam)
+- [BuildMsgClaimPrize](LumMessages.md#buildmsgclaimprize)
 - [BuildMsgConnectionOpenAck](LumMessages.md#buildmsgconnectionopenack)
 - [BuildMsgConnectionOpenInit](LumMessages.md#buildmsgconnectionopeninit)
 - [BuildMsgConnectionOpenTry](LumMessages.md#buildmsgconnectionopentry)
@@ -72,11 +80,14 @@
 - [BuildMsgDelegate](LumMessages.md#buildmsgdelegate)
 - [BuildMsgDeposit](LumMessages.md#buildmsgdeposit)
 - [BuildMsgDepositDfract](LumMessages.md#buildmsgdepositdfract)
+- [BuildMsgDepositRetry](LumMessages.md#buildmsgdepositretry)
+- [BuildMsgDrawRetry](LumMessages.md#buildmsgdrawretry)
 - [BuildMsgEditValidator](LumMessages.md#buildmsgeditvalidator)
 - [BuildMsgExec](LumMessages.md#buildmsgexec)
 - [BuildMsgFundCommunityPool](LumMessages.md#buildmsgfundcommunitypool)
 - [BuildMsgGrant](LumMessages.md#buildmsggrant)
 - [BuildMsgGrantAllowance](LumMessages.md#buildmsggrantallowance)
+- [BuildMsgMillionsDeposit](LumMessages.md#buildmsgmillionsdeposit)
 - [BuildMsgMultiSend](LumMessages.md#buildmsgmultisend)
 - [BuildMsgOpenBeam](LumMessages.md#buildmsgopenbeam)
 - [BuildMsgRecvPacket](LumMessages.md#buildmsgrecvpacket)
@@ -93,9 +104,12 @@
 - [BuildMsgUnjail](LumMessages.md#buildmsgunjail)
 - [BuildMsgUpdateBeam](LumMessages.md#buildmsgupdatebeam)
 - [BuildMsgUpdateClient](LumMessages.md#buildmsgupdateclient)
+- [BuildMsgUpdateParams](LumMessages.md#buildmsgupdateparams)
 - [BuildMsgUpgradeClient](LumMessages.md#buildmsgupgradeclient)
 - [BuildMsgVote](LumMessages.md#buildmsgvote)
 - [BuildMsgWithdrawDelegatorReward](LumMessages.md#buildmsgwithdrawdelegatorreward)
+- [BuildMsgWithdrawDeposit](LumMessages.md#buildmsgwithdrawdeposit)
+- [BuildMsgWithdrawDepositRetry](LumMessages.md#buildmsgwithdrawdepositretry)
 - [BuildMsgWithdrawValidatorCommission](LumMessages.md#buildmsgwithdrawvalidatorcommission)
 
 ## Variables
@@ -154,6 +168,12 @@ ___
 
 ___
 
+### MsgClaimPrizeUrl
+
+• **MsgClaimPrizeUrl**: ``"/lum.network.millions.MsgClaimPrize"``
+
+___
+
 ### MsgConnectionOpenAckUrl
 
 • **MsgConnectionOpenAckUrl**: ``"/ibc.core.connection.v1.MsgConnectionOpenAck"``
@@ -202,9 +222,21 @@ ___
 
 ___
 
+### MsgDepositRetryUrl
+
+• **MsgDepositRetryUrl**: ``"/lum.network.millions.MsgDepositRetry"``
+
+___
+
 ### MsgDepositUrl
 
 • **MsgDepositUrl**: ``"/cosmos.gov.v1.MsgDeposit"``
+
+___
+
+### MsgDrawRetryUrl
+
+• **MsgDrawRetryUrl**: ``"/lum.network.millions.MsgDrawRetry"``
 
 ___
 
@@ -235,6 +267,12 @@ ___
 ### MsgGrantUrl
 
 • **MsgGrantUrl**: ``"/cosmos.authz.v1beta1.MsgGrant"``
+
+___
+
+### MsgMillionsDepositUrl
+
+• **MsgMillionsDepositUrl**: ``"/lum.network.millions.MsgDeposit"``
 
 ___
 
@@ -334,6 +372,12 @@ ___
 
 ___
 
+### MsgUpdateParamsUrl
+
+• **MsgUpdateParamsUrl**: ``"/lum.network.millions.MsgUpdateParams"``
+
+___
+
 ### MsgUpgradeClientUrl
 
 • **MsgUpgradeClientUrl**: ``"/ibc.core.client.v1.MsgUpgradeClient"``
@@ -349,6 +393,18 @@ ___
 ### MsgWithdrawDelegatorRewardUrl
 
 • **MsgWithdrawDelegatorRewardUrl**: ``"/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward"``
+
+___
+
+### MsgWithdrawDepositRetryUrl
+
+• **MsgWithdrawDepositRetryUrl**: ``"/lum.network.millions.MsgWithdrawDepositRetry"``
+
+___
+
+### MsgWithdrawDepositUrl
+
+• **MsgWithdrawDepositUrl**: ``"/lum.network.millions.MsgWithdrawDeposit"``
 
 ___
 
@@ -528,6 +584,25 @@ ___
 | `id` | `string` |
 | `claimerAddress` | `string` |
 | `secret` | `string` |
+
+#### Returns
+
+[`Message`](../interfaces/LumMessages.Message.md)
+
+___
+
+### BuildMsgClaimPrize
+
+▸ `Const` **BuildMsgClaimPrize**(`poolId`, `drawId`, `prizeId`, `winnerAddress`): [`Message`](../interfaces/LumMessages.Message.md)
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `poolId` | `Long` |
+| `drawId` | `Long` |
+| `prizeId` | `Long` |
+| `winnerAddress` | `string` |
 
 #### Returns
 
@@ -720,6 +795,42 @@ ___
 
 ___
 
+### BuildMsgDepositRetry
+
+▸ `Const` **BuildMsgDepositRetry**(`poolId`, `depositId`, `depositorAddress`): [`Message`](../interfaces/LumMessages.Message.md)
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `poolId` | `Long` |
+| `depositId` | `Long` |
+| `depositorAddress` | `string` |
+
+#### Returns
+
+[`Message`](../interfaces/LumMessages.Message.md)
+
+___
+
+### BuildMsgDrawRetry
+
+▸ `Const` **BuildMsgDrawRetry**(`poolId`, `drawId`, `depositorAddress`): [`Message`](../interfaces/LumMessages.Message.md)
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `poolId` | `Long` |
+| `drawId` | `Long` |
+| `depositorAddress` | `string` |
+
+#### Returns
+
+[`Message`](../interfaces/LumMessages.Message.md)
+
+___
+
 ### BuildMsgEditValidator
 
 ▸ `Const` **BuildMsgEditValidator**(`validatorAddress`, `commissionRate`, `minSelfDelegation`, `description?`): [`Message`](../interfaces/LumMessages.Message.md)
@@ -802,6 +913,26 @@ ___
 | `granter` | `string` |
 | `grantee` | `string` |
 | `allowance?` | `Any` |
+
+#### Returns
+
+[`Message`](../interfaces/LumMessages.Message.md)
+
+___
+
+### BuildMsgMillionsDeposit
+
+▸ `Const` **BuildMsgMillionsDeposit**(`poolId`, `depositorAddress`, `winnerAddress`, `isSponsor`, `amount?`): [`Message`](../interfaces/LumMessages.Message.md)
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `poolId` | `Long` |
+| `depositorAddress` | `string` |
+| `winnerAddress` | `string` |
+| `isSponsor` | `boolean` |
+| `amount?` | [`Coin`](../interfaces/LumTypes.Coin.md) |
 
 #### Returns
 
@@ -1116,6 +1247,29 @@ ___
 
 ___
 
+### BuildMsgUpdateParams
+
+▸ `Const` **BuildMsgUpdateParams**(`minDepositAmount`, `maxPrizeStrategyBatches`, `maxPrizeBatchQuantity`, `feesStakers`, `updaterAddress`, `minDrawScheduleDelta?`, `maxDrawScheduleDelta?`, `prizeExpirationDelta?`): [`Message`](../interfaces/LumMessages.Message.md)
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `minDepositAmount` | `string` |
+| `maxPrizeStrategyBatches` | `string` |
+| `maxPrizeBatchQuantity` | `string` |
+| `feesStakers` | `string` |
+| `updaterAddress` | `string` |
+| `minDrawScheduleDelta?` | `Duration` |
+| `maxDrawScheduleDelta?` | `Duration` |
+| `prizeExpirationDelta?` | `Duration` |
+
+#### Returns
+
+[`Message`](../interfaces/LumMessages.Message.md)
+
+___
+
 ### BuildMsgUpgradeClient
 
 ▸ `Const` **BuildMsgUpgradeClient**(`clientId`, `proofUpgradeClient`, `signer`, `proofUpgradeConsensusState`, `clientState?`, `consensusState?`): [`Message`](../interfaces/LumMessages.Message.md)
@@ -1166,6 +1320,43 @@ ___
 | :------ | :------ |
 | `delegatorAddress` | `string` |
 | `validatorAddress` | `string` |
+
+#### Returns
+
+[`Message`](../interfaces/LumMessages.Message.md)
+
+___
+
+### BuildMsgWithdrawDeposit
+
+▸ `Const` **BuildMsgWithdrawDeposit**(`poolId`, `depositId`, `depositorAddress`, `toAddress`): [`Message`](../interfaces/LumMessages.Message.md)
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `poolId` | `Long` |
+| `depositId` | `Long` |
+| `depositorAddress` | `string` |
+| `toAddress` | `string` |
+
+#### Returns
+
+[`Message`](../interfaces/LumMessages.Message.md)
+
+___
+
+### BuildMsgWithdrawDepositRetry
+
+▸ `Const` **BuildMsgWithdrawDepositRetry**(`poolId`, `withdrawalId`, `depositorAddress`): [`Message`](../interfaces/LumMessages.Message.md)
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `poolId` | `Long` |
+| `withdrawalId` | `Long` |
+| `depositorAddress` | `string` |
 
 #### Returns
 
