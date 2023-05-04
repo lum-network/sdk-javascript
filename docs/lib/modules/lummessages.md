@@ -815,7 +815,7 @@ ___
 
 ### BuildMsgDrawRetry
 
-▸ `Const` **BuildMsgDrawRetry**(`poolId`, `drawId`, `depositorAddress`): [`Message`](../interfaces/LumMessages.Message.md)
+▸ `Const` **BuildMsgDrawRetry**(`poolId`, `drawId`, `drawRetryAddress`): [`Message`](../interfaces/LumMessages.Message.md)
 
 #### Parameters
 
@@ -823,7 +823,7 @@ ___
 | :------ | :------ |
 | `poolId` | `Long` |
 | `drawId` | `Long` |
-| `depositorAddress` | `string` |
+| `drawRetryAddress` | `string` |
 
 #### Returns
 
