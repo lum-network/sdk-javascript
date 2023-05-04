@@ -6,13 +6,22 @@ import { Duration } from '../../google/protobuf/duration';
 export const protobufPackage = 'lum.network.millions';
 
 export interface Params {
+    /** min_deposit_amount the minimum deposit amount accepted by pool configurations */
     minDepositAmount: string;
+    /** max_prize_strategy_batches the maximum prize strategy batches accepted by pool configurations */
     maxPrizeStrategyBatches: Long;
+    /** max_prize_batch_quantity the maximum prize batch quantity accepted by pool configurations */
     maxPrizeBatchQuantity: Long;
+    /** min_draw_schedule_delta the minimum delta between draws accepted by pool configurations */
     minDrawScheduleDelta?: Duration;
+    /** max_draw_schedule_delta the maximum delta between draws accepted by pool configurations */
     maxDrawScheduleDelta?: Duration;
+    /** prize_expiration_delta the prize clawback expiration delta (common to all pools) */
     prizeExpirationDelta?: Duration;
+    /** fees_stakers the fees distributed by stakers over prize won (common to all pools) */
     feesStakers: string;
+    /** min_deposit_draw_delta the minimum delta before a draw for a deposit to be accepted during the time weighted balance computation for a draw */
+    minDepositDrawDelta?: Duration;
 }
 
 const baseParams: object = { minDepositAmount: '', maxPrizeStrategyBatches: Long.UZERO, maxPrizeBatchQuantity: Long.UZERO, feesStakers: '' };
@@ -39,6 +48,9 @@ export const Params = {
         }
         if (message.feesStakers !== '') {
             writer.uint32(58).string(message.feesStakers);
+        }
+        if (message.minDepositDrawDelta !== undefined) {
+            Duration.encode(message.minDepositDrawDelta, writer.uint32(66).fork()).ldelim();
         }
         return writer;
     },
@@ -70,6 +82,9 @@ export const Params = {
                     break;
                 case 7:
                     message.feesStakers = reader.string();
+                    break;
+                case 8:
+                    message.minDepositDrawDelta = Duration.decode(reader, reader.uint32());
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -116,6 +131,11 @@ export const Params = {
         } else {
             message.feesStakers = '';
         }
+        if (object.minDepositDrawDelta !== undefined && object.minDepositDrawDelta !== null) {
+            message.minDepositDrawDelta = Duration.fromJSON(object.minDepositDrawDelta);
+        } else {
+            message.minDepositDrawDelta = undefined;
+        }
         return message;
     },
 
@@ -128,6 +148,7 @@ export const Params = {
         message.maxDrawScheduleDelta !== undefined && (obj.maxDrawScheduleDelta = message.maxDrawScheduleDelta ? Duration.toJSON(message.maxDrawScheduleDelta) : undefined);
         message.prizeExpirationDelta !== undefined && (obj.prizeExpirationDelta = message.prizeExpirationDelta ? Duration.toJSON(message.prizeExpirationDelta) : undefined);
         message.feesStakers !== undefined && (obj.feesStakers = message.feesStakers);
+        message.minDepositDrawDelta !== undefined && (obj.minDepositDrawDelta = message.minDepositDrawDelta ? Duration.toJSON(message.minDepositDrawDelta) : undefined);
         return obj;
     },
 
@@ -160,6 +181,11 @@ export const Params = {
             message.prizeExpirationDelta = undefined;
         }
         message.feesStakers = object.feesStakers ?? '';
+        if (object.minDepositDrawDelta !== undefined && object.minDepositDrawDelta !== null) {
+            message.minDepositDrawDelta = Duration.fromPartial(object.minDepositDrawDelta);
+        } else {
+            message.minDepositDrawDelta = undefined;
+        }
         return message;
     },
 };

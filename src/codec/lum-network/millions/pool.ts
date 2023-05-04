@@ -66,18 +66,21 @@ export interface Pool {
     chainId: string;
     connectionId: string;
     transferChannelId: string;
-    controllerPortId: string;
+    icaDepositPortId: string;
+    icaPrizepoolPortId: string;
     validators: { [key: string]: PoolValidator };
     bech32PrefixAccAddr: string;
     bech32PrefixValAddr: string;
     minDepositAmount: string;
     drawSchedule?: DrawSchedule;
     prizeStrategy?: PrizeStrategy;
-    moduleAccountAddress: string;
-    icaAccountAddress: string;
+    localAddress: string;
+    icaDepositAddress: string;
+    icaPrizepoolAddress: string;
     nextDrawId: Long;
     tvlAmount: string;
     depositorsCount: Long;
+    sponsorshipAmount: string;
     lastDrawCreatedAt?: Date;
     lastDrawState: DrawState;
     availablePrizePool?: Coin;
@@ -106,15 +109,18 @@ const basePool: object = {
     chainId: '',
     connectionId: '',
     transferChannelId: '',
-    controllerPortId: '',
+    icaDepositPortId: '',
+    icaPrizepoolPortId: '',
     bech32PrefixAccAddr: '',
     bech32PrefixValAddr: '',
     minDepositAmount: '',
-    moduleAccountAddress: '',
-    icaAccountAddress: '',
+    localAddress: '',
+    icaDepositAddress: '',
+    icaPrizepoolAddress: '',
     nextDrawId: Long.UZERO,
     tvlAmount: '',
     depositorsCount: Long.UZERO,
+    sponsorshipAmount: '',
     lastDrawState: 0,
     state: 0,
     createdAtHeight: Long.ZERO,
@@ -141,8 +147,11 @@ export const Pool = {
         if (message.transferChannelId !== '') {
             writer.uint32(50).string(message.transferChannelId);
         }
-        if (message.controllerPortId !== '') {
-            writer.uint32(58).string(message.controllerPortId);
+        if (message.icaDepositPortId !== '') {
+            writer.uint32(58).string(message.icaDepositPortId);
+        }
+        if (message.icaPrizepoolPortId !== '') {
+            writer.uint32(66).string(message.icaPrizepoolPortId);
         }
         Object.entries(message.validators).forEach(([key, value]) => {
             Pool_ValidatorsEntry.encode({ key: key as any, value }, writer.uint32(82).fork()).ldelim();
@@ -162,11 +171,14 @@ export const Pool = {
         if (message.prizeStrategy !== undefined) {
             PrizeStrategy.encode(message.prizeStrategy, writer.uint32(122).fork()).ldelim();
         }
-        if (message.moduleAccountAddress !== '') {
-            writer.uint32(146).string(message.moduleAccountAddress);
+        if (message.localAddress !== '') {
+            writer.uint32(146).string(message.localAddress);
         }
-        if (message.icaAccountAddress !== '') {
-            writer.uint32(154).string(message.icaAccountAddress);
+        if (message.icaDepositAddress !== '') {
+            writer.uint32(154).string(message.icaDepositAddress);
+        }
+        if (message.icaPrizepoolAddress !== '') {
+            writer.uint32(162).string(message.icaPrizepoolAddress);
         }
         if (!message.nextDrawId.isZero()) {
             writer.uint32(176).uint64(message.nextDrawId);
@@ -176,6 +188,9 @@ export const Pool = {
         }
         if (!message.depositorsCount.isZero()) {
             writer.uint32(192).uint64(message.depositorsCount);
+        }
+        if (message.sponsorshipAmount !== '') {
+            writer.uint32(202).string(message.sponsorshipAmount);
         }
         if (message.lastDrawCreatedAt !== undefined) {
             Timestamp.encode(toTimestamp(message.lastDrawCreatedAt), writer.uint32(218).fork()).ldelim();
@@ -231,7 +246,10 @@ export const Pool = {
                     message.transferChannelId = reader.string();
                     break;
                 case 7:
-                    message.controllerPortId = reader.string();
+                    message.icaDepositPortId = reader.string();
+                    break;
+                case 8:
+                    message.icaPrizepoolPortId = reader.string();
                     break;
                 case 10:
                     const entry10 = Pool_ValidatorsEntry.decode(reader, reader.uint32());
@@ -255,10 +273,13 @@ export const Pool = {
                     message.prizeStrategy = PrizeStrategy.decode(reader, reader.uint32());
                     break;
                 case 18:
-                    message.moduleAccountAddress = reader.string();
+                    message.localAddress = reader.string();
                     break;
                 case 19:
-                    message.icaAccountAddress = reader.string();
+                    message.icaDepositAddress = reader.string();
+                    break;
+                case 20:
+                    message.icaPrizepoolAddress = reader.string();
                     break;
                 case 22:
                     message.nextDrawId = reader.uint64() as Long;
@@ -268,6 +289,9 @@ export const Pool = {
                     break;
                 case 24:
                     message.depositorsCount = reader.uint64() as Long;
+                    break;
+                case 25:
+                    message.sponsorshipAmount = reader.string();
                     break;
                 case 27:
                     message.lastDrawCreatedAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
@@ -334,10 +358,15 @@ export const Pool = {
         } else {
             message.transferChannelId = '';
         }
-        if (object.controllerPortId !== undefined && object.controllerPortId !== null) {
-            message.controllerPortId = String(object.controllerPortId);
+        if (object.icaDepositPortId !== undefined && object.icaDepositPortId !== null) {
+            message.icaDepositPortId = String(object.icaDepositPortId);
         } else {
-            message.controllerPortId = '';
+            message.icaDepositPortId = '';
+        }
+        if (object.icaPrizepoolPortId !== undefined && object.icaPrizepoolPortId !== null) {
+            message.icaPrizepoolPortId = String(object.icaPrizepoolPortId);
+        } else {
+            message.icaPrizepoolPortId = '';
         }
         if (object.validators !== undefined && object.validators !== null) {
             Object.entries(object.validators).forEach(([key, value]) => {
@@ -369,15 +398,20 @@ export const Pool = {
         } else {
             message.prizeStrategy = undefined;
         }
-        if (object.moduleAccountAddress !== undefined && object.moduleAccountAddress !== null) {
-            message.moduleAccountAddress = String(object.moduleAccountAddress);
+        if (object.localAddress !== undefined && object.localAddress !== null) {
+            message.localAddress = String(object.localAddress);
         } else {
-            message.moduleAccountAddress = '';
+            message.localAddress = '';
         }
-        if (object.icaAccountAddress !== undefined && object.icaAccountAddress !== null) {
-            message.icaAccountAddress = String(object.icaAccountAddress);
+        if (object.icaDepositAddress !== undefined && object.icaDepositAddress !== null) {
+            message.icaDepositAddress = String(object.icaDepositAddress);
         } else {
-            message.icaAccountAddress = '';
+            message.icaDepositAddress = '';
+        }
+        if (object.icaPrizepoolAddress !== undefined && object.icaPrizepoolAddress !== null) {
+            message.icaPrizepoolAddress = String(object.icaPrizepoolAddress);
+        } else {
+            message.icaPrizepoolAddress = '';
         }
         if (object.nextDrawId !== undefined && object.nextDrawId !== null) {
             message.nextDrawId = Long.fromString(object.nextDrawId);
@@ -393,6 +427,11 @@ export const Pool = {
             message.depositorsCount = Long.fromString(object.depositorsCount);
         } else {
             message.depositorsCount = Long.UZERO;
+        }
+        if (object.sponsorshipAmount !== undefined && object.sponsorshipAmount !== null) {
+            message.sponsorshipAmount = String(object.sponsorshipAmount);
+        } else {
+            message.sponsorshipAmount = '';
         }
         if (object.lastDrawCreatedAt !== undefined && object.lastDrawCreatedAt !== null) {
             message.lastDrawCreatedAt = fromJsonTimestamp(object.lastDrawCreatedAt);
@@ -445,7 +484,8 @@ export const Pool = {
         message.chainId !== undefined && (obj.chainId = message.chainId);
         message.connectionId !== undefined && (obj.connectionId = message.connectionId);
         message.transferChannelId !== undefined && (obj.transferChannelId = message.transferChannelId);
-        message.controllerPortId !== undefined && (obj.controllerPortId = message.controllerPortId);
+        message.icaDepositPortId !== undefined && (obj.icaDepositPortId = message.icaDepositPortId);
+        message.icaPrizepoolPortId !== undefined && (obj.icaPrizepoolPortId = message.icaPrizepoolPortId);
         obj.validators = {};
         if (message.validators) {
             Object.entries(message.validators).forEach(([k, v]) => {
@@ -457,11 +497,13 @@ export const Pool = {
         message.minDepositAmount !== undefined && (obj.minDepositAmount = message.minDepositAmount);
         message.drawSchedule !== undefined && (obj.drawSchedule = message.drawSchedule ? DrawSchedule.toJSON(message.drawSchedule) : undefined);
         message.prizeStrategy !== undefined && (obj.prizeStrategy = message.prizeStrategy ? PrizeStrategy.toJSON(message.prizeStrategy) : undefined);
-        message.moduleAccountAddress !== undefined && (obj.moduleAccountAddress = message.moduleAccountAddress);
-        message.icaAccountAddress !== undefined && (obj.icaAccountAddress = message.icaAccountAddress);
+        message.localAddress !== undefined && (obj.localAddress = message.localAddress);
+        message.icaDepositAddress !== undefined && (obj.icaDepositAddress = message.icaDepositAddress);
+        message.icaPrizepoolAddress !== undefined && (obj.icaPrizepoolAddress = message.icaPrizepoolAddress);
         message.nextDrawId !== undefined && (obj.nextDrawId = (message.nextDrawId || Long.UZERO).toString());
         message.tvlAmount !== undefined && (obj.tvlAmount = message.tvlAmount);
         message.depositorsCount !== undefined && (obj.depositorsCount = (message.depositorsCount || Long.UZERO).toString());
+        message.sponsorshipAmount !== undefined && (obj.sponsorshipAmount = message.sponsorshipAmount);
         message.lastDrawCreatedAt !== undefined && (obj.lastDrawCreatedAt = message.lastDrawCreatedAt.toISOString());
         message.lastDrawState !== undefined && (obj.lastDrawState = drawStateToJSON(message.lastDrawState));
         message.availablePrizePool !== undefined && (obj.availablePrizePool = message.availablePrizePool ? Coin.toJSON(message.availablePrizePool) : undefined);
@@ -485,7 +527,8 @@ export const Pool = {
         message.chainId = object.chainId ?? '';
         message.connectionId = object.connectionId ?? '';
         message.transferChannelId = object.transferChannelId ?? '';
-        message.controllerPortId = object.controllerPortId ?? '';
+        message.icaDepositPortId = object.icaDepositPortId ?? '';
+        message.icaPrizepoolPortId = object.icaPrizepoolPortId ?? '';
         message.validators = {};
         if (object.validators !== undefined && object.validators !== null) {
             Object.entries(object.validators).forEach(([key, value]) => {
@@ -507,8 +550,9 @@ export const Pool = {
         } else {
             message.prizeStrategy = undefined;
         }
-        message.moduleAccountAddress = object.moduleAccountAddress ?? '';
-        message.icaAccountAddress = object.icaAccountAddress ?? '';
+        message.localAddress = object.localAddress ?? '';
+        message.icaDepositAddress = object.icaDepositAddress ?? '';
+        message.icaPrizepoolAddress = object.icaPrizepoolAddress ?? '';
         if (object.nextDrawId !== undefined && object.nextDrawId !== null) {
             message.nextDrawId = object.nextDrawId as Long;
         } else {
@@ -520,6 +564,7 @@ export const Pool = {
         } else {
             message.depositorsCount = Long.UZERO;
         }
+        message.sponsorshipAmount = object.sponsorshipAmount ?? '';
         message.lastDrawCreatedAt = object.lastDrawCreatedAt ?? undefined;
         message.lastDrawState = object.lastDrawState ?? 0;
         if (object.availablePrizePool !== undefined && object.availablePrizePool !== null) {

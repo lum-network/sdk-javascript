@@ -81,6 +81,10 @@ export interface TransferFromNativeCallback {
     withdrawalId: Long;
 }
 
+export interface SetWithdrawAddressCallback {
+    poolId: Long;
+}
+
 const baseSplitDelegation: object = { validatorAddress: '', amount: '' };
 
 export const SplitDelegation = {
@@ -650,6 +654,61 @@ export const TransferFromNativeCallback = {
             message.withdrawalId = object.withdrawalId as Long;
         } else {
             message.withdrawalId = Long.UZERO;
+        }
+        return message;
+    },
+};
+
+const baseSetWithdrawAddressCallback: object = { poolId: Long.UZERO };
+
+export const SetWithdrawAddressCallback = {
+    encode(message: SetWithdrawAddressCallback, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (!message.poolId.isZero()) {
+            writer.uint32(8).uint64(message.poolId);
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): SetWithdrawAddressCallback {
+        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = { ...baseSetWithdrawAddressCallback } as SetWithdrawAddressCallback;
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.poolId = reader.uint64() as Long;
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+
+    fromJSON(object: any): SetWithdrawAddressCallback {
+        const message = { ...baseSetWithdrawAddressCallback } as SetWithdrawAddressCallback;
+        if (object.poolId !== undefined && object.poolId !== null) {
+            message.poolId = Long.fromString(object.poolId);
+        } else {
+            message.poolId = Long.UZERO;
+        }
+        return message;
+    },
+
+    toJSON(message: SetWithdrawAddressCallback): unknown {
+        const obj: any = {};
+        message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
+        return obj;
+    },
+
+    fromPartial(object: DeepPartial<SetWithdrawAddressCallback>): SetWithdrawAddressCallback {
+        const message = { ...baseSetWithdrawAddressCallback } as SetWithdrawAddressCallback;
+        if (object.poolId !== undefined && object.poolId !== null) {
+            message.poolId = object.poolId as Long;
+        } else {
+            message.poolId = Long.UZERO;
         }
         return message;
     },

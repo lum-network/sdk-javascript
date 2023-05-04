@@ -16,6 +16,7 @@ export interface MsgUpdateParams {
     maxDrawScheduleDelta?: Duration;
     prizeExpirationDelta?: Duration;
     feesStakers: string;
+    minDepositDrawDelta?: Duration;
     updaterAddress: string;
 }
 
@@ -101,7 +102,7 @@ export interface MsgWithdrawDepositRetryResponse {}
 export interface MsgDrawRetry {
     poolId: Long;
     drawId: Long;
-    depositorAddress: string;
+    drawRetryAddress: string;
 }
 
 export interface MsgDrawRetryResponse {}
@@ -131,8 +132,11 @@ export const MsgUpdateParams = {
         if (message.feesStakers !== '') {
             writer.uint32(58).string(message.feesStakers);
         }
+        if (message.minDepositDrawDelta !== undefined) {
+            Duration.encode(message.minDepositDrawDelta, writer.uint32(66).fork()).ldelim();
+        }
         if (message.updaterAddress !== '') {
-            writer.uint32(66).string(message.updaterAddress);
+            writer.uint32(74).string(message.updaterAddress);
         }
         return writer;
     },
@@ -166,6 +170,9 @@ export const MsgUpdateParams = {
                     message.feesStakers = reader.string();
                     break;
                 case 8:
+                    message.minDepositDrawDelta = Duration.decode(reader, reader.uint32());
+                    break;
+                case 9:
                     message.updaterAddress = reader.string();
                     break;
                 default:
@@ -213,6 +220,11 @@ export const MsgUpdateParams = {
         } else {
             message.feesStakers = '';
         }
+        if (object.minDepositDrawDelta !== undefined && object.minDepositDrawDelta !== null) {
+            message.minDepositDrawDelta = Duration.fromJSON(object.minDepositDrawDelta);
+        } else {
+            message.minDepositDrawDelta = undefined;
+        }
         if (object.updaterAddress !== undefined && object.updaterAddress !== null) {
             message.updaterAddress = String(object.updaterAddress);
         } else {
@@ -230,6 +242,7 @@ export const MsgUpdateParams = {
         message.maxDrawScheduleDelta !== undefined && (obj.maxDrawScheduleDelta = message.maxDrawScheduleDelta ? Duration.toJSON(message.maxDrawScheduleDelta) : undefined);
         message.prizeExpirationDelta !== undefined && (obj.prizeExpirationDelta = message.prizeExpirationDelta ? Duration.toJSON(message.prizeExpirationDelta) : undefined);
         message.feesStakers !== undefined && (obj.feesStakers = message.feesStakers);
+        message.minDepositDrawDelta !== undefined && (obj.minDepositDrawDelta = message.minDepositDrawDelta ? Duration.toJSON(message.minDepositDrawDelta) : undefined);
         message.updaterAddress !== undefined && (obj.updaterAddress = message.updaterAddress);
         return obj;
     },
@@ -255,6 +268,11 @@ export const MsgUpdateParams = {
             message.prizeExpirationDelta = undefined;
         }
         message.feesStakers = object.feesStakers ?? '';
+        if (object.minDepositDrawDelta !== undefined && object.minDepositDrawDelta !== null) {
+            message.minDepositDrawDelta = Duration.fromPartial(object.minDepositDrawDelta);
+        } else {
+            message.minDepositDrawDelta = undefined;
+        }
         message.updaterAddress = object.updaterAddress ?? '';
         return message;
     },
@@ -1445,7 +1463,7 @@ export const MsgWithdrawDepositRetryResponse = {
     },
 };
 
-const baseMsgDrawRetry: object = { poolId: Long.UZERO, drawId: Long.UZERO, depositorAddress: '' };
+const baseMsgDrawRetry: object = { poolId: Long.UZERO, drawId: Long.UZERO, drawRetryAddress: '' };
 
 export const MsgDrawRetry = {
     encode(message: MsgDrawRetry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1455,8 +1473,8 @@ export const MsgDrawRetry = {
         if (!message.drawId.isZero()) {
             writer.uint32(16).uint64(message.drawId);
         }
-        if (message.depositorAddress !== '') {
-            writer.uint32(26).string(message.depositorAddress);
+        if (message.drawRetryAddress !== '') {
+            writer.uint32(26).string(message.drawRetryAddress);
         }
         return writer;
     },
@@ -1475,7 +1493,7 @@ export const MsgDrawRetry = {
                     message.drawId = reader.uint64() as Long;
                     break;
                 case 3:
-                    message.depositorAddress = reader.string();
+                    message.drawRetryAddress = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -1497,10 +1515,10 @@ export const MsgDrawRetry = {
         } else {
             message.drawId = Long.UZERO;
         }
-        if (object.depositorAddress !== undefined && object.depositorAddress !== null) {
-            message.depositorAddress = String(object.depositorAddress);
+        if (object.drawRetryAddress !== undefined && object.drawRetryAddress !== null) {
+            message.drawRetryAddress = String(object.drawRetryAddress);
         } else {
-            message.depositorAddress = '';
+            message.drawRetryAddress = '';
         }
         return message;
     },
@@ -1509,7 +1527,7 @@ export const MsgDrawRetry = {
         const obj: any = {};
         message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
         message.drawId !== undefined && (obj.drawId = (message.drawId || Long.UZERO).toString());
-        message.depositorAddress !== undefined && (obj.depositorAddress = message.depositorAddress);
+        message.drawRetryAddress !== undefined && (obj.drawRetryAddress = message.drawRetryAddress);
         return obj;
     },
 
@@ -1525,7 +1543,7 @@ export const MsgDrawRetry = {
         } else {
             message.drawId = Long.UZERO;
         }
-        message.depositorAddress = object.depositorAddress ?? '';
+        message.drawRetryAddress = object.drawRetryAddress ?? '';
         return message;
     },
 };
@@ -1569,9 +1587,6 @@ export const MsgDrawRetryResponse = {
 };
 
 export interface Msg {
-    UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
-    RegisterPool(request: MsgRegisterPool): Promise<MsgRegisterPoolResponse>;
-    UpdatePool(request: MsgUpdatePool): Promise<MsgUpdatePoolResponse>;
     Deposit(request: MsgDeposit): Promise<MsgDepositResponse>;
     DepositRetry(request: MsgDepositRetry): Promise<MsgDepositRetryResponse>;
     ClaimPrize(request: MsgClaimPrize): Promise<MsgClaimPrizeResponse>;
@@ -1584,9 +1599,6 @@ export class MsgClientImpl implements Msg {
     private readonly rpc: Rpc;
     constructor(rpc: Rpc) {
         this.rpc = rpc;
-        this.UpdateParams = this.UpdateParams.bind(this);
-        this.RegisterPool = this.RegisterPool.bind(this);
-        this.UpdatePool = this.UpdatePool.bind(this);
         this.Deposit = this.Deposit.bind(this);
         this.DepositRetry = this.DepositRetry.bind(this);
         this.ClaimPrize = this.ClaimPrize.bind(this);
@@ -1594,24 +1606,6 @@ export class MsgClientImpl implements Msg {
         this.WithdrawDepositRetry = this.WithdrawDepositRetry.bind(this);
         this.DrawRetry = this.DrawRetry.bind(this);
     }
-    UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse> {
-        const data = MsgUpdateParams.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Msg', 'UpdateParams', data);
-        return promise.then((data) => MsgUpdateParamsResponse.decode(new _m0.Reader(data)));
-    }
-
-    RegisterPool(request: MsgRegisterPool): Promise<MsgRegisterPoolResponse> {
-        const data = MsgRegisterPool.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Msg', 'RegisterPool', data);
-        return promise.then((data) => MsgRegisterPoolResponse.decode(new _m0.Reader(data)));
-    }
-
-    UpdatePool(request: MsgUpdatePool): Promise<MsgUpdatePoolResponse> {
-        const data = MsgUpdatePool.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Msg', 'UpdatePool', data);
-        return promise.then((data) => MsgUpdatePoolResponse.decode(new _m0.Reader(data)));
-    }
-
     Deposit(request: MsgDeposit): Promise<MsgDepositResponse> {
         const data = MsgDeposit.encode(request).finish();
         const promise = this.rpc.request('lum.network.millions.Msg', 'Deposit', data);

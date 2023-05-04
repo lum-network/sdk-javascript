@@ -10,10 +10,11 @@ export const protobufPackage = 'lum.network.millions';
 export enum DrawState {
     DRAW_STATE_UNSPECIFIED = 0,
     DRAW_STATE_ICA_WITHDRAWREWARDS = 1,
-    DRAW_STATE_IBC_TRANSFER = 2,
-    DRAW_STATE_DRAWING = 3,
-    DRAW_STATE_SUCCESS = 4,
-    DRAW_STATE_FAILURE = 5,
+    DRAW_STATE_QUERY_BALANCE = 2,
+    DRAW_STATE_IBC_TRANSFER = 3,
+    DRAW_STATE_DRAWING = 4,
+    DRAW_STATE_SUCCESS = 5,
+    DRAW_STATE_FAILURE = 6,
     UNRECOGNIZED = -1,
 }
 
@@ -26,15 +27,18 @@ export function drawStateFromJSON(object: any): DrawState {
         case 'DRAW_STATE_ICA_WITHDRAWREWARDS':
             return DrawState.DRAW_STATE_ICA_WITHDRAWREWARDS;
         case 2:
+        case 'DRAW_STATE_QUERY_BALANCE':
+            return DrawState.DRAW_STATE_QUERY_BALANCE;
+        case 3:
         case 'DRAW_STATE_IBC_TRANSFER':
             return DrawState.DRAW_STATE_IBC_TRANSFER;
-        case 3:
+        case 4:
         case 'DRAW_STATE_DRAWING':
             return DrawState.DRAW_STATE_DRAWING;
-        case 4:
+        case 5:
         case 'DRAW_STATE_SUCCESS':
             return DrawState.DRAW_STATE_SUCCESS;
-        case 5:
+        case 6:
         case 'DRAW_STATE_FAILURE':
             return DrawState.DRAW_STATE_FAILURE;
         case -1:
@@ -50,6 +54,8 @@ export function drawStateToJSON(object: DrawState): string {
             return 'DRAW_STATE_UNSPECIFIED';
         case DrawState.DRAW_STATE_ICA_WITHDRAWREWARDS:
             return 'DRAW_STATE_ICA_WITHDRAWREWARDS';
+        case DrawState.DRAW_STATE_QUERY_BALANCE:
+            return 'DRAW_STATE_QUERY_BALANCE';
         case DrawState.DRAW_STATE_IBC_TRANSFER:
             return 'DRAW_STATE_IBC_TRANSFER';
         case DrawState.DRAW_STATE_DRAWING:
