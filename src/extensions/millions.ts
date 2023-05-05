@@ -1,6 +1,6 @@
-import { QueryClientImpl } from '../codec/lum-network/millions/query';
+import { QueryClientImpl, QueryDepositsResponse, QueryDrawsResponse, QueryPoolsResponse, QueryPrizesResponse, QueryWithdrawalsResponse } from '../codec/lum-network/millions/query';
 import { assert } from '@cosmjs/utils';
-import { createProtobufRpcClient } from './utils';
+import { createPagination, createProtobufRpcClient } from './utils';
 import { QueryClient } from '@cosmjs/stargate';
 import { Pool } from '../codec/lum-network/millions/pool';
 import { Params } from '../codec/lum-network/millions/params';
@@ -13,28 +13,28 @@ import { Withdrawal } from '../codec/lum-network/millions/withdrawal';
 export interface MillionsExtension {
     readonly millions: {
         readonly params: () => Promise<Params>;
-        readonly pools: () => Promise<Pool[]>;
+        readonly pools: (paginationKey?: Uint8Array) => Promise<QueryPoolsResponse>;
         readonly pool: (poolId: Long) => Promise<Pool>;
-        readonly deposits: () => Promise<Deposit[]>;
-        readonly poolDeposits: (poolId: Long) => Promise<Deposit[]>;
+        readonly deposits: (paginationKey?: Uint8Array) => Promise<QueryDepositsResponse>;
+        readonly poolDeposits: (poolId: Long, paginationKey?: Uint8Array) => Promise<QueryDepositsResponse>;
         readonly poolDeposit: (poolId: Long, depositId: Long) => Promise<Deposit>;
-        readonly accountDeposits: (address: string) => Promise<Deposit[]>;
-        readonly accountPoolDeposits: (depositorAddress: string, poolId: Long) => Promise<Deposit[]>;
-        readonly draws: () => Promise<Draw[]>;
-        readonly poolDraws: (poolId: Long) => Promise<Draw[]>;
+        readonly accountDeposits: (address: string, paginationKey?: Uint8Array) => Promise<QueryDepositsResponse>;
+        readonly accountPoolDeposits: (depositorAddress: string, poolId: Long, paginationKey?: Uint8Array) => Promise<QueryDepositsResponse>;
+        readonly draws: (paginationKey?: Uint8Array) => Promise<QueryDrawsResponse>;
+        readonly poolDraws: (poolId: Long, paginationKey?: Uint8Array) => Promise<QueryDrawsResponse>;
         readonly poolDraw: (poolId: Long, drawId: Long) => Promise<Draw>;
-        readonly prizes: () => Promise<Prize[]>;
-        readonly poolPrizes: (poolId: Long) => Promise<Prize[]>;
-        readonly poolDrawPrizes: (poolId: Long, drawId: Long) => Promise<Prize[]>;
+        readonly prizes: (paginationKey?: Uint8Array) => Promise<QueryPrizesResponse>;
+        readonly poolPrizes: (poolId: Long, paginationKey?: Uint8Array) => Promise<QueryPrizesResponse>;
+        readonly poolDrawPrizes: (poolId: Long, drawId: Long, paginationKey?: Uint8Array) => Promise<QueryPrizesResponse>;
         readonly poolDrawPrize: (poolId: Long, drawId: Long, prizeId: Long) => Promise<Prize>;
-        readonly accountPrizes: (winnerAddress: string) => Promise<Prize[]>;
-        readonly accountPoolPrizes: (winnerAddress: string, poolId: Long) => Promise<Prize[]>;
-        readonly accountPoolDrawPrizes: (winnerAddress: string, poolId: Long, drawId: Long) => Promise<Prize[]>;
-        readonly withdrawals: () => Promise<Withdrawal[]>;
-        readonly poolWithdrawals: (poolId: Long) => Promise<Withdrawal[]>;
+        readonly accountPrizes: (winnerAddress: string, paginationKey?: Uint8Array) => Promise<QueryPrizesResponse>;
+        readonly accountPoolPrizes: (winnerAddress: string, poolId: Long, paginationKey?: Uint8Array) => Promise<QueryPrizesResponse>;
+        readonly accountPoolDrawPrizes: (winnerAddress: string, poolId: Long, drawId: Long, paginationKey?: Uint8Array) => Promise<QueryPrizesResponse>;
+        readonly withdrawals: (paginationKey?: Uint8Array) => Promise<QueryWithdrawalsResponse>;
+        readonly poolWithdrawals: (poolId: Long, paginationKey?: Uint8Array) => Promise<QueryWithdrawalsResponse>;
         readonly poolWithdrawal: (poolId: Long, withdrawalId: Long) => Promise<Withdrawal>;
-        readonly accountWithdrawals: (depositorAddress: string) => Promise<Withdrawal[]>;
-        readonly accountPoolWithdrawals: (depositorAddress: string, poolId: Long) => Promise<Withdrawal[]>;
+        readonly accountWithdrawals: (depositorAddress: string, paginationKey?: Uint8Array) => Promise<QueryWithdrawalsResponse>;
+        readonly accountPoolWithdrawals: (depositorAddress: string, poolId: Long, paginationKey?: Uint8Array) => Promise<QueryWithdrawalsResponse>;
     };
 }
 
@@ -49,8 +49,10 @@ export const setupMillionsExtension = (base: QueryClient): MillionsExtension => 
                 assert(params);
                 return params;
             },
-            pools: async () => {
-                const { pools } = await queryService.Pools({});
+            pools: async (paginationKey?: Uint8Array) => {
+                const pools = await queryService.Pools({
+                    pagination: createPagination(paginationKey),
+                });
                 assert(pools);
                 return pools;
             },
@@ -59,13 +61,18 @@ export const setupMillionsExtension = (base: QueryClient): MillionsExtension => 
                 assert(pool);
                 return pool;
             },
-            deposits: async () => {
-                const { deposits } = await queryService.Deposits({});
+            deposits: async (paginationKey?: Uint8Array) => {
+                const deposits = await queryService.Deposits({
+                    pagination: createPagination(paginationKey),
+                });
                 assert(deposits);
                 return deposits;
             },
-            poolDeposits: async (poolId: Long) => {
-                const { deposits } = await queryService.PoolDeposits({ poolId });
+            poolDeposits: async (poolId: Long, paginationKey?: Uint8Array) => {
+                const deposits = await queryService.PoolDeposits({
+                    poolId,
+                    pagination: createPagination(paginationKey),
+                });
                 assert(deposits);
                 return deposits;
             },
@@ -74,23 +81,35 @@ export const setupMillionsExtension = (base: QueryClient): MillionsExtension => 
                 assert(deposit);
                 return deposit;
             },
-            accountDeposits: async (depositorAddress: string) => {
-                const { deposits } = await queryService.AccountDeposits({ depositorAddress });
+            accountDeposits: async (depositorAddress: string, paginationKey?: Uint8Array) => {
+                const deposits = await queryService.AccountDeposits({
+                    depositorAddress,
+                    pagination: createPagination(paginationKey),
+                });
                 assert(deposits);
                 return deposits;
             },
-            accountPoolDeposits: async (depositorAddress: string, poolId: Long) => {
-                const { deposits } = await queryService.AccountPoolDeposits({ depositorAddress, poolId });
+            accountPoolDeposits: async (depositorAddress: string, poolId: Long, paginationKey?: Uint8Array) => {
+                const deposits = await queryService.AccountPoolDeposits({
+                    depositorAddress,
+                    poolId,
+                    pagination: createPagination(paginationKey),
+                });
                 assert(deposits);
                 return deposits;
             },
-            draws: async () => {
-                const { draws } = await queryService.Draws({});
+            draws: async (paginationKey?: Uint8Array) => {
+                const draws = await queryService.Draws({
+                    pagination: createPagination(paginationKey),
+                });
                 assert(draws);
                 return draws;
             },
-            poolDraws: async (poolId: Long) => {
-                const { draws } = await queryService.PoolDraws({ poolId });
+            poolDraws: async (poolId: Long, paginationKey?: Uint8Array) => {
+                const draws = await queryService.PoolDraws({
+                    poolId,
+                    pagination: createPagination(paginationKey),
+                });
                 assert(draws);
                 return draws;
             },
@@ -99,18 +118,27 @@ export const setupMillionsExtension = (base: QueryClient): MillionsExtension => 
                 assert(draw);
                 return draw;
             },
-            prizes: async () => {
-                const { prizes } = await queryService.Prizes({});
+            prizes: async (paginationKey?: Uint8Array) => {
+                const prizes = await queryService.Prizes({
+                    pagination: createPagination(paginationKey),
+                });
                 assert(prizes);
                 return prizes;
             },
-            poolPrizes: async (poolId: Long) => {
-                const { prizes } = await queryService.PoolPrizes({ poolId });
+            poolPrizes: async (poolId: Long, paginationKey?: Uint8Array) => {
+                const prizes = await queryService.PoolPrizes({
+                    poolId,
+                    pagination: createPagination(paginationKey),
+                });
                 assert(prizes);
                 return prizes;
             },
-            poolDrawPrizes: async (poolId: Long, drawId: Long) => {
-                const { prizes } = await queryService.PoolDrawPrizes({ poolId, drawId });
+            poolDrawPrizes: async (poolId: Long, drawId: Long, paginationKey?: Uint8Array) => {
+                const prizes = await queryService.PoolDrawPrizes({
+                    poolId,
+                    drawId,
+                    pagination: createPagination(paginationKey),
+                });
                 assert(prizes);
                 return prizes;
             },
@@ -119,28 +147,45 @@ export const setupMillionsExtension = (base: QueryClient): MillionsExtension => 
                 assert(prize);
                 return prize;
             },
-            accountPrizes: async (winnerAddress: string) => {
-                const { prizes } = await queryService.AccountPrizes({ winnerAddress });
+            accountPrizes: async (winnerAddress: string, paginationKey?: Uint8Array) => {
+                const prizes = await queryService.AccountPrizes({
+                    winnerAddress,
+                    pagination: createPagination(paginationKey),
+                });
                 assert(prizes);
                 return prizes;
             },
-            accountPoolPrizes: async (winnerAddress: string, poolId: Long) => {
-                const { prizes } = await queryService.AccountPoolPrizes({ winnerAddress, poolId });
+            accountPoolPrizes: async (winnerAddress: string, poolId: Long, paginationKey?: Uint8Array) => {
+                const prizes = await queryService.AccountPoolPrizes({
+                    winnerAddress,
+                    poolId,
+                    pagination: createPagination(paginationKey),
+                });
                 assert(prizes);
                 return prizes;
             },
-            accountPoolDrawPrizes: async (winnerAddress: string, poolId: Long, drawId: Long) => {
-                const { prizes } = await queryService.AccountPoolDrawPrizes({ winnerAddress, poolId, drawId });
+            accountPoolDrawPrizes: async (winnerAddress: string, poolId: Long, drawId: Long, paginationKey?: Uint8Array) => {
+                const prizes = await queryService.AccountPoolDrawPrizes({
+                    winnerAddress,
+                    poolId,
+                    drawId,
+                    pagination: createPagination(paginationKey),
+                });
                 assert(prizes);
                 return prizes;
             },
-            withdrawals: async () => {
-                const { withdrawals } = await queryService.Withdrawals({});
+            withdrawals: async (paginationKey?: Uint8Array) => {
+                const withdrawals = await queryService.Withdrawals({
+                    pagination: createPagination(paginationKey),
+                });
                 assert(withdrawals);
                 return withdrawals;
             },
-            poolWithdrawals: async (poolId: Long) => {
-                const { withdrawals } = await queryService.PoolWithdrawals({ poolId });
+            poolWithdrawals: async (poolId: Long, paginationKey?: Uint8Array) => {
+                const withdrawals = await queryService.PoolWithdrawals({
+                    poolId,
+                    pagination: createPagination(paginationKey),
+                });
                 assert(withdrawals);
                 return withdrawals;
             },
@@ -149,13 +194,20 @@ export const setupMillionsExtension = (base: QueryClient): MillionsExtension => 
                 assert(withdrawal);
                 return withdrawal;
             },
-            accountWithdrawals: async (depositorAddress: string) => {
-                const { withdrawals } = await queryService.AccountWithdrawals({ depositorAddress });
+            accountWithdrawals: async (depositorAddress: string, paginationKey?: Uint8Array) => {
+                const withdrawals = await queryService.AccountWithdrawals({
+                    depositorAddress,
+                    pagination: createPagination(paginationKey),
+                });
                 assert(withdrawals);
                 return withdrawals;
             },
-            accountPoolWithdrawals: async (depositorAddress: string, poolId: Long) => {
-                const { withdrawals } = await queryService.AccountPoolWithdrawals({ depositorAddress, poolId });
+            accountPoolWithdrawals: async (depositorAddress: string, poolId: Long, paginationKey?: Uint8Array) => {
+                const withdrawals = await queryService.AccountPoolWithdrawals({
+                    depositorAddress,
+                    poolId,
+                    pagination: createPagination(paginationKey),
+                });
                 assert(withdrawals);
                 return withdrawals;
             },

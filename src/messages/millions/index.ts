@@ -5,3 +5,5 @@ export * from './MsgClaimPrize';
 export * from './MsgWithdrawDeposit';
 export * from './MsgWithdrawDepositRetry';
 export * from './MsgDrawRetry';
+export * from './MsgRegisterPool';
+export * from './MsgUpdatePool';

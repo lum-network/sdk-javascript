@@ -9,8 +9,6 @@ export const protobufPackage = 'lum.network.millions';
 export enum PrizeState {
     PRIZE_STATE_UNSPECIFIED = 0,
     PRIZE_STATE_PENDING = 1,
-    PRIZE_STATE_CLAIMED = 2,
-    PRIZE_STATE_CLAWEDBACK = 3,
     UNRECOGNIZED = -1,
 }
 
@@ -22,12 +20,6 @@ export function prizeStateFromJSON(object: any): PrizeState {
         case 1:
         case 'PRIZE_STATE_PENDING':
             return PrizeState.PRIZE_STATE_PENDING;
-        case 2:
-        case 'PRIZE_STATE_CLAIMED':
-            return PrizeState.PRIZE_STATE_CLAIMED;
-        case 3:
-        case 'PRIZE_STATE_CLAWEDBACK':
-            return PrizeState.PRIZE_STATE_CLAWEDBACK;
         case -1:
         case 'UNRECOGNIZED':
         default:
@@ -41,10 +33,6 @@ export function prizeStateToJSON(object: PrizeState): string {
             return 'PRIZE_STATE_UNSPECIFIED';
         case PrizeState.PRIZE_STATE_PENDING:
             return 'PRIZE_STATE_PENDING';
-        case PrizeState.PRIZE_STATE_CLAIMED:
-            return 'PRIZE_STATE_CLAIMED';
-        case PrizeState.PRIZE_STATE_CLAWEDBACK:
-            return 'PRIZE_STATE_CLAWEDBACK';
         default:
             return 'UNKNOWN';
     }

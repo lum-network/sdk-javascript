@@ -11,8 +11,7 @@ export enum WithdrawalState {
     WITHDRAWAL_STATE_ICA_UNDELEGATE = 1,
     WITHDRAWAL_STATE_ICA_UNBONDING = 2,
     WITHDRAWAL_STATE_IBC_TRANSFER = 3,
-    WITHDRAWAL_STATE_SUCCESS = 4,
-    WITHDRAWAL_STATE_FAILURE = 5,
+    WITHDRAWAL_STATE_FAILURE = 4,
     UNRECOGNIZED = -1,
 }
 
@@ -31,9 +30,6 @@ export function withdrawalStateFromJSON(object: any): WithdrawalState {
         case 'WITHDRAWAL_STATE_IBC_TRANSFER':
             return WithdrawalState.WITHDRAWAL_STATE_IBC_TRANSFER;
         case 4:
-        case 'WITHDRAWAL_STATE_SUCCESS':
-            return WithdrawalState.WITHDRAWAL_STATE_SUCCESS;
-        case 5:
         case 'WITHDRAWAL_STATE_FAILURE':
             return WithdrawalState.WITHDRAWAL_STATE_FAILURE;
         case -1:
@@ -53,8 +49,6 @@ export function withdrawalStateToJSON(object: WithdrawalState): string {
             return 'WITHDRAWAL_STATE_ICA_UNBONDING';
         case WithdrawalState.WITHDRAWAL_STATE_IBC_TRANSFER:
             return 'WITHDRAWAL_STATE_IBC_TRANSFER';
-        case WithdrawalState.WITHDRAWAL_STATE_SUCCESS:
-            return 'WITHDRAWAL_STATE_SUCCESS';
         case WithdrawalState.WITHDRAWAL_STATE_FAILURE:
             return 'WITHDRAWAL_STATE_FAILURE';
         default:

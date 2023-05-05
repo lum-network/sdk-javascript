@@ -5,13 +5,13 @@ import { MsgDrawRetry } from '../../codec/lum-network/millions/tx';
 
 export const MsgDrawRetryUrl = '/lum.network.millions.MsgDrawRetry';
 
-export const BuildMsgDrawRetry = (poolId: Long, drawId: Long, depositorAddress: string): Message => {
+export const BuildMsgDrawRetry = (poolId: Long, drawId: Long, drawRetryAddress: string): Message => {
     return {
         typeUrl: MsgDrawRetryUrl,
         value: {
             poolId,
             drawId,
-            depositorAddress,
+            drawRetryAddress,
         } as MsgDrawRetry,
     };
 };
