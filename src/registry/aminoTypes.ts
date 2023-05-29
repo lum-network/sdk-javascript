@@ -1,5 +1,6 @@
 import {
-    AminoConverters, AminoMsgVote,
+    AminoConverters,
+    AminoMsgVote,
     createAuthzAminoConverters,
     createBankAminoConverters,
     createDistributionAminoConverters,
