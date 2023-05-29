@@ -1,9 +1,9 @@
 import {
-    AminoConverters,
+    AminoConverters, AminoMsgVote,
     createAuthzAminoConverters,
     createBankAminoConverters,
     createDistributionAminoConverters,
-    createGovAminoConverters,
+    // createGovAminoConverters,
     createIbcAminoConverters,
     createStakingAminoConverters,
 } from '@cosmjs/stargate';
@@ -19,6 +19,7 @@ import {
     MsgWithdrawDepositRetry as MsgMillionsWithdrawDepositRetry,
     MsgClaimPrize as MsgMillionsClaimPrize,
 } from '../codec/lum-network/millions/tx';
+import { MsgVote } from '../codec/cosmos/gov/v1/tx';
 export interface AminoMsgDepositDfract extends AminoMsg {
     readonly type: 'lum-network/MsgDeposit';
     readonly value: {
@@ -81,11 +82,28 @@ export const createDefaultAminoTypes = (): AminoConverters => {
         ...createBankAminoConverters(),
         ...createAuthzAminoConverters(),
         ...createDistributionAminoConverters(),
-        ...createGovAminoConverters(),
-        ...createStakingAminoConverters('lum'),
+        // ...createGovAminoConverters(),
+        ...createStakingAminoConverters(),
         ...createIbcAminoConverters(),
     };
 };
+
+const createGovAminoConverters = (): AminoConverters => ({
+    '/cosmos.gov.v1.MsgVote': {
+        aminoType: 'cosmos-sdk/MsgVote',
+        toAmino: ({ proposalId, voter, option }: MsgVote): AminoMsgVote['value'] => ({
+            proposal_id: proposalId.toString(),
+            voter,
+            option,
+        }),
+        fromAmino: ({ proposal_id, voter, option }: AminoMsgVote['value']): MsgVote => ({
+            proposalId: Long.fromString(proposal_id),
+            voter,
+            option,
+            metadata: '',
+        }),
+    },
+});
 
 const createDfractAminoConverters = (): AminoConverters => ({
     '/lum.network.dfract.MsgDeposit': {
@@ -185,5 +203,6 @@ const createMillionsAminoConverters = (): AminoConverters => ({
 export const createAminoConverters = (): AminoConverters => ({
     ...createDfractAminoConverters(),
     ...createMillionsAminoConverters(),
+    ...createGovAminoConverters(),
     ...createDefaultAminoTypes(),
 });

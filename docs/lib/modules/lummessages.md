@@ -38,6 +38,7 @@
 - [MsgMultiSendUrl](LumMessages.md#msgmultisendurl)
 - [MsgOpenBeamUrl](LumMessages.md#msgopenbeamurl)
 - [MsgRecvPacketUrl](LumMessages.md#msgrecvpacketurl)
+- [MsgRegisterPoolUrl](LumMessages.md#msgregisterpoolurl)
 - [MsgRevokeAllowanceUrl](LumMessages.md#msgrevokeallowanceurl)
 - [MsgRevokeUrl](LumMessages.md#msgrevokeurl)
 - [MsgSendUrl](LumMessages.md#msgsendurl)
@@ -52,6 +53,7 @@
 - [MsgUpdateBeamUrl](LumMessages.md#msgupdatebeamurl)
 - [MsgUpdateClientUrl](LumMessages.md#msgupdateclienturl)
 - [MsgUpdateParamsUrl](LumMessages.md#msgupdateparamsurl)
+- [MsgUpdatePoolUrl](LumMessages.md#msgupdatepoolurl)
 - [MsgUpgradeClientUrl](LumMessages.md#msgupgradeclienturl)
 - [MsgVoteUrl](LumMessages.md#msgvoteurl)
 - [MsgWithdrawDelegatorRewardUrl](LumMessages.md#msgwithdrawdelegatorrewardurl)
@@ -91,6 +93,7 @@
 - [BuildMsgMultiSend](LumMessages.md#buildmsgmultisend)
 - [BuildMsgOpenBeam](LumMessages.md#buildmsgopenbeam)
 - [BuildMsgRecvPacket](LumMessages.md#buildmsgrecvpacket)
+- [BuildMsgRegisterPool](LumMessages.md#buildmsgregisterpool)
 - [BuildMsgRevoke](LumMessages.md#buildmsgrevoke)
 - [BuildMsgRevokeAllowance](LumMessages.md#buildmsgrevokeallowance)
 - [BuildMsgSend](LumMessages.md#buildmsgsend)
@@ -105,6 +108,7 @@
 - [BuildMsgUpdateBeam](LumMessages.md#buildmsgupdatebeam)
 - [BuildMsgUpdateClient](LumMessages.md#buildmsgupdateclient)
 - [BuildMsgUpdateParams](LumMessages.md#buildmsgupdateparams)
+- [BuildMsgUpdatePool](LumMessages.md#buildmsgupdatepool)
 - [BuildMsgUpgradeClient](LumMessages.md#buildmsgupgradeclient)
 - [BuildMsgVote](LumMessages.md#buildmsgvote)
 - [BuildMsgWithdrawDelegatorReward](LumMessages.md#buildmsgwithdrawdelegatorreward)
@@ -294,6 +298,12 @@ ___
 
 ___
 
+### MsgRegisterPoolUrl
+
+• **MsgRegisterPoolUrl**: ``"/lum.network.millions.MsgRegisterPool"``
+
+___
+
 ### MsgRevokeAllowanceUrl
 
 • **MsgRevokeAllowanceUrl**: ``"/cosmos.feegrant.v1beta1.MsgRevokeAllowance"``
@@ -375,6 +385,12 @@ ___
 ### MsgUpdateParamsUrl
 
 • **MsgUpdateParamsUrl**: ``"/lum.network.millions.MsgUpdateParams"``
+
+___
+
+### MsgUpdatePoolUrl
+
+• **MsgUpdatePoolUrl**: ``"/lum.network.millions.MsgUpdatePool"``
 
 ___
 
@@ -1000,6 +1016,32 @@ ___
 
 ___
 
+### BuildMsgRegisterPool
+
+▸ `Const` **BuildMsgRegisterPool**(`chainId`, `denom`, `nativeDenom`, `connectionId`, `validators`, `minDepositAmount`, `bech32PrefixAccAddr`, `bech32PrefixValAddr`, `creatorAddress`, `drawSchedule?`, `prizeStrategy?`): [`Message`](../interfaces/LumMessages.Message.md)
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `chainId` | `string` |
+| `denom` | `string` |
+| `nativeDenom` | `string` |
+| `connectionId` | `string` |
+| `validators` | `string`[] |
+| `minDepositAmount` | `string` |
+| `bech32PrefixAccAddr` | `string` |
+| `bech32PrefixValAddr` | `string` |
+| `creatorAddress` | `string` |
+| `drawSchedule?` | `DrawSchedule` |
+| `prizeStrategy?` | `PrizeStrategy` |
+
+#### Returns
+
+[`Message`](../interfaces/LumMessages.Message.md)
+
+___
+
 ### BuildMsgRevoke
 
 ▸ `Const` **BuildMsgRevoke**(`granter`, `grantee`, `msgTypeUrl`): [`Message`](../interfaces/LumMessages.Message.md)
@@ -1263,6 +1305,27 @@ ___
 | `minDrawScheduleDelta?` | `Duration` |
 | `maxDrawScheduleDelta?` | `Duration` |
 | `prizeExpirationDelta?` | `Duration` |
+
+#### Returns
+
+[`Message`](../interfaces/LumMessages.Message.md)
+
+___
+
+### BuildMsgUpdatePool
+
+▸ `Const` **BuildMsgUpdatePool**(`poolId`, `validators`, `minDepositAmount`, `updaterAddress`, `drawSchedule?`, `prizeStrategy?`): [`Message`](../interfaces/LumMessages.Message.md)
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `poolId` | `Long` |
+| `validators` | `string`[] |
+| `minDepositAmount` | `string` |
+| `updaterAddress` | `string` |
+| `drawSchedule?` | `DrawSchedule` |
+| `prizeStrategy?` | `PrizeStrategy` |
 
 #### Returns
 
