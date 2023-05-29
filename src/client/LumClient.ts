@@ -38,7 +38,6 @@ function defaultErrorHandler(error: unknown): never {
 }
 
 export class LumClient {
-    readonly rpcClient: RpcClient;
     readonly tmClient: Tendermint34Client;
     readonly queryClient: StargateQueryClient &
         AuthExtension &
