@@ -1,5 +1,5 @@
 import * as hexEncoding from 'crypto-js/enc-hex';
-import { Bech32, toHex, fromHex, toBase64, fromBase64, toAscii, fromAscii, toUtf8, fromUtf8, toRfc3339, fromRfc3339 } from '@cosmjs/encoding';
+import { toHex, fromHex, toBase64, fromBase64, toAscii, fromAscii, toUtf8, fromUtf8, toRfc3339, fromRfc3339, fromBech32, toBech32 } from '@cosmjs/encoding';
 import { sha256 } from '@cosmjs/crypto';
 import SHA3 from 'crypto-js/sha3';
 
@@ -72,4 +72,4 @@ export const toJSON = (data: unknown): unknown => {
     return data;
 };
 
-export { sha256, Bech32, toHex, fromHex, toBase64, fromBase64, toAscii, fromAscii, toUtf8, fromUtf8, toRfc3339, fromRfc3339 };
+export { sha256, toHex, fromHex, toBase64, fromBase64, toAscii, fromAscii, toUtf8, fromUtf8, toRfc3339, fromRfc3339, fromBech32, toBech32 };

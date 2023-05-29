@@ -1,17 +1,18 @@
 import { Message } from '../Message';
 import { Coin } from '../../types';
 import { Any } from '../../codec/google/protobuf/any';
-import { MsgSubmitProposal } from '../../codec/cosmos/gov/v1beta1/tx';
+import { MsgSubmitProposal } from '../../codec/cosmos/gov/v1/tx';
 
-export const MsgSubmitProposalUrl = '/cosmos.gov.v1beta1.MsgSubmitProposal';
+export const MsgSubmitProposalUrl = '/cosmos.gov.v1.MsgSubmitProposal';
 
-export const BuildMsgSubmitProposal = (proposer: string, initialDeposit: Coin[], content?: Any): Message => {
+export const BuildMsgSubmitProposal = (messages: Any[], proposer: string, initialDeposit: Coin[], metadata: string): Message => {
     return {
         typeUrl: MsgSubmitProposalUrl,
         value: {
+            messages,
             initialDeposit,
             proposer,
-            content,
+            metadata,
         } as MsgSubmitProposal,
     };
 };

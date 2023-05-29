@@ -1,6 +1,6 @@
 import { Registry, GeneratedType } from '@cosmjs/proto-signing';
 import { AminoTypes } from '@cosmjs/stargate';
-import { createAminoTypes } from './aminoTypes';
+import { createAminoConverters } from './aminoTypes';
 
 import { Tx } from '../codec/cosmos/tx/v1beta1/tx';
 import { PubKey } from '../codec/cosmos/crypto/secp256k1/keys';
@@ -13,9 +13,12 @@ import { MsgFundCommunityPool, MsgSetWithdrawAddress, MsgWithdrawDelegatorReward
 import { MsgGrantAllowance, MsgRevokeAllowance } from '../codec/cosmos/feegrant/v1beta1/tx';
 import { Proposal, TextProposal } from '../codec/cosmos/gov/v1beta1/gov';
 import { MsgDeposit, MsgSubmitProposal, MsgVote } from '../codec/cosmos/gov/v1beta1/tx';
+import { MsgDeposit as MsgDepositV1, MsgSubmitProposal as MsgSubmitProposalV1, MsgVote as MsgVoteV1, MsgExecLegacyContent } from '../codec/cosmos/gov/v1/tx';
+import { Proposal as ProposalV1 } from '../codec/cosmos/gov/v1/gov';
 import { ParameterChangeProposal } from '../codec/cosmos/params/v1beta1/params';
 import { MsgUnjail } from '../codec/cosmos/slashing/v1beta1/tx';
 import { MsgBeginRedelegate, MsgCreateValidator, MsgDelegate, MsgEditValidator, MsgUndelegate } from '../codec/cosmos/staking/v1beta1/tx';
+import { MsgCancelUpgrade, MsgSoftwareUpgrade } from '../codec/cosmos/upgrade/v1beta1/tx';
 import { CancelSoftwareUpgradeProposal, SoftwareUpgradeProposal } from '../codec/cosmos/upgrade/v1beta1/upgrade';
 import { BaseVestingAccount, ContinuousVestingAccount, DelayedVestingAccount, PeriodicVestingAccount } from '../codec/cosmos/vesting/v1beta1/vesting';
 import { MsgCreateVestingAccount } from '../codec/cosmos/vesting/v1beta1/tx';
@@ -36,9 +39,10 @@ import { MsgCreateClient, MsgSubmitMisbehaviour, MsgUpdateClient, MsgUpgradeClie
 import { MsgConnectionOpenAck, MsgConnectionOpenConfirm, MsgConnectionOpenInit, MsgConnectionOpenTry } from '../codec/ibc/core/connection/v1/tx';
 import { MsgTransfer } from '../codec/ibc/applications/transfer/v1/tx';
 
-import { MsgClaimBeam, MsgOpenBeam, MsgUpdateBeam } from '../codec/beam/tx';
-import { MsgDeposit as MsgDepositDfract } from '../codec/dfract/tx';
-import { WithdrawAndMintProposal } from '../codec/dfract/proposal';
+import { MsgClaimBeam, MsgOpenBeam, MsgUpdateBeam } from '../codec/lum-network/beam/tx';
+import { MsgDeposit as MsgDepositDfract } from '../codec/lum-network/dfract/tx';
+import { WithdrawAndMintProposal } from '../codec/lum-network/dfract/proposal';
+import { MsgClaimPrize, MsgDeposit as MsgDepositMillions, MsgDepositRetry, MsgDrawRetry, MsgUpdateParams, MsgWithdrawDeposit, MsgWithdrawDepositRetry } from '../codec/lum-network/millions/tx';
 
 const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/cosmos.auth.v1beta1.BaseAccount', BaseAccount],
@@ -68,6 +72,11 @@ const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/cosmos.gov.v1beta1.MsgVote', MsgVote],
     ['/cosmos.gov.v1beta1.Proposal', Proposal],
     ['/cosmos.gov.v1beta1.TextProposal', TextProposal],
+    ['/cosmos.gov.v1.MsgExecLegacyContent', MsgExecLegacyContent],
+    ['/cosmos.gov.v1.MsgDeposit', MsgDepositV1],
+    ['/cosmos.gov.v1.MsgSubmitProposal', MsgSubmitProposalV1],
+    ['/cosmos.gov.v1.MsgVote', MsgVoteV1],
+    ['/cosmos.gov.v1.Proposal', ProposalV1],
     ['/cosmos.params.v1beta1.ParameterChangeProposal', ParameterChangeProposal],
     ['/cosmos.slashing.v1beta1.MsgUnjail', MsgUnjail],
     ['/cosmos.staking.v1beta1.MsgBeginRedelegate', MsgBeginRedelegate],
@@ -75,6 +84,8 @@ const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/cosmos.staking.v1beta1.MsgDelegate', MsgDelegate],
     ['/cosmos.staking.v1beta1.MsgEditValidator', MsgEditValidator],
     ['/cosmos.staking.v1beta1.MsgUndelegate', MsgUndelegate],
+    ['/cosmos.upgrade.v1beta1.MsgCancelUpgrade', MsgCancelUpgrade],
+    ['/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade', MsgSoftwareUpgrade],
     ['/cosmos.upgrade.v1beta1.SoftwareUpgradeProposal', SoftwareUpgradeProposal],
     ['/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal', CancelSoftwareUpgradeProposal],
     ['/cosmos.vesting.v1beta1.BaseVestingAccount', BaseVestingAccount],
@@ -106,6 +117,13 @@ const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/lum.network.beam.MsgClaimBeam', MsgClaimBeam],
     ['/lum.network.dfract.MsgDeposit', MsgDepositDfract],
     ['/lum.network.dfract.WithdrawAndMintProposal', WithdrawAndMintProposal],
+    ['/lum.network.millions.MsgClaimPrize', MsgClaimPrize],
+    ['/lum.network.millions.MsgDeposit', MsgDepositMillions],
+    ['/lum.network.millions.MsgDepositRetry', MsgDepositRetry],
+    ['/lum.network.millions.MsgDrawRetry', MsgDrawRetry],
+    ['/lum.network.millions.MsgUpdateParams', MsgUpdateParams],
+    ['/lum.network.millions.MsgWithdrawDeposit', MsgWithdrawDeposit],
+    ['/lum.network.millions.MsgWithdrawDepositRetry', MsgWithdrawDepositRetry],
 ];
 
 class ExtendedRegistry extends Registry {
@@ -114,5 +132,5 @@ class ExtendedRegistry extends Registry {
     };
 }
 
-export const LumAminoRegistry = new AminoTypes(createAminoTypes());
+export const LumAminoRegistry = new AminoTypes({ ...createAminoConverters() });
 export const LumRegistry = new ExtendedRegistry(registryTypes);

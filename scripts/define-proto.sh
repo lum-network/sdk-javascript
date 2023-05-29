@@ -49,6 +49,9 @@ protoc \
     "$COSMOS_PROTO_DIR/cosmos/feegrant/v1beta1/query.proto" \
     "$COSMOS_PROTO_DIR/cosmos/feegrant/v1beta1/feegrant.proto" \
     "$COSMOS_PROTO_DIR/cosmos/feegrant/v1beta1/tx.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/gov/v1/gov.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/gov/v1/query.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/gov/v1/tx.proto" \
     "$COSMOS_PROTO_DIR/cosmos/gov/v1beta1/gov.proto" \
     "$COSMOS_PROTO_DIR/cosmos/gov/v1beta1/query.proto" \
     "$COSMOS_PROTO_DIR/cosmos/gov/v1beta1/tx.proto" \
@@ -68,6 +71,7 @@ protoc \
     "$COSMOS_PROTO_DIR/cosmos/tx/v1beta1/tx.proto" \
     "$COSMOS_PROTO_DIR/cosmos/upgrade/v1beta1/query.proto" \
     "$COSMOS_PROTO_DIR/cosmos/upgrade/v1beta1/upgrade.proto" \
+    "$COSMOS_PROTO_DIR/cosmos/upgrade/v1beta1/tx.proto" \
     "$COSMOS_PROTO_DIR/cosmos/vesting/v1beta1/tx.proto" \
     "$COSMOS_PROTO_DIR/cosmos/vesting/v1beta1/vesting.proto" \
     "$IBC_PROTO_DIR/ibc/applications/interchain_accounts/controller/v1/controller.proto" \
@@ -92,26 +96,17 @@ protoc \
     "$IBC_PROTO_DIR/ibc/core/connection/v1/query.proto" \
     "$IBC_PROTO_DIR/ibc/core/connection/v1/tx.proto" \
     "$IBC_PROTO_DIR/ibc/lightclients/tendermint/v1/tendermint.proto" \
-    "$COSMOS_THIRD_PARTY_PROTO_DIR/tendermint/abci/types.proto" \
-    "$COSMOS_THIRD_PARTY_PROTO_DIR/tendermint/crypto/keys.proto" \
-    "$COSMOS_THIRD_PARTY_PROTO_DIR/tendermint/crypto/proof.proto" \
-    "$COSMOS_THIRD_PARTY_PROTO_DIR/tendermint/libs/bits/types.proto" \
-    "$COSMOS_THIRD_PARTY_PROTO_DIR/tendermint/types/params.proto" \
-    "$COSMOS_THIRD_PARTY_PROTO_DIR/tendermint/types/types.proto" \
-    "$COSMOS_THIRD_PARTY_PROTO_DIR/tendermint/types/validator.proto" \
-    "$COSMOS_THIRD_PARTY_PROTO_DIR/tendermint/version/types.proto" \
-    "$IBC_THIRD_PARTY_PROTO_DIR/proofs.proto" \
-    "$LUM_PROTO_DIR/airdrop/claim.proto" \
-    "$LUM_PROTO_DIR/airdrop/query.proto" \
-    "$LUM_PROTO_DIR/airdrop/params.proto" \
-    "$LUM_PROTO_DIR/beam/beam.proto" \
-    "$LUM_PROTO_DIR/beam/query.proto" \
-    "$LUM_PROTO_DIR/beam/tx.proto" \
-    "$LUM_PROTO_DIR/dfract/deposit.proto" \
-    "$LUM_PROTO_DIR/dfract/query.proto" \
-    "$LUM_PROTO_DIR/dfract/tx.proto" \
-    "$LUM_PROTO_DIR/dfract/params.proto" \
-    "$LUM_PROTO_DIR/dfract/proposal.proto"
+    "$LUM_PROTO_DIR/lum-network/airdrop/claim.proto" \
+    "$LUM_PROTO_DIR/lum-network/airdrop/query.proto" \
+    "$LUM_PROTO_DIR/lum-network/airdrop/params.proto" \
+    "$LUM_PROTO_DIR/lum-network/beam/beam.proto" \
+    "$LUM_PROTO_DIR/lum-network/beam/query.proto" \
+    "$LUM_PROTO_DIR/lum-network/beam/tx.proto" \
+    "$LUM_PROTO_DIR/lum-network/dfract/deposit.proto" \
+    "$LUM_PROTO_DIR/lum-network/dfract/query.proto" \
+    "$LUM_PROTO_DIR/lum-network/dfract/tx.proto" \
+    "$LUM_PROTO_DIR/lum-network/dfract/params.proto" \
+    "$LUM_PROTO_DIR/lum-network/dfract/proposal.proto"
 
 # Remove unnecessary codec files
 rm -rf \

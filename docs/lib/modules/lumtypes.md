@@ -16,14 +16,23 @@
 - [LogAttribute](../interfaces/LumTypes.LogAttribute.md)
 - [LogEvent](../interfaces/LumTypes.LogEvent.md)
 - [PubKey](../interfaces/LumTypes.PubKey.md)
-- [SignDoc](../interfaces/LumTypes.SignDoc.md)
 - [SignMsg](../interfaces/LumTypes.SignMsg.md)
 - [Tx](../interfaces/LumTypes.Tx.md)
+
+### Type aliases
+
+- [SignDoc](LumTypes.md#signdoc)
 
 ### Variables
 
 - [PubKey](LumTypes.md#pubkey)
 - [Tx](LumTypes.md#tx)
+
+## Type aliases
+
+### SignDoc
+
+Ƭ **SignDoc**: `SignDocCosmos`
 
 ## Variables
 
@@ -54,5 +63,5 @@ ___
 | `decode` | (`input`: `Uint8Array` \| `Reader`, `length?`: `number`) => [`Tx`](LumTypes.md#tx) |
 | `encode` | (`message`: [`Tx`](LumTypes.md#tx), `writer`: `Writer`) => `Writer` |
 | `fromJSON` | (`object`: `any`) => [`Tx`](LumTypes.md#tx) |
-| `fromPartial` | (`object`: { `authInfo?`: { signerInfos?: { publicKey?: { typeUrl?: string \| undefined; value?: Uint8Array \| undefined; } \| undefined; modeInfo?: { single?: { mode?: SignMode \| undefined; } \| undefined; multi?: { ...; } \| undefined; } \| undefined; sequence?: Long \| undefined; }[] \| undefined; fee?: { ...; } \| undefined; } ; `body?`: { messages?: { typeUrl?: string \| undefined; value?: Uint8Array \| undefined; }[] \| undefined; memo?: string \| undefined; timeoutHeight?: Long \| undefined; extensionOptions?: { ...; }[] \| undefined; nonCriticalExtensionOptions?: { ...; }[] \| undefined; } ; `signatures?`: `Uint8Array`[]  }) => [`Tx`](LumTypes.md#tx) |
+| `fromPartial` | (`object`: { `authInfo?`: { signerInfos?: { publicKey?: { typeUrl?: string \| undefined; value?: Uint8Array \| undefined; } \| undefined; modeInfo?: { single?: { mode?: SignMode \| undefined; } \| undefined; multi?: { ...; } \| undefined; } \| undefined; sequence?: Long \| undefined; }[] \| undefined; fee?: { ...; } \| undefined; tip?: { ...; } \| unde... ; `body?`: { messages?: { typeUrl?: string \| undefined; value?: Uint8Array \| undefined; }[] \| undefined; memo?: string \| undefined; timeoutHeight?: Long \| undefined; extensionOptions?: { ...; }[] \| undefined; nonCriticalExtensionOptions?: { ...; }[] \| undefined; } ; `signatures?`: `Uint8Array`[]  }) => [`Tx`](LumTypes.md#tx) |
 | `toJSON` | (`message`: [`Tx`](LumTypes.md#tx)) => `unknown` |

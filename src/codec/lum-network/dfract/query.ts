@@ -1,10 +1,10 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
-import { Params } from '../dfract/params';
-import { PageRequest, PageResponse } from '../cosmos/base/query/v1beta1/pagination';
-import { Deposit } from '../dfract/deposit';
-import { Coin } from '../cosmos/base/v1beta1/coin';
+import { Params } from '../../lum-network/dfract/params';
+import { PageRequest, PageResponse } from '../../cosmos/base/query/v1beta1/pagination';
+import { Deposit } from '../../lum-network/dfract/deposit';
+import { Coin } from '../../cosmos/base/v1beta1/coin';
 
 export const protobufPackage = 'lum.network.dfract';
 

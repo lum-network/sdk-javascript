@@ -17,6 +17,8 @@ import {
     setupGovExtension,
     IbcExtension,
     setupIbcExtension,
+    MillionsExtension,
+    setupMillionsExtension,
     MintExtension,
     setupMintExtension,
     StakingExtension,
@@ -41,6 +43,7 @@ export class LumClient {
         DistributionExtension &
         GovExtension &
         IbcExtension &
+        MillionsExtension &
         MintExtension &
         StakingExtension &
         SlashingExtension &
@@ -66,6 +69,7 @@ export class LumClient {
             setupDistributionExtension,
             setupGovExtension,
             setupIbcExtension,
+            setupMillionsExtension,
             setupMintExtension,
             setupStakingExtension,
             setupSlashingExtension,
@@ -137,8 +141,7 @@ export class LumClient {
      * Get the connected node status information
      */
     status = async (): Promise<StatusResponse> => {
-        const status = await this.tmClient.status();
-        return status;
+        return this.tmClient.status();
     };
 
     /**
@@ -204,8 +207,7 @@ export class LumClient {
      * @param address wallet address
      */
     getAllBalances = async (address: string): Promise<LumTypes.Coin[]> => {
-        const balances = await this.queryClient.bank.allBalances(address);
-        return balances;
+        return this.queryClient.bank.allBalances(address);
     };
 
     /**
@@ -222,8 +224,7 @@ export class LumClient {
      * Get all coins supplies
      */
     getAllSupplies = async (): Promise<LumTypes.Coin[]> => {
-        const supplies = await this.queryClient.bank.totalSupply();
-        return supplies;
+        return this.queryClient.bank.totalSupply();
     };
 
     /**
@@ -233,8 +234,7 @@ export class LumClient {
      * @param includeProof whether or not to include proof of the transaction inclusion in the block
      */
     getTx = async (hash: Uint8Array, includeProof?: boolean): Promise<LumTypes.TxResponse | null> => {
-        const result = await this.tmClient.tx({ hash: hash, prove: includeProof });
-        return result;
+        return this.tmClient.tx({ hash: hash, prove: includeProof });
     };
 
     /**
@@ -280,39 +280,57 @@ export class LumClient {
     /**
      * Signs the messages using the provided wallet and builds the transaction
      *
-     * @param wallet signing wallet or wallets for multi signature
+     * @param wallet signing wallet for multi signature
      * @param doc document to sign
      */
-    signTx = async (wallet: LumWallet | LumWallet[], doc: LumTypes.Doc): Promise<Uint8Array> => {
-        let wallets: LumWallet[] = [];
-        if (Array.isArray(wallet)) {
-            wallets = wallet;
-        } else {
-            wallets = [wallet];
+    signTx = async (wallet: LumWallet, doc: LumTypes.Doc): Promise<Uint8Array> => {
+        const signatures: Uint8Array[] = [];
+        const [signedDoc, signature] = await this.signTxFromWallet(wallet, doc);
+
+        signatures.push(signature);
+
+        if (!signedDoc || signatures.length === 0) {
+            throw new Error('Failed to sign the document: no signature provided');
         }
 
-        if (wallets.length < 1) {
-            throw new Error('At least one wallet is required to sign the transaction');
-        }
+        return LumUtils.generateTxBytes(signedDoc, signatures);
+    };
 
+    /**
+     * Signs the messages using the provided wallets and builds the transaction
+     *
+     * @param wallets signing wallets for multi signature
+     * @param doc document to sign
+     */
+    signTxForMultiWallet = async (wallets: LumWallet[], doc: LumTypes.Doc): Promise<Uint8Array> => {
         let signDoc: LumTypes.SignDoc | undefined = undefined;
         const signatures: Uint8Array[] = [];
 
-        for (let i = 0; i < wallets.length; i++) {
-            const account = await this.getAccount(wallets[i].getAddress());
-            if (!account) {
-                throw new Error(`Account not found for wallet at index ${i}`);
-            }
-            const [walletSignedDoc, signature] = await wallets[i].signTransaction(doc);
-            if (i === 0) {
+        for (const wallet of wallets) {
+            const [walletSignedDoc, signature] = await this.signTxFromWallet(wallet, doc);
+
+            signatures.push(signature);
+
+            if (!signDoc) {
                 signDoc = walletSignedDoc;
             }
-            signatures.push(signature);
         }
-        if (!signDoc) {
-            throw new Error('Impossible error to avoid typescript warnings');
+
+        if (!signDoc || signatures.length === 0) {
+            throw new Error('Failed to sign the document: no signature provided');
         }
+
         return LumUtils.generateTxBytes(signDoc, signatures);
+    };
+
+    signTxFromWallet = async (wallet: LumWallet, doc: LumTypes.Doc) => {
+        const account = await this.getAccount(wallet.getAddress());
+
+        if (!account) {
+            throw new Error(`Account not found for wallet ${wallet.getAddress()}`);
+        }
+
+        return wallet.signTransaction(doc);
     };
 
     /**
@@ -322,8 +340,7 @@ export class LumClient {
      * @param tx signed transaction to broadcast
      */
     broadcastTx = async (tx: Uint8Array): Promise<LumTypes.BroadcastTxCommitResponse> => {
-        const response = await this.tmClient.broadcastTxCommit({ tx });
-        return response;
+        return this.tmClient.broadcastTxCommit({ tx });
     };
 
     /**
@@ -332,8 +349,15 @@ export class LumClient {
      * @param wallet signing wallet or wallets for multi signature
      * @param doc document to sign and broadcast as a transaction
      */
-    signAndBroadcastTx = async (wallet: LumWallet | LumWallet[], doc: LumTypes.Doc): Promise<LumTypes.BroadcastTxCommitResponse> => {
+    signAndBroadcastTx = async (wallet: LumWallet, doc: LumTypes.Doc): Promise<LumTypes.BroadcastTxCommitResponse> => {
         const signedTx = await this.signTx(wallet, doc);
+
+        return this.broadcastTx(signedTx);
+    };
+
+    signAndBroadcastTxForMultiWallet = async (wallets: LumWallet[], doc: LumTypes.Doc): Promise<LumTypes.BroadcastTxCommitResponse> => {
+        const signedTx = await this.signTxForMultiWallet(wallets, doc);
+
         return this.broadcastTx(signedTx);
     };
 }
