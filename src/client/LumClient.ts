@@ -1,5 +1,6 @@
-import { Tendermint34Client, StatusResponse } from '@cosmjs/tendermint-rpc';
+import { Tendermint34Client, StatusResponse, RpcClient, HttpClient, WebsocketClient, Method as RpcMethod } from '@cosmjs/tendermint-rpc';
 import { QueryClient as StargateQueryClient } from '@cosmjs/stargate';
+import { JsonRpcRequest } from '@cosmjs/json-rpc';
 
 import { LumWallet, LumUtils, LumTypes } from '..';
 import {
@@ -32,7 +33,12 @@ import { setupSlashingExtension, SlashingExtension } from '../extensions/slashin
 import { AuthzExtension, setupAuthzExtension } from '../extensions/authz';
 import { FeegrantExtension, setupFeegrantExtension } from '../extensions/feegrant';
 
+function defaultErrorHandler(error: unknown): never {
+    throw error;
+}
+
 export class LumClient {
+    readonly rpcClient: RpcClient;
     readonly tmClient: Tendermint34Client;
     readonly queryClient: StargateQueryClient &
         AuthExtension &
@@ -93,26 +99,42 @@ export class LumClient {
         //     return res;
         // };
     }
-
-    /**
-     * Creates a new LumClient for the given endpoint
-     * Uses HTTP when the URL schema is http or https, uses WebSockets otherwise
-     *
-     * @param endpoint Blockchain node RPC url
-     * @param onError Callback for errors
-     */
-    static connect = async (endpoint: string, onError?: (e: unknown) => void): Promise<LumClient> => {
-        try {
-            const tmClient = await Tendermint34Client.connect(endpoint);
-
-            return new LumClient(tmClient);
-        } catch (e) {
-            if (onError) {
-                onError(e);
-            }
-
-            throw e;
+    static async detectVersion(client: RpcClient): Promise<string> {
+        const numbersWithoutZero = '123456789';
+        const req: JsonRpcRequest = {
+            jsonrpc: '2.0',
+            id: parseInt(
+                Array.from({ length: 12 })
+                    .map(() => numbersWithoutZero[Math.floor(Math.random() * numbersWithoutZero.length)])
+                    .join(''),
+                10,
+            ),
+            method: RpcMethod.Status,
+            params: {},
+        };
+        const response = await client.execute(req);
+        const result = response.result;
+        if (!result || !result.node_info) {
+            throw new Error('Unrecognized format for status response');
         }
+        const version = result.node_info.version;
+        if (typeof version !== 'string') {
+            throw new Error('Unrecognized version format: must be string');
+        }
+        return version;
+    }
+
+    static connect = async (endpoint: string, onWebsocketError = defaultErrorHandler): Promise<LumClient> => {
+        let rpcClient;
+        if (typeof endpoint === 'object') {
+            rpcClient = new HttpClient(endpoint);
+        } else {
+            const useHttp = endpoint.startsWith('http://') || endpoint.startsWith('https://');
+            rpcClient = useHttp ? new HttpClient(endpoint) : new WebsocketClient(endpoint, onWebsocketError);
+        }
+        await this.detectVersion(rpcClient);
+        const tmClient = await Tendermint34Client.create(rpcClient);
+        return new LumClient(tmClient);
     };
 
     /**

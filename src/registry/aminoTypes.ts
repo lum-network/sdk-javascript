@@ -82,7 +82,7 @@ export const createDefaultAminoTypes = (): AminoConverters => {
         ...createAuthzAminoConverters(),
         ...createDistributionAminoConverters(),
         ...createGovAminoConverters(),
-        ...createStakingAminoConverters('lum'),
+        ...createStakingAminoConverters(),
         ...createIbcAminoConverters(),
     };
 };
