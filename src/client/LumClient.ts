@@ -33,7 +33,7 @@ import { setupSlashingExtension, SlashingExtension } from '../extensions/slashin
 import { AuthzExtension, setupAuthzExtension } from '../extensions/authz';
 import { FeegrantExtension, setupFeegrantExtension } from '../extensions/feegrant';
 
-function defaultErrorHandler(error: unknown): never {
+function defaultErrorHandler(error: unknown): void {
     throw error;
 }
 
