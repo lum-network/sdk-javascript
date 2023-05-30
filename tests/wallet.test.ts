@@ -1,7 +1,7 @@
 import { AccountData, DirectSignResponse, OfflineDirectSigner } from '@cosmjs/proto-signing';
 
 import { SignDoc } from '../src/codec/cosmos/tx/v1beta1/tx';
-import { LumWallet, LumWalletFactory, LumUtils, LumConstants, LumMessages, LumRegistry, LumAminoRegistry } from '../src';
+import { LumWallet, LumWalletFactory, LumUtils, LumConstants, LumMessages, LumAminoRegistry } from '../src';
 import { AminoSignResponse, encodeSecp256k1Signature, OfflineAminoSigner, StdSignDoc } from '@cosmjs/amino';
 import { SignMode } from '../src/codec/cosmos/tx/signing/v1beta1/signing';
 

@@ -1437,7 +1437,7 @@
   resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-6.12.6.tgz#f89c82c91c2930f34bc3e0d86a27ec7b6e6e4f5f"
   integrity sha512-D+r2B09vaRO06wfGoss+rNgwqWSoK0bCtsaJWzlD2hv1zxTtucqVtSztbRFypIqxWTCb3ix5Nh2dWHEJVTp2Xw==
 
-"@ledgerhq/hw-app-cosmos@^6.27.10":
+"@ledgerhq/hw-app-cosmos@^6.28.1":
   version "6.28.1"
   resolved "https://registry.yarnpkg.com/@ledgerhq/hw-app-cosmos/-/hw-app-cosmos-6.28.1.tgz#7b0c05d40a35cced4e09967eec9a85c530eb0b3e"
   integrity sha512-xlWrkgyuKtmljAtEH9ww7mS8Wv7ek+Ejy8m+XyG7J0Lb88SuXMfwZzj379v5OsSykFqQ4lrWSbA7kG1la5FMBQ==
@@ -1471,7 +1471,7 @@
     node-hid "^2.1.2"
     usb "^1.7.0"
 
-"@ledgerhq/hw-transport@^6.27.10", "@ledgerhq/hw-transport@^6.28.4":
+"@ledgerhq/hw-transport@^6.28.4":
   version "6.28.4"
   resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-6.28.4.tgz#c2fc5bff4fca71ac44f069b775d33d0b1b5d9000"
   integrity sha512-fB2H92YQjidmae2GFCmOGPwkZWk0lvTu0tlLlzfiY0wRheAG+DEgjnqhdU8wmydkPLIj0WUjRgldtnJtg/a2iQ==
@@ -4093,11 +4093,6 @@ long@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/long/-/long-4.0.0.tgz#9a7b71cfb7d361a194ea555241c92f7468d5bf28"
   integrity sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==
-
-long@^5.2.3:
-  version "5.2.3"
-  resolved "https://registry.yarnpkg.com/long/-/long-5.2.3.tgz#a3ba97f3877cf1d778eccbcb048525ebb77499e1"
-  integrity sha512-lcHwpNoggQTObv5apGNCTdJrO69eHOZMi4BNC+rTLER8iHAqGrUVeLh/irVIM7zTw2bOXA8T6uNPeujwOLg/2Q==
 
 lru-cache@^5.1.1:
   version "5.1.1"
