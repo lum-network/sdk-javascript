@@ -12,7 +12,9 @@ export interface MsgDeposit {
 
 export interface MsgDepositResponse {}
 
-const baseMsgDeposit: object = { depositorAddress: '' };
+function createBaseMsgDeposit(): MsgDeposit {
+    return { depositorAddress: '', amount: undefined };
+}
 
 export const MsgDeposit = {
     encode(message: MsgDeposit, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -26,39 +28,40 @@ export const MsgDeposit = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeposit {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMsgDeposit } as MsgDeposit;
+        const message = createBaseMsgDeposit();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.depositorAddress = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.amount = Coin.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): MsgDeposit {
-        const message = { ...baseMsgDeposit } as MsgDeposit;
-        if (object.depositorAddress !== undefined && object.depositorAddress !== null) {
-            message.depositorAddress = String(object.depositorAddress);
-        } else {
-            message.depositorAddress = '';
-        }
-        if (object.amount !== undefined && object.amount !== null) {
-            message.amount = Coin.fromJSON(object.amount);
-        } else {
-            message.amount = undefined;
-        }
-        return message;
+        return {
+            depositorAddress: isSet(object.depositorAddress) ? String(object.depositorAddress) : '',
+            amount: isSet(object.amount) ? Coin.fromJSON(object.amount) : undefined,
+        };
     },
 
     toJSON(message: MsgDeposit): unknown {
@@ -68,19 +71,21 @@ export const MsgDeposit = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<MsgDeposit>): MsgDeposit {
-        const message = { ...baseMsgDeposit } as MsgDeposit;
+    create<I extends Exact<DeepPartial<MsgDeposit>, I>>(base?: I): MsgDeposit {
+        return MsgDeposit.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<MsgDeposit>, I>>(object: I): MsgDeposit {
+        const message = createBaseMsgDeposit();
         message.depositorAddress = object.depositorAddress ?? '';
-        if (object.amount !== undefined && object.amount !== null) {
-            message.amount = Coin.fromPartial(object.amount);
-        } else {
-            message.amount = undefined;
-        }
+        message.amount = object.amount !== undefined && object.amount !== null ? Coin.fromPartial(object.amount) : undefined;
         return message;
     },
 };
 
-const baseMsgDepositResponse: object = {};
+function createBaseMsgDepositResponse(): MsgDepositResponse {
+    return {};
+}
 
 export const MsgDepositResponse = {
     encode(_: MsgDepositResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -88,23 +93,23 @@ export const MsgDepositResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgDepositResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMsgDepositResponse } as MsgDepositResponse;
+        const message = createBaseMsgDepositResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(_: any): MsgDepositResponse {
-        const message = { ...baseMsgDepositResponse } as MsgDepositResponse;
-        return message;
+        return {};
     },
 
     toJSON(_: MsgDepositResponse): unknown {
@@ -112,8 +117,12 @@ export const MsgDepositResponse = {
         return obj;
     },
 
-    fromPartial(_: DeepPartial<MsgDepositResponse>): MsgDepositResponse {
-        const message = { ...baseMsgDepositResponse } as MsgDepositResponse;
+    create<I extends Exact<DeepPartial<MsgDepositResponse>, I>>(base?: I): MsgDepositResponse {
+        return MsgDepositResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<MsgDepositResponse>, I>>(_: I): MsgDepositResponse {
+        const message = createBaseMsgDepositResponse();
         return message;
     },
 };
@@ -124,14 +133,16 @@ export interface Msg {
 
 export class MsgClientImpl implements Msg {
     private readonly rpc: Rpc;
-    constructor(rpc: Rpc) {
+    private readonly service: string;
+    constructor(rpc: Rpc, opts?: { service?: string }) {
+        this.service = opts?.service || 'lum.network.dfract.Msg';
         this.rpc = rpc;
         this.Deposit = this.Deposit.bind(this);
     }
     Deposit(request: MsgDeposit): Promise<MsgDepositResponse> {
         const data = MsgDeposit.encode(request).finish();
-        const promise = this.rpc.request('lum.network.dfract.Msg', 'Deposit', data);
-        return promise.then((data) => MsgDepositResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'Deposit', data);
+        return promise.then((data) => MsgDepositResponse.decode(_m0.Reader.create(data)));
     }
 }
 
@@ -139,9 +150,12 @@ interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -150,7 +164,14 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }

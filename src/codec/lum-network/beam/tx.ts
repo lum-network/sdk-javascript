@@ -2,7 +2,7 @@
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
 import { Coin } from '../../cosmos/base/v1beta1/coin';
-import { BeamData, BeamState, beamStateFromJSON, beamStateToJSON } from '../../lum-network/beam/beam';
+import { BeamData, BeamState, beamStateFromJSON, beamStateToJSON } from './beam';
 
 export const protobufPackage = 'lum.network.beam';
 
@@ -37,7 +37,19 @@ export interface MsgClaimBeam {
     secret: string;
 }
 
-const baseMsgOpenBeam: object = { id: '', creatorAddress: '', secret: '', schema: '', claimAddress: '', claimExpiresAtBlock: 0, closesAtBlock: 0 };
+function createBaseMsgOpenBeam(): MsgOpenBeam {
+    return {
+        id: '',
+        creatorAddress: '',
+        secret: '',
+        amount: undefined,
+        schema: '',
+        data: undefined,
+        claimAddress: '',
+        claimExpiresAtBlock: 0,
+        closesAtBlock: 0,
+    };
+}
 
 export const MsgOpenBeam = {
     encode(message: MsgOpenBeam, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -72,95 +84,96 @@ export const MsgOpenBeam = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgOpenBeam {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMsgOpenBeam } as MsgOpenBeam;
+        const message = createBaseMsgOpenBeam();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.id = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.creatorAddress = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.secret = reader.string();
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
                     message.amount = Coin.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 5:
+                    if (tag !== 42) {
+                        break;
+                    }
+
                     message.schema = reader.string();
-                    break;
+                    continue;
                 case 6:
+                    if (tag !== 50) {
+                        break;
+                    }
+
                     message.data = BeamData.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 7:
+                    if (tag !== 58) {
+                        break;
+                    }
+
                     message.claimAddress = reader.string();
-                    break;
+                    continue;
                 case 8:
+                    if (tag !== 64) {
+                        break;
+                    }
+
                     message.claimExpiresAtBlock = reader.int32();
-                    break;
+                    continue;
                 case 9:
+                    if (tag !== 72) {
+                        break;
+                    }
+
                     message.closesAtBlock = reader.int32();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): MsgOpenBeam {
-        const message = { ...baseMsgOpenBeam } as MsgOpenBeam;
-        if (object.id !== undefined && object.id !== null) {
-            message.id = String(object.id);
-        } else {
-            message.id = '';
-        }
-        if (object.creatorAddress !== undefined && object.creatorAddress !== null) {
-            message.creatorAddress = String(object.creatorAddress);
-        } else {
-            message.creatorAddress = '';
-        }
-        if (object.secret !== undefined && object.secret !== null) {
-            message.secret = String(object.secret);
-        } else {
-            message.secret = '';
-        }
-        if (object.amount !== undefined && object.amount !== null) {
-            message.amount = Coin.fromJSON(object.amount);
-        } else {
-            message.amount = undefined;
-        }
-        if (object.schema !== undefined && object.schema !== null) {
-            message.schema = String(object.schema);
-        } else {
-            message.schema = '';
-        }
-        if (object.data !== undefined && object.data !== null) {
-            message.data = BeamData.fromJSON(object.data);
-        } else {
-            message.data = undefined;
-        }
-        if (object.claimAddress !== undefined && object.claimAddress !== null) {
-            message.claimAddress = String(object.claimAddress);
-        } else {
-            message.claimAddress = '';
-        }
-        if (object.claimExpiresAtBlock !== undefined && object.claimExpiresAtBlock !== null) {
-            message.claimExpiresAtBlock = Number(object.claimExpiresAtBlock);
-        } else {
-            message.claimExpiresAtBlock = 0;
-        }
-        if (object.closesAtBlock !== undefined && object.closesAtBlock !== null) {
-            message.closesAtBlock = Number(object.closesAtBlock);
-        } else {
-            message.closesAtBlock = 0;
-        }
-        return message;
+        return {
+            id: isSet(object.id) ? String(object.id) : '',
+            creatorAddress: isSet(object.creatorAddress) ? String(object.creatorAddress) : '',
+            secret: isSet(object.secret) ? String(object.secret) : '',
+            amount: isSet(object.amount) ? Coin.fromJSON(object.amount) : undefined,
+            schema: isSet(object.schema) ? String(object.schema) : '',
+            data: isSet(object.data) ? BeamData.fromJSON(object.data) : undefined,
+            claimAddress: isSet(object.claimAddress) ? String(object.claimAddress) : '',
+            claimExpiresAtBlock: isSet(object.claimExpiresAtBlock) ? Number(object.claimExpiresAtBlock) : 0,
+            closesAtBlock: isSet(object.closesAtBlock) ? Number(object.closesAtBlock) : 0,
+        };
     },
 
     toJSON(message: MsgOpenBeam): unknown {
@@ -172,27 +185,23 @@ export const MsgOpenBeam = {
         message.schema !== undefined && (obj.schema = message.schema);
         message.data !== undefined && (obj.data = message.data ? BeamData.toJSON(message.data) : undefined);
         message.claimAddress !== undefined && (obj.claimAddress = message.claimAddress);
-        message.claimExpiresAtBlock !== undefined && (obj.claimExpiresAtBlock = message.claimExpiresAtBlock);
-        message.closesAtBlock !== undefined && (obj.closesAtBlock = message.closesAtBlock);
+        message.claimExpiresAtBlock !== undefined && (obj.claimExpiresAtBlock = Math.round(message.claimExpiresAtBlock));
+        message.closesAtBlock !== undefined && (obj.closesAtBlock = Math.round(message.closesAtBlock));
         return obj;
     },
 
-    fromPartial(object: DeepPartial<MsgOpenBeam>): MsgOpenBeam {
-        const message = { ...baseMsgOpenBeam } as MsgOpenBeam;
+    create<I extends Exact<DeepPartial<MsgOpenBeam>, I>>(base?: I): MsgOpenBeam {
+        return MsgOpenBeam.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<MsgOpenBeam>, I>>(object: I): MsgOpenBeam {
+        const message = createBaseMsgOpenBeam();
         message.id = object.id ?? '';
         message.creatorAddress = object.creatorAddress ?? '';
         message.secret = object.secret ?? '';
-        if (object.amount !== undefined && object.amount !== null) {
-            message.amount = Coin.fromPartial(object.amount);
-        } else {
-            message.amount = undefined;
-        }
+        message.amount = object.amount !== undefined && object.amount !== null ? Coin.fromPartial(object.amount) : undefined;
         message.schema = object.schema ?? '';
-        if (object.data !== undefined && object.data !== null) {
-            message.data = BeamData.fromPartial(object.data);
-        } else {
-            message.data = undefined;
-        }
+        message.data = object.data !== undefined && object.data !== null ? BeamData.fromPartial(object.data) : undefined;
         message.claimAddress = object.claimAddress ?? '';
         message.claimExpiresAtBlock = object.claimExpiresAtBlock ?? 0;
         message.closesAtBlock = object.closesAtBlock ?? 0;
@@ -200,7 +209,20 @@ export const MsgOpenBeam = {
     },
 };
 
-const baseMsgUpdateBeam: object = { id: '', updaterAddress: '', status: 0, cancelReason: '', hideContent: false, claimAddress: '', claimExpiresAtBlock: 0, closesAtBlock: 0 };
+function createBaseMsgUpdateBeam(): MsgUpdateBeam {
+    return {
+        id: '',
+        updaterAddress: '',
+        amount: undefined,
+        status: 0,
+        cancelReason: '',
+        hideContent: false,
+        data: undefined,
+        claimAddress: '',
+        claimExpiresAtBlock: 0,
+        closesAtBlock: 0,
+    };
+}
 
 export const MsgUpdateBeam = {
     encode(message: MsgUpdateBeam, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -238,103 +260,104 @@ export const MsgUpdateBeam = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateBeam {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMsgUpdateBeam } as MsgUpdateBeam;
+        const message = createBaseMsgUpdateBeam();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.id = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.updaterAddress = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.amount = Coin.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 32) {
+                        break;
+                    }
+
                     message.status = reader.int32() as any;
-                    break;
+                    continue;
                 case 5:
+                    if (tag !== 42) {
+                        break;
+                    }
+
                     message.cancelReason = reader.string();
-                    break;
+                    continue;
                 case 6:
+                    if (tag !== 48) {
+                        break;
+                    }
+
                     message.hideContent = reader.bool();
-                    break;
+                    continue;
                 case 7:
+                    if (tag !== 58) {
+                        break;
+                    }
+
                     message.data = BeamData.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 8:
+                    if (tag !== 66) {
+                        break;
+                    }
+
                     message.claimAddress = reader.string();
-                    break;
+                    continue;
                 case 9:
+                    if (tag !== 72) {
+                        break;
+                    }
+
                     message.claimExpiresAtBlock = reader.int32();
-                    break;
+                    continue;
                 case 10:
+                    if (tag !== 80) {
+                        break;
+                    }
+
                     message.closesAtBlock = reader.int32();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): MsgUpdateBeam {
-        const message = { ...baseMsgUpdateBeam } as MsgUpdateBeam;
-        if (object.id !== undefined && object.id !== null) {
-            message.id = String(object.id);
-        } else {
-            message.id = '';
-        }
-        if (object.updaterAddress !== undefined && object.updaterAddress !== null) {
-            message.updaterAddress = String(object.updaterAddress);
-        } else {
-            message.updaterAddress = '';
-        }
-        if (object.amount !== undefined && object.amount !== null) {
-            message.amount = Coin.fromJSON(object.amount);
-        } else {
-            message.amount = undefined;
-        }
-        if (object.status !== undefined && object.status !== null) {
-            message.status = beamStateFromJSON(object.status);
-        } else {
-            message.status = 0;
-        }
-        if (object.cancelReason !== undefined && object.cancelReason !== null) {
-            message.cancelReason = String(object.cancelReason);
-        } else {
-            message.cancelReason = '';
-        }
-        if (object.hideContent !== undefined && object.hideContent !== null) {
-            message.hideContent = Boolean(object.hideContent);
-        } else {
-            message.hideContent = false;
-        }
-        if (object.data !== undefined && object.data !== null) {
-            message.data = BeamData.fromJSON(object.data);
-        } else {
-            message.data = undefined;
-        }
-        if (object.claimAddress !== undefined && object.claimAddress !== null) {
-            message.claimAddress = String(object.claimAddress);
-        } else {
-            message.claimAddress = '';
-        }
-        if (object.claimExpiresAtBlock !== undefined && object.claimExpiresAtBlock !== null) {
-            message.claimExpiresAtBlock = Number(object.claimExpiresAtBlock);
-        } else {
-            message.claimExpiresAtBlock = 0;
-        }
-        if (object.closesAtBlock !== undefined && object.closesAtBlock !== null) {
-            message.closesAtBlock = Number(object.closesAtBlock);
-        } else {
-            message.closesAtBlock = 0;
-        }
-        return message;
+        return {
+            id: isSet(object.id) ? String(object.id) : '',
+            updaterAddress: isSet(object.updaterAddress) ? String(object.updaterAddress) : '',
+            amount: isSet(object.amount) ? Coin.fromJSON(object.amount) : undefined,
+            status: isSet(object.status) ? beamStateFromJSON(object.status) : 0,
+            cancelReason: isSet(object.cancelReason) ? String(object.cancelReason) : '',
+            hideContent: isSet(object.hideContent) ? Boolean(object.hideContent) : false,
+            data: isSet(object.data) ? BeamData.fromJSON(object.data) : undefined,
+            claimAddress: isSet(object.claimAddress) ? String(object.claimAddress) : '',
+            claimExpiresAtBlock: isSet(object.claimExpiresAtBlock) ? Number(object.claimExpiresAtBlock) : 0,
+            closesAtBlock: isSet(object.closesAtBlock) ? Number(object.closesAtBlock) : 0,
+        };
     },
 
     toJSON(message: MsgUpdateBeam): unknown {
@@ -347,28 +370,24 @@ export const MsgUpdateBeam = {
         message.hideContent !== undefined && (obj.hideContent = message.hideContent);
         message.data !== undefined && (obj.data = message.data ? BeamData.toJSON(message.data) : undefined);
         message.claimAddress !== undefined && (obj.claimAddress = message.claimAddress);
-        message.claimExpiresAtBlock !== undefined && (obj.claimExpiresAtBlock = message.claimExpiresAtBlock);
-        message.closesAtBlock !== undefined && (obj.closesAtBlock = message.closesAtBlock);
+        message.claimExpiresAtBlock !== undefined && (obj.claimExpiresAtBlock = Math.round(message.claimExpiresAtBlock));
+        message.closesAtBlock !== undefined && (obj.closesAtBlock = Math.round(message.closesAtBlock));
         return obj;
     },
 
-    fromPartial(object: DeepPartial<MsgUpdateBeam>): MsgUpdateBeam {
-        const message = { ...baseMsgUpdateBeam } as MsgUpdateBeam;
+    create<I extends Exact<DeepPartial<MsgUpdateBeam>, I>>(base?: I): MsgUpdateBeam {
+        return MsgUpdateBeam.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<MsgUpdateBeam>, I>>(object: I): MsgUpdateBeam {
+        const message = createBaseMsgUpdateBeam();
         message.id = object.id ?? '';
         message.updaterAddress = object.updaterAddress ?? '';
-        if (object.amount !== undefined && object.amount !== null) {
-            message.amount = Coin.fromPartial(object.amount);
-        } else {
-            message.amount = undefined;
-        }
+        message.amount = object.amount !== undefined && object.amount !== null ? Coin.fromPartial(object.amount) : undefined;
         message.status = object.status ?? 0;
         message.cancelReason = object.cancelReason ?? '';
         message.hideContent = object.hideContent ?? false;
-        if (object.data !== undefined && object.data !== null) {
-            message.data = BeamData.fromPartial(object.data);
-        } else {
-            message.data = undefined;
-        }
+        message.data = object.data !== undefined && object.data !== null ? BeamData.fromPartial(object.data) : undefined;
         message.claimAddress = object.claimAddress ?? '';
         message.claimExpiresAtBlock = object.claimExpiresAtBlock ?? 0;
         message.closesAtBlock = object.closesAtBlock ?? 0;
@@ -376,7 +395,9 @@ export const MsgUpdateBeam = {
     },
 };
 
-const baseMsgClaimBeam: object = { id: '', claimerAddress: '', secret: '' };
+function createBaseMsgClaimBeam(): MsgClaimBeam {
+    return { id: '', claimerAddress: '', secret: '' };
+}
 
 export const MsgClaimBeam = {
     encode(message: MsgClaimBeam, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -393,47 +414,48 @@ export const MsgClaimBeam = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgClaimBeam {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMsgClaimBeam } as MsgClaimBeam;
+        const message = createBaseMsgClaimBeam();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.id = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.claimerAddress = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.secret = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): MsgClaimBeam {
-        const message = { ...baseMsgClaimBeam } as MsgClaimBeam;
-        if (object.id !== undefined && object.id !== null) {
-            message.id = String(object.id);
-        } else {
-            message.id = '';
-        }
-        if (object.claimerAddress !== undefined && object.claimerAddress !== null) {
-            message.claimerAddress = String(object.claimerAddress);
-        } else {
-            message.claimerAddress = '';
-        }
-        if (object.secret !== undefined && object.secret !== null) {
-            message.secret = String(object.secret);
-        } else {
-            message.secret = '';
-        }
-        return message;
+        return {
+            id: isSet(object.id) ? String(object.id) : '',
+            claimerAddress: isSet(object.claimerAddress) ? String(object.claimerAddress) : '',
+            secret: isSet(object.secret) ? String(object.secret) : '',
+        };
     },
 
     toJSON(message: MsgClaimBeam): unknown {
@@ -444,8 +466,12 @@ export const MsgClaimBeam = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<MsgClaimBeam>): MsgClaimBeam {
-        const message = { ...baseMsgClaimBeam } as MsgClaimBeam;
+    create<I extends Exact<DeepPartial<MsgClaimBeam>, I>>(base?: I): MsgClaimBeam {
+        return MsgClaimBeam.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<MsgClaimBeam>, I>>(object: I): MsgClaimBeam {
+        const message = createBaseMsgClaimBeam();
         message.id = object.id ?? '';
         message.claimerAddress = object.claimerAddress ?? '';
         message.secret = object.secret ?? '';
@@ -453,9 +479,12 @@ export const MsgClaimBeam = {
     },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -464,7 +493,14 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }

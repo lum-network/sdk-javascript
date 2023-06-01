@@ -1,10 +1,10 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
-import { Params } from '../../lum-network/dfract/params';
 import { PageRequest, PageResponse } from '../../cosmos/base/query/v1beta1/pagination';
-import { Deposit } from '../../lum-network/dfract/deposit';
 import { Coin } from '../../cosmos/base/v1beta1/coin';
+import { Deposit } from './deposit';
+import { Params } from './params';
 
 export const protobufPackage = 'lum.network.dfract';
 
@@ -41,8 +41,9 @@ export function depositsQueryTypeToJSON(object: DepositsQueryType): string {
             return 'PENDING_MINT';
         case DepositsQueryType.MINTED:
             return 'MINTED';
+        case DepositsQueryType.UNRECOGNIZED:
         default:
-            return 'UNKNOWN';
+            return 'UNRECOGNIZED';
     }
 }
 
@@ -78,7 +79,9 @@ export interface QueryFetchDepositsResponse {
     pagination?: PageResponse;
 }
 
-const baseQueryModuleAccountBalanceRequest: object = {};
+function createBaseQueryModuleAccountBalanceRequest(): QueryModuleAccountBalanceRequest {
+    return {};
+}
 
 export const QueryModuleAccountBalanceRequest = {
     encode(_: QueryModuleAccountBalanceRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -86,23 +89,23 @@ export const QueryModuleAccountBalanceRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryModuleAccountBalanceRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryModuleAccountBalanceRequest } as QueryModuleAccountBalanceRequest;
+        const message = createBaseQueryModuleAccountBalanceRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(_: any): QueryModuleAccountBalanceRequest {
-        const message = { ...baseQueryModuleAccountBalanceRequest } as QueryModuleAccountBalanceRequest;
-        return message;
+        return {};
     },
 
     toJSON(_: QueryModuleAccountBalanceRequest): unknown {
@@ -110,13 +113,19 @@ export const QueryModuleAccountBalanceRequest = {
         return obj;
     },
 
-    fromPartial(_: DeepPartial<QueryModuleAccountBalanceRequest>): QueryModuleAccountBalanceRequest {
-        const message = { ...baseQueryModuleAccountBalanceRequest } as QueryModuleAccountBalanceRequest;
+    create<I extends Exact<DeepPartial<QueryModuleAccountBalanceRequest>, I>>(base?: I): QueryModuleAccountBalanceRequest {
+        return QueryModuleAccountBalanceRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryModuleAccountBalanceRequest>, I>>(_: I): QueryModuleAccountBalanceRequest {
+        const message = createBaseQueryModuleAccountBalanceRequest();
         return message;
     },
 };
 
-const baseQueryModuleAccountBalanceResponse: object = {};
+function createBaseQueryModuleAccountBalanceResponse(): QueryModuleAccountBalanceResponse {
+    return { moduleAccountBalance: [] };
+}
 
 export const QueryModuleAccountBalanceResponse = {
     encode(message: QueryModuleAccountBalanceResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -127,33 +136,32 @@ export const QueryModuleAccountBalanceResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryModuleAccountBalanceResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryModuleAccountBalanceResponse } as QueryModuleAccountBalanceResponse;
-        message.moduleAccountBalance = [];
+        const message = createBaseQueryModuleAccountBalanceResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.moduleAccountBalance.push(Coin.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryModuleAccountBalanceResponse {
-        const message = { ...baseQueryModuleAccountBalanceResponse } as QueryModuleAccountBalanceResponse;
-        message.moduleAccountBalance = [];
-        if (object.moduleAccountBalance !== undefined && object.moduleAccountBalance !== null) {
-            for (const e of object.moduleAccountBalance) {
-                message.moduleAccountBalance.push(Coin.fromJSON(e));
-            }
-        }
-        return message;
+        return {
+            moduleAccountBalance: Array.isArray(object?.moduleAccountBalance) ? object.moduleAccountBalance.map((e: any) => Coin.fromJSON(e)) : [],
+        };
     },
 
     toJSON(message: QueryModuleAccountBalanceResponse): unknown {
@@ -166,19 +174,20 @@ export const QueryModuleAccountBalanceResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryModuleAccountBalanceResponse>): QueryModuleAccountBalanceResponse {
-        const message = { ...baseQueryModuleAccountBalanceResponse } as QueryModuleAccountBalanceResponse;
-        message.moduleAccountBalance = [];
-        if (object.moduleAccountBalance !== undefined && object.moduleAccountBalance !== null) {
-            for (const e of object.moduleAccountBalance) {
-                message.moduleAccountBalance.push(Coin.fromPartial(e));
-            }
-        }
+    create<I extends Exact<DeepPartial<QueryModuleAccountBalanceResponse>, I>>(base?: I): QueryModuleAccountBalanceResponse {
+        return QueryModuleAccountBalanceResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryModuleAccountBalanceResponse>, I>>(object: I): QueryModuleAccountBalanceResponse {
+        const message = createBaseQueryModuleAccountBalanceResponse();
+        message.moduleAccountBalance = object.moduleAccountBalance?.map((e) => Coin.fromPartial(e)) || [];
         return message;
     },
 };
 
-const baseQueryParamsRequest: object = {};
+function createBaseQueryParamsRequest(): QueryParamsRequest {
+    return {};
+}
 
 export const QueryParamsRequest = {
     encode(_: QueryParamsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -186,23 +195,23 @@ export const QueryParamsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+        const message = createBaseQueryParamsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(_: any): QueryParamsRequest {
-        const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
-        return message;
+        return {};
     },
 
     toJSON(_: QueryParamsRequest): unknown {
@@ -210,13 +219,19 @@ export const QueryParamsRequest = {
         return obj;
     },
 
-    fromPartial(_: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
-        const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    create<I extends Exact<DeepPartial<QueryParamsRequest>, I>>(base?: I): QueryParamsRequest {
+        return QueryParamsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryParamsRequest>, I>>(_: I): QueryParamsRequest {
+        const message = createBaseQueryParamsRequest();
         return message;
     },
 };
 
-const baseQueryParamsResponse: object = {};
+function createBaseQueryParamsResponse(): QueryParamsResponse {
+    return { params: undefined };
+}
 
 export const QueryParamsResponse = {
     encode(message: QueryParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -227,31 +242,30 @@ export const QueryParamsResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+        const message = createBaseQueryParamsResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.params = Params.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryParamsResponse {
-        const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-        if (object.params !== undefined && object.params !== null) {
-            message.params = Params.fromJSON(object.params);
-        } else {
-            message.params = undefined;
-        }
-        return message;
+        return { params: isSet(object.params) ? Params.fromJSON(object.params) : undefined };
     },
 
     toJSON(message: QueryParamsResponse): unknown {
@@ -260,18 +274,20 @@ export const QueryParamsResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
-        const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-        if (object.params !== undefined && object.params !== null) {
-            message.params = Params.fromPartial(object.params);
-        } else {
-            message.params = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryParamsResponse>, I>>(base?: I): QueryParamsResponse {
+        return QueryParamsResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryParamsResponse>, I>>(object: I): QueryParamsResponse {
+        const message = createBaseQueryParamsResponse();
+        message.params = object.params !== undefined && object.params !== null ? Params.fromPartial(object.params) : undefined;
         return message;
     },
 };
 
-const baseQueryGetDepositsForAddressRequest: object = { address: '' };
+function createBaseQueryGetDepositsForAddressRequest(): QueryGetDepositsForAddressRequest {
+    return { address: '' };
+}
 
 export const QueryGetDepositsForAddressRequest = {
     encode(message: QueryGetDepositsForAddressRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -282,31 +298,30 @@ export const QueryGetDepositsForAddressRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetDepositsForAddressRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryGetDepositsForAddressRequest } as QueryGetDepositsForAddressRequest;
+        const message = createBaseQueryGetDepositsForAddressRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.address = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryGetDepositsForAddressRequest {
-        const message = { ...baseQueryGetDepositsForAddressRequest } as QueryGetDepositsForAddressRequest;
-        if (object.address !== undefined && object.address !== null) {
-            message.address = String(object.address);
-        } else {
-            message.address = '';
-        }
-        return message;
+        return { address: isSet(object.address) ? String(object.address) : '' };
     },
 
     toJSON(message: QueryGetDepositsForAddressRequest): unknown {
@@ -315,14 +330,20 @@ export const QueryGetDepositsForAddressRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryGetDepositsForAddressRequest>): QueryGetDepositsForAddressRequest {
-        const message = { ...baseQueryGetDepositsForAddressRequest } as QueryGetDepositsForAddressRequest;
+    create<I extends Exact<DeepPartial<QueryGetDepositsForAddressRequest>, I>>(base?: I): QueryGetDepositsForAddressRequest {
+        return QueryGetDepositsForAddressRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryGetDepositsForAddressRequest>, I>>(object: I): QueryGetDepositsForAddressRequest {
+        const message = createBaseQueryGetDepositsForAddressRequest();
         message.address = object.address ?? '';
         return message;
     },
 };
 
-const baseQueryFetchDepositsRequest: object = { type: 0 };
+function createBaseQueryFetchDepositsRequest(): QueryFetchDepositsRequest {
+    return { pagination: undefined, type: 0 };
+}
 
 export const QueryFetchDepositsRequest = {
     encode(message: QueryFetchDepositsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -336,39 +357,40 @@ export const QueryFetchDepositsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryFetchDepositsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryFetchDepositsRequest } as QueryFetchDepositsRequest;
+        const message = createBaseQueryFetchDepositsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
                     message.type = reader.int32() as any;
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryFetchDepositsRequest {
-        const message = { ...baseQueryFetchDepositsRequest } as QueryFetchDepositsRequest;
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        if (object.type !== undefined && object.type !== null) {
-            message.type = depositsQueryTypeFromJSON(object.type);
-        } else {
-            message.type = 0;
-        }
-        return message;
+        return {
+            pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+            type: isSet(object.type) ? depositsQueryTypeFromJSON(object.type) : 0,
+        };
     },
 
     toJSON(message: QueryFetchDepositsRequest): unknown {
@@ -378,19 +400,21 @@ export const QueryFetchDepositsRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryFetchDepositsRequest>): QueryFetchDepositsRequest {
-        const message = { ...baseQueryFetchDepositsRequest } as QueryFetchDepositsRequest;
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryFetchDepositsRequest>, I>>(base?: I): QueryFetchDepositsRequest {
+        return QueryFetchDepositsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryFetchDepositsRequest>, I>>(object: I): QueryFetchDepositsRequest {
+        const message = createBaseQueryFetchDepositsRequest();
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         message.type = object.type ?? 0;
         return message;
     },
 };
 
-const baseQueryGetDepositsForAddressResponse: object = {};
+function createBaseQueryGetDepositsForAddressResponse(): QueryGetDepositsForAddressResponse {
+    return { depositsPendingWithdrawal: undefined, depositsPendingMint: undefined, depositsMinted: undefined };
+}
 
 export const QueryGetDepositsForAddressResponse = {
     encode(message: QueryGetDepositsForAddressResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -407,47 +431,48 @@ export const QueryGetDepositsForAddressResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetDepositsForAddressResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryGetDepositsForAddressResponse } as QueryGetDepositsForAddressResponse;
+        const message = createBaseQueryGetDepositsForAddressResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.depositsPendingWithdrawal = Deposit.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.depositsPendingMint = Deposit.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.depositsMinted = Deposit.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryGetDepositsForAddressResponse {
-        const message = { ...baseQueryGetDepositsForAddressResponse } as QueryGetDepositsForAddressResponse;
-        if (object.depositsPendingWithdrawal !== undefined && object.depositsPendingWithdrawal !== null) {
-            message.depositsPendingWithdrawal = Deposit.fromJSON(object.depositsPendingWithdrawal);
-        } else {
-            message.depositsPendingWithdrawal = undefined;
-        }
-        if (object.depositsPendingMint !== undefined && object.depositsPendingMint !== null) {
-            message.depositsPendingMint = Deposit.fromJSON(object.depositsPendingMint);
-        } else {
-            message.depositsPendingMint = undefined;
-        }
-        if (object.depositsMinted !== undefined && object.depositsMinted !== null) {
-            message.depositsMinted = Deposit.fromJSON(object.depositsMinted);
-        } else {
-            message.depositsMinted = undefined;
-        }
-        return message;
+        return {
+            depositsPendingWithdrawal: isSet(object.depositsPendingWithdrawal) ? Deposit.fromJSON(object.depositsPendingWithdrawal) : undefined,
+            depositsPendingMint: isSet(object.depositsPendingMint) ? Deposit.fromJSON(object.depositsPendingMint) : undefined,
+            depositsMinted: isSet(object.depositsMinted) ? Deposit.fromJSON(object.depositsMinted) : undefined,
+        };
     },
 
     toJSON(message: QueryGetDepositsForAddressResponse): unknown {
@@ -458,28 +483,23 @@ export const QueryGetDepositsForAddressResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryGetDepositsForAddressResponse>): QueryGetDepositsForAddressResponse {
-        const message = { ...baseQueryGetDepositsForAddressResponse } as QueryGetDepositsForAddressResponse;
-        if (object.depositsPendingWithdrawal !== undefined && object.depositsPendingWithdrawal !== null) {
-            message.depositsPendingWithdrawal = Deposit.fromPartial(object.depositsPendingWithdrawal);
-        } else {
-            message.depositsPendingWithdrawal = undefined;
-        }
-        if (object.depositsPendingMint !== undefined && object.depositsPendingMint !== null) {
-            message.depositsPendingMint = Deposit.fromPartial(object.depositsPendingMint);
-        } else {
-            message.depositsPendingMint = undefined;
-        }
-        if (object.depositsMinted !== undefined && object.depositsMinted !== null) {
-            message.depositsMinted = Deposit.fromPartial(object.depositsMinted);
-        } else {
-            message.depositsMinted = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryGetDepositsForAddressResponse>, I>>(base?: I): QueryGetDepositsForAddressResponse {
+        return QueryGetDepositsForAddressResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryGetDepositsForAddressResponse>, I>>(object: I): QueryGetDepositsForAddressResponse {
+        const message = createBaseQueryGetDepositsForAddressResponse();
+        message.depositsPendingWithdrawal =
+            object.depositsPendingWithdrawal !== undefined && object.depositsPendingWithdrawal !== null ? Deposit.fromPartial(object.depositsPendingWithdrawal) : undefined;
+        message.depositsPendingMint = object.depositsPendingMint !== undefined && object.depositsPendingMint !== null ? Deposit.fromPartial(object.depositsPendingMint) : undefined;
+        message.depositsMinted = object.depositsMinted !== undefined && object.depositsMinted !== null ? Deposit.fromPartial(object.depositsMinted) : undefined;
         return message;
     },
 };
 
-const baseQueryFetchDepositsResponse: object = {};
+function createBaseQueryFetchDepositsResponse(): QueryFetchDepositsResponse {
+    return { deposits: [], pagination: undefined };
+}
 
 export const QueryFetchDepositsResponse = {
     encode(message: QueryFetchDepositsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -493,41 +513,40 @@ export const QueryFetchDepositsResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryFetchDepositsResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryFetchDepositsResponse } as QueryFetchDepositsResponse;
-        message.deposits = [];
+        const message = createBaseQueryFetchDepositsResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.deposits.push(Deposit.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageResponse.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryFetchDepositsResponse {
-        const message = { ...baseQueryFetchDepositsResponse } as QueryFetchDepositsResponse;
-        message.deposits = [];
-        if (object.deposits !== undefined && object.deposits !== null) {
-            for (const e of object.deposits) {
-                message.deposits.push(Deposit.fromJSON(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            deposits: Array.isArray(object?.deposits) ? object.deposits.map((e: any) => Deposit.fromJSON(e)) : [],
+            pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryFetchDepositsResponse): unknown {
@@ -541,19 +560,14 @@ export const QueryFetchDepositsResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryFetchDepositsResponse>): QueryFetchDepositsResponse {
-        const message = { ...baseQueryFetchDepositsResponse } as QueryFetchDepositsResponse;
-        message.deposits = [];
-        if (object.deposits !== undefined && object.deposits !== null) {
-            for (const e of object.deposits) {
-                message.deposits.push(Deposit.fromPartial(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryFetchDepositsResponse>, I>>(base?: I): QueryFetchDepositsResponse {
+        return QueryFetchDepositsResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryFetchDepositsResponse>, I>>(object: I): QueryFetchDepositsResponse {
+        const message = createBaseQueryFetchDepositsResponse();
+        message.deposits = object.deposits?.map((e) => Deposit.fromPartial(e)) || [];
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageResponse.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
@@ -567,7 +581,9 @@ export interface Query {
 
 export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
-    constructor(rpc: Rpc) {
+    private readonly service: string;
+    constructor(rpc: Rpc, opts?: { service?: string }) {
+        this.service = opts?.service || 'lum.network.dfract.Query';
         this.rpc = rpc;
         this.ModuleAccountBalance = this.ModuleAccountBalance.bind(this);
         this.Params = this.Params.bind(this);
@@ -576,26 +592,26 @@ export class QueryClientImpl implements Query {
     }
     ModuleAccountBalance(request: QueryModuleAccountBalanceRequest): Promise<QueryModuleAccountBalanceResponse> {
         const data = QueryModuleAccountBalanceRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.dfract.Query', 'ModuleAccountBalance', data);
-        return promise.then((data) => QueryModuleAccountBalanceResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'ModuleAccountBalance', data);
+        return promise.then((data) => QueryModuleAccountBalanceResponse.decode(_m0.Reader.create(data)));
     }
 
     Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
         const data = QueryParamsRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.dfract.Query', 'Params', data);
-        return promise.then((data) => QueryParamsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'Params', data);
+        return promise.then((data) => QueryParamsResponse.decode(_m0.Reader.create(data)));
     }
 
     GetDepositsForAddress(request: QueryGetDepositsForAddressRequest): Promise<QueryGetDepositsForAddressResponse> {
         const data = QueryGetDepositsForAddressRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.dfract.Query', 'GetDepositsForAddress', data);
-        return promise.then((data) => QueryGetDepositsForAddressResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'GetDepositsForAddress', data);
+        return promise.then((data) => QueryGetDepositsForAddressResponse.decode(_m0.Reader.create(data)));
     }
 
     FetchDeposits(request: QueryFetchDepositsRequest): Promise<QueryFetchDepositsResponse> {
         const data = QueryFetchDepositsRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.dfract.Query', 'FetchDeposits', data);
-        return promise.then((data) => QueryFetchDepositsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'FetchDeposits', data);
+        return promise.then((data) => QueryFetchDepositsResponse.decode(_m0.Reader.create(data)));
     }
 }
 
@@ -603,9 +619,12 @@ interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -614,7 +633,14 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }

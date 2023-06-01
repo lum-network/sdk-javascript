@@ -12,7 +12,9 @@ export interface Deposit {
     createdAt?: Date;
 }
 
-const baseDeposit: object = { depositorAddress: '' };
+function createBaseDeposit(): Deposit {
+    return { depositorAddress: '', amount: undefined, createdAt: undefined };
+}
 
 export const Deposit = {
     encode(message: Deposit, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -29,47 +31,48 @@ export const Deposit = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Deposit {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseDeposit } as Deposit;
+        const message = createBaseDeposit();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.depositorAddress = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.amount = Coin.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): Deposit {
-        const message = { ...baseDeposit } as Deposit;
-        if (object.depositorAddress !== undefined && object.depositorAddress !== null) {
-            message.depositorAddress = String(object.depositorAddress);
-        } else {
-            message.depositorAddress = '';
-        }
-        if (object.amount !== undefined && object.amount !== null) {
-            message.amount = Coin.fromJSON(object.amount);
-        } else {
-            message.amount = undefined;
-        }
-        if (object.createdAt !== undefined && object.createdAt !== null) {
-            message.createdAt = fromJsonTimestamp(object.createdAt);
-        } else {
-            message.createdAt = undefined;
-        }
-        return message;
+        return {
+            depositorAddress: isSet(object.depositorAddress) ? String(object.depositorAddress) : '',
+            amount: isSet(object.amount) ? Coin.fromJSON(object.amount) : undefined,
+            createdAt: isSet(object.createdAt) ? fromJsonTimestamp(object.createdAt) : undefined,
+        };
     },
 
     toJSON(message: Deposit): unknown {
@@ -80,22 +83,25 @@ export const Deposit = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<Deposit>): Deposit {
-        const message = { ...baseDeposit } as Deposit;
+    create<I extends Exact<DeepPartial<Deposit>, I>>(base?: I): Deposit {
+        return Deposit.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<Deposit>, I>>(object: I): Deposit {
+        const message = createBaseDeposit();
         message.depositorAddress = object.depositorAddress ?? '';
-        if (object.amount !== undefined && object.amount !== null) {
-            message.amount = Coin.fromPartial(object.amount);
-        } else {
-            message.amount = undefined;
-        }
+        message.amount = object.amount !== undefined && object.amount !== null ? Coin.fromPartial(object.amount) : undefined;
         message.createdAt = object.createdAt ?? undefined;
         return message;
     },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -104,6 +110,9 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 function toTimestamp(date: Date): Timestamp {
     const seconds = numberToLong(date.getTime() / 1_000);
     const nanos = (date.getTime() % 1_000) * 1_000_000;
@@ -111,8 +120,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-    let millis = t.seconds.toNumber() * 1_000;
-    millis += t.nanos / 1_000_000;
+    let millis = (t.seconds.toNumber() || 0) * 1_000;
+    millis += (t.nanos || 0) / 1_000_000;
     return new Date(millis);
 }
 
@@ -133,4 +142,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }

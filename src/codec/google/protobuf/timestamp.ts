@@ -55,7 +55,6 @@ export const protobufPackage = 'google.protobuf';
  *     Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
  *         .setNanos((int) ((millis % 1000) * 1000000)).build();
  *
- *
  * Example 5: Compute Timestamp from Java `Instant.now()`.
  *
  *     Instant now = Instant.now();
@@ -63,7 +62,6 @@ export const protobufPackage = 'google.protobuf';
  *     Timestamp timestamp =
  *         Timestamp.newBuilder().setSeconds(now.getEpochSecond())
  *             .setNanos(now.getNano()).build();
- *
  *
  * Example 6: Compute Timestamp from current time in Python.
  *
@@ -113,7 +111,9 @@ export interface Timestamp {
     nanos: number;
 }
 
-const baseTimestamp: object = { seconds: Long.ZERO, nanos: 0 };
+function createBaseTimestamp(): Timestamp {
+    return { seconds: Long.ZERO, nanos: 0 };
+}
 
 export const Timestamp = {
     encode(message: Timestamp, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -127,63 +127,67 @@ export const Timestamp = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Timestamp {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseTimestamp } as Timestamp;
+        const message = createBaseTimestamp();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.seconds = reader.int64() as Long;
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
                     message.nanos = reader.int32();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): Timestamp {
-        const message = { ...baseTimestamp } as Timestamp;
-        if (object.seconds !== undefined && object.seconds !== null) {
-            message.seconds = Long.fromString(object.seconds);
-        } else {
-            message.seconds = Long.ZERO;
-        }
-        if (object.nanos !== undefined && object.nanos !== null) {
-            message.nanos = Number(object.nanos);
-        } else {
-            message.nanos = 0;
-        }
-        return message;
+        return {
+            seconds: isSet(object.seconds) ? Long.fromValue(object.seconds) : Long.ZERO,
+            nanos: isSet(object.nanos) ? Number(object.nanos) : 0,
+        };
     },
 
     toJSON(message: Timestamp): unknown {
         const obj: any = {};
         message.seconds !== undefined && (obj.seconds = (message.seconds || Long.ZERO).toString());
-        message.nanos !== undefined && (obj.nanos = message.nanos);
+        message.nanos !== undefined && (obj.nanos = Math.round(message.nanos));
         return obj;
     },
 
-    fromPartial(object: DeepPartial<Timestamp>): Timestamp {
-        const message = { ...baseTimestamp } as Timestamp;
-        if (object.seconds !== undefined && object.seconds !== null) {
-            message.seconds = object.seconds as Long;
-        } else {
-            message.seconds = Long.ZERO;
-        }
+    create<I extends Exact<DeepPartial<Timestamp>, I>>(base?: I): Timestamp {
+        return Timestamp.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<Timestamp>, I>>(object: I): Timestamp {
+        const message = createBaseTimestamp();
+        message.seconds = object.seconds !== undefined && object.seconds !== null ? Long.fromValue(object.seconds) : Long.ZERO;
         message.nanos = object.nanos ?? 0;
         return message;
     },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -192,7 +196,14 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }
