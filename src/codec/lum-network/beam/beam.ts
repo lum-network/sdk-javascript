@@ -45,8 +45,9 @@ export function beamStateToJSON(object: BeamState): string {
             return 'CANCELED';
         case BeamState.CLOSED:
             return 'CLOSED';
+        case BeamState.UNRECOGNIZED:
         default:
-            return 'UNKNOWN';
+            return 'UNRECOGNIZED';
     }
 }
 
@@ -174,7 +175,9 @@ export interface Beam {
     closedAt?: Date;
 }
 
-const baseBeamMedia: object = { mimetype: '', url: '', thumbnailUrl: '' };
+function createBaseBeamMedia(): BeamMedia {
+    return { mimetype: '', url: '', thumbnailUrl: '' };
+}
 
 export const BeamMedia = {
     encode(message: BeamMedia, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -191,47 +194,48 @@ export const BeamMedia = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): BeamMedia {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBeamMedia } as BeamMedia;
+        const message = createBaseBeamMedia();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.mimetype = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.url = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.thumbnailUrl = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): BeamMedia {
-        const message = { ...baseBeamMedia } as BeamMedia;
-        if (object.mimetype !== undefined && object.mimetype !== null) {
-            message.mimetype = String(object.mimetype);
-        } else {
-            message.mimetype = '';
-        }
-        if (object.url !== undefined && object.url !== null) {
-            message.url = String(object.url);
-        } else {
-            message.url = '';
-        }
-        if (object.thumbnailUrl !== undefined && object.thumbnailUrl !== null) {
-            message.thumbnailUrl = String(object.thumbnailUrl);
-        } else {
-            message.thumbnailUrl = '';
-        }
-        return message;
+        return {
+            mimetype: isSet(object.mimetype) ? String(object.mimetype) : '',
+            url: isSet(object.url) ? String(object.url) : '',
+            thumbnailUrl: isSet(object.thumbnailUrl) ? String(object.thumbnailUrl) : '',
+        };
     },
 
     toJSON(message: BeamMedia): unknown {
@@ -242,8 +246,12 @@ export const BeamMedia = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<BeamMedia>): BeamMedia {
-        const message = { ...baseBeamMedia } as BeamMedia;
+    create<I extends Exact<DeepPartial<BeamMedia>, I>>(base?: I): BeamMedia {
+        return BeamMedia.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<BeamMedia>, I>>(object: I): BeamMedia {
+        const message = createBaseBeamMedia();
         message.mimetype = object.mimetype ?? '';
         message.url = object.url ?? '';
         message.thumbnailUrl = object.thumbnailUrl ?? '';
@@ -251,7 +259,9 @@ export const BeamMedia = {
     },
 };
 
-const baseBeamReviewer: object = { reviewerId: '', name: '', isAnonymous: false };
+function createBaseBeamReviewer(): BeamReviewer {
+    return { reviewerId: '', name: '', isAnonymous: false };
+}
 
 export const BeamReviewer = {
     encode(message: BeamReviewer, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -268,47 +278,48 @@ export const BeamReviewer = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): BeamReviewer {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBeamReviewer } as BeamReviewer;
+        const message = createBaseBeamReviewer();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.reviewerId = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.name = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 24) {
+                        break;
+                    }
+
                     message.isAnonymous = reader.bool();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): BeamReviewer {
-        const message = { ...baseBeamReviewer } as BeamReviewer;
-        if (object.reviewerId !== undefined && object.reviewerId !== null) {
-            message.reviewerId = String(object.reviewerId);
-        } else {
-            message.reviewerId = '';
-        }
-        if (object.name !== undefined && object.name !== null) {
-            message.name = String(object.name);
-        } else {
-            message.name = '';
-        }
-        if (object.isAnonymous !== undefined && object.isAnonymous !== null) {
-            message.isAnonymous = Boolean(object.isAnonymous);
-        } else {
-            message.isAnonymous = false;
-        }
-        return message;
+        return {
+            reviewerId: isSet(object.reviewerId) ? String(object.reviewerId) : '',
+            name: isSet(object.name) ? String(object.name) : '',
+            isAnonymous: isSet(object.isAnonymous) ? Boolean(object.isAnonymous) : false,
+        };
     },
 
     toJSON(message: BeamReviewer): unknown {
@@ -319,8 +330,12 @@ export const BeamReviewer = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<BeamReviewer>): BeamReviewer {
-        const message = { ...baseBeamReviewer } as BeamReviewer;
+    create<I extends Exact<DeepPartial<BeamReviewer>, I>>(base?: I): BeamReviewer {
+        return BeamReviewer.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<BeamReviewer>, I>>(object: I): BeamReviewer {
+        const message = createBaseBeamReviewer();
         message.reviewerId = object.reviewerId ?? '';
         message.name = object.name ?? '';
         message.isAnonymous = object.isAnonymous ?? false;
@@ -328,7 +343,9 @@ export const BeamReviewer = {
     },
 };
 
-const baseBeamVerifier: object = { name: '', url: '', signature: '' };
+function createBaseBeamVerifier(): BeamVerifier {
+    return { name: '', url: '', signature: '' };
+}
 
 export const BeamVerifier = {
     encode(message: BeamVerifier, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -345,47 +362,48 @@ export const BeamVerifier = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): BeamVerifier {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBeamVerifier } as BeamVerifier;
+        const message = createBaseBeamVerifier();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.name = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.url = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.signature = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): BeamVerifier {
-        const message = { ...baseBeamVerifier } as BeamVerifier;
-        if (object.name !== undefined && object.name !== null) {
-            message.name = String(object.name);
-        } else {
-            message.name = '';
-        }
-        if (object.url !== undefined && object.url !== null) {
-            message.url = String(object.url);
-        } else {
-            message.url = '';
-        }
-        if (object.signature !== undefined && object.signature !== null) {
-            message.signature = String(object.signature);
-        } else {
-            message.signature = '';
-        }
-        return message;
+        return {
+            name: isSet(object.name) ? String(object.name) : '',
+            url: isSet(object.url) ? String(object.url) : '',
+            signature: isSet(object.signature) ? String(object.signature) : '',
+        };
     },
 
     toJSON(message: BeamVerifier): unknown {
@@ -396,8 +414,12 @@ export const BeamVerifier = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<BeamVerifier>): BeamVerifier {
-        const message = { ...baseBeamVerifier } as BeamVerifier;
+    create<I extends Exact<DeepPartial<BeamVerifier>, I>>(base?: I): BeamVerifier {
+        return BeamVerifier.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<BeamVerifier>, I>>(object: I): BeamVerifier {
+        const message = createBaseBeamVerifier();
         message.name = object.name ?? '';
         message.url = object.url ?? '';
         message.signature = object.signature ?? '';
@@ -405,7 +427,9 @@ export const BeamVerifier = {
     },
 };
 
-const baseBeamReward: object = { trigger: '', amount: 0, maxAmount: 0, currency: '', status: '' };
+function createBaseBeamReward(): BeamReward {
+    return { trigger: '', amount: 0, maxAmount: 0, currency: '', status: '', details: [] };
+}
 
 export const BeamReward = {
     encode(message: BeamReward, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -431,73 +455,72 @@ export const BeamReward = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): BeamReward {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBeamReward } as BeamReward;
-        message.details = [];
+        const message = createBaseBeamReward();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.trigger = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 21) {
+                        break;
+                    }
+
                     message.amount = reader.float();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 29) {
+                        break;
+                    }
+
                     message.maxAmount = reader.float();
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
                     message.currency = reader.string();
-                    break;
+                    continue;
                 case 5:
+                    if (tag !== 42) {
+                        break;
+                    }
+
                     message.status = reader.string();
-                    break;
+                    continue;
                 case 6:
+                    if (tag !== 50) {
+                        break;
+                    }
+
                     message.details.push(BeamReward_BeamRewardDetails.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): BeamReward {
-        const message = { ...baseBeamReward } as BeamReward;
-        message.details = [];
-        if (object.trigger !== undefined && object.trigger !== null) {
-            message.trigger = String(object.trigger);
-        } else {
-            message.trigger = '';
-        }
-        if (object.amount !== undefined && object.amount !== null) {
-            message.amount = Number(object.amount);
-        } else {
-            message.amount = 0;
-        }
-        if (object.maxAmount !== undefined && object.maxAmount !== null) {
-            message.maxAmount = Number(object.maxAmount);
-        } else {
-            message.maxAmount = 0;
-        }
-        if (object.currency !== undefined && object.currency !== null) {
-            message.currency = String(object.currency);
-        } else {
-            message.currency = '';
-        }
-        if (object.status !== undefined && object.status !== null) {
-            message.status = String(object.status);
-        } else {
-            message.status = '';
-        }
-        if (object.details !== undefined && object.details !== null) {
-            for (const e of object.details) {
-                message.details.push(BeamReward_BeamRewardDetails.fromJSON(e));
-            }
-        }
-        return message;
+        return {
+            trigger: isSet(object.trigger) ? String(object.trigger) : '',
+            amount: isSet(object.amount) ? Number(object.amount) : 0,
+            maxAmount: isSet(object.maxAmount) ? Number(object.maxAmount) : 0,
+            currency: isSet(object.currency) ? String(object.currency) : '',
+            status: isSet(object.status) ? String(object.status) : '',
+            details: Array.isArray(object?.details) ? object.details.map((e: any) => BeamReward_BeamRewardDetails.fromJSON(e)) : [],
+        };
     },
 
     toJSON(message: BeamReward): unknown {
@@ -515,24 +538,25 @@ export const BeamReward = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<BeamReward>): BeamReward {
-        const message = { ...baseBeamReward } as BeamReward;
+    create<I extends Exact<DeepPartial<BeamReward>, I>>(base?: I): BeamReward {
+        return BeamReward.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<BeamReward>, I>>(object: I): BeamReward {
+        const message = createBaseBeamReward();
         message.trigger = object.trigger ?? '';
         message.amount = object.amount ?? 0;
         message.maxAmount = object.maxAmount ?? 0;
         message.currency = object.currency ?? '';
         message.status = object.status ?? '';
-        message.details = [];
-        if (object.details !== undefined && object.details !== null) {
-            for (const e of object.details) {
-                message.details.push(BeamReward_BeamRewardDetails.fromPartial(e));
-            }
-        }
+        message.details = object.details?.map((e) => BeamReward_BeamRewardDetails.fromPartial(e)) || [];
         return message;
     },
 };
 
-const baseBeamReward_BeamRewardDetails: object = { type: '', amount: 0, maxAmount: 0, status: '' };
+function createBaseBeamReward_BeamRewardDetails(): BeamReward_BeamRewardDetails {
+    return { type: '', amount: 0, maxAmount: 0, status: '' };
+}
 
 export const BeamReward_BeamRewardDetails = {
     encode(message: BeamReward_BeamRewardDetails, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -552,55 +576,56 @@ export const BeamReward_BeamRewardDetails = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): BeamReward_BeamRewardDetails {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBeamReward_BeamRewardDetails } as BeamReward_BeamRewardDetails;
+        const message = createBaseBeamReward_BeamRewardDetails();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.type = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 21) {
+                        break;
+                    }
+
                     message.amount = reader.float();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 29) {
+                        break;
+                    }
+
                     message.maxAmount = reader.float();
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
                     message.status = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): BeamReward_BeamRewardDetails {
-        const message = { ...baseBeamReward_BeamRewardDetails } as BeamReward_BeamRewardDetails;
-        if (object.type !== undefined && object.type !== null) {
-            message.type = String(object.type);
-        } else {
-            message.type = '';
-        }
-        if (object.amount !== undefined && object.amount !== null) {
-            message.amount = Number(object.amount);
-        } else {
-            message.amount = 0;
-        }
-        if (object.maxAmount !== undefined && object.maxAmount !== null) {
-            message.maxAmount = Number(object.maxAmount);
-        } else {
-            message.maxAmount = 0;
-        }
-        if (object.status !== undefined && object.status !== null) {
-            message.status = String(object.status);
-        } else {
-            message.status = '';
-        }
-        return message;
+        return {
+            type: isSet(object.type) ? String(object.type) : '',
+            amount: isSet(object.amount) ? Number(object.amount) : 0,
+            maxAmount: isSet(object.maxAmount) ? Number(object.maxAmount) : 0,
+            status: isSet(object.status) ? String(object.status) : '',
+        };
     },
 
     toJSON(message: BeamReward_BeamRewardDetails): unknown {
@@ -612,8 +637,12 @@ export const BeamReward_BeamRewardDetails = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<BeamReward_BeamRewardDetails>): BeamReward_BeamRewardDetails {
-        const message = { ...baseBeamReward_BeamRewardDetails } as BeamReward_BeamRewardDetails;
+    create<I extends Exact<DeepPartial<BeamReward_BeamRewardDetails>, I>>(base?: I): BeamReward_BeamRewardDetails {
+        return BeamReward_BeamRewardDetails.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<BeamReward_BeamRewardDetails>, I>>(object: I): BeamReward_BeamRewardDetails {
+        const message = createBaseBeamReward_BeamRewardDetails();
         message.type = object.type ?? '';
         message.amount = object.amount ?? 0;
         message.maxAmount = object.maxAmount ?? 0;
@@ -622,7 +651,20 @@ export const BeamReward_BeamRewardDetails = {
     },
 };
 
-const baseBeamMerchantReview: object = { orderId: '', reviewId: '', merchantUrl: '', ratingUrl: '', reviewUrl: '', collectionMethod: '', timestamp: '', title: '' };
+function createBaseBeamMerchantReview(): BeamMerchantReview {
+    return {
+        orderId: '',
+        reviewId: '',
+        merchantUrl: '',
+        ratingUrl: '',
+        reviewUrl: '',
+        collectionMethod: '',
+        timestamp: '',
+        ratings: undefined,
+        title: '',
+        content: undefined,
+    };
+}
 
 export const BeamMerchantReview = {
     encode(message: BeamMerchantReview, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -660,103 +702,104 @@ export const BeamMerchantReview = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): BeamMerchantReview {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBeamMerchantReview } as BeamMerchantReview;
+        const message = createBaseBeamMerchantReview();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.orderId = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.reviewId = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.merchantUrl = reader.string();
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
                     message.ratingUrl = reader.string();
-                    break;
+                    continue;
                 case 5:
+                    if (tag !== 42) {
+                        break;
+                    }
+
                     message.reviewUrl = reader.string();
-                    break;
+                    continue;
                 case 6:
+                    if (tag !== 50) {
+                        break;
+                    }
+
                     message.collectionMethod = reader.string();
-                    break;
+                    continue;
                 case 7:
+                    if (tag !== 58) {
+                        break;
+                    }
+
                     message.timestamp = reader.string();
-                    break;
+                    continue;
                 case 8:
+                    if (tag !== 66) {
+                        break;
+                    }
+
                     message.ratings = BeamMerchantReview_BeamMerchantReviewRating.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 9:
+                    if (tag !== 74) {
+                        break;
+                    }
+
                     message.title = reader.string();
-                    break;
+                    continue;
                 case 10:
+                    if (tag !== 82) {
+                        break;
+                    }
+
                     message.content = BeamMerchantReview_BeamMerchantReviewContent.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): BeamMerchantReview {
-        const message = { ...baseBeamMerchantReview } as BeamMerchantReview;
-        if (object.orderId !== undefined && object.orderId !== null) {
-            message.orderId = String(object.orderId);
-        } else {
-            message.orderId = '';
-        }
-        if (object.reviewId !== undefined && object.reviewId !== null) {
-            message.reviewId = String(object.reviewId);
-        } else {
-            message.reviewId = '';
-        }
-        if (object.merchantUrl !== undefined && object.merchantUrl !== null) {
-            message.merchantUrl = String(object.merchantUrl);
-        } else {
-            message.merchantUrl = '';
-        }
-        if (object.ratingUrl !== undefined && object.ratingUrl !== null) {
-            message.ratingUrl = String(object.ratingUrl);
-        } else {
-            message.ratingUrl = '';
-        }
-        if (object.reviewUrl !== undefined && object.reviewUrl !== null) {
-            message.reviewUrl = String(object.reviewUrl);
-        } else {
-            message.reviewUrl = '';
-        }
-        if (object.collectionMethod !== undefined && object.collectionMethod !== null) {
-            message.collectionMethod = String(object.collectionMethod);
-        } else {
-            message.collectionMethod = '';
-        }
-        if (object.timestamp !== undefined && object.timestamp !== null) {
-            message.timestamp = String(object.timestamp);
-        } else {
-            message.timestamp = '';
-        }
-        if (object.ratings !== undefined && object.ratings !== null) {
-            message.ratings = BeamMerchantReview_BeamMerchantReviewRating.fromJSON(object.ratings);
-        } else {
-            message.ratings = undefined;
-        }
-        if (object.title !== undefined && object.title !== null) {
-            message.title = String(object.title);
-        } else {
-            message.title = '';
-        }
-        if (object.content !== undefined && object.content !== null) {
-            message.content = BeamMerchantReview_BeamMerchantReviewContent.fromJSON(object.content);
-        } else {
-            message.content = undefined;
-        }
-        return message;
+        return {
+            orderId: isSet(object.orderId) ? String(object.orderId) : '',
+            reviewId: isSet(object.reviewId) ? String(object.reviewId) : '',
+            merchantUrl: isSet(object.merchantUrl) ? String(object.merchantUrl) : '',
+            ratingUrl: isSet(object.ratingUrl) ? String(object.ratingUrl) : '',
+            reviewUrl: isSet(object.reviewUrl) ? String(object.reviewUrl) : '',
+            collectionMethod: isSet(object.collectionMethod) ? String(object.collectionMethod) : '',
+            timestamp: isSet(object.timestamp) ? String(object.timestamp) : '',
+            ratings: isSet(object.ratings) ? BeamMerchantReview_BeamMerchantReviewRating.fromJSON(object.ratings) : undefined,
+            title: isSet(object.title) ? String(object.title) : '',
+            content: isSet(object.content) ? BeamMerchantReview_BeamMerchantReviewContent.fromJSON(object.content) : undefined,
+        };
     },
 
     toJSON(message: BeamMerchantReview): unknown {
@@ -774,8 +817,12 @@ export const BeamMerchantReview = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<BeamMerchantReview>): BeamMerchantReview {
-        const message = { ...baseBeamMerchantReview } as BeamMerchantReview;
+    create<I extends Exact<DeepPartial<BeamMerchantReview>, I>>(base?: I): BeamMerchantReview {
+        return BeamMerchantReview.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<BeamMerchantReview>, I>>(object: I): BeamMerchantReview {
+        const message = createBaseBeamMerchantReview();
         message.orderId = object.orderId ?? '';
         message.reviewId = object.reviewId ?? '';
         message.merchantUrl = object.merchantUrl ?? '';
@@ -783,22 +830,16 @@ export const BeamMerchantReview = {
         message.reviewUrl = object.reviewUrl ?? '';
         message.collectionMethod = object.collectionMethod ?? '';
         message.timestamp = object.timestamp ?? '';
-        if (object.ratings !== undefined && object.ratings !== null) {
-            message.ratings = BeamMerchantReview_BeamMerchantReviewRating.fromPartial(object.ratings);
-        } else {
-            message.ratings = undefined;
-        }
+        message.ratings = object.ratings !== undefined && object.ratings !== null ? BeamMerchantReview_BeamMerchantReviewRating.fromPartial(object.ratings) : undefined;
         message.title = object.title ?? '';
-        if (object.content !== undefined && object.content !== null) {
-            message.content = BeamMerchantReview_BeamMerchantReviewContent.fromPartial(object.content);
-        } else {
-            message.content = undefined;
-        }
+        message.content = object.content !== undefined && object.content !== null ? BeamMerchantReview_BeamMerchantReviewContent.fromPartial(object.content) : undefined;
         return message;
     },
 };
 
-const baseBeamMerchantReview_BeamMerchantReviewRating: object = { overall: 0, customerService: 0, nps: 0 };
+function createBaseBeamMerchantReview_BeamMerchantReviewRating(): BeamMerchantReview_BeamMerchantReviewRating {
+    return { overall: 0, customerService: 0, nps: 0 };
+}
 
 export const BeamMerchantReview_BeamMerchantReviewRating = {
     encode(message: BeamMerchantReview_BeamMerchantReviewRating, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -815,47 +856,48 @@ export const BeamMerchantReview_BeamMerchantReviewRating = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): BeamMerchantReview_BeamMerchantReviewRating {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBeamMerchantReview_BeamMerchantReviewRating } as BeamMerchantReview_BeamMerchantReviewRating;
+        const message = createBaseBeamMerchantReview_BeamMerchantReviewRating();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 13) {
+                        break;
+                    }
+
                     message.overall = reader.float();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 21) {
+                        break;
+                    }
+
                     message.customerService = reader.float();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 29) {
+                        break;
+                    }
+
                     message.nps = reader.float();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): BeamMerchantReview_BeamMerchantReviewRating {
-        const message = { ...baseBeamMerchantReview_BeamMerchantReviewRating } as BeamMerchantReview_BeamMerchantReviewRating;
-        if (object.overall !== undefined && object.overall !== null) {
-            message.overall = Number(object.overall);
-        } else {
-            message.overall = 0;
-        }
-        if (object.customerService !== undefined && object.customerService !== null) {
-            message.customerService = Number(object.customerService);
-        } else {
-            message.customerService = 0;
-        }
-        if (object.nps !== undefined && object.nps !== null) {
-            message.nps = Number(object.nps);
-        } else {
-            message.nps = 0;
-        }
-        return message;
+        return {
+            overall: isSet(object.overall) ? Number(object.overall) : 0,
+            customerService: isSet(object.customerService) ? Number(object.customerService) : 0,
+            nps: isSet(object.nps) ? Number(object.nps) : 0,
+        };
     },
 
     toJSON(message: BeamMerchantReview_BeamMerchantReviewRating): unknown {
@@ -866,8 +908,12 @@ export const BeamMerchantReview_BeamMerchantReviewRating = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<BeamMerchantReview_BeamMerchantReviewRating>): BeamMerchantReview_BeamMerchantReviewRating {
-        const message = { ...baseBeamMerchantReview_BeamMerchantReviewRating } as BeamMerchantReview_BeamMerchantReviewRating;
+    create<I extends Exact<DeepPartial<BeamMerchantReview_BeamMerchantReviewRating>, I>>(base?: I): BeamMerchantReview_BeamMerchantReviewRating {
+        return BeamMerchantReview_BeamMerchantReviewRating.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<BeamMerchantReview_BeamMerchantReviewRating>, I>>(object: I): BeamMerchantReview_BeamMerchantReviewRating {
+        const message = createBaseBeamMerchantReview_BeamMerchantReviewRating();
         message.overall = object.overall ?? 0;
         message.customerService = object.customerService ?? 0;
         message.nps = object.nps ?? 0;
@@ -875,7 +921,9 @@ export const BeamMerchantReview_BeamMerchantReviewRating = {
     },
 };
 
-const baseBeamMerchantReview_BeamMerchantReviewContent: object = { overall: '', customerService: '' };
+function createBaseBeamMerchantReview_BeamMerchantReviewContent(): BeamMerchantReview_BeamMerchantReviewContent {
+    return { overall: '', customerService: '' };
+}
 
 export const BeamMerchantReview_BeamMerchantReviewContent = {
     encode(message: BeamMerchantReview_BeamMerchantReviewContent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -889,39 +937,40 @@ export const BeamMerchantReview_BeamMerchantReviewContent = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): BeamMerchantReview_BeamMerchantReviewContent {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBeamMerchantReview_BeamMerchantReviewContent } as BeamMerchantReview_BeamMerchantReviewContent;
+        const message = createBaseBeamMerchantReview_BeamMerchantReviewContent();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.overall = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.customerService = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): BeamMerchantReview_BeamMerchantReviewContent {
-        const message = { ...baseBeamMerchantReview_BeamMerchantReviewContent } as BeamMerchantReview_BeamMerchantReviewContent;
-        if (object.overall !== undefined && object.overall !== null) {
-            message.overall = String(object.overall);
-        } else {
-            message.overall = '';
-        }
-        if (object.customerService !== undefined && object.customerService !== null) {
-            message.customerService = String(object.customerService);
-        } else {
-            message.customerService = '';
-        }
-        return message;
+        return {
+            overall: isSet(object.overall) ? String(object.overall) : '',
+            customerService: isSet(object.customerService) ? String(object.customerService) : '',
+        };
     },
 
     toJSON(message: BeamMerchantReview_BeamMerchantReviewContent): unknown {
@@ -931,15 +980,33 @@ export const BeamMerchantReview_BeamMerchantReviewContent = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<BeamMerchantReview_BeamMerchantReviewContent>): BeamMerchantReview_BeamMerchantReviewContent {
-        const message = { ...baseBeamMerchantReview_BeamMerchantReviewContent } as BeamMerchantReview_BeamMerchantReviewContent;
+    create<I extends Exact<DeepPartial<BeamMerchantReview_BeamMerchantReviewContent>, I>>(base?: I): BeamMerchantReview_BeamMerchantReviewContent {
+        return BeamMerchantReview_BeamMerchantReviewContent.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<BeamMerchantReview_BeamMerchantReviewContent>, I>>(object: I): BeamMerchantReview_BeamMerchantReviewContent {
+        const message = createBaseBeamMerchantReview_BeamMerchantReviewContent();
         message.overall = object.overall ?? '';
         message.customerService = object.customerService ?? '';
         return message;
     },
 };
 
-const baseBeamProductReview: object = { orderId: '', reviewId: '', ratingUrl: '', reviewUrl: '', collectionMethod: '', timestamp: '', title: '' };
+function createBaseBeamProductReview(): BeamProductReview {
+    return {
+        orderId: '',
+        reviewId: '',
+        ratingUrl: '',
+        reviewUrl: '',
+        collectionMethod: '',
+        timestamp: '',
+        ratings: undefined,
+        title: '',
+        content: undefined,
+        medias: [],
+        products: [],
+    };
+}
 
 export const BeamProductReview = {
     encode(message: BeamProductReview, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -980,115 +1047,112 @@ export const BeamProductReview = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): BeamProductReview {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBeamProductReview } as BeamProductReview;
-        message.medias = [];
-        message.products = [];
+        const message = createBaseBeamProductReview();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.orderId = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.reviewId = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.ratingUrl = reader.string();
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
                     message.reviewUrl = reader.string();
-                    break;
+                    continue;
                 case 5:
+                    if (tag !== 42) {
+                        break;
+                    }
+
                     message.collectionMethod = reader.string();
-                    break;
+                    continue;
                 case 6:
+                    if (tag !== 50) {
+                        break;
+                    }
+
                     message.timestamp = reader.string();
-                    break;
+                    continue;
                 case 7:
+                    if (tag !== 58) {
+                        break;
+                    }
+
                     message.ratings = BeamProductReview_BeamProductReviewRating.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 8:
+                    if (tag !== 66) {
+                        break;
+                    }
+
                     message.title = reader.string();
-                    break;
+                    continue;
                 case 9:
+                    if (tag !== 74) {
+                        break;
+                    }
+
                     message.content = BeamProductReview_BeamProductReviewContent.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 10:
+                    if (tag !== 82) {
+                        break;
+                    }
+
                     message.medias.push(BeamMedia.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 11:
+                    if (tag !== 90) {
+                        break;
+                    }
+
                     message.products.push(BeamProductReview_BeamProduct.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): BeamProductReview {
-        const message = { ...baseBeamProductReview } as BeamProductReview;
-        message.medias = [];
-        message.products = [];
-        if (object.orderId !== undefined && object.orderId !== null) {
-            message.orderId = String(object.orderId);
-        } else {
-            message.orderId = '';
-        }
-        if (object.reviewId !== undefined && object.reviewId !== null) {
-            message.reviewId = String(object.reviewId);
-        } else {
-            message.reviewId = '';
-        }
-        if (object.ratingUrl !== undefined && object.ratingUrl !== null) {
-            message.ratingUrl = String(object.ratingUrl);
-        } else {
-            message.ratingUrl = '';
-        }
-        if (object.reviewUrl !== undefined && object.reviewUrl !== null) {
-            message.reviewUrl = String(object.reviewUrl);
-        } else {
-            message.reviewUrl = '';
-        }
-        if (object.collectionMethod !== undefined && object.collectionMethod !== null) {
-            message.collectionMethod = String(object.collectionMethod);
-        } else {
-            message.collectionMethod = '';
-        }
-        if (object.timestamp !== undefined && object.timestamp !== null) {
-            message.timestamp = String(object.timestamp);
-        } else {
-            message.timestamp = '';
-        }
-        if (object.ratings !== undefined && object.ratings !== null) {
-            message.ratings = BeamProductReview_BeamProductReviewRating.fromJSON(object.ratings);
-        } else {
-            message.ratings = undefined;
-        }
-        if (object.title !== undefined && object.title !== null) {
-            message.title = String(object.title);
-        } else {
-            message.title = '';
-        }
-        if (object.content !== undefined && object.content !== null) {
-            message.content = BeamProductReview_BeamProductReviewContent.fromJSON(object.content);
-        } else {
-            message.content = undefined;
-        }
-        if (object.medias !== undefined && object.medias !== null) {
-            for (const e of object.medias) {
-                message.medias.push(BeamMedia.fromJSON(e));
-            }
-        }
-        if (object.products !== undefined && object.products !== null) {
-            for (const e of object.products) {
-                message.products.push(BeamProductReview_BeamProduct.fromJSON(e));
-            }
-        }
-        return message;
+        return {
+            orderId: isSet(object.orderId) ? String(object.orderId) : '',
+            reviewId: isSet(object.reviewId) ? String(object.reviewId) : '',
+            ratingUrl: isSet(object.ratingUrl) ? String(object.ratingUrl) : '',
+            reviewUrl: isSet(object.reviewUrl) ? String(object.reviewUrl) : '',
+            collectionMethod: isSet(object.collectionMethod) ? String(object.collectionMethod) : '',
+            timestamp: isSet(object.timestamp) ? String(object.timestamp) : '',
+            ratings: isSet(object.ratings) ? BeamProductReview_BeamProductReviewRating.fromJSON(object.ratings) : undefined,
+            title: isSet(object.title) ? String(object.title) : '',
+            content: isSet(object.content) ? BeamProductReview_BeamProductReviewContent.fromJSON(object.content) : undefined,
+            medias: Array.isArray(object?.medias) ? object.medias.map((e: any) => BeamMedia.fromJSON(e)) : [],
+            products: Array.isArray(object?.products) ? object.products.map((e: any) => BeamProductReview_BeamProduct.fromJSON(e)) : [],
+        };
     },
 
     toJSON(message: BeamProductReview): unknown {
@@ -1115,42 +1179,30 @@ export const BeamProductReview = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<BeamProductReview>): BeamProductReview {
-        const message = { ...baseBeamProductReview } as BeamProductReview;
+    create<I extends Exact<DeepPartial<BeamProductReview>, I>>(base?: I): BeamProductReview {
+        return BeamProductReview.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<BeamProductReview>, I>>(object: I): BeamProductReview {
+        const message = createBaseBeamProductReview();
         message.orderId = object.orderId ?? '';
         message.reviewId = object.reviewId ?? '';
         message.ratingUrl = object.ratingUrl ?? '';
         message.reviewUrl = object.reviewUrl ?? '';
         message.collectionMethod = object.collectionMethod ?? '';
         message.timestamp = object.timestamp ?? '';
-        if (object.ratings !== undefined && object.ratings !== null) {
-            message.ratings = BeamProductReview_BeamProductReviewRating.fromPartial(object.ratings);
-        } else {
-            message.ratings = undefined;
-        }
+        message.ratings = object.ratings !== undefined && object.ratings !== null ? BeamProductReview_BeamProductReviewRating.fromPartial(object.ratings) : undefined;
         message.title = object.title ?? '';
-        if (object.content !== undefined && object.content !== null) {
-            message.content = BeamProductReview_BeamProductReviewContent.fromPartial(object.content);
-        } else {
-            message.content = undefined;
-        }
-        message.medias = [];
-        if (object.medias !== undefined && object.medias !== null) {
-            for (const e of object.medias) {
-                message.medias.push(BeamMedia.fromPartial(e));
-            }
-        }
-        message.products = [];
-        if (object.products !== undefined && object.products !== null) {
-            for (const e of object.products) {
-                message.products.push(BeamProductReview_BeamProduct.fromPartial(e));
-            }
-        }
+        message.content = object.content !== undefined && object.content !== null ? BeamProductReview_BeamProductReviewContent.fromPartial(object.content) : undefined;
+        message.medias = object.medias?.map((e) => BeamMedia.fromPartial(e)) || [];
+        message.products = object.products?.map((e) => BeamProductReview_BeamProduct.fromPartial(e)) || [];
         return message;
     },
 };
 
-const baseBeamProductReview_BeamProductReviewRating: object = { overall: 0, quality: 0 };
+function createBaseBeamProductReview_BeamProductReviewRating(): BeamProductReview_BeamProductReviewRating {
+    return { overall: 0, quality: 0 };
+}
 
 export const BeamProductReview_BeamProductReviewRating = {
     encode(message: BeamProductReview_BeamProductReviewRating, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1164,39 +1216,40 @@ export const BeamProductReview_BeamProductReviewRating = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): BeamProductReview_BeamProductReviewRating {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBeamProductReview_BeamProductReviewRating } as BeamProductReview_BeamProductReviewRating;
+        const message = createBaseBeamProductReview_BeamProductReviewRating();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 13) {
+                        break;
+                    }
+
                     message.overall = reader.float();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 21) {
+                        break;
+                    }
+
                     message.quality = reader.float();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): BeamProductReview_BeamProductReviewRating {
-        const message = { ...baseBeamProductReview_BeamProductReviewRating } as BeamProductReview_BeamProductReviewRating;
-        if (object.overall !== undefined && object.overall !== null) {
-            message.overall = Number(object.overall);
-        } else {
-            message.overall = 0;
-        }
-        if (object.quality !== undefined && object.quality !== null) {
-            message.quality = Number(object.quality);
-        } else {
-            message.quality = 0;
-        }
-        return message;
+        return {
+            overall: isSet(object.overall) ? Number(object.overall) : 0,
+            quality: isSet(object.quality) ? Number(object.quality) : 0,
+        };
     },
 
     toJSON(message: BeamProductReview_BeamProductReviewRating): unknown {
@@ -1206,15 +1259,21 @@ export const BeamProductReview_BeamProductReviewRating = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<BeamProductReview_BeamProductReviewRating>): BeamProductReview_BeamProductReviewRating {
-        const message = { ...baseBeamProductReview_BeamProductReviewRating } as BeamProductReview_BeamProductReviewRating;
+    create<I extends Exact<DeepPartial<BeamProductReview_BeamProductReviewRating>, I>>(base?: I): BeamProductReview_BeamProductReviewRating {
+        return BeamProductReview_BeamProductReviewRating.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<BeamProductReview_BeamProductReviewRating>, I>>(object: I): BeamProductReview_BeamProductReviewRating {
+        const message = createBaseBeamProductReview_BeamProductReviewRating();
         message.overall = object.overall ?? 0;
         message.quality = object.quality ?? 0;
         return message;
     },
 };
 
-const baseBeamProductReview_BeamProductReviewContent: object = { overall: '', pros: '', cons: '' };
+function createBaseBeamProductReview_BeamProductReviewContent(): BeamProductReview_BeamProductReviewContent {
+    return { overall: '', pros: '', cons: '' };
+}
 
 export const BeamProductReview_BeamProductReviewContent = {
     encode(message: BeamProductReview_BeamProductReviewContent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1231,47 +1290,48 @@ export const BeamProductReview_BeamProductReviewContent = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): BeamProductReview_BeamProductReviewContent {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBeamProductReview_BeamProductReviewContent } as BeamProductReview_BeamProductReviewContent;
+        const message = createBaseBeamProductReview_BeamProductReviewContent();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.overall = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pros = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.cons = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): BeamProductReview_BeamProductReviewContent {
-        const message = { ...baseBeamProductReview_BeamProductReviewContent } as BeamProductReview_BeamProductReviewContent;
-        if (object.overall !== undefined && object.overall !== null) {
-            message.overall = String(object.overall);
-        } else {
-            message.overall = '';
-        }
-        if (object.pros !== undefined && object.pros !== null) {
-            message.pros = String(object.pros);
-        } else {
-            message.pros = '';
-        }
-        if (object.cons !== undefined && object.cons !== null) {
-            message.cons = String(object.cons);
-        } else {
-            message.cons = '';
-        }
-        return message;
+        return {
+            overall: isSet(object.overall) ? String(object.overall) : '',
+            pros: isSet(object.pros) ? String(object.pros) : '',
+            cons: isSet(object.cons) ? String(object.cons) : '',
+        };
     },
 
     toJSON(message: BeamProductReview_BeamProductReviewContent): unknown {
@@ -1282,8 +1342,12 @@ export const BeamProductReview_BeamProductReviewContent = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<BeamProductReview_BeamProductReviewContent>): BeamProductReview_BeamProductReviewContent {
-        const message = { ...baseBeamProductReview_BeamProductReviewContent } as BeamProductReview_BeamProductReviewContent;
+    create<I extends Exact<DeepPartial<BeamProductReview_BeamProductReviewContent>, I>>(base?: I): BeamProductReview_BeamProductReviewContent {
+        return BeamProductReview_BeamProductReviewContent.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<BeamProductReview_BeamProductReviewContent>, I>>(object: I): BeamProductReview_BeamProductReviewContent {
+        const message = createBaseBeamProductReview_BeamProductReviewContent();
         message.overall = object.overall ?? '';
         message.pros = object.pros ?? '';
         message.cons = object.cons ?? '';
@@ -1291,7 +1355,9 @@ export const BeamProductReview_BeamProductReviewContent = {
     },
 };
 
-const baseBeamProductReview_BeamProduct: object = { name: '', url: '', urls: '' };
+function createBaseBeamProductReview_BeamProduct(): BeamProductReview_BeamProduct {
+    return { name: '', url: '', urls: [], ids: undefined };
+}
 
 export const BeamProductReview_BeamProduct = {
     encode(message: BeamProductReview_BeamProduct, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1311,57 +1377,56 @@ export const BeamProductReview_BeamProduct = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): BeamProductReview_BeamProduct {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBeamProductReview_BeamProduct } as BeamProductReview_BeamProduct;
-        message.urls = [];
+        const message = createBaseBeamProductReview_BeamProduct();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.name = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.url = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.urls.push(reader.string());
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
                     message.ids = BeamProductReview_BeamProduct_BeamProductIds.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): BeamProductReview_BeamProduct {
-        const message = { ...baseBeamProductReview_BeamProduct } as BeamProductReview_BeamProduct;
-        message.urls = [];
-        if (object.name !== undefined && object.name !== null) {
-            message.name = String(object.name);
-        } else {
-            message.name = '';
-        }
-        if (object.url !== undefined && object.url !== null) {
-            message.url = String(object.url);
-        } else {
-            message.url = '';
-        }
-        if (object.urls !== undefined && object.urls !== null) {
-            for (const e of object.urls) {
-                message.urls.push(String(e));
-            }
-        }
-        if (object.ids !== undefined && object.ids !== null) {
-            message.ids = BeamProductReview_BeamProduct_BeamProductIds.fromJSON(object.ids);
-        } else {
-            message.ids = undefined;
-        }
-        return message;
+        return {
+            name: isSet(object.name) ? String(object.name) : '',
+            url: isSet(object.url) ? String(object.url) : '',
+            urls: Array.isArray(object?.urls) ? object.urls.map((e: any) => String(e)) : [],
+            ids: isSet(object.ids) ? BeamProductReview_BeamProduct_BeamProductIds.fromJSON(object.ids) : undefined,
+        };
     },
 
     toJSON(message: BeamProductReview_BeamProduct): unknown {
@@ -1377,26 +1442,23 @@ export const BeamProductReview_BeamProduct = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<BeamProductReview_BeamProduct>): BeamProductReview_BeamProduct {
-        const message = { ...baseBeamProductReview_BeamProduct } as BeamProductReview_BeamProduct;
+    create<I extends Exact<DeepPartial<BeamProductReview_BeamProduct>, I>>(base?: I): BeamProductReview_BeamProduct {
+        return BeamProductReview_BeamProduct.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<BeamProductReview_BeamProduct>, I>>(object: I): BeamProductReview_BeamProduct {
+        const message = createBaseBeamProductReview_BeamProduct();
         message.name = object.name ?? '';
         message.url = object.url ?? '';
-        message.urls = [];
-        if (object.urls !== undefined && object.urls !== null) {
-            for (const e of object.urls) {
-                message.urls.push(e);
-            }
-        }
-        if (object.ids !== undefined && object.ids !== null) {
-            message.ids = BeamProductReview_BeamProduct_BeamProductIds.fromPartial(object.ids);
-        } else {
-            message.ids = undefined;
-        }
+        message.urls = object.urls?.map((e) => e) || [];
+        message.ids = object.ids !== undefined && object.ids !== null ? BeamProductReview_BeamProduct_BeamProductIds.fromPartial(object.ids) : undefined;
         return message;
     },
 };
 
-const baseBeamProductReview_BeamProduct_BeamProductIds: object = { gtins: '', mpns: '', skus: '', asins: '' };
+function createBaseBeamProductReview_BeamProduct_BeamProductIds(): BeamProductReview_BeamProduct_BeamProductIds {
+    return { gtins: [], mpns: [], skus: [], asins: [] };
+}
 
 export const BeamProductReview_BeamProduct_BeamProductIds = {
     encode(message: BeamProductReview_BeamProduct_BeamProductIds, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1416,63 +1478,56 @@ export const BeamProductReview_BeamProduct_BeamProductIds = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): BeamProductReview_BeamProduct_BeamProductIds {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBeamProductReview_BeamProduct_BeamProductIds } as BeamProductReview_BeamProduct_BeamProductIds;
-        message.gtins = [];
-        message.mpns = [];
-        message.skus = [];
-        message.asins = [];
+        const message = createBaseBeamProductReview_BeamProduct_BeamProductIds();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.gtins.push(reader.string());
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.mpns.push(reader.string());
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.skus.push(reader.string());
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
                     message.asins.push(reader.string());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): BeamProductReview_BeamProduct_BeamProductIds {
-        const message = { ...baseBeamProductReview_BeamProduct_BeamProductIds } as BeamProductReview_BeamProduct_BeamProductIds;
-        message.gtins = [];
-        message.mpns = [];
-        message.skus = [];
-        message.asins = [];
-        if (object.gtins !== undefined && object.gtins !== null) {
-            for (const e of object.gtins) {
-                message.gtins.push(String(e));
-            }
-        }
-        if (object.mpns !== undefined && object.mpns !== null) {
-            for (const e of object.mpns) {
-                message.mpns.push(String(e));
-            }
-        }
-        if (object.skus !== undefined && object.skus !== null) {
-            for (const e of object.skus) {
-                message.skus.push(String(e));
-            }
-        }
-        if (object.asins !== undefined && object.asins !== null) {
-            for (const e of object.asins) {
-                message.asins.push(String(e));
-            }
-        }
-        return message;
+        return {
+            gtins: Array.isArray(object?.gtins) ? object.gtins.map((e: any) => String(e)) : [],
+            mpns: Array.isArray(object?.mpns) ? object.mpns.map((e: any) => String(e)) : [],
+            skus: Array.isArray(object?.skus) ? object.skus.map((e: any) => String(e)) : [],
+            asins: Array.isArray(object?.asins) ? object.asins.map((e: any) => String(e)) : [],
+        };
     },
 
     toJSON(message: BeamProductReview_BeamProduct_BeamProductIds): unknown {
@@ -1500,37 +1555,29 @@ export const BeamProductReview_BeamProduct_BeamProductIds = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<BeamProductReview_BeamProduct_BeamProductIds>): BeamProductReview_BeamProduct_BeamProductIds {
-        const message = { ...baseBeamProductReview_BeamProduct_BeamProductIds } as BeamProductReview_BeamProduct_BeamProductIds;
-        message.gtins = [];
-        if (object.gtins !== undefined && object.gtins !== null) {
-            for (const e of object.gtins) {
-                message.gtins.push(e);
-            }
-        }
-        message.mpns = [];
-        if (object.mpns !== undefined && object.mpns !== null) {
-            for (const e of object.mpns) {
-                message.mpns.push(e);
-            }
-        }
-        message.skus = [];
-        if (object.skus !== undefined && object.skus !== null) {
-            for (const e of object.skus) {
-                message.skus.push(e);
-            }
-        }
-        message.asins = [];
-        if (object.asins !== undefined && object.asins !== null) {
-            for (const e of object.asins) {
-                message.asins.push(e);
-            }
-        }
+    create<I extends Exact<DeepPartial<BeamProductReview_BeamProduct_BeamProductIds>, I>>(base?: I): BeamProductReview_BeamProduct_BeamProductIds {
+        return BeamProductReview_BeamProduct_BeamProductIds.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<BeamProductReview_BeamProduct_BeamProductIds>, I>>(object: I): BeamProductReview_BeamProduct_BeamProductIds {
+        const message = createBaseBeamProductReview_BeamProduct_BeamProductIds();
+        message.gtins = object.gtins?.map((e) => e) || [];
+        message.mpns = object.mpns?.map((e) => e) || [];
+        message.skus = object.skus?.map((e) => e) || [];
+        message.asins = object.asins?.map((e) => e) || [];
         return message;
     },
 };
 
-const baseBeamData: object = {};
+function createBaseBeamData(): BeamData {
+    return {
+        reward: undefined,
+        verifier: undefined,
+        reviewer: undefined,
+        merchantReview: undefined,
+        productsReviews: [],
+    };
+}
 
 export const BeamData = {
     encode(message: BeamData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1553,65 +1600,64 @@ export const BeamData = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): BeamData {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBeamData } as BeamData;
-        message.productsReviews = [];
+        const message = createBaseBeamData();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.reward = BeamReward.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.verifier = BeamVerifier.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.reviewer = BeamReviewer.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
                     message.merchantReview = BeamMerchantReview.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 5:
+                    if (tag !== 42) {
+                        break;
+                    }
+
                     message.productsReviews.push(BeamProductReview.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): BeamData {
-        const message = { ...baseBeamData } as BeamData;
-        message.productsReviews = [];
-        if (object.reward !== undefined && object.reward !== null) {
-            message.reward = BeamReward.fromJSON(object.reward);
-        } else {
-            message.reward = undefined;
-        }
-        if (object.verifier !== undefined && object.verifier !== null) {
-            message.verifier = BeamVerifier.fromJSON(object.verifier);
-        } else {
-            message.verifier = undefined;
-        }
-        if (object.reviewer !== undefined && object.reviewer !== null) {
-            message.reviewer = BeamReviewer.fromJSON(object.reviewer);
-        } else {
-            message.reviewer = undefined;
-        }
-        if (object.merchantReview !== undefined && object.merchantReview !== null) {
-            message.merchantReview = BeamMerchantReview.fromJSON(object.merchantReview);
-        } else {
-            message.merchantReview = undefined;
-        }
-        if (object.productsReviews !== undefined && object.productsReviews !== null) {
-            for (const e of object.productsReviews) {
-                message.productsReviews.push(BeamProductReview.fromJSON(e));
-            }
-        }
-        return message;
+        return {
+            reward: isSet(object.reward) ? BeamReward.fromJSON(object.reward) : undefined,
+            verifier: isSet(object.verifier) ? BeamVerifier.fromJSON(object.verifier) : undefined,
+            reviewer: isSet(object.reviewer) ? BeamReviewer.fromJSON(object.reviewer) : undefined,
+            merchantReview: isSet(object.merchantReview) ? BeamMerchantReview.fromJSON(object.merchantReview) : undefined,
+            productsReviews: Array.isArray(object?.productsReviews) ? object.productsReviews.map((e: any) => BeamProductReview.fromJSON(e)) : [],
+        };
     },
 
     toJSON(message: BeamData): unknown {
@@ -1628,52 +1674,41 @@ export const BeamData = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<BeamData>): BeamData {
-        const message = { ...baseBeamData } as BeamData;
-        if (object.reward !== undefined && object.reward !== null) {
-            message.reward = BeamReward.fromPartial(object.reward);
-        } else {
-            message.reward = undefined;
-        }
-        if (object.verifier !== undefined && object.verifier !== null) {
-            message.verifier = BeamVerifier.fromPartial(object.verifier);
-        } else {
-            message.verifier = undefined;
-        }
-        if (object.reviewer !== undefined && object.reviewer !== null) {
-            message.reviewer = BeamReviewer.fromPartial(object.reviewer);
-        } else {
-            message.reviewer = undefined;
-        }
-        if (object.merchantReview !== undefined && object.merchantReview !== null) {
-            message.merchantReview = BeamMerchantReview.fromPartial(object.merchantReview);
-        } else {
-            message.merchantReview = undefined;
-        }
-        message.productsReviews = [];
-        if (object.productsReviews !== undefined && object.productsReviews !== null) {
-            for (const e of object.productsReviews) {
-                message.productsReviews.push(BeamProductReview.fromPartial(e));
-            }
-        }
+    create<I extends Exact<DeepPartial<BeamData>, I>>(base?: I): BeamData {
+        return BeamData.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<BeamData>, I>>(object: I): BeamData {
+        const message = createBaseBeamData();
+        message.reward = object.reward !== undefined && object.reward !== null ? BeamReward.fromPartial(object.reward) : undefined;
+        message.verifier = object.verifier !== undefined && object.verifier !== null ? BeamVerifier.fromPartial(object.verifier) : undefined;
+        message.reviewer = object.reviewer !== undefined && object.reviewer !== null ? BeamReviewer.fromPartial(object.reviewer) : undefined;
+        message.merchantReview = object.merchantReview !== undefined && object.merchantReview !== null ? BeamMerchantReview.fromPartial(object.merchantReview) : undefined;
+        message.productsReviews = object.productsReviews?.map((e) => BeamProductReview.fromPartial(e)) || [];
         return message;
     },
 };
 
-const baseBeam: object = {
-    creatorAddress: '',
-    id: '',
-    status: 0,
-    secret: '',
-    claimAddress: '',
-    fundsWithdrawn: false,
-    claimed: false,
-    cancelReason: '',
-    hideContent: false,
-    schema: '',
-    claimExpiresAtBlock: 0,
-    closesAtBlock: 0,
-};
+function createBaseBeam(): Beam {
+    return {
+        creatorAddress: '',
+        id: '',
+        amount: undefined,
+        status: 0,
+        secret: '',
+        claimAddress: '',
+        fundsWithdrawn: false,
+        claimed: false,
+        cancelReason: '',
+        hideContent: false,
+        schema: '',
+        data: undefined,
+        claimExpiresAtBlock: 0,
+        closesAtBlock: 0,
+        createdAt: undefined,
+        closedAt: undefined,
+    };
+}
 
 export const Beam = {
     encode(message: Beam, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1729,151 +1764,152 @@ export const Beam = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Beam {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBeam } as Beam;
+        const message = createBaseBeam();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.creatorAddress = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.id = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.amount = Coin.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 32) {
+                        break;
+                    }
+
                     message.status = reader.int32() as any;
-                    break;
+                    continue;
                 case 5:
+                    if (tag !== 42) {
+                        break;
+                    }
+
                     message.secret = reader.string();
-                    break;
+                    continue;
                 case 6:
+                    if (tag !== 50) {
+                        break;
+                    }
+
                     message.claimAddress = reader.string();
-                    break;
+                    continue;
                 case 7:
+                    if (tag !== 56) {
+                        break;
+                    }
+
                     message.fundsWithdrawn = reader.bool();
-                    break;
+                    continue;
                 case 8:
+                    if (tag !== 64) {
+                        break;
+                    }
+
                     message.claimed = reader.bool();
-                    break;
+                    continue;
                 case 9:
+                    if (tag !== 74) {
+                        break;
+                    }
+
                     message.cancelReason = reader.string();
-                    break;
+                    continue;
                 case 10:
+                    if (tag !== 80) {
+                        break;
+                    }
+
                     message.hideContent = reader.bool();
-                    break;
+                    continue;
                 case 11:
+                    if (tag !== 90) {
+                        break;
+                    }
+
                     message.schema = reader.string();
-                    break;
+                    continue;
                 case 12:
+                    if (tag !== 98) {
+                        break;
+                    }
+
                     message.data = BeamData.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 13:
+                    if (tag !== 104) {
+                        break;
+                    }
+
                     message.claimExpiresAtBlock = reader.int32();
-                    break;
+                    continue;
                 case 14:
+                    if (tag !== 112) {
+                        break;
+                    }
+
                     message.closesAtBlock = reader.int32();
-                    break;
+                    continue;
                 case 15:
+                    if (tag !== 122) {
+                        break;
+                    }
+
                     message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 16:
+                    if (tag !== 130) {
+                        break;
+                    }
+
                     message.closedAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): Beam {
-        const message = { ...baseBeam } as Beam;
-        if (object.creatorAddress !== undefined && object.creatorAddress !== null) {
-            message.creatorAddress = String(object.creatorAddress);
-        } else {
-            message.creatorAddress = '';
-        }
-        if (object.id !== undefined && object.id !== null) {
-            message.id = String(object.id);
-        } else {
-            message.id = '';
-        }
-        if (object.amount !== undefined && object.amount !== null) {
-            message.amount = Coin.fromJSON(object.amount);
-        } else {
-            message.amount = undefined;
-        }
-        if (object.status !== undefined && object.status !== null) {
-            message.status = beamStateFromJSON(object.status);
-        } else {
-            message.status = 0;
-        }
-        if (object.secret !== undefined && object.secret !== null) {
-            message.secret = String(object.secret);
-        } else {
-            message.secret = '';
-        }
-        if (object.claimAddress !== undefined && object.claimAddress !== null) {
-            message.claimAddress = String(object.claimAddress);
-        } else {
-            message.claimAddress = '';
-        }
-        if (object.fundsWithdrawn !== undefined && object.fundsWithdrawn !== null) {
-            message.fundsWithdrawn = Boolean(object.fundsWithdrawn);
-        } else {
-            message.fundsWithdrawn = false;
-        }
-        if (object.claimed !== undefined && object.claimed !== null) {
-            message.claimed = Boolean(object.claimed);
-        } else {
-            message.claimed = false;
-        }
-        if (object.cancelReason !== undefined && object.cancelReason !== null) {
-            message.cancelReason = String(object.cancelReason);
-        } else {
-            message.cancelReason = '';
-        }
-        if (object.hideContent !== undefined && object.hideContent !== null) {
-            message.hideContent = Boolean(object.hideContent);
-        } else {
-            message.hideContent = false;
-        }
-        if (object.schema !== undefined && object.schema !== null) {
-            message.schema = String(object.schema);
-        } else {
-            message.schema = '';
-        }
-        if (object.data !== undefined && object.data !== null) {
-            message.data = BeamData.fromJSON(object.data);
-        } else {
-            message.data = undefined;
-        }
-        if (object.claimExpiresAtBlock !== undefined && object.claimExpiresAtBlock !== null) {
-            message.claimExpiresAtBlock = Number(object.claimExpiresAtBlock);
-        } else {
-            message.claimExpiresAtBlock = 0;
-        }
-        if (object.closesAtBlock !== undefined && object.closesAtBlock !== null) {
-            message.closesAtBlock = Number(object.closesAtBlock);
-        } else {
-            message.closesAtBlock = 0;
-        }
-        if (object.createdAt !== undefined && object.createdAt !== null) {
-            message.createdAt = fromJsonTimestamp(object.createdAt);
-        } else {
-            message.createdAt = undefined;
-        }
-        if (object.closedAt !== undefined && object.closedAt !== null) {
-            message.closedAt = fromJsonTimestamp(object.closedAt);
-        } else {
-            message.closedAt = undefined;
-        }
-        return message;
+        return {
+            creatorAddress: isSet(object.creatorAddress) ? String(object.creatorAddress) : '',
+            id: isSet(object.id) ? String(object.id) : '',
+            amount: isSet(object.amount) ? Coin.fromJSON(object.amount) : undefined,
+            status: isSet(object.status) ? beamStateFromJSON(object.status) : 0,
+            secret: isSet(object.secret) ? String(object.secret) : '',
+            claimAddress: isSet(object.claimAddress) ? String(object.claimAddress) : '',
+            fundsWithdrawn: isSet(object.fundsWithdrawn) ? Boolean(object.fundsWithdrawn) : false,
+            claimed: isSet(object.claimed) ? Boolean(object.claimed) : false,
+            cancelReason: isSet(object.cancelReason) ? String(object.cancelReason) : '',
+            hideContent: isSet(object.hideContent) ? Boolean(object.hideContent) : false,
+            schema: isSet(object.schema) ? String(object.schema) : '',
+            data: isSet(object.data) ? BeamData.fromJSON(object.data) : undefined,
+            claimExpiresAtBlock: isSet(object.claimExpiresAtBlock) ? Number(object.claimExpiresAtBlock) : 0,
+            closesAtBlock: isSet(object.closesAtBlock) ? Number(object.closesAtBlock) : 0,
+            createdAt: isSet(object.createdAt) ? fromJsonTimestamp(object.createdAt) : undefined,
+            closedAt: isSet(object.closedAt) ? fromJsonTimestamp(object.closedAt) : undefined,
+        };
     },
 
     toJSON(message: Beam): unknown {
@@ -1890,22 +1926,22 @@ export const Beam = {
         message.hideContent !== undefined && (obj.hideContent = message.hideContent);
         message.schema !== undefined && (obj.schema = message.schema);
         message.data !== undefined && (obj.data = message.data ? BeamData.toJSON(message.data) : undefined);
-        message.claimExpiresAtBlock !== undefined && (obj.claimExpiresAtBlock = message.claimExpiresAtBlock);
-        message.closesAtBlock !== undefined && (obj.closesAtBlock = message.closesAtBlock);
+        message.claimExpiresAtBlock !== undefined && (obj.claimExpiresAtBlock = Math.round(message.claimExpiresAtBlock));
+        message.closesAtBlock !== undefined && (obj.closesAtBlock = Math.round(message.closesAtBlock));
         message.createdAt !== undefined && (obj.createdAt = message.createdAt.toISOString());
         message.closedAt !== undefined && (obj.closedAt = message.closedAt.toISOString());
         return obj;
     },
 
-    fromPartial(object: DeepPartial<Beam>): Beam {
-        const message = { ...baseBeam } as Beam;
+    create<I extends Exact<DeepPartial<Beam>, I>>(base?: I): Beam {
+        return Beam.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<Beam>, I>>(object: I): Beam {
+        const message = createBaseBeam();
         message.creatorAddress = object.creatorAddress ?? '';
         message.id = object.id ?? '';
-        if (object.amount !== undefined && object.amount !== null) {
-            message.amount = Coin.fromPartial(object.amount);
-        } else {
-            message.amount = undefined;
-        }
+        message.amount = object.amount !== undefined && object.amount !== null ? Coin.fromPartial(object.amount) : undefined;
         message.status = object.status ?? 0;
         message.secret = object.secret ?? '';
         message.claimAddress = object.claimAddress ?? '';
@@ -1914,11 +1950,7 @@ export const Beam = {
         message.cancelReason = object.cancelReason ?? '';
         message.hideContent = object.hideContent ?? false;
         message.schema = object.schema ?? '';
-        if (object.data !== undefined && object.data !== null) {
-            message.data = BeamData.fromPartial(object.data);
-        } else {
-            message.data = undefined;
-        }
+        message.data = object.data !== undefined && object.data !== null ? BeamData.fromPartial(object.data) : undefined;
         message.claimExpiresAtBlock = object.claimExpiresAtBlock ?? 0;
         message.closesAtBlock = object.closesAtBlock ?? 0;
         message.createdAt = object.createdAt ?? undefined;
@@ -1927,9 +1959,12 @@ export const Beam = {
     },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -1938,6 +1973,9 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 function toTimestamp(date: Date): Timestamp {
     const seconds = numberToLong(date.getTime() / 1_000);
     const nanos = (date.getTime() % 1_000) * 1_000_000;
@@ -1945,8 +1983,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-    let millis = t.seconds.toNumber() * 1_000;
-    millis += t.nanos / 1_000_000;
+    let millis = (t.seconds.toNumber() || 0) * 1_000;
+    millis += (t.nanos || 0) / 1_000_000;
     return new Date(millis);
 }
 
@@ -1967,4 +2005,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }

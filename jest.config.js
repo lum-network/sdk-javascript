@@ -14,4 +14,7 @@ module.exports = {
         },
     },
     testTimeout: 240000,
+    moduleNameMapper: {
+        '@ledgerhq/devices/hid-framing': '@ledgerhq/devices/lib/hid-framing',
+    },
 };

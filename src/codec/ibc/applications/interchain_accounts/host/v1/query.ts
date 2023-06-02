@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
-import { Params } from '../../../../../ibc/applications/interchain_accounts/host/v1/host';
+import { Params } from './host';
 
 export const protobufPackage = 'ibc.applications.interchain_accounts.host.v1';
 
@@ -14,7 +14,9 @@ export interface QueryParamsResponse {
     params?: Params;
 }
 
-const baseQueryParamsRequest: object = {};
+function createBaseQueryParamsRequest(): QueryParamsRequest {
+    return {};
+}
 
 export const QueryParamsRequest = {
     encode(_: QueryParamsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -22,23 +24,23 @@ export const QueryParamsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+        const message = createBaseQueryParamsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(_: any): QueryParamsRequest {
-        const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
-        return message;
+        return {};
     },
 
     toJSON(_: QueryParamsRequest): unknown {
@@ -46,13 +48,19 @@ export const QueryParamsRequest = {
         return obj;
     },
 
-    fromPartial(_: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
-        const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    create<I extends Exact<DeepPartial<QueryParamsRequest>, I>>(base?: I): QueryParamsRequest {
+        return QueryParamsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryParamsRequest>, I>>(_: I): QueryParamsRequest {
+        const message = createBaseQueryParamsRequest();
         return message;
     },
 };
 
-const baseQueryParamsResponse: object = {};
+function createBaseQueryParamsResponse(): QueryParamsResponse {
+    return { params: undefined };
+}
 
 export const QueryParamsResponse = {
     encode(message: QueryParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -63,31 +71,30 @@ export const QueryParamsResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+        const message = createBaseQueryParamsResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.params = Params.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryParamsResponse {
-        const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-        if (object.params !== undefined && object.params !== null) {
-            message.params = Params.fromJSON(object.params);
-        } else {
-            message.params = undefined;
-        }
-        return message;
+        return { params: isSet(object.params) ? Params.fromJSON(object.params) : undefined };
     },
 
     toJSON(message: QueryParamsResponse): unknown {
@@ -96,13 +103,13 @@ export const QueryParamsResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
-        const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-        if (object.params !== undefined && object.params !== null) {
-            message.params = Params.fromPartial(object.params);
-        } else {
-            message.params = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryParamsResponse>, I>>(base?: I): QueryParamsResponse {
+        return QueryParamsResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryParamsResponse>, I>>(object: I): QueryParamsResponse {
+        const message = createBaseQueryParamsResponse();
+        message.params = object.params !== undefined && object.params !== null ? Params.fromPartial(object.params) : undefined;
         return message;
     },
 };
@@ -115,14 +122,16 @@ export interface Query {
 
 export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
-    constructor(rpc: Rpc) {
+    private readonly service: string;
+    constructor(rpc: Rpc, opts?: { service?: string }) {
+        this.service = opts?.service || 'ibc.applications.interchain_accounts.host.v1.Query';
         this.rpc = rpc;
         this.Params = this.Params.bind(this);
     }
     Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
         const data = QueryParamsRequest.encode(request).finish();
-        const promise = this.rpc.request('ibc.applications.interchain_accounts.host.v1.Query', 'Params', data);
-        return promise.then((data) => QueryParamsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'Params', data);
+        return promise.then((data) => QueryParamsResponse.decode(_m0.Reader.create(data)));
     }
 }
 
@@ -130,9 +139,12 @@ interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -141,7 +153,14 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }

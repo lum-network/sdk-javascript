@@ -11,7 +11,9 @@ export interface InterchainAccount {
     accountOwner: string;
 }
 
-const baseInterchainAccount: object = { accountOwner: '' };
+function createBaseInterchainAccount(): InterchainAccount {
+    return { baseAccount: undefined, accountOwner: '' };
+}
 
 export const InterchainAccount = {
     encode(message: InterchainAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -25,39 +27,40 @@ export const InterchainAccount = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): InterchainAccount {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseInterchainAccount } as InterchainAccount;
+        const message = createBaseInterchainAccount();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.baseAccount = BaseAccount.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.accountOwner = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): InterchainAccount {
-        const message = { ...baseInterchainAccount } as InterchainAccount;
-        if (object.baseAccount !== undefined && object.baseAccount !== null) {
-            message.baseAccount = BaseAccount.fromJSON(object.baseAccount);
-        } else {
-            message.baseAccount = undefined;
-        }
-        if (object.accountOwner !== undefined && object.accountOwner !== null) {
-            message.accountOwner = String(object.accountOwner);
-        } else {
-            message.accountOwner = '';
-        }
-        return message;
+        return {
+            baseAccount: isSet(object.baseAccount) ? BaseAccount.fromJSON(object.baseAccount) : undefined,
+            accountOwner: isSet(object.accountOwner) ? String(object.accountOwner) : '',
+        };
     },
 
     toJSON(message: InterchainAccount): unknown {
@@ -67,21 +70,24 @@ export const InterchainAccount = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<InterchainAccount>): InterchainAccount {
-        const message = { ...baseInterchainAccount } as InterchainAccount;
-        if (object.baseAccount !== undefined && object.baseAccount !== null) {
-            message.baseAccount = BaseAccount.fromPartial(object.baseAccount);
-        } else {
-            message.baseAccount = undefined;
-        }
+    create<I extends Exact<DeepPartial<InterchainAccount>, I>>(base?: I): InterchainAccount {
+        return InterchainAccount.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<InterchainAccount>, I>>(object: I): InterchainAccount {
+        const message = createBaseInterchainAccount();
+        message.baseAccount = object.baseAccount !== undefined && object.baseAccount !== null ? BaseAccount.fromPartial(object.baseAccount) : undefined;
         message.accountOwner = object.accountOwner ?? '';
         return message;
     },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -90,7 +96,14 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }

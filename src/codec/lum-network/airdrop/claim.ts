@@ -32,8 +32,9 @@ export function actionToJSON(object: Action): string {
             return 'ActionVote';
         case Action.ActionDelegateStake:
             return 'ActionDelegateStake';
+        case Action.UNRECOGNIZED:
         default:
-            return 'UNKNOWN';
+            return 'UNRECOGNIZED';
     }
 }
 
@@ -43,7 +44,9 @@ export interface ClaimRecord {
     actionCompleted: boolean[];
 }
 
-const baseClaimRecord: object = { address: '', actionCompleted: false };
+function createBaseClaimRecord(): ClaimRecord {
+    return { address: '', initialClaimableAmount: [], actionCompleted: [] };
+}
 
 export const ClaimRecord = {
     encode(message: ClaimRecord, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -62,58 +65,58 @@ export const ClaimRecord = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): ClaimRecord {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseClaimRecord } as ClaimRecord;
-        message.initialClaimableAmount = [];
-        message.actionCompleted = [];
+        const message = createBaseClaimRecord();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.address = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.initialClaimableAmount.push(Coin.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 3:
-                    if ((tag & 7) === 2) {
+                    if (tag === 24) {
+                        message.actionCompleted.push(reader.bool());
+
+                        continue;
+                    }
+
+                    if (tag === 26) {
                         const end2 = reader.uint32() + reader.pos;
                         while (reader.pos < end2) {
                             message.actionCompleted.push(reader.bool());
                         }
-                    } else {
-                        message.actionCompleted.push(reader.bool());
+
+                        continue;
                     }
-                    break;
-                default:
-                    reader.skipType(tag & 7);
+
                     break;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): ClaimRecord {
-        const message = { ...baseClaimRecord } as ClaimRecord;
-        message.initialClaimableAmount = [];
-        message.actionCompleted = [];
-        if (object.address !== undefined && object.address !== null) {
-            message.address = String(object.address);
-        } else {
-            message.address = '';
-        }
-        if (object.initialClaimableAmount !== undefined && object.initialClaimableAmount !== null) {
-            for (const e of object.initialClaimableAmount) {
-                message.initialClaimableAmount.push(Coin.fromJSON(e));
-            }
-        }
-        if (object.actionCompleted !== undefined && object.actionCompleted !== null) {
-            for (const e of object.actionCompleted) {
-                message.actionCompleted.push(Boolean(e));
-            }
-        }
-        return message;
+        return {
+            address: isSet(object.address) ? String(object.address) : '',
+            initialClaimableAmount: Array.isArray(object?.initialClaimableAmount) ? object.initialClaimableAmount.map((e: any) => Coin.fromJSON(e)) : [],
+            actionCompleted: Array.isArray(object?.actionCompleted) ? object.actionCompleted.map((e: any) => Boolean(e)) : [],
+        };
     },
 
     toJSON(message: ClaimRecord): unknown {
@@ -132,28 +135,25 @@ export const ClaimRecord = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<ClaimRecord>): ClaimRecord {
-        const message = { ...baseClaimRecord } as ClaimRecord;
+    create<I extends Exact<DeepPartial<ClaimRecord>, I>>(base?: I): ClaimRecord {
+        return ClaimRecord.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<ClaimRecord>, I>>(object: I): ClaimRecord {
+        const message = createBaseClaimRecord();
         message.address = object.address ?? '';
-        message.initialClaimableAmount = [];
-        if (object.initialClaimableAmount !== undefined && object.initialClaimableAmount !== null) {
-            for (const e of object.initialClaimableAmount) {
-                message.initialClaimableAmount.push(Coin.fromPartial(e));
-            }
-        }
-        message.actionCompleted = [];
-        if (object.actionCompleted !== undefined && object.actionCompleted !== null) {
-            for (const e of object.actionCompleted) {
-                message.actionCompleted.push(e);
-            }
-        }
+        message.initialClaimableAmount = object.initialClaimableAmount?.map((e) => Coin.fromPartial(e)) || [];
+        message.actionCompleted = object.actionCompleted?.map((e) => e) || [];
         return message;
     },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -162,7 +162,14 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }

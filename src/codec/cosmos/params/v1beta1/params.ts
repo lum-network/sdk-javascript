@@ -21,7 +21,9 @@ export interface ParamChange {
     value: string;
 }
 
-const baseParameterChangeProposal: object = { title: '', description: '' };
+function createBaseParameterChangeProposal(): ParameterChangeProposal {
+    return { title: '', description: '', changes: [] };
+}
 
 export const ParameterChangeProposal = {
     encode(message: ParameterChangeProposal, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -38,49 +40,48 @@ export const ParameterChangeProposal = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): ParameterChangeProposal {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseParameterChangeProposal } as ParameterChangeProposal;
-        message.changes = [];
+        const message = createBaseParameterChangeProposal();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.title = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.description = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.changes.push(ParamChange.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): ParameterChangeProposal {
-        const message = { ...baseParameterChangeProposal } as ParameterChangeProposal;
-        message.changes = [];
-        if (object.title !== undefined && object.title !== null) {
-            message.title = String(object.title);
-        } else {
-            message.title = '';
-        }
-        if (object.description !== undefined && object.description !== null) {
-            message.description = String(object.description);
-        } else {
-            message.description = '';
-        }
-        if (object.changes !== undefined && object.changes !== null) {
-            for (const e of object.changes) {
-                message.changes.push(ParamChange.fromJSON(e));
-            }
-        }
-        return message;
+        return {
+            title: isSet(object.title) ? String(object.title) : '',
+            description: isSet(object.description) ? String(object.description) : '',
+            changes: Array.isArray(object?.changes) ? object.changes.map((e: any) => ParamChange.fromJSON(e)) : [],
+        };
     },
 
     toJSON(message: ParameterChangeProposal): unknown {
@@ -95,21 +96,22 @@ export const ParameterChangeProposal = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<ParameterChangeProposal>): ParameterChangeProposal {
-        const message = { ...baseParameterChangeProposal } as ParameterChangeProposal;
+    create<I extends Exact<DeepPartial<ParameterChangeProposal>, I>>(base?: I): ParameterChangeProposal {
+        return ParameterChangeProposal.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<ParameterChangeProposal>, I>>(object: I): ParameterChangeProposal {
+        const message = createBaseParameterChangeProposal();
         message.title = object.title ?? '';
         message.description = object.description ?? '';
-        message.changes = [];
-        if (object.changes !== undefined && object.changes !== null) {
-            for (const e of object.changes) {
-                message.changes.push(ParamChange.fromPartial(e));
-            }
-        }
+        message.changes = object.changes?.map((e) => ParamChange.fromPartial(e)) || [];
         return message;
     },
 };
 
-const baseParamChange: object = { subspace: '', key: '', value: '' };
+function createBaseParamChange(): ParamChange {
+    return { subspace: '', key: '', value: '' };
+}
 
 export const ParamChange = {
     encode(message: ParamChange, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -126,47 +128,48 @@ export const ParamChange = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): ParamChange {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseParamChange } as ParamChange;
+        const message = createBaseParamChange();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.subspace = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.key = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.value = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): ParamChange {
-        const message = { ...baseParamChange } as ParamChange;
-        if (object.subspace !== undefined && object.subspace !== null) {
-            message.subspace = String(object.subspace);
-        } else {
-            message.subspace = '';
-        }
-        if (object.key !== undefined && object.key !== null) {
-            message.key = String(object.key);
-        } else {
-            message.key = '';
-        }
-        if (object.value !== undefined && object.value !== null) {
-            message.value = String(object.value);
-        } else {
-            message.value = '';
-        }
-        return message;
+        return {
+            subspace: isSet(object.subspace) ? String(object.subspace) : '',
+            key: isSet(object.key) ? String(object.key) : '',
+            value: isSet(object.value) ? String(object.value) : '',
+        };
     },
 
     toJSON(message: ParamChange): unknown {
@@ -177,8 +180,12 @@ export const ParamChange = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<ParamChange>): ParamChange {
-        const message = { ...baseParamChange } as ParamChange;
+    create<I extends Exact<DeepPartial<ParamChange>, I>>(base?: I): ParamChange {
+        return ParamChange.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<ParamChange>, I>>(object: I): ParamChange {
+        const message = createBaseParamChange();
         message.subspace = object.subspace ?? '';
         message.key = object.key ?? '';
         message.value = object.value ?? '';
@@ -186,9 +193,12 @@ export const ParamChange = {
     },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -197,7 +207,14 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }

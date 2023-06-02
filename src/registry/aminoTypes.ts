@@ -11,6 +11,7 @@ import { assertDefinedAndNotNull } from '@cosmjs/utils';
 import { AminoMsg, Coin } from '@cosmjs/amino';
 import Long from 'long';
 
+import { MsgVote } from '../codec/cosmos/gov/v1/tx';
 import { MsgDeposit as MsgDepositDfract } from '../codec/lum-network/dfract/tx';
 import {
     MsgDeposit as MsgMillionsDeposit,
@@ -19,6 +20,17 @@ import {
     MsgWithdrawDepositRetry as MsgMillionsWithdrawDepositRetry,
     MsgClaimPrize as MsgMillionsClaimPrize,
 } from '../codec/lum-network/millions/tx';
+
+export interface AminoMsgGovVote extends AminoMsg {
+    readonly type: 'cosmos-sdk/v1/MsgVote';
+    readonly value: {
+        readonly proposal_id: string;
+        readonly voter: string;
+        readonly option: number;
+        readonly metadata?: string;
+    };
+}
+
 export interface AminoMsgDepositDfract extends AminoMsg {
     readonly type: 'lum-network/MsgDeposit';
     readonly value: {
@@ -82,10 +94,29 @@ export const createDefaultAminoTypes = (): AminoConverters => {
         ...createAuthzAminoConverters(),
         ...createDistributionAminoConverters(),
         ...createGovAminoConverters(),
-        ...createStakingAminoConverters('lum'),
+        ...createGovV1AminoConverters(),
+        ...createStakingAminoConverters(),
         ...createIbcAminoConverters(),
     };
 };
+
+const createGovV1AminoConverters = (): AminoConverters => ({
+    '/cosmos.gov.v1.MsgVote': {
+        aminoType: 'cosmos-sdk/v1/MsgVote',
+        toAmino: ({ proposalId, voter, option, metadata }: MsgVote): AminoMsgGovVote['value'] => ({
+            proposal_id: proposalId.toString(),
+            voter,
+            option,
+            metadata: metadata.length > 0 ? metadata : undefined,
+        }),
+        fromAmino: ({ proposal_id, voter, option, metadata }: AminoMsgGovVote['value']): MsgVote => ({
+            proposalId: Long.fromString(proposal_id),
+            voter,
+            option,
+            metadata: metadata || '',
+        }),
+    },
+});
 
 const createDfractAminoConverters = (): AminoConverters => ({
     '/lum.network.dfract.MsgDeposit': {

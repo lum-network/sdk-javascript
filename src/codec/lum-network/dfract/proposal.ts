@@ -11,7 +11,9 @@ export interface WithdrawAndMintProposal {
     microMintRate: Long;
 }
 
-const baseWithdrawAndMintProposal: object = { title: '', description: '', withdrawalAddress: '', microMintRate: Long.ZERO };
+function createBaseWithdrawAndMintProposal(): WithdrawAndMintProposal {
+    return { title: '', description: '', withdrawalAddress: '', microMintRate: Long.ZERO };
+}
 
 export const WithdrawAndMintProposal = {
     encode(message: WithdrawAndMintProposal, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -31,55 +33,56 @@ export const WithdrawAndMintProposal = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): WithdrawAndMintProposal {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseWithdrawAndMintProposal } as WithdrawAndMintProposal;
+        const message = createBaseWithdrawAndMintProposal();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.title = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.description = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.withdrawalAddress = reader.string();
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 32) {
+                        break;
+                    }
+
                     message.microMintRate = reader.int64() as Long;
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): WithdrawAndMintProposal {
-        const message = { ...baseWithdrawAndMintProposal } as WithdrawAndMintProposal;
-        if (object.title !== undefined && object.title !== null) {
-            message.title = String(object.title);
-        } else {
-            message.title = '';
-        }
-        if (object.description !== undefined && object.description !== null) {
-            message.description = String(object.description);
-        } else {
-            message.description = '';
-        }
-        if (object.withdrawalAddress !== undefined && object.withdrawalAddress !== null) {
-            message.withdrawalAddress = String(object.withdrawalAddress);
-        } else {
-            message.withdrawalAddress = '';
-        }
-        if (object.microMintRate !== undefined && object.microMintRate !== null) {
-            message.microMintRate = Long.fromString(object.microMintRate);
-        } else {
-            message.microMintRate = Long.ZERO;
-        }
-        return message;
+        return {
+            title: isSet(object.title) ? String(object.title) : '',
+            description: isSet(object.description) ? String(object.description) : '',
+            withdrawalAddress: isSet(object.withdrawalAddress) ? String(object.withdrawalAddress) : '',
+            microMintRate: isSet(object.microMintRate) ? Long.fromValue(object.microMintRate) : Long.ZERO,
+        };
     },
 
     toJSON(message: WithdrawAndMintProposal): unknown {
@@ -91,23 +94,26 @@ export const WithdrawAndMintProposal = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<WithdrawAndMintProposal>): WithdrawAndMintProposal {
-        const message = { ...baseWithdrawAndMintProposal } as WithdrawAndMintProposal;
+    create<I extends Exact<DeepPartial<WithdrawAndMintProposal>, I>>(base?: I): WithdrawAndMintProposal {
+        return WithdrawAndMintProposal.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<WithdrawAndMintProposal>, I>>(object: I): WithdrawAndMintProposal {
+        const message = createBaseWithdrawAndMintProposal();
         message.title = object.title ?? '';
         message.description = object.description ?? '';
         message.withdrawalAddress = object.withdrawalAddress ?? '';
-        if (object.microMintRate !== undefined && object.microMintRate !== null) {
-            message.microMintRate = object.microMintRate as Long;
-        } else {
-            message.microMintRate = Long.ZERO;
-        }
+        message.microMintRate = object.microMintRate !== undefined && object.microMintRate !== null ? Long.fromValue(object.microMintRate) : Long.ZERO;
         return message;
     },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -116,7 +122,14 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }

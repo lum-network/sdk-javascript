@@ -2,7 +2,7 @@
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
 import { Coin } from '../../../../cosmos/base/v1beta1/coin';
-import { Height } from '../../../../ibc/core/client/v1/client';
+import { Height } from '../../../core/client/v1/client';
 
 export const protobufPackage = 'ibc.applications.transfer.v1';
 
@@ -37,7 +37,17 @@ export interface MsgTransfer {
 /** MsgTransferResponse defines the Msg/Transfer response type. */
 export interface MsgTransferResponse {}
 
-const baseMsgTransfer: object = { sourcePort: '', sourceChannel: '', sender: '', receiver: '', timeoutTimestamp: Long.UZERO };
+function createBaseMsgTransfer(): MsgTransfer {
+    return {
+        sourcePort: '',
+        sourceChannel: '',
+        token: undefined,
+        sender: '',
+        receiver: '',
+        timeoutHeight: undefined,
+        timeoutTimestamp: Long.UZERO,
+    };
+}
 
 export const MsgTransfer = {
     encode(message: MsgTransfer, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -66,79 +76,80 @@ export const MsgTransfer = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgTransfer {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMsgTransfer } as MsgTransfer;
+        const message = createBaseMsgTransfer();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.sourcePort = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.sourceChannel = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.token = Coin.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
                     message.sender = reader.string();
-                    break;
+                    continue;
                 case 5:
+                    if (tag !== 42) {
+                        break;
+                    }
+
                     message.receiver = reader.string();
-                    break;
+                    continue;
                 case 6:
+                    if (tag !== 50) {
+                        break;
+                    }
+
                     message.timeoutHeight = Height.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 7:
+                    if (tag !== 56) {
+                        break;
+                    }
+
                     message.timeoutTimestamp = reader.uint64() as Long;
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): MsgTransfer {
-        const message = { ...baseMsgTransfer } as MsgTransfer;
-        if (object.sourcePort !== undefined && object.sourcePort !== null) {
-            message.sourcePort = String(object.sourcePort);
-        } else {
-            message.sourcePort = '';
-        }
-        if (object.sourceChannel !== undefined && object.sourceChannel !== null) {
-            message.sourceChannel = String(object.sourceChannel);
-        } else {
-            message.sourceChannel = '';
-        }
-        if (object.token !== undefined && object.token !== null) {
-            message.token = Coin.fromJSON(object.token);
-        } else {
-            message.token = undefined;
-        }
-        if (object.sender !== undefined && object.sender !== null) {
-            message.sender = String(object.sender);
-        } else {
-            message.sender = '';
-        }
-        if (object.receiver !== undefined && object.receiver !== null) {
-            message.receiver = String(object.receiver);
-        } else {
-            message.receiver = '';
-        }
-        if (object.timeoutHeight !== undefined && object.timeoutHeight !== null) {
-            message.timeoutHeight = Height.fromJSON(object.timeoutHeight);
-        } else {
-            message.timeoutHeight = undefined;
-        }
-        if (object.timeoutTimestamp !== undefined && object.timeoutTimestamp !== null) {
-            message.timeoutTimestamp = Long.fromString(object.timeoutTimestamp);
-        } else {
-            message.timeoutTimestamp = Long.UZERO;
-        }
-        return message;
+        return {
+            sourcePort: isSet(object.sourcePort) ? String(object.sourcePort) : '',
+            sourceChannel: isSet(object.sourceChannel) ? String(object.sourceChannel) : '',
+            token: isSet(object.token) ? Coin.fromJSON(object.token) : undefined,
+            sender: isSet(object.sender) ? String(object.sender) : '',
+            receiver: isSet(object.receiver) ? String(object.receiver) : '',
+            timeoutHeight: isSet(object.timeoutHeight) ? Height.fromJSON(object.timeoutHeight) : undefined,
+            timeoutTimestamp: isSet(object.timeoutTimestamp) ? Long.fromValue(object.timeoutTimestamp) : Long.UZERO,
+        };
     },
 
     toJSON(message: MsgTransfer): unknown {
@@ -153,32 +164,26 @@ export const MsgTransfer = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<MsgTransfer>): MsgTransfer {
-        const message = { ...baseMsgTransfer } as MsgTransfer;
+    create<I extends Exact<DeepPartial<MsgTransfer>, I>>(base?: I): MsgTransfer {
+        return MsgTransfer.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<MsgTransfer>, I>>(object: I): MsgTransfer {
+        const message = createBaseMsgTransfer();
         message.sourcePort = object.sourcePort ?? '';
         message.sourceChannel = object.sourceChannel ?? '';
-        if (object.token !== undefined && object.token !== null) {
-            message.token = Coin.fromPartial(object.token);
-        } else {
-            message.token = undefined;
-        }
+        message.token = object.token !== undefined && object.token !== null ? Coin.fromPartial(object.token) : undefined;
         message.sender = object.sender ?? '';
         message.receiver = object.receiver ?? '';
-        if (object.timeoutHeight !== undefined && object.timeoutHeight !== null) {
-            message.timeoutHeight = Height.fromPartial(object.timeoutHeight);
-        } else {
-            message.timeoutHeight = undefined;
-        }
-        if (object.timeoutTimestamp !== undefined && object.timeoutTimestamp !== null) {
-            message.timeoutTimestamp = object.timeoutTimestamp as Long;
-        } else {
-            message.timeoutTimestamp = Long.UZERO;
-        }
+        message.timeoutHeight = object.timeoutHeight !== undefined && object.timeoutHeight !== null ? Height.fromPartial(object.timeoutHeight) : undefined;
+        message.timeoutTimestamp = object.timeoutTimestamp !== undefined && object.timeoutTimestamp !== null ? Long.fromValue(object.timeoutTimestamp) : Long.UZERO;
         return message;
     },
 };
 
-const baseMsgTransferResponse: object = {};
+function createBaseMsgTransferResponse(): MsgTransferResponse {
+    return {};
+}
 
 export const MsgTransferResponse = {
     encode(_: MsgTransferResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -186,23 +191,23 @@ export const MsgTransferResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgTransferResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMsgTransferResponse } as MsgTransferResponse;
+        const message = createBaseMsgTransferResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(_: any): MsgTransferResponse {
-        const message = { ...baseMsgTransferResponse } as MsgTransferResponse;
-        return message;
+        return {};
     },
 
     toJSON(_: MsgTransferResponse): unknown {
@@ -210,8 +215,12 @@ export const MsgTransferResponse = {
         return obj;
     },
 
-    fromPartial(_: DeepPartial<MsgTransferResponse>): MsgTransferResponse {
-        const message = { ...baseMsgTransferResponse } as MsgTransferResponse;
+    create<I extends Exact<DeepPartial<MsgTransferResponse>, I>>(base?: I): MsgTransferResponse {
+        return MsgTransferResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<MsgTransferResponse>, I>>(_: I): MsgTransferResponse {
+        const message = createBaseMsgTransferResponse();
         return message;
     },
 };
@@ -224,14 +233,16 @@ export interface Msg {
 
 export class MsgClientImpl implements Msg {
     private readonly rpc: Rpc;
-    constructor(rpc: Rpc) {
+    private readonly service: string;
+    constructor(rpc: Rpc, opts?: { service?: string }) {
+        this.service = opts?.service || 'ibc.applications.transfer.v1.Msg';
         this.rpc = rpc;
         this.Transfer = this.Transfer.bind(this);
     }
     Transfer(request: MsgTransfer): Promise<MsgTransferResponse> {
         const data = MsgTransfer.encode(request).finish();
-        const promise = this.rpc.request('ibc.applications.transfer.v1.Msg', 'Transfer', data);
-        return promise.then((data) => MsgTransferResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'Transfer', data);
+        return promise.then((data) => MsgTransferResponse.decode(_m0.Reader.create(data)));
     }
 }
 
@@ -239,9 +250,12 @@ interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -250,7 +264,14 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }

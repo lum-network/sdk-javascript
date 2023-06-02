@@ -1,9 +1,9 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
-import { Params } from '../../lum-network/airdrop/params';
-import { ClaimRecord, Action, actionFromJSON, actionToJSON } from '../../lum-network/airdrop/claim';
 import { Coin } from '../../cosmos/base/v1beta1/coin';
+import { Action, actionFromJSON, actionToJSON, ClaimRecord } from './claim';
+import { Params } from './params';
 
 export const protobufPackage = 'lum.network.airdrop';
 
@@ -50,7 +50,9 @@ export interface QueryTotalClaimableResponse {
     coins: Coin[];
 }
 
-const baseQueryModuleAccountBalanceRequest: object = {};
+function createBaseQueryModuleAccountBalanceRequest(): QueryModuleAccountBalanceRequest {
+    return {};
+}
 
 export const QueryModuleAccountBalanceRequest = {
     encode(_: QueryModuleAccountBalanceRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -58,23 +60,23 @@ export const QueryModuleAccountBalanceRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryModuleAccountBalanceRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryModuleAccountBalanceRequest } as QueryModuleAccountBalanceRequest;
+        const message = createBaseQueryModuleAccountBalanceRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(_: any): QueryModuleAccountBalanceRequest {
-        const message = { ...baseQueryModuleAccountBalanceRequest } as QueryModuleAccountBalanceRequest;
-        return message;
+        return {};
     },
 
     toJSON(_: QueryModuleAccountBalanceRequest): unknown {
@@ -82,13 +84,19 @@ export const QueryModuleAccountBalanceRequest = {
         return obj;
     },
 
-    fromPartial(_: DeepPartial<QueryModuleAccountBalanceRequest>): QueryModuleAccountBalanceRequest {
-        const message = { ...baseQueryModuleAccountBalanceRequest } as QueryModuleAccountBalanceRequest;
+    create<I extends Exact<DeepPartial<QueryModuleAccountBalanceRequest>, I>>(base?: I): QueryModuleAccountBalanceRequest {
+        return QueryModuleAccountBalanceRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryModuleAccountBalanceRequest>, I>>(_: I): QueryModuleAccountBalanceRequest {
+        const message = createBaseQueryModuleAccountBalanceRequest();
         return message;
     },
 };
 
-const baseQueryModuleAccountBalanceResponse: object = {};
+function createBaseQueryModuleAccountBalanceResponse(): QueryModuleAccountBalanceResponse {
+    return { moduleAccountBalance: [] };
+}
 
 export const QueryModuleAccountBalanceResponse = {
     encode(message: QueryModuleAccountBalanceResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -99,33 +107,32 @@ export const QueryModuleAccountBalanceResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryModuleAccountBalanceResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryModuleAccountBalanceResponse } as QueryModuleAccountBalanceResponse;
-        message.moduleAccountBalance = [];
+        const message = createBaseQueryModuleAccountBalanceResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.moduleAccountBalance.push(Coin.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryModuleAccountBalanceResponse {
-        const message = { ...baseQueryModuleAccountBalanceResponse } as QueryModuleAccountBalanceResponse;
-        message.moduleAccountBalance = [];
-        if (object.moduleAccountBalance !== undefined && object.moduleAccountBalance !== null) {
-            for (const e of object.moduleAccountBalance) {
-                message.moduleAccountBalance.push(Coin.fromJSON(e));
-            }
-        }
-        return message;
+        return {
+            moduleAccountBalance: Array.isArray(object?.moduleAccountBalance) ? object.moduleAccountBalance.map((e: any) => Coin.fromJSON(e)) : [],
+        };
     },
 
     toJSON(message: QueryModuleAccountBalanceResponse): unknown {
@@ -138,19 +145,20 @@ export const QueryModuleAccountBalanceResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryModuleAccountBalanceResponse>): QueryModuleAccountBalanceResponse {
-        const message = { ...baseQueryModuleAccountBalanceResponse } as QueryModuleAccountBalanceResponse;
-        message.moduleAccountBalance = [];
-        if (object.moduleAccountBalance !== undefined && object.moduleAccountBalance !== null) {
-            for (const e of object.moduleAccountBalance) {
-                message.moduleAccountBalance.push(Coin.fromPartial(e));
-            }
-        }
+    create<I extends Exact<DeepPartial<QueryModuleAccountBalanceResponse>, I>>(base?: I): QueryModuleAccountBalanceResponse {
+        return QueryModuleAccountBalanceResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryModuleAccountBalanceResponse>, I>>(object: I): QueryModuleAccountBalanceResponse {
+        const message = createBaseQueryModuleAccountBalanceResponse();
+        message.moduleAccountBalance = object.moduleAccountBalance?.map((e) => Coin.fromPartial(e)) || [];
         return message;
     },
 };
 
-const baseQueryParamsRequest: object = {};
+function createBaseQueryParamsRequest(): QueryParamsRequest {
+    return {};
+}
 
 export const QueryParamsRequest = {
     encode(_: QueryParamsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -158,23 +166,23 @@ export const QueryParamsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+        const message = createBaseQueryParamsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(_: any): QueryParamsRequest {
-        const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
-        return message;
+        return {};
     },
 
     toJSON(_: QueryParamsRequest): unknown {
@@ -182,13 +190,19 @@ export const QueryParamsRequest = {
         return obj;
     },
 
-    fromPartial(_: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
-        const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    create<I extends Exact<DeepPartial<QueryParamsRequest>, I>>(base?: I): QueryParamsRequest {
+        return QueryParamsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryParamsRequest>, I>>(_: I): QueryParamsRequest {
+        const message = createBaseQueryParamsRequest();
         return message;
     },
 };
 
-const baseQueryParamsResponse: object = {};
+function createBaseQueryParamsResponse(): QueryParamsResponse {
+    return { params: undefined };
+}
 
 export const QueryParamsResponse = {
     encode(message: QueryParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -199,31 +213,30 @@ export const QueryParamsResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+        const message = createBaseQueryParamsResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.params = Params.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryParamsResponse {
-        const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-        if (object.params !== undefined && object.params !== null) {
-            message.params = Params.fromJSON(object.params);
-        } else {
-            message.params = undefined;
-        }
-        return message;
+        return { params: isSet(object.params) ? Params.fromJSON(object.params) : undefined };
     },
 
     toJSON(message: QueryParamsResponse): unknown {
@@ -232,18 +245,20 @@ export const QueryParamsResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
-        const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-        if (object.params !== undefined && object.params !== null) {
-            message.params = Params.fromPartial(object.params);
-        } else {
-            message.params = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryParamsResponse>, I>>(base?: I): QueryParamsResponse {
+        return QueryParamsResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryParamsResponse>, I>>(object: I): QueryParamsResponse {
+        const message = createBaseQueryParamsResponse();
+        message.params = object.params !== undefined && object.params !== null ? Params.fromPartial(object.params) : undefined;
         return message;
     },
 };
 
-const baseQueryClaimRecordRequest: object = { address: '' };
+function createBaseQueryClaimRecordRequest(): QueryClaimRecordRequest {
+    return { address: '' };
+}
 
 export const QueryClaimRecordRequest = {
     encode(message: QueryClaimRecordRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -254,31 +269,30 @@ export const QueryClaimRecordRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryClaimRecordRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryClaimRecordRequest } as QueryClaimRecordRequest;
+        const message = createBaseQueryClaimRecordRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.address = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryClaimRecordRequest {
-        const message = { ...baseQueryClaimRecordRequest } as QueryClaimRecordRequest;
-        if (object.address !== undefined && object.address !== null) {
-            message.address = String(object.address);
-        } else {
-            message.address = '';
-        }
-        return message;
+        return { address: isSet(object.address) ? String(object.address) : '' };
     },
 
     toJSON(message: QueryClaimRecordRequest): unknown {
@@ -287,14 +301,20 @@ export const QueryClaimRecordRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryClaimRecordRequest>): QueryClaimRecordRequest {
-        const message = { ...baseQueryClaimRecordRequest } as QueryClaimRecordRequest;
+    create<I extends Exact<DeepPartial<QueryClaimRecordRequest>, I>>(base?: I): QueryClaimRecordRequest {
+        return QueryClaimRecordRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryClaimRecordRequest>, I>>(object: I): QueryClaimRecordRequest {
+        const message = createBaseQueryClaimRecordRequest();
         message.address = object.address ?? '';
         return message;
     },
 };
 
-const baseQueryClaimRecordResponse: object = {};
+function createBaseQueryClaimRecordResponse(): QueryClaimRecordResponse {
+    return { claimRecord: undefined };
+}
 
 export const QueryClaimRecordResponse = {
     encode(message: QueryClaimRecordResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -305,31 +325,30 @@ export const QueryClaimRecordResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryClaimRecordResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryClaimRecordResponse } as QueryClaimRecordResponse;
+        const message = createBaseQueryClaimRecordResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.claimRecord = ClaimRecord.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryClaimRecordResponse {
-        const message = { ...baseQueryClaimRecordResponse } as QueryClaimRecordResponse;
-        if (object.claimRecord !== undefined && object.claimRecord !== null) {
-            message.claimRecord = ClaimRecord.fromJSON(object.claimRecord);
-        } else {
-            message.claimRecord = undefined;
-        }
-        return message;
+        return { claimRecord: isSet(object.claimRecord) ? ClaimRecord.fromJSON(object.claimRecord) : undefined };
     },
 
     toJSON(message: QueryClaimRecordResponse): unknown {
@@ -338,18 +357,20 @@ export const QueryClaimRecordResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryClaimRecordResponse>): QueryClaimRecordResponse {
-        const message = { ...baseQueryClaimRecordResponse } as QueryClaimRecordResponse;
-        if (object.claimRecord !== undefined && object.claimRecord !== null) {
-            message.claimRecord = ClaimRecord.fromPartial(object.claimRecord);
-        } else {
-            message.claimRecord = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryClaimRecordResponse>, I>>(base?: I): QueryClaimRecordResponse {
+        return QueryClaimRecordResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryClaimRecordResponse>, I>>(object: I): QueryClaimRecordResponse {
+        const message = createBaseQueryClaimRecordResponse();
+        message.claimRecord = object.claimRecord !== undefined && object.claimRecord !== null ? ClaimRecord.fromPartial(object.claimRecord) : undefined;
         return message;
     },
 };
 
-const baseQueryClaimableForActionRequest: object = { address: '', action: 0 };
+function createBaseQueryClaimableForActionRequest(): QueryClaimableForActionRequest {
+    return { address: '', action: 0 };
+}
 
 export const QueryClaimableForActionRequest = {
     encode(message: QueryClaimableForActionRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -363,39 +384,40 @@ export const QueryClaimableForActionRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryClaimableForActionRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryClaimableForActionRequest } as QueryClaimableForActionRequest;
+        const message = createBaseQueryClaimableForActionRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.address = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
                     message.action = reader.int32() as any;
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryClaimableForActionRequest {
-        const message = { ...baseQueryClaimableForActionRequest } as QueryClaimableForActionRequest;
-        if (object.address !== undefined && object.address !== null) {
-            message.address = String(object.address);
-        } else {
-            message.address = '';
-        }
-        if (object.action !== undefined && object.action !== null) {
-            message.action = actionFromJSON(object.action);
-        } else {
-            message.action = 0;
-        }
-        return message;
+        return {
+            address: isSet(object.address) ? String(object.address) : '',
+            action: isSet(object.action) ? actionFromJSON(object.action) : 0,
+        };
     },
 
     toJSON(message: QueryClaimableForActionRequest): unknown {
@@ -405,15 +427,21 @@ export const QueryClaimableForActionRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryClaimableForActionRequest>): QueryClaimableForActionRequest {
-        const message = { ...baseQueryClaimableForActionRequest } as QueryClaimableForActionRequest;
+    create<I extends Exact<DeepPartial<QueryClaimableForActionRequest>, I>>(base?: I): QueryClaimableForActionRequest {
+        return QueryClaimableForActionRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryClaimableForActionRequest>, I>>(object: I): QueryClaimableForActionRequest {
+        const message = createBaseQueryClaimableForActionRequest();
         message.address = object.address ?? '';
         message.action = object.action ?? 0;
         return message;
     },
 };
 
-const baseQueryClaimableForActionResponse: object = {};
+function createBaseQueryClaimableForActionResponse(): QueryClaimableForActionResponse {
+    return { coins: [] };
+}
 
 export const QueryClaimableForActionResponse = {
     encode(message: QueryClaimableForActionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -424,33 +452,30 @@ export const QueryClaimableForActionResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryClaimableForActionResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryClaimableForActionResponse } as QueryClaimableForActionResponse;
-        message.coins = [];
+        const message = createBaseQueryClaimableForActionResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.coins.push(Coin.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryClaimableForActionResponse {
-        const message = { ...baseQueryClaimableForActionResponse } as QueryClaimableForActionResponse;
-        message.coins = [];
-        if (object.coins !== undefined && object.coins !== null) {
-            for (const e of object.coins) {
-                message.coins.push(Coin.fromJSON(e));
-            }
-        }
-        return message;
+        return { coins: Array.isArray(object?.coins) ? object.coins.map((e: any) => Coin.fromJSON(e)) : [] };
     },
 
     toJSON(message: QueryClaimableForActionResponse): unknown {
@@ -463,19 +488,20 @@ export const QueryClaimableForActionResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryClaimableForActionResponse>): QueryClaimableForActionResponse {
-        const message = { ...baseQueryClaimableForActionResponse } as QueryClaimableForActionResponse;
-        message.coins = [];
-        if (object.coins !== undefined && object.coins !== null) {
-            for (const e of object.coins) {
-                message.coins.push(Coin.fromPartial(e));
-            }
-        }
+    create<I extends Exact<DeepPartial<QueryClaimableForActionResponse>, I>>(base?: I): QueryClaimableForActionResponse {
+        return QueryClaimableForActionResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryClaimableForActionResponse>, I>>(object: I): QueryClaimableForActionResponse {
+        const message = createBaseQueryClaimableForActionResponse();
+        message.coins = object.coins?.map((e) => Coin.fromPartial(e)) || [];
         return message;
     },
 };
 
-const baseQueryTotalClaimableRequest: object = { address: '' };
+function createBaseQueryTotalClaimableRequest(): QueryTotalClaimableRequest {
+    return { address: '' };
+}
 
 export const QueryTotalClaimableRequest = {
     encode(message: QueryTotalClaimableRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -486,31 +512,30 @@ export const QueryTotalClaimableRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryTotalClaimableRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryTotalClaimableRequest } as QueryTotalClaimableRequest;
+        const message = createBaseQueryTotalClaimableRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.address = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryTotalClaimableRequest {
-        const message = { ...baseQueryTotalClaimableRequest } as QueryTotalClaimableRequest;
-        if (object.address !== undefined && object.address !== null) {
-            message.address = String(object.address);
-        } else {
-            message.address = '';
-        }
-        return message;
+        return { address: isSet(object.address) ? String(object.address) : '' };
     },
 
     toJSON(message: QueryTotalClaimableRequest): unknown {
@@ -519,14 +544,20 @@ export const QueryTotalClaimableRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryTotalClaimableRequest>): QueryTotalClaimableRequest {
-        const message = { ...baseQueryTotalClaimableRequest } as QueryTotalClaimableRequest;
+    create<I extends Exact<DeepPartial<QueryTotalClaimableRequest>, I>>(base?: I): QueryTotalClaimableRequest {
+        return QueryTotalClaimableRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryTotalClaimableRequest>, I>>(object: I): QueryTotalClaimableRequest {
+        const message = createBaseQueryTotalClaimableRequest();
         message.address = object.address ?? '';
         return message;
     },
 };
 
-const baseQueryTotalClaimableResponse: object = {};
+function createBaseQueryTotalClaimableResponse(): QueryTotalClaimableResponse {
+    return { coins: [] };
+}
 
 export const QueryTotalClaimableResponse = {
     encode(message: QueryTotalClaimableResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -537,33 +568,30 @@ export const QueryTotalClaimableResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryTotalClaimableResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryTotalClaimableResponse } as QueryTotalClaimableResponse;
-        message.coins = [];
+        const message = createBaseQueryTotalClaimableResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.coins.push(Coin.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryTotalClaimableResponse {
-        const message = { ...baseQueryTotalClaimableResponse } as QueryTotalClaimableResponse;
-        message.coins = [];
-        if (object.coins !== undefined && object.coins !== null) {
-            for (const e of object.coins) {
-                message.coins.push(Coin.fromJSON(e));
-            }
-        }
-        return message;
+        return { coins: Array.isArray(object?.coins) ? object.coins.map((e: any) => Coin.fromJSON(e)) : [] };
     },
 
     toJSON(message: QueryTotalClaimableResponse): unknown {
@@ -576,14 +604,13 @@ export const QueryTotalClaimableResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryTotalClaimableResponse>): QueryTotalClaimableResponse {
-        const message = { ...baseQueryTotalClaimableResponse } as QueryTotalClaimableResponse;
-        message.coins = [];
-        if (object.coins !== undefined && object.coins !== null) {
-            for (const e of object.coins) {
-                message.coins.push(Coin.fromPartial(e));
-            }
-        }
+    create<I extends Exact<DeepPartial<QueryTotalClaimableResponse>, I>>(base?: I): QueryTotalClaimableResponse {
+        return QueryTotalClaimableResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryTotalClaimableResponse>, I>>(object: I): QueryTotalClaimableResponse {
+        const message = createBaseQueryTotalClaimableResponse();
+        message.coins = object.coins?.map((e) => Coin.fromPartial(e)) || [];
         return message;
     },
 };
@@ -599,7 +626,9 @@ export interface Query {
 
 export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
-    constructor(rpc: Rpc) {
+    private readonly service: string;
+    constructor(rpc: Rpc, opts?: { service?: string }) {
+        this.service = opts?.service || 'lum.network.airdrop.Query';
         this.rpc = rpc;
         this.ModuleAccountBalance = this.ModuleAccountBalance.bind(this);
         this.Params = this.Params.bind(this);
@@ -609,32 +638,32 @@ export class QueryClientImpl implements Query {
     }
     ModuleAccountBalance(request: QueryModuleAccountBalanceRequest): Promise<QueryModuleAccountBalanceResponse> {
         const data = QueryModuleAccountBalanceRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.airdrop.Query', 'ModuleAccountBalance', data);
-        return promise.then((data) => QueryModuleAccountBalanceResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'ModuleAccountBalance', data);
+        return promise.then((data) => QueryModuleAccountBalanceResponse.decode(_m0.Reader.create(data)));
     }
 
     Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
         const data = QueryParamsRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.airdrop.Query', 'Params', data);
-        return promise.then((data) => QueryParamsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'Params', data);
+        return promise.then((data) => QueryParamsResponse.decode(_m0.Reader.create(data)));
     }
 
     ClaimRecord(request: QueryClaimRecordRequest): Promise<QueryClaimRecordResponse> {
         const data = QueryClaimRecordRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.airdrop.Query', 'ClaimRecord', data);
-        return promise.then((data) => QueryClaimRecordResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'ClaimRecord', data);
+        return promise.then((data) => QueryClaimRecordResponse.decode(_m0.Reader.create(data)));
     }
 
     ClaimableForAction(request: QueryClaimableForActionRequest): Promise<QueryClaimableForActionResponse> {
         const data = QueryClaimableForActionRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.airdrop.Query', 'ClaimableForAction', data);
-        return promise.then((data) => QueryClaimableForActionResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'ClaimableForAction', data);
+        return promise.then((data) => QueryClaimableForActionResponse.decode(_m0.Reader.create(data)));
     }
 
     TotalClaimable(request: QueryTotalClaimableRequest): Promise<QueryTotalClaimableResponse> {
         const data = QueryTotalClaimableRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.airdrop.Query', 'TotalClaimable', data);
-        return promise.then((data) => QueryTotalClaimableResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'TotalClaimable', data);
+        return promise.then((data) => QueryTotalClaimableResponse.decode(_m0.Reader.create(data)));
     }
 }
 
@@ -642,9 +671,12 @@ interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -653,7 +685,14 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }

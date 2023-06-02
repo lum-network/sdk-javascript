@@ -26,7 +26,9 @@ export interface Metadata {
     txType: string;
 }
 
-const baseMetadata: object = { version: '', controllerConnectionId: '', hostConnectionId: '', address: '', encoding: '', txType: '' };
+function createBaseMetadata(): Metadata {
+    return { version: '', controllerConnectionId: '', hostConnectionId: '', address: '', encoding: '', txType: '' };
+}
 
 export const Metadata = {
     encode(message: Metadata, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -52,71 +54,72 @@ export const Metadata = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Metadata {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMetadata } as Metadata;
+        const message = createBaseMetadata();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.version = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.controllerConnectionId = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.hostConnectionId = reader.string();
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
                     message.address = reader.string();
-                    break;
+                    continue;
                 case 5:
+                    if (tag !== 42) {
+                        break;
+                    }
+
                     message.encoding = reader.string();
-                    break;
+                    continue;
                 case 6:
+                    if (tag !== 50) {
+                        break;
+                    }
+
                     message.txType = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): Metadata {
-        const message = { ...baseMetadata } as Metadata;
-        if (object.version !== undefined && object.version !== null) {
-            message.version = String(object.version);
-        } else {
-            message.version = '';
-        }
-        if (object.controllerConnectionId !== undefined && object.controllerConnectionId !== null) {
-            message.controllerConnectionId = String(object.controllerConnectionId);
-        } else {
-            message.controllerConnectionId = '';
-        }
-        if (object.hostConnectionId !== undefined && object.hostConnectionId !== null) {
-            message.hostConnectionId = String(object.hostConnectionId);
-        } else {
-            message.hostConnectionId = '';
-        }
-        if (object.address !== undefined && object.address !== null) {
-            message.address = String(object.address);
-        } else {
-            message.address = '';
-        }
-        if (object.encoding !== undefined && object.encoding !== null) {
-            message.encoding = String(object.encoding);
-        } else {
-            message.encoding = '';
-        }
-        if (object.txType !== undefined && object.txType !== null) {
-            message.txType = String(object.txType);
-        } else {
-            message.txType = '';
-        }
-        return message;
+        return {
+            version: isSet(object.version) ? String(object.version) : '',
+            controllerConnectionId: isSet(object.controllerConnectionId) ? String(object.controllerConnectionId) : '',
+            hostConnectionId: isSet(object.hostConnectionId) ? String(object.hostConnectionId) : '',
+            address: isSet(object.address) ? String(object.address) : '',
+            encoding: isSet(object.encoding) ? String(object.encoding) : '',
+            txType: isSet(object.txType) ? String(object.txType) : '',
+        };
     },
 
     toJSON(message: Metadata): unknown {
@@ -130,8 +133,12 @@ export const Metadata = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<Metadata>): Metadata {
-        const message = { ...baseMetadata } as Metadata;
+    create<I extends Exact<DeepPartial<Metadata>, I>>(base?: I): Metadata {
+        return Metadata.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<Metadata>, I>>(object: I): Metadata {
+        const message = createBaseMetadata();
         message.version = object.version ?? '';
         message.controllerConnectionId = object.controllerConnectionId ?? '';
         message.hostConnectionId = object.hostConnectionId ?? '';
@@ -142,9 +149,12 @@ export const Metadata = {
     },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -153,7 +163,14 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }

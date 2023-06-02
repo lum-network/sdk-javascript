@@ -18,11 +18,11 @@ export const sortJSON = <T>(jsonObj: T): T => {
         return jsonObj;
     }
 
-    let keys = Object.keys(jsonObj) as Array<keyof T>;
+    let keys = Object.keys(jsonObj as object) as Array<keyof T>;
     keys = keys.sort();
     const newObject: Partial<T> = {};
     for (let i = 0; i < keys.length; i++) {
-        newObject[keys[i]] = sortJSON(jsonObj[keys[i]]);
+        newObject[keys[i]] = sortJSON((jsonObj as T)[keys[i]]);
     }
     return newObject as T;
 };

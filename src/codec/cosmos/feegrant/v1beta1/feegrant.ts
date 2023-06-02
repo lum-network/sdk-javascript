@@ -1,10 +1,10 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
-import { Duration } from '../../../google/protobuf/duration';
 import { Any } from '../../../google/protobuf/any';
+import { Duration } from '../../../google/protobuf/duration';
 import { Timestamp } from '../../../google/protobuf/timestamp';
-import { Coin } from '../../../cosmos/base/v1beta1/coin';
+import { Coin } from '../../base/v1beta1/coin';
 
 export const protobufPackage = 'cosmos.feegrant.v1beta1';
 
@@ -70,7 +70,9 @@ export interface Grant {
     allowance?: Any;
 }
 
-const baseBasicAllowance: object = {};
+function createBaseBasicAllowance(): BasicAllowance {
+    return { spendLimit: [], expiration: undefined };
+}
 
 export const BasicAllowance = {
     encode(message: BasicAllowance, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -84,41 +86,40 @@ export const BasicAllowance = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): BasicAllowance {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseBasicAllowance } as BasicAllowance;
-        message.spendLimit = [];
+        const message = createBaseBasicAllowance();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.spendLimit.push(Coin.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.expiration = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): BasicAllowance {
-        const message = { ...baseBasicAllowance } as BasicAllowance;
-        message.spendLimit = [];
-        if (object.spendLimit !== undefined && object.spendLimit !== null) {
-            for (const e of object.spendLimit) {
-                message.spendLimit.push(Coin.fromJSON(e));
-            }
-        }
-        if (object.expiration !== undefined && object.expiration !== null) {
-            message.expiration = fromJsonTimestamp(object.expiration);
-        } else {
-            message.expiration = undefined;
-        }
-        return message;
+        return {
+            spendLimit: Array.isArray(object?.spendLimit) ? object.spendLimit.map((e: any) => Coin.fromJSON(e)) : [],
+            expiration: isSet(object.expiration) ? fromJsonTimestamp(object.expiration) : undefined,
+        };
     },
 
     toJSON(message: BasicAllowance): unknown {
@@ -132,20 +133,21 @@ export const BasicAllowance = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<BasicAllowance>): BasicAllowance {
-        const message = { ...baseBasicAllowance } as BasicAllowance;
-        message.spendLimit = [];
-        if (object.spendLimit !== undefined && object.spendLimit !== null) {
-            for (const e of object.spendLimit) {
-                message.spendLimit.push(Coin.fromPartial(e));
-            }
-        }
+    create<I extends Exact<DeepPartial<BasicAllowance>, I>>(base?: I): BasicAllowance {
+        return BasicAllowance.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<BasicAllowance>, I>>(object: I): BasicAllowance {
+        const message = createBaseBasicAllowance();
+        message.spendLimit = object.spendLimit?.map((e) => Coin.fromPartial(e)) || [];
         message.expiration = object.expiration ?? undefined;
         return message;
     },
 };
 
-const basePeriodicAllowance: object = {};
+function createBasePeriodicAllowance(): PeriodicAllowance {
+    return { basic: undefined, period: undefined, periodSpendLimit: [], periodCanSpend: [], periodReset: undefined };
+}
 
 export const PeriodicAllowance = {
     encode(message: PeriodicAllowance, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -168,67 +170,64 @@ export const PeriodicAllowance = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): PeriodicAllowance {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...basePeriodicAllowance } as PeriodicAllowance;
-        message.periodSpendLimit = [];
-        message.periodCanSpend = [];
+        const message = createBasePeriodicAllowance();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.basic = BasicAllowance.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.period = Duration.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.periodSpendLimit.push(Coin.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
                     message.periodCanSpend.push(Coin.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 5:
+                    if (tag !== 42) {
+                        break;
+                    }
+
                     message.periodReset = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): PeriodicAllowance {
-        const message = { ...basePeriodicAllowance } as PeriodicAllowance;
-        message.periodSpendLimit = [];
-        message.periodCanSpend = [];
-        if (object.basic !== undefined && object.basic !== null) {
-            message.basic = BasicAllowance.fromJSON(object.basic);
-        } else {
-            message.basic = undefined;
-        }
-        if (object.period !== undefined && object.period !== null) {
-            message.period = Duration.fromJSON(object.period);
-        } else {
-            message.period = undefined;
-        }
-        if (object.periodSpendLimit !== undefined && object.periodSpendLimit !== null) {
-            for (const e of object.periodSpendLimit) {
-                message.periodSpendLimit.push(Coin.fromJSON(e));
-            }
-        }
-        if (object.periodCanSpend !== undefined && object.periodCanSpend !== null) {
-            for (const e of object.periodCanSpend) {
-                message.periodCanSpend.push(Coin.fromJSON(e));
-            }
-        }
-        if (object.periodReset !== undefined && object.periodReset !== null) {
-            message.periodReset = fromJsonTimestamp(object.periodReset);
-        } else {
-            message.periodReset = undefined;
-        }
-        return message;
+        return {
+            basic: isSet(object.basic) ? BasicAllowance.fromJSON(object.basic) : undefined,
+            period: isSet(object.period) ? Duration.fromJSON(object.period) : undefined,
+            periodSpendLimit: Array.isArray(object?.periodSpendLimit) ? object.periodSpendLimit.map((e: any) => Coin.fromJSON(e)) : [],
+            periodCanSpend: Array.isArray(object?.periodCanSpend) ? object.periodCanSpend.map((e: any) => Coin.fromJSON(e)) : [],
+            periodReset: isSet(object.periodReset) ? fromJsonTimestamp(object.periodReset) : undefined,
+        };
     },
 
     toJSON(message: PeriodicAllowance): unknown {
@@ -249,36 +248,24 @@ export const PeriodicAllowance = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<PeriodicAllowance>): PeriodicAllowance {
-        const message = { ...basePeriodicAllowance } as PeriodicAllowance;
-        if (object.basic !== undefined && object.basic !== null) {
-            message.basic = BasicAllowance.fromPartial(object.basic);
-        } else {
-            message.basic = undefined;
-        }
-        if (object.period !== undefined && object.period !== null) {
-            message.period = Duration.fromPartial(object.period);
-        } else {
-            message.period = undefined;
-        }
-        message.periodSpendLimit = [];
-        if (object.periodSpendLimit !== undefined && object.periodSpendLimit !== null) {
-            for (const e of object.periodSpendLimit) {
-                message.periodSpendLimit.push(Coin.fromPartial(e));
-            }
-        }
-        message.periodCanSpend = [];
-        if (object.periodCanSpend !== undefined && object.periodCanSpend !== null) {
-            for (const e of object.periodCanSpend) {
-                message.periodCanSpend.push(Coin.fromPartial(e));
-            }
-        }
+    create<I extends Exact<DeepPartial<PeriodicAllowance>, I>>(base?: I): PeriodicAllowance {
+        return PeriodicAllowance.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<PeriodicAllowance>, I>>(object: I): PeriodicAllowance {
+        const message = createBasePeriodicAllowance();
+        message.basic = object.basic !== undefined && object.basic !== null ? BasicAllowance.fromPartial(object.basic) : undefined;
+        message.period = object.period !== undefined && object.period !== null ? Duration.fromPartial(object.period) : undefined;
+        message.periodSpendLimit = object.periodSpendLimit?.map((e) => Coin.fromPartial(e)) || [];
+        message.periodCanSpend = object.periodCanSpend?.map((e) => Coin.fromPartial(e)) || [];
         message.periodReset = object.periodReset ?? undefined;
         return message;
     },
 };
 
-const baseAllowedMsgAllowance: object = { allowedMessages: '' };
+function createBaseAllowedMsgAllowance(): AllowedMsgAllowance {
+    return { allowance: undefined, allowedMessages: [] };
+}
 
 export const AllowedMsgAllowance = {
     encode(message: AllowedMsgAllowance, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -292,41 +279,40 @@ export const AllowedMsgAllowance = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): AllowedMsgAllowance {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseAllowedMsgAllowance } as AllowedMsgAllowance;
-        message.allowedMessages = [];
+        const message = createBaseAllowedMsgAllowance();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.allowance = Any.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.allowedMessages.push(reader.string());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): AllowedMsgAllowance {
-        const message = { ...baseAllowedMsgAllowance } as AllowedMsgAllowance;
-        message.allowedMessages = [];
-        if (object.allowance !== undefined && object.allowance !== null) {
-            message.allowance = Any.fromJSON(object.allowance);
-        } else {
-            message.allowance = undefined;
-        }
-        if (object.allowedMessages !== undefined && object.allowedMessages !== null) {
-            for (const e of object.allowedMessages) {
-                message.allowedMessages.push(String(e));
-            }
-        }
-        return message;
+        return {
+            allowance: isSet(object.allowance) ? Any.fromJSON(object.allowance) : undefined,
+            allowedMessages: Array.isArray(object?.allowedMessages) ? object.allowedMessages.map((e: any) => String(e)) : [],
+        };
     },
 
     toJSON(message: AllowedMsgAllowance): unknown {
@@ -340,24 +326,21 @@ export const AllowedMsgAllowance = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<AllowedMsgAllowance>): AllowedMsgAllowance {
-        const message = { ...baseAllowedMsgAllowance } as AllowedMsgAllowance;
-        if (object.allowance !== undefined && object.allowance !== null) {
-            message.allowance = Any.fromPartial(object.allowance);
-        } else {
-            message.allowance = undefined;
-        }
-        message.allowedMessages = [];
-        if (object.allowedMessages !== undefined && object.allowedMessages !== null) {
-            for (const e of object.allowedMessages) {
-                message.allowedMessages.push(e);
-            }
-        }
+    create<I extends Exact<DeepPartial<AllowedMsgAllowance>, I>>(base?: I): AllowedMsgAllowance {
+        return AllowedMsgAllowance.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<AllowedMsgAllowance>, I>>(object: I): AllowedMsgAllowance {
+        const message = createBaseAllowedMsgAllowance();
+        message.allowance = object.allowance !== undefined && object.allowance !== null ? Any.fromPartial(object.allowance) : undefined;
+        message.allowedMessages = object.allowedMessages?.map((e) => e) || [];
         return message;
     },
 };
 
-const baseGrant: object = { granter: '', grantee: '' };
+function createBaseGrant(): Grant {
+    return { granter: '', grantee: '', allowance: undefined };
+}
 
 export const Grant = {
     encode(message: Grant, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -374,47 +357,48 @@ export const Grant = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Grant {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseGrant } as Grant;
+        const message = createBaseGrant();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.granter = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.grantee = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.allowance = Any.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): Grant {
-        const message = { ...baseGrant } as Grant;
-        if (object.granter !== undefined && object.granter !== null) {
-            message.granter = String(object.granter);
-        } else {
-            message.granter = '';
-        }
-        if (object.grantee !== undefined && object.grantee !== null) {
-            message.grantee = String(object.grantee);
-        } else {
-            message.grantee = '';
-        }
-        if (object.allowance !== undefined && object.allowance !== null) {
-            message.allowance = Any.fromJSON(object.allowance);
-        } else {
-            message.allowance = undefined;
-        }
-        return message;
+        return {
+            granter: isSet(object.granter) ? String(object.granter) : '',
+            grantee: isSet(object.grantee) ? String(object.grantee) : '',
+            allowance: isSet(object.allowance) ? Any.fromJSON(object.allowance) : undefined,
+        };
     },
 
     toJSON(message: Grant): unknown {
@@ -425,22 +409,25 @@ export const Grant = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<Grant>): Grant {
-        const message = { ...baseGrant } as Grant;
+    create<I extends Exact<DeepPartial<Grant>, I>>(base?: I): Grant {
+        return Grant.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<Grant>, I>>(object: I): Grant {
+        const message = createBaseGrant();
         message.granter = object.granter ?? '';
         message.grantee = object.grantee ?? '';
-        if (object.allowance !== undefined && object.allowance !== null) {
-            message.allowance = Any.fromPartial(object.allowance);
-        } else {
-            message.allowance = undefined;
-        }
+        message.allowance = object.allowance !== undefined && object.allowance !== null ? Any.fromPartial(object.allowance) : undefined;
         return message;
     },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -449,6 +436,9 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 function toTimestamp(date: Date): Timestamp {
     const seconds = numberToLong(date.getTime() / 1_000);
     const nanos = (date.getTime() % 1_000) * 1_000_000;
@@ -456,8 +446,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-    let millis = t.seconds.toNumber() * 1_000;
-    millis += t.nanos / 1_000_000;
+    let millis = (t.seconds.toNumber() || 0) * 1_000;
+    millis += (t.nanos || 0) / 1_000_000;
     return new Date(millis);
 }
 
@@ -478,4 +468,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }

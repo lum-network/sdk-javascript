@@ -2,8 +2,8 @@
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
 import { Any } from '../../../google/protobuf/any';
-import { VoteOption, WeightedVoteOption, voteOptionFromJSON, voteOptionToJSON } from '../../../cosmos/gov/v1/gov';
-import { Coin } from '../../../cosmos/base/v1beta1/coin';
+import { Coin } from '../../base/v1beta1/coin';
+import { VoteOption, voteOptionFromJSON, voteOptionToJSON, WeightedVoteOption } from './gov';
 
 export const protobufPackage = 'cosmos.gov.v1';
 
@@ -72,7 +72,9 @@ export interface MsgDeposit {
 /** MsgDepositResponse defines the Msg/Deposit response type. */
 export interface MsgDepositResponse {}
 
-const baseMsgSubmitProposal: object = { proposer: '', metadata: '' };
+function createBaseMsgSubmitProposal(): MsgSubmitProposal {
+    return { messages: [], initialDeposit: [], proposer: '', metadata: '' };
+}
 
 export const MsgSubmitProposal = {
     encode(message: MsgSubmitProposal, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -92,59 +94,56 @@ export const MsgSubmitProposal = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgSubmitProposal {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMsgSubmitProposal } as MsgSubmitProposal;
-        message.messages = [];
-        message.initialDeposit = [];
+        const message = createBaseMsgSubmitProposal();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.messages.push(Any.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.initialDeposit.push(Coin.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.proposer = reader.string();
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
                     message.metadata = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): MsgSubmitProposal {
-        const message = { ...baseMsgSubmitProposal } as MsgSubmitProposal;
-        message.messages = [];
-        message.initialDeposit = [];
-        if (object.messages !== undefined && object.messages !== null) {
-            for (const e of object.messages) {
-                message.messages.push(Any.fromJSON(e));
-            }
-        }
-        if (object.initialDeposit !== undefined && object.initialDeposit !== null) {
-            for (const e of object.initialDeposit) {
-                message.initialDeposit.push(Coin.fromJSON(e));
-            }
-        }
-        if (object.proposer !== undefined && object.proposer !== null) {
-            message.proposer = String(object.proposer);
-        } else {
-            message.proposer = '';
-        }
-        if (object.metadata !== undefined && object.metadata !== null) {
-            message.metadata = String(object.metadata);
-        } else {
-            message.metadata = '';
-        }
-        return message;
+        return {
+            messages: Array.isArray(object?.messages) ? object.messages.map((e: any) => Any.fromJSON(e)) : [],
+            initialDeposit: Array.isArray(object?.initialDeposit) ? object.initialDeposit.map((e: any) => Coin.fromJSON(e)) : [],
+            proposer: isSet(object.proposer) ? String(object.proposer) : '',
+            metadata: isSet(object.metadata) ? String(object.metadata) : '',
+        };
     },
 
     toJSON(message: MsgSubmitProposal): unknown {
@@ -164,27 +163,23 @@ export const MsgSubmitProposal = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<MsgSubmitProposal>): MsgSubmitProposal {
-        const message = { ...baseMsgSubmitProposal } as MsgSubmitProposal;
-        message.messages = [];
-        if (object.messages !== undefined && object.messages !== null) {
-            for (const e of object.messages) {
-                message.messages.push(Any.fromPartial(e));
-            }
-        }
-        message.initialDeposit = [];
-        if (object.initialDeposit !== undefined && object.initialDeposit !== null) {
-            for (const e of object.initialDeposit) {
-                message.initialDeposit.push(Coin.fromPartial(e));
-            }
-        }
+    create<I extends Exact<DeepPartial<MsgSubmitProposal>, I>>(base?: I): MsgSubmitProposal {
+        return MsgSubmitProposal.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<MsgSubmitProposal>, I>>(object: I): MsgSubmitProposal {
+        const message = createBaseMsgSubmitProposal();
+        message.messages = object.messages?.map((e) => Any.fromPartial(e)) || [];
+        message.initialDeposit = object.initialDeposit?.map((e) => Coin.fromPartial(e)) || [];
         message.proposer = object.proposer ?? '';
         message.metadata = object.metadata ?? '';
         return message;
     },
 };
 
-const baseMsgSubmitProposalResponse: object = { proposalId: Long.UZERO };
+function createBaseMsgSubmitProposalResponse(): MsgSubmitProposalResponse {
+    return { proposalId: Long.UZERO };
+}
 
 export const MsgSubmitProposalResponse = {
     encode(message: MsgSubmitProposalResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -195,31 +190,30 @@ export const MsgSubmitProposalResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgSubmitProposalResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMsgSubmitProposalResponse } as MsgSubmitProposalResponse;
+        const message = createBaseMsgSubmitProposalResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.proposalId = reader.uint64() as Long;
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): MsgSubmitProposalResponse {
-        const message = { ...baseMsgSubmitProposalResponse } as MsgSubmitProposalResponse;
-        if (object.proposalId !== undefined && object.proposalId !== null) {
-            message.proposalId = Long.fromString(object.proposalId);
-        } else {
-            message.proposalId = Long.UZERO;
-        }
-        return message;
+        return { proposalId: isSet(object.proposalId) ? Long.fromValue(object.proposalId) : Long.UZERO };
     },
 
     toJSON(message: MsgSubmitProposalResponse): unknown {
@@ -228,18 +222,20 @@ export const MsgSubmitProposalResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<MsgSubmitProposalResponse>): MsgSubmitProposalResponse {
-        const message = { ...baseMsgSubmitProposalResponse } as MsgSubmitProposalResponse;
-        if (object.proposalId !== undefined && object.proposalId !== null) {
-            message.proposalId = object.proposalId as Long;
-        } else {
-            message.proposalId = Long.UZERO;
-        }
+    create<I extends Exact<DeepPartial<MsgSubmitProposalResponse>, I>>(base?: I): MsgSubmitProposalResponse {
+        return MsgSubmitProposalResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<MsgSubmitProposalResponse>, I>>(object: I): MsgSubmitProposalResponse {
+        const message = createBaseMsgSubmitProposalResponse();
+        message.proposalId = object.proposalId !== undefined && object.proposalId !== null ? Long.fromValue(object.proposalId) : Long.UZERO;
         return message;
     },
 };
 
-const baseMsgExecLegacyContent: object = { authority: '' };
+function createBaseMsgExecLegacyContent(): MsgExecLegacyContent {
+    return { content: undefined, authority: '' };
+}
 
 export const MsgExecLegacyContent = {
     encode(message: MsgExecLegacyContent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -253,39 +249,40 @@ export const MsgExecLegacyContent = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgExecLegacyContent {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMsgExecLegacyContent } as MsgExecLegacyContent;
+        const message = createBaseMsgExecLegacyContent();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.content = Any.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.authority = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): MsgExecLegacyContent {
-        const message = { ...baseMsgExecLegacyContent } as MsgExecLegacyContent;
-        if (object.content !== undefined && object.content !== null) {
-            message.content = Any.fromJSON(object.content);
-        } else {
-            message.content = undefined;
-        }
-        if (object.authority !== undefined && object.authority !== null) {
-            message.authority = String(object.authority);
-        } else {
-            message.authority = '';
-        }
-        return message;
+        return {
+            content: isSet(object.content) ? Any.fromJSON(object.content) : undefined,
+            authority: isSet(object.authority) ? String(object.authority) : '',
+        };
     },
 
     toJSON(message: MsgExecLegacyContent): unknown {
@@ -295,19 +292,21 @@ export const MsgExecLegacyContent = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<MsgExecLegacyContent>): MsgExecLegacyContent {
-        const message = { ...baseMsgExecLegacyContent } as MsgExecLegacyContent;
-        if (object.content !== undefined && object.content !== null) {
-            message.content = Any.fromPartial(object.content);
-        } else {
-            message.content = undefined;
-        }
+    create<I extends Exact<DeepPartial<MsgExecLegacyContent>, I>>(base?: I): MsgExecLegacyContent {
+        return MsgExecLegacyContent.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<MsgExecLegacyContent>, I>>(object: I): MsgExecLegacyContent {
+        const message = createBaseMsgExecLegacyContent();
+        message.content = object.content !== undefined && object.content !== null ? Any.fromPartial(object.content) : undefined;
         message.authority = object.authority ?? '';
         return message;
     },
 };
 
-const baseMsgExecLegacyContentResponse: object = {};
+function createBaseMsgExecLegacyContentResponse(): MsgExecLegacyContentResponse {
+    return {};
+}
 
 export const MsgExecLegacyContentResponse = {
     encode(_: MsgExecLegacyContentResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -315,23 +314,23 @@ export const MsgExecLegacyContentResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgExecLegacyContentResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMsgExecLegacyContentResponse } as MsgExecLegacyContentResponse;
+        const message = createBaseMsgExecLegacyContentResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(_: any): MsgExecLegacyContentResponse {
-        const message = { ...baseMsgExecLegacyContentResponse } as MsgExecLegacyContentResponse;
-        return message;
+        return {};
     },
 
     toJSON(_: MsgExecLegacyContentResponse): unknown {
@@ -339,13 +338,19 @@ export const MsgExecLegacyContentResponse = {
         return obj;
     },
 
-    fromPartial(_: DeepPartial<MsgExecLegacyContentResponse>): MsgExecLegacyContentResponse {
-        const message = { ...baseMsgExecLegacyContentResponse } as MsgExecLegacyContentResponse;
+    create<I extends Exact<DeepPartial<MsgExecLegacyContentResponse>, I>>(base?: I): MsgExecLegacyContentResponse {
+        return MsgExecLegacyContentResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<MsgExecLegacyContentResponse>, I>>(_: I): MsgExecLegacyContentResponse {
+        const message = createBaseMsgExecLegacyContentResponse();
         return message;
     },
 };
 
-const baseMsgVote: object = { proposalId: Long.UZERO, voter: '', option: 0, metadata: '' };
+function createBaseMsgVote(): MsgVote {
+    return { proposalId: Long.UZERO, voter: '', option: 0, metadata: '' };
+}
 
 export const MsgVote = {
     encode(message: MsgVote, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -365,55 +370,56 @@ export const MsgVote = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgVote {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMsgVote } as MsgVote;
+        const message = createBaseMsgVote();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.proposalId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.voter = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 24) {
+                        break;
+                    }
+
                     message.option = reader.int32() as any;
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
                     message.metadata = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): MsgVote {
-        const message = { ...baseMsgVote } as MsgVote;
-        if (object.proposalId !== undefined && object.proposalId !== null) {
-            message.proposalId = Long.fromString(object.proposalId);
-        } else {
-            message.proposalId = Long.UZERO;
-        }
-        if (object.voter !== undefined && object.voter !== null) {
-            message.voter = String(object.voter);
-        } else {
-            message.voter = '';
-        }
-        if (object.option !== undefined && object.option !== null) {
-            message.option = voteOptionFromJSON(object.option);
-        } else {
-            message.option = 0;
-        }
-        if (object.metadata !== undefined && object.metadata !== null) {
-            message.metadata = String(object.metadata);
-        } else {
-            message.metadata = '';
-        }
-        return message;
+        return {
+            proposalId: isSet(object.proposalId) ? Long.fromValue(object.proposalId) : Long.UZERO,
+            voter: isSet(object.voter) ? String(object.voter) : '',
+            option: isSet(object.option) ? voteOptionFromJSON(object.option) : 0,
+            metadata: isSet(object.metadata) ? String(object.metadata) : '',
+        };
     },
 
     toJSON(message: MsgVote): unknown {
@@ -425,13 +431,13 @@ export const MsgVote = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<MsgVote>): MsgVote {
-        const message = { ...baseMsgVote } as MsgVote;
-        if (object.proposalId !== undefined && object.proposalId !== null) {
-            message.proposalId = object.proposalId as Long;
-        } else {
-            message.proposalId = Long.UZERO;
-        }
+    create<I extends Exact<DeepPartial<MsgVote>, I>>(base?: I): MsgVote {
+        return MsgVote.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<MsgVote>, I>>(object: I): MsgVote {
+        const message = createBaseMsgVote();
+        message.proposalId = object.proposalId !== undefined && object.proposalId !== null ? Long.fromValue(object.proposalId) : Long.UZERO;
         message.voter = object.voter ?? '';
         message.option = object.option ?? 0;
         message.metadata = object.metadata ?? '';
@@ -439,7 +445,9 @@ export const MsgVote = {
     },
 };
 
-const baseMsgVoteResponse: object = {};
+function createBaseMsgVoteResponse(): MsgVoteResponse {
+    return {};
+}
 
 export const MsgVoteResponse = {
     encode(_: MsgVoteResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -447,23 +455,23 @@ export const MsgVoteResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgVoteResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMsgVoteResponse } as MsgVoteResponse;
+        const message = createBaseMsgVoteResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(_: any): MsgVoteResponse {
-        const message = { ...baseMsgVoteResponse } as MsgVoteResponse;
-        return message;
+        return {};
     },
 
     toJSON(_: MsgVoteResponse): unknown {
@@ -471,13 +479,19 @@ export const MsgVoteResponse = {
         return obj;
     },
 
-    fromPartial(_: DeepPartial<MsgVoteResponse>): MsgVoteResponse {
-        const message = { ...baseMsgVoteResponse } as MsgVoteResponse;
+    create<I extends Exact<DeepPartial<MsgVoteResponse>, I>>(base?: I): MsgVoteResponse {
+        return MsgVoteResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<MsgVoteResponse>, I>>(_: I): MsgVoteResponse {
+        const message = createBaseMsgVoteResponse();
         return message;
     },
 };
 
-const baseMsgVoteWeighted: object = { proposalId: Long.UZERO, voter: '', metadata: '' };
+function createBaseMsgVoteWeighted(): MsgVoteWeighted {
+    return { proposalId: Long.UZERO, voter: '', options: [], metadata: '' };
+}
 
 export const MsgVoteWeighted = {
     encode(message: MsgVoteWeighted, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -497,57 +511,56 @@ export const MsgVoteWeighted = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgVoteWeighted {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMsgVoteWeighted } as MsgVoteWeighted;
-        message.options = [];
+        const message = createBaseMsgVoteWeighted();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.proposalId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.voter = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.options.push(WeightedVoteOption.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
                     message.metadata = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): MsgVoteWeighted {
-        const message = { ...baseMsgVoteWeighted } as MsgVoteWeighted;
-        message.options = [];
-        if (object.proposalId !== undefined && object.proposalId !== null) {
-            message.proposalId = Long.fromString(object.proposalId);
-        } else {
-            message.proposalId = Long.UZERO;
-        }
-        if (object.voter !== undefined && object.voter !== null) {
-            message.voter = String(object.voter);
-        } else {
-            message.voter = '';
-        }
-        if (object.options !== undefined && object.options !== null) {
-            for (const e of object.options) {
-                message.options.push(WeightedVoteOption.fromJSON(e));
-            }
-        }
-        if (object.metadata !== undefined && object.metadata !== null) {
-            message.metadata = String(object.metadata);
-        } else {
-            message.metadata = '';
-        }
-        return message;
+        return {
+            proposalId: isSet(object.proposalId) ? Long.fromValue(object.proposalId) : Long.UZERO,
+            voter: isSet(object.voter) ? String(object.voter) : '',
+            options: Array.isArray(object?.options) ? object.options.map((e: any) => WeightedVoteOption.fromJSON(e)) : [],
+            metadata: isSet(object.metadata) ? String(object.metadata) : '',
+        };
     },
 
     toJSON(message: MsgVoteWeighted): unknown {
@@ -563,26 +576,23 @@ export const MsgVoteWeighted = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<MsgVoteWeighted>): MsgVoteWeighted {
-        const message = { ...baseMsgVoteWeighted } as MsgVoteWeighted;
-        if (object.proposalId !== undefined && object.proposalId !== null) {
-            message.proposalId = object.proposalId as Long;
-        } else {
-            message.proposalId = Long.UZERO;
-        }
+    create<I extends Exact<DeepPartial<MsgVoteWeighted>, I>>(base?: I): MsgVoteWeighted {
+        return MsgVoteWeighted.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<MsgVoteWeighted>, I>>(object: I): MsgVoteWeighted {
+        const message = createBaseMsgVoteWeighted();
+        message.proposalId = object.proposalId !== undefined && object.proposalId !== null ? Long.fromValue(object.proposalId) : Long.UZERO;
         message.voter = object.voter ?? '';
-        message.options = [];
-        if (object.options !== undefined && object.options !== null) {
-            for (const e of object.options) {
-                message.options.push(WeightedVoteOption.fromPartial(e));
-            }
-        }
+        message.options = object.options?.map((e) => WeightedVoteOption.fromPartial(e)) || [];
         message.metadata = object.metadata ?? '';
         return message;
     },
 };
 
-const baseMsgVoteWeightedResponse: object = {};
+function createBaseMsgVoteWeightedResponse(): MsgVoteWeightedResponse {
+    return {};
+}
 
 export const MsgVoteWeightedResponse = {
     encode(_: MsgVoteWeightedResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -590,23 +600,23 @@ export const MsgVoteWeightedResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgVoteWeightedResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMsgVoteWeightedResponse } as MsgVoteWeightedResponse;
+        const message = createBaseMsgVoteWeightedResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(_: any): MsgVoteWeightedResponse {
-        const message = { ...baseMsgVoteWeightedResponse } as MsgVoteWeightedResponse;
-        return message;
+        return {};
     },
 
     toJSON(_: MsgVoteWeightedResponse): unknown {
@@ -614,13 +624,19 @@ export const MsgVoteWeightedResponse = {
         return obj;
     },
 
-    fromPartial(_: DeepPartial<MsgVoteWeightedResponse>): MsgVoteWeightedResponse {
-        const message = { ...baseMsgVoteWeightedResponse } as MsgVoteWeightedResponse;
+    create<I extends Exact<DeepPartial<MsgVoteWeightedResponse>, I>>(base?: I): MsgVoteWeightedResponse {
+        return MsgVoteWeightedResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<MsgVoteWeightedResponse>, I>>(_: I): MsgVoteWeightedResponse {
+        const message = createBaseMsgVoteWeightedResponse();
         return message;
     },
 };
 
-const baseMsgDeposit: object = { proposalId: Long.UZERO, depositor: '' };
+function createBaseMsgDeposit(): MsgDeposit {
+    return { proposalId: Long.UZERO, depositor: '', amount: [] };
+}
 
 export const MsgDeposit = {
     encode(message: MsgDeposit, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -637,49 +653,48 @@ export const MsgDeposit = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeposit {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMsgDeposit } as MsgDeposit;
-        message.amount = [];
+        const message = createBaseMsgDeposit();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.proposalId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.depositor = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.amount.push(Coin.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): MsgDeposit {
-        const message = { ...baseMsgDeposit } as MsgDeposit;
-        message.amount = [];
-        if (object.proposalId !== undefined && object.proposalId !== null) {
-            message.proposalId = Long.fromString(object.proposalId);
-        } else {
-            message.proposalId = Long.UZERO;
-        }
-        if (object.depositor !== undefined && object.depositor !== null) {
-            message.depositor = String(object.depositor);
-        } else {
-            message.depositor = '';
-        }
-        if (object.amount !== undefined && object.amount !== null) {
-            for (const e of object.amount) {
-                message.amount.push(Coin.fromJSON(e));
-            }
-        }
-        return message;
+        return {
+            proposalId: isSet(object.proposalId) ? Long.fromValue(object.proposalId) : Long.UZERO,
+            depositor: isSet(object.depositor) ? String(object.depositor) : '',
+            amount: Array.isArray(object?.amount) ? object.amount.map((e: any) => Coin.fromJSON(e)) : [],
+        };
     },
 
     toJSON(message: MsgDeposit): unknown {
@@ -694,25 +709,22 @@ export const MsgDeposit = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<MsgDeposit>): MsgDeposit {
-        const message = { ...baseMsgDeposit } as MsgDeposit;
-        if (object.proposalId !== undefined && object.proposalId !== null) {
-            message.proposalId = object.proposalId as Long;
-        } else {
-            message.proposalId = Long.UZERO;
-        }
+    create<I extends Exact<DeepPartial<MsgDeposit>, I>>(base?: I): MsgDeposit {
+        return MsgDeposit.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<MsgDeposit>, I>>(object: I): MsgDeposit {
+        const message = createBaseMsgDeposit();
+        message.proposalId = object.proposalId !== undefined && object.proposalId !== null ? Long.fromValue(object.proposalId) : Long.UZERO;
         message.depositor = object.depositor ?? '';
-        message.amount = [];
-        if (object.amount !== undefined && object.amount !== null) {
-            for (const e of object.amount) {
-                message.amount.push(Coin.fromPartial(e));
-            }
-        }
+        message.amount = object.amount?.map((e) => Coin.fromPartial(e)) || [];
         return message;
     },
 };
 
-const baseMsgDepositResponse: object = {};
+function createBaseMsgDepositResponse(): MsgDepositResponse {
+    return {};
+}
 
 export const MsgDepositResponse = {
     encode(_: MsgDepositResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -720,23 +732,23 @@ export const MsgDepositResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): MsgDepositResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseMsgDepositResponse } as MsgDepositResponse;
+        const message = createBaseMsgDepositResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(_: any): MsgDepositResponse {
-        const message = { ...baseMsgDepositResponse } as MsgDepositResponse;
-        return message;
+        return {};
     },
 
     toJSON(_: MsgDepositResponse): unknown {
@@ -744,8 +756,12 @@ export const MsgDepositResponse = {
         return obj;
     },
 
-    fromPartial(_: DeepPartial<MsgDepositResponse>): MsgDepositResponse {
-        const message = { ...baseMsgDepositResponse } as MsgDepositResponse;
+    create<I extends Exact<DeepPartial<MsgDepositResponse>, I>>(base?: I): MsgDepositResponse {
+        return MsgDepositResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<MsgDepositResponse>, I>>(_: I): MsgDepositResponse {
+        const message = createBaseMsgDepositResponse();
         return message;
     },
 };
@@ -769,7 +785,9 @@ export interface Msg {
 
 export class MsgClientImpl implements Msg {
     private readonly rpc: Rpc;
-    constructor(rpc: Rpc) {
+    private readonly service: string;
+    constructor(rpc: Rpc, opts?: { service?: string }) {
+        this.service = opts?.service || 'cosmos.gov.v1.Msg';
         this.rpc = rpc;
         this.SubmitProposal = this.SubmitProposal.bind(this);
         this.ExecLegacyContent = this.ExecLegacyContent.bind(this);
@@ -779,32 +797,32 @@ export class MsgClientImpl implements Msg {
     }
     SubmitProposal(request: MsgSubmitProposal): Promise<MsgSubmitProposalResponse> {
         const data = MsgSubmitProposal.encode(request).finish();
-        const promise = this.rpc.request('cosmos.gov.v1.Msg', 'SubmitProposal', data);
-        return promise.then((data) => MsgSubmitProposalResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'SubmitProposal', data);
+        return promise.then((data) => MsgSubmitProposalResponse.decode(_m0.Reader.create(data)));
     }
 
     ExecLegacyContent(request: MsgExecLegacyContent): Promise<MsgExecLegacyContentResponse> {
         const data = MsgExecLegacyContent.encode(request).finish();
-        const promise = this.rpc.request('cosmos.gov.v1.Msg', 'ExecLegacyContent', data);
-        return promise.then((data) => MsgExecLegacyContentResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'ExecLegacyContent', data);
+        return promise.then((data) => MsgExecLegacyContentResponse.decode(_m0.Reader.create(data)));
     }
 
     Vote(request: MsgVote): Promise<MsgVoteResponse> {
         const data = MsgVote.encode(request).finish();
-        const promise = this.rpc.request('cosmos.gov.v1.Msg', 'Vote', data);
-        return promise.then((data) => MsgVoteResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'Vote', data);
+        return promise.then((data) => MsgVoteResponse.decode(_m0.Reader.create(data)));
     }
 
     VoteWeighted(request: MsgVoteWeighted): Promise<MsgVoteWeightedResponse> {
         const data = MsgVoteWeighted.encode(request).finish();
-        const promise = this.rpc.request('cosmos.gov.v1.Msg', 'VoteWeighted', data);
-        return promise.then((data) => MsgVoteWeightedResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'VoteWeighted', data);
+        return promise.then((data) => MsgVoteWeightedResponse.decode(_m0.Reader.create(data)));
     }
 
     Deposit(request: MsgDeposit): Promise<MsgDepositResponse> {
         const data = MsgDeposit.encode(request).finish();
-        const promise = this.rpc.request('cosmos.gov.v1.Msg', 'Deposit', data);
-        return promise.then((data) => MsgDepositResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'Deposit', data);
+        return promise.then((data) => MsgDepositResponse.decode(_m0.Reader.create(data)));
     }
 }
 
@@ -812,9 +830,12 @@ interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -823,7 +844,14 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }

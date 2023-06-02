@@ -106,7 +106,8 @@ protoc \
     "$LUM_PROTO_DIR/lum-network/dfract/query.proto" \
     "$LUM_PROTO_DIR/lum-network/dfract/tx.proto" \
     "$LUM_PROTO_DIR/lum-network/dfract/params.proto" \
-    "$LUM_PROTO_DIR/lum-network/dfract/proposal.proto"
+    "$LUM_PROTO_DIR/lum-network/dfract/proposal.proto" \
+    "$LUM_PROTO_DIR/lum-network/millions/gov.proto"
 
 # Remove unnecessary codec files
 rm -rf \

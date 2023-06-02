@@ -15,7 +15,7 @@ function uint64FromProto(input: Long) {
 
 function accountFromBaseAccount(input: BaseAccount): LumTypes.Account {
     const { address, pubKey, accountNumber, sequence } = input;
-    const pubkey = decodePubkey(pubKey);
+    const pubkey = decodePubkey(pubKey as Any);
     return {
         address: address,
         pubkey: pubkey,

@@ -1,8 +1,8 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
-import { PageRequest, PageResponse } from '../../../cosmos/base/query/v1beta1/pagination';
-import { Grant, GrantAuthorization } from '../../../cosmos/authz/v1beta1/authz';
+import { PageRequest, PageResponse } from '../../base/query/v1beta1/pagination';
+import { Grant, GrantAuthorization } from './authz';
 
 export const protobufPackage = 'cosmos.authz.v1beta1';
 
@@ -56,7 +56,9 @@ export interface QueryGranteeGrantsResponse {
     pagination?: PageResponse;
 }
 
-const baseQueryGrantsRequest: object = { granter: '', grantee: '', msgTypeUrl: '' };
+function createBaseQueryGrantsRequest(): QueryGrantsRequest {
+    return { granter: '', grantee: '', msgTypeUrl: '', pagination: undefined };
+}
 
 export const QueryGrantsRequest = {
     encode(message: QueryGrantsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -76,55 +78,56 @@ export const QueryGrantsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryGrantsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryGrantsRequest } as QueryGrantsRequest;
+        const message = createBaseQueryGrantsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.granter = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.grantee = reader.string();
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.msgTypeUrl = reader.string();
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryGrantsRequest {
-        const message = { ...baseQueryGrantsRequest } as QueryGrantsRequest;
-        if (object.granter !== undefined && object.granter !== null) {
-            message.granter = String(object.granter);
-        } else {
-            message.granter = '';
-        }
-        if (object.grantee !== undefined && object.grantee !== null) {
-            message.grantee = String(object.grantee);
-        } else {
-            message.grantee = '';
-        }
-        if (object.msgTypeUrl !== undefined && object.msgTypeUrl !== null) {
-            message.msgTypeUrl = String(object.msgTypeUrl);
-        } else {
-            message.msgTypeUrl = '';
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            granter: isSet(object.granter) ? String(object.granter) : '',
+            grantee: isSet(object.grantee) ? String(object.grantee) : '',
+            msgTypeUrl: isSet(object.msgTypeUrl) ? String(object.msgTypeUrl) : '',
+            pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryGrantsRequest): unknown {
@@ -136,21 +139,23 @@ export const QueryGrantsRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryGrantsRequest>): QueryGrantsRequest {
-        const message = { ...baseQueryGrantsRequest } as QueryGrantsRequest;
+    create<I extends Exact<DeepPartial<QueryGrantsRequest>, I>>(base?: I): QueryGrantsRequest {
+        return QueryGrantsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryGrantsRequest>, I>>(object: I): QueryGrantsRequest {
+        const message = createBaseQueryGrantsRequest();
         message.granter = object.granter ?? '';
         message.grantee = object.grantee ?? '';
         message.msgTypeUrl = object.msgTypeUrl ?? '';
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryGrantsResponse: object = {};
+function createBaseQueryGrantsResponse(): QueryGrantsResponse {
+    return { grants: [], pagination: undefined };
+}
 
 export const QueryGrantsResponse = {
     encode(message: QueryGrantsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -164,41 +169,40 @@ export const QueryGrantsResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryGrantsResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryGrantsResponse } as QueryGrantsResponse;
-        message.grants = [];
+        const message = createBaseQueryGrantsResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.grants.push(Grant.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageResponse.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryGrantsResponse {
-        const message = { ...baseQueryGrantsResponse } as QueryGrantsResponse;
-        message.grants = [];
-        if (object.grants !== undefined && object.grants !== null) {
-            for (const e of object.grants) {
-                message.grants.push(Grant.fromJSON(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            grants: Array.isArray(object?.grants) ? object.grants.map((e: any) => Grant.fromJSON(e)) : [],
+            pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryGrantsResponse): unknown {
@@ -212,24 +216,21 @@ export const QueryGrantsResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryGrantsResponse>): QueryGrantsResponse {
-        const message = { ...baseQueryGrantsResponse } as QueryGrantsResponse;
-        message.grants = [];
-        if (object.grants !== undefined && object.grants !== null) {
-            for (const e of object.grants) {
-                message.grants.push(Grant.fromPartial(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryGrantsResponse>, I>>(base?: I): QueryGrantsResponse {
+        return QueryGrantsResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryGrantsResponse>, I>>(object: I): QueryGrantsResponse {
+        const message = createBaseQueryGrantsResponse();
+        message.grants = object.grants?.map((e) => Grant.fromPartial(e)) || [];
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageResponse.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryGranterGrantsRequest: object = { granter: '' };
+function createBaseQueryGranterGrantsRequest(): QueryGranterGrantsRequest {
+    return { granter: '', pagination: undefined };
+}
 
 export const QueryGranterGrantsRequest = {
     encode(message: QueryGranterGrantsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -243,39 +244,40 @@ export const QueryGranterGrantsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryGranterGrantsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryGranterGrantsRequest } as QueryGranterGrantsRequest;
+        const message = createBaseQueryGranterGrantsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.granter = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryGranterGrantsRequest {
-        const message = { ...baseQueryGranterGrantsRequest } as QueryGranterGrantsRequest;
-        if (object.granter !== undefined && object.granter !== null) {
-            message.granter = String(object.granter);
-        } else {
-            message.granter = '';
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            granter: isSet(object.granter) ? String(object.granter) : '',
+            pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryGranterGrantsRequest): unknown {
@@ -285,19 +287,21 @@ export const QueryGranterGrantsRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryGranterGrantsRequest>): QueryGranterGrantsRequest {
-        const message = { ...baseQueryGranterGrantsRequest } as QueryGranterGrantsRequest;
+    create<I extends Exact<DeepPartial<QueryGranterGrantsRequest>, I>>(base?: I): QueryGranterGrantsRequest {
+        return QueryGranterGrantsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryGranterGrantsRequest>, I>>(object: I): QueryGranterGrantsRequest {
+        const message = createBaseQueryGranterGrantsRequest();
         message.granter = object.granter ?? '';
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryGranterGrantsResponse: object = {};
+function createBaseQueryGranterGrantsResponse(): QueryGranterGrantsResponse {
+    return { grants: [], pagination: undefined };
+}
 
 export const QueryGranterGrantsResponse = {
     encode(message: QueryGranterGrantsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -311,41 +315,40 @@ export const QueryGranterGrantsResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryGranterGrantsResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryGranterGrantsResponse } as QueryGranterGrantsResponse;
-        message.grants = [];
+        const message = createBaseQueryGranterGrantsResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.grants.push(GrantAuthorization.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageResponse.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryGranterGrantsResponse {
-        const message = { ...baseQueryGranterGrantsResponse } as QueryGranterGrantsResponse;
-        message.grants = [];
-        if (object.grants !== undefined && object.grants !== null) {
-            for (const e of object.grants) {
-                message.grants.push(GrantAuthorization.fromJSON(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            grants: Array.isArray(object?.grants) ? object.grants.map((e: any) => GrantAuthorization.fromJSON(e)) : [],
+            pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryGranterGrantsResponse): unknown {
@@ -359,24 +362,21 @@ export const QueryGranterGrantsResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryGranterGrantsResponse>): QueryGranterGrantsResponse {
-        const message = { ...baseQueryGranterGrantsResponse } as QueryGranterGrantsResponse;
-        message.grants = [];
-        if (object.grants !== undefined && object.grants !== null) {
-            for (const e of object.grants) {
-                message.grants.push(GrantAuthorization.fromPartial(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryGranterGrantsResponse>, I>>(base?: I): QueryGranterGrantsResponse {
+        return QueryGranterGrantsResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryGranterGrantsResponse>, I>>(object: I): QueryGranterGrantsResponse {
+        const message = createBaseQueryGranterGrantsResponse();
+        message.grants = object.grants?.map((e) => GrantAuthorization.fromPartial(e)) || [];
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageResponse.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryGranteeGrantsRequest: object = { grantee: '' };
+function createBaseQueryGranteeGrantsRequest(): QueryGranteeGrantsRequest {
+    return { grantee: '', pagination: undefined };
+}
 
 export const QueryGranteeGrantsRequest = {
     encode(message: QueryGranteeGrantsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -390,39 +390,40 @@ export const QueryGranteeGrantsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryGranteeGrantsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryGranteeGrantsRequest } as QueryGranteeGrantsRequest;
+        const message = createBaseQueryGranteeGrantsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.grantee = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryGranteeGrantsRequest {
-        const message = { ...baseQueryGranteeGrantsRequest } as QueryGranteeGrantsRequest;
-        if (object.grantee !== undefined && object.grantee !== null) {
-            message.grantee = String(object.grantee);
-        } else {
-            message.grantee = '';
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            grantee: isSet(object.grantee) ? String(object.grantee) : '',
+            pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryGranteeGrantsRequest): unknown {
@@ -432,19 +433,21 @@ export const QueryGranteeGrantsRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryGranteeGrantsRequest>): QueryGranteeGrantsRequest {
-        const message = { ...baseQueryGranteeGrantsRequest } as QueryGranteeGrantsRequest;
+    create<I extends Exact<DeepPartial<QueryGranteeGrantsRequest>, I>>(base?: I): QueryGranteeGrantsRequest {
+        return QueryGranteeGrantsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryGranteeGrantsRequest>, I>>(object: I): QueryGranteeGrantsRequest {
+        const message = createBaseQueryGranteeGrantsRequest();
         message.grantee = object.grantee ?? '';
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryGranteeGrantsResponse: object = {};
+function createBaseQueryGranteeGrantsResponse(): QueryGranteeGrantsResponse {
+    return { grants: [], pagination: undefined };
+}
 
 export const QueryGranteeGrantsResponse = {
     encode(message: QueryGranteeGrantsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -458,41 +461,40 @@ export const QueryGranteeGrantsResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryGranteeGrantsResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryGranteeGrantsResponse } as QueryGranteeGrantsResponse;
-        message.grants = [];
+        const message = createBaseQueryGranteeGrantsResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.grants.push(GrantAuthorization.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageResponse.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryGranteeGrantsResponse {
-        const message = { ...baseQueryGranteeGrantsResponse } as QueryGranteeGrantsResponse;
-        message.grants = [];
-        if (object.grants !== undefined && object.grants !== null) {
-            for (const e of object.grants) {
-                message.grants.push(GrantAuthorization.fromJSON(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            grants: Array.isArray(object?.grants) ? object.grants.map((e: any) => GrantAuthorization.fromJSON(e)) : [],
+            pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryGranteeGrantsResponse): unknown {
@@ -506,19 +508,14 @@ export const QueryGranteeGrantsResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryGranteeGrantsResponse>): QueryGranteeGrantsResponse {
-        const message = { ...baseQueryGranteeGrantsResponse } as QueryGranteeGrantsResponse;
-        message.grants = [];
-        if (object.grants !== undefined && object.grants !== null) {
-            for (const e of object.grants) {
-                message.grants.push(GrantAuthorization.fromPartial(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryGranteeGrantsResponse>, I>>(base?: I): QueryGranteeGrantsResponse {
+        return QueryGranteeGrantsResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryGranteeGrantsResponse>, I>>(object: I): QueryGranteeGrantsResponse {
+        const message = createBaseQueryGranteeGrantsResponse();
+        message.grants = object.grants?.map((e) => GrantAuthorization.fromPartial(e)) || [];
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageResponse.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
@@ -543,7 +540,9 @@ export interface Query {
 
 export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
-    constructor(rpc: Rpc) {
+    private readonly service: string;
+    constructor(rpc: Rpc, opts?: { service?: string }) {
+        this.service = opts?.service || 'cosmos.authz.v1beta1.Query';
         this.rpc = rpc;
         this.Grants = this.Grants.bind(this);
         this.GranterGrants = this.GranterGrants.bind(this);
@@ -551,20 +550,20 @@ export class QueryClientImpl implements Query {
     }
     Grants(request: QueryGrantsRequest): Promise<QueryGrantsResponse> {
         const data = QueryGrantsRequest.encode(request).finish();
-        const promise = this.rpc.request('cosmos.authz.v1beta1.Query', 'Grants', data);
-        return promise.then((data) => QueryGrantsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'Grants', data);
+        return promise.then((data) => QueryGrantsResponse.decode(_m0.Reader.create(data)));
     }
 
     GranterGrants(request: QueryGranterGrantsRequest): Promise<QueryGranterGrantsResponse> {
         const data = QueryGranterGrantsRequest.encode(request).finish();
-        const promise = this.rpc.request('cosmos.authz.v1beta1.Query', 'GranterGrants', data);
-        return promise.then((data) => QueryGranterGrantsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'GranterGrants', data);
+        return promise.then((data) => QueryGranterGrantsResponse.decode(_m0.Reader.create(data)));
     }
 
     GranteeGrants(request: QueryGranteeGrantsRequest): Promise<QueryGranteeGrantsResponse> {
         const data = QueryGranteeGrantsRequest.encode(request).finish();
-        const promise = this.rpc.request('cosmos.authz.v1beta1.Query', 'GranteeGrants', data);
-        return promise.then((data) => QueryGranteeGrantsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'GranteeGrants', data);
+        return promise.then((data) => QueryGranteeGrantsResponse.decode(_m0.Reader.create(data)));
     }
 }
 
@@ -572,9 +571,12 @@ interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -583,7 +585,14 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }
