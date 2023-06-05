@@ -1,13 +1,13 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
-import { Params } from '../../lum-network/millions/params';
-import { Pool } from '../../lum-network/millions/pool';
-import { PageResponse, PageRequest } from '../../cosmos/base/query/v1beta1/pagination';
-import { Deposit } from '../../lum-network/millions/deposit';
-import { Draw } from '../../lum-network/millions/draw';
-import { Prize } from '../../lum-network/millions/prize';
-import { Withdrawal } from '../../lum-network/millions/withdrawal';
+import { PageRequest, PageResponse } from '../../cosmos/base/query/v1beta1/pagination';
+import { Deposit } from './deposit';
+import { Draw } from './draw';
+import { Params } from './params';
+import { Pool } from './pool';
+import { Prize } from './prize';
+import { Withdrawal } from './withdrawal';
 
 export const protobufPackage = 'lum.network.millions';
 
@@ -173,7 +173,9 @@ export interface QueryAccountPoolWithdrawalsRequest {
     pagination?: PageRequest;
 }
 
-const baseQueryParamsResponse: object = {};
+function createBaseQueryParamsResponse(): QueryParamsResponse {
+    return { params: undefined };
+}
 
 export const QueryParamsResponse = {
     encode(message: QueryParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -184,31 +186,30 @@ export const QueryParamsResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+        const message = createBaseQueryParamsResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.params = Params.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryParamsResponse {
-        const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-        if (object.params !== undefined && object.params !== null) {
-            message.params = Params.fromJSON(object.params);
-        } else {
-            message.params = undefined;
-        }
-        return message;
+        return { params: isSet(object.params) ? Params.fromJSON(object.params) : undefined };
     },
 
     toJSON(message: QueryParamsResponse): unknown {
@@ -217,18 +218,20 @@ export const QueryParamsResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
-        const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-        if (object.params !== undefined && object.params !== null) {
-            message.params = Params.fromPartial(object.params);
-        } else {
-            message.params = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryParamsResponse>, I>>(base?: I): QueryParamsResponse {
+        return QueryParamsResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryParamsResponse>, I>>(object: I): QueryParamsResponse {
+        const message = createBaseQueryParamsResponse();
+        message.params = object.params !== undefined && object.params !== null ? Params.fromPartial(object.params) : undefined;
         return message;
     },
 };
 
-const baseQueryParamsRequest: object = {};
+function createBaseQueryParamsRequest(): QueryParamsRequest {
+    return {};
+}
 
 export const QueryParamsRequest = {
     encode(_: QueryParamsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -236,23 +239,23 @@ export const QueryParamsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+        const message = createBaseQueryParamsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(_: any): QueryParamsRequest {
-        const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
-        return message;
+        return {};
     },
 
     toJSON(_: QueryParamsRequest): unknown {
@@ -260,13 +263,19 @@ export const QueryParamsRequest = {
         return obj;
     },
 
-    fromPartial(_: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
-        const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    create<I extends Exact<DeepPartial<QueryParamsRequest>, I>>(base?: I): QueryParamsRequest {
+        return QueryParamsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryParamsRequest>, I>>(_: I): QueryParamsRequest {
+        const message = createBaseQueryParamsRequest();
         return message;
     },
 };
 
-const baseQueryPoolResponse: object = {};
+function createBaseQueryPoolResponse(): QueryPoolResponse {
+    return { pool: undefined };
+}
 
 export const QueryPoolResponse = {
     encode(message: QueryPoolResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -277,31 +286,30 @@ export const QueryPoolResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryPoolResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryPoolResponse } as QueryPoolResponse;
+        const message = createBaseQueryPoolResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.pool = Pool.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryPoolResponse {
-        const message = { ...baseQueryPoolResponse } as QueryPoolResponse;
-        if (object.pool !== undefined && object.pool !== null) {
-            message.pool = Pool.fromJSON(object.pool);
-        } else {
-            message.pool = undefined;
-        }
-        return message;
+        return { pool: isSet(object.pool) ? Pool.fromJSON(object.pool) : undefined };
     },
 
     toJSON(message: QueryPoolResponse): unknown {
@@ -310,18 +318,20 @@ export const QueryPoolResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryPoolResponse>): QueryPoolResponse {
-        const message = { ...baseQueryPoolResponse } as QueryPoolResponse;
-        if (object.pool !== undefined && object.pool !== null) {
-            message.pool = Pool.fromPartial(object.pool);
-        } else {
-            message.pool = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryPoolResponse>, I>>(base?: I): QueryPoolResponse {
+        return QueryPoolResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryPoolResponse>, I>>(object: I): QueryPoolResponse {
+        const message = createBaseQueryPoolResponse();
+        message.pool = object.pool !== undefined && object.pool !== null ? Pool.fromPartial(object.pool) : undefined;
         return message;
     },
 };
 
-const baseQueryPoolsResponse: object = {};
+function createBaseQueryPoolsResponse(): QueryPoolsResponse {
+    return { pools: [], pagination: undefined };
+}
 
 export const QueryPoolsResponse = {
     encode(message: QueryPoolsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -335,41 +345,40 @@ export const QueryPoolsResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryPoolsResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryPoolsResponse } as QueryPoolsResponse;
-        message.pools = [];
+        const message = createBaseQueryPoolsResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.pools.push(Pool.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageResponse.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryPoolsResponse {
-        const message = { ...baseQueryPoolsResponse } as QueryPoolsResponse;
-        message.pools = [];
-        if (object.pools !== undefined && object.pools !== null) {
-            for (const e of object.pools) {
-                message.pools.push(Pool.fromJSON(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            pools: Array.isArray(object?.pools) ? object.pools.map((e: any) => Pool.fromJSON(e)) : [],
+            pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryPoolsResponse): unknown {
@@ -383,24 +392,21 @@ export const QueryPoolsResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryPoolsResponse>): QueryPoolsResponse {
-        const message = { ...baseQueryPoolsResponse } as QueryPoolsResponse;
-        message.pools = [];
-        if (object.pools !== undefined && object.pools !== null) {
-            for (const e of object.pools) {
-                message.pools.push(Pool.fromPartial(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryPoolsResponse>, I>>(base?: I): QueryPoolsResponse {
+        return QueryPoolsResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryPoolsResponse>, I>>(object: I): QueryPoolsResponse {
+        const message = createBaseQueryPoolsResponse();
+        message.pools = object.pools?.map((e) => Pool.fromPartial(e)) || [];
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageResponse.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryPoolRequest: object = { poolId: Long.UZERO };
+function createBaseQueryPoolRequest(): QueryPoolRequest {
+    return { poolId: Long.UZERO };
+}
 
 export const QueryPoolRequest = {
     encode(message: QueryPoolRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -411,31 +417,30 @@ export const QueryPoolRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryPoolRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryPoolRequest } as QueryPoolRequest;
+        const message = createBaseQueryPoolRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.poolId = reader.uint64() as Long;
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryPoolRequest {
-        const message = { ...baseQueryPoolRequest } as QueryPoolRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = Long.fromString(object.poolId);
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        return message;
+        return { poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO };
     },
 
     toJSON(message: QueryPoolRequest): unknown {
@@ -444,18 +449,20 @@ export const QueryPoolRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryPoolRequest>): QueryPoolRequest {
-        const message = { ...baseQueryPoolRequest } as QueryPoolRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = object.poolId as Long;
-        } else {
-            message.poolId = Long.UZERO;
-        }
+    create<I extends Exact<DeepPartial<QueryPoolRequest>, I>>(base?: I): QueryPoolRequest {
+        return QueryPoolRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryPoolRequest>, I>>(object: I): QueryPoolRequest {
+        const message = createBaseQueryPoolRequest();
+        message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
         return message;
     },
 };
 
-const baseQueryPoolsRequest: object = {};
+function createBaseQueryPoolsRequest(): QueryPoolsRequest {
+    return { pagination: undefined };
+}
 
 export const QueryPoolsRequest = {
     encode(message: QueryPoolsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -466,31 +473,30 @@ export const QueryPoolsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryPoolsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryPoolsRequest } as QueryPoolsRequest;
+        const message = createBaseQueryPoolsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryPoolsRequest {
-        const message = { ...baseQueryPoolsRequest } as QueryPoolsRequest;
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
     },
 
     toJSON(message: QueryPoolsRequest): unknown {
@@ -499,18 +505,20 @@ export const QueryPoolsRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryPoolsRequest>): QueryPoolsRequest {
-        const message = { ...baseQueryPoolsRequest } as QueryPoolsRequest;
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryPoolsRequest>, I>>(base?: I): QueryPoolsRequest {
+        return QueryPoolsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryPoolsRequest>, I>>(object: I): QueryPoolsRequest {
+        const message = createBaseQueryPoolsRequest();
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryDepositResponse: object = {};
+function createBaseQueryDepositResponse(): QueryDepositResponse {
+    return { deposit: undefined };
+}
 
 export const QueryDepositResponse = {
     encode(message: QueryDepositResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -521,31 +529,30 @@ export const QueryDepositResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryDepositResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryDepositResponse } as QueryDepositResponse;
+        const message = createBaseQueryDepositResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.deposit = Deposit.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryDepositResponse {
-        const message = { ...baseQueryDepositResponse } as QueryDepositResponse;
-        if (object.deposit !== undefined && object.deposit !== null) {
-            message.deposit = Deposit.fromJSON(object.deposit);
-        } else {
-            message.deposit = undefined;
-        }
-        return message;
+        return { deposit: isSet(object.deposit) ? Deposit.fromJSON(object.deposit) : undefined };
     },
 
     toJSON(message: QueryDepositResponse): unknown {
@@ -554,18 +561,20 @@ export const QueryDepositResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryDepositResponse>): QueryDepositResponse {
-        const message = { ...baseQueryDepositResponse } as QueryDepositResponse;
-        if (object.deposit !== undefined && object.deposit !== null) {
-            message.deposit = Deposit.fromPartial(object.deposit);
-        } else {
-            message.deposit = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryDepositResponse>, I>>(base?: I): QueryDepositResponse {
+        return QueryDepositResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryDepositResponse>, I>>(object: I): QueryDepositResponse {
+        const message = createBaseQueryDepositResponse();
+        message.deposit = object.deposit !== undefined && object.deposit !== null ? Deposit.fromPartial(object.deposit) : undefined;
         return message;
     },
 };
 
-const baseQueryDepositsResponse: object = {};
+function createBaseQueryDepositsResponse(): QueryDepositsResponse {
+    return { deposits: [], pagination: undefined };
+}
 
 export const QueryDepositsResponse = {
     encode(message: QueryDepositsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -579,41 +588,40 @@ export const QueryDepositsResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryDepositsResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryDepositsResponse } as QueryDepositsResponse;
-        message.deposits = [];
+        const message = createBaseQueryDepositsResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.deposits.push(Deposit.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageResponse.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryDepositsResponse {
-        const message = { ...baseQueryDepositsResponse } as QueryDepositsResponse;
-        message.deposits = [];
-        if (object.deposits !== undefined && object.deposits !== null) {
-            for (const e of object.deposits) {
-                message.deposits.push(Deposit.fromJSON(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            deposits: Array.isArray(object?.deposits) ? object.deposits.map((e: any) => Deposit.fromJSON(e)) : [],
+            pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryDepositsResponse): unknown {
@@ -627,24 +635,21 @@ export const QueryDepositsResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryDepositsResponse>): QueryDepositsResponse {
-        const message = { ...baseQueryDepositsResponse } as QueryDepositsResponse;
-        message.deposits = [];
-        if (object.deposits !== undefined && object.deposits !== null) {
-            for (const e of object.deposits) {
-                message.deposits.push(Deposit.fromPartial(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryDepositsResponse>, I>>(base?: I): QueryDepositsResponse {
+        return QueryDepositsResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryDepositsResponse>, I>>(object: I): QueryDepositsResponse {
+        const message = createBaseQueryDepositsResponse();
+        message.deposits = object.deposits?.map((e) => Deposit.fromPartial(e)) || [];
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageResponse.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryDepositsRequest: object = {};
+function createBaseQueryDepositsRequest(): QueryDepositsRequest {
+    return { pagination: undefined };
+}
 
 export const QueryDepositsRequest = {
     encode(message: QueryDepositsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -655,31 +660,30 @@ export const QueryDepositsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryDepositsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryDepositsRequest } as QueryDepositsRequest;
+        const message = createBaseQueryDepositsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryDepositsRequest {
-        const message = { ...baseQueryDepositsRequest } as QueryDepositsRequest;
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
     },
 
     toJSON(message: QueryDepositsRequest): unknown {
@@ -688,18 +692,20 @@ export const QueryDepositsRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryDepositsRequest>): QueryDepositsRequest {
-        const message = { ...baseQueryDepositsRequest } as QueryDepositsRequest;
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryDepositsRequest>, I>>(base?: I): QueryDepositsRequest {
+        return QueryDepositsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryDepositsRequest>, I>>(object: I): QueryDepositsRequest {
+        const message = createBaseQueryDepositsRequest();
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryPoolDepositRequest: object = { poolId: Long.UZERO, depositId: Long.UZERO };
+function createBaseQueryPoolDepositRequest(): QueryPoolDepositRequest {
+    return { poolId: Long.UZERO, depositId: Long.UZERO };
+}
 
 export const QueryPoolDepositRequest = {
     encode(message: QueryPoolDepositRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -713,39 +719,40 @@ export const QueryPoolDepositRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryPoolDepositRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryPoolDepositRequest } as QueryPoolDepositRequest;
+        const message = createBaseQueryPoolDepositRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.poolId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
                     message.depositId = reader.uint64() as Long;
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryPoolDepositRequest {
-        const message = { ...baseQueryPoolDepositRequest } as QueryPoolDepositRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = Long.fromString(object.poolId);
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.depositId !== undefined && object.depositId !== null) {
-            message.depositId = Long.fromString(object.depositId);
-        } else {
-            message.depositId = Long.UZERO;
-        }
-        return message;
+        return {
+            poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+            depositId: isSet(object.depositId) ? Long.fromValue(object.depositId) : Long.UZERO,
+        };
     },
 
     toJSON(message: QueryPoolDepositRequest): unknown {
@@ -755,23 +762,21 @@ export const QueryPoolDepositRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryPoolDepositRequest>): QueryPoolDepositRequest {
-        const message = { ...baseQueryPoolDepositRequest } as QueryPoolDepositRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = object.poolId as Long;
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.depositId !== undefined && object.depositId !== null) {
-            message.depositId = object.depositId as Long;
-        } else {
-            message.depositId = Long.UZERO;
-        }
+    create<I extends Exact<DeepPartial<QueryPoolDepositRequest>, I>>(base?: I): QueryPoolDepositRequest {
+        return QueryPoolDepositRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryPoolDepositRequest>, I>>(object: I): QueryPoolDepositRequest {
+        const message = createBaseQueryPoolDepositRequest();
+        message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
+        message.depositId = object.depositId !== undefined && object.depositId !== null ? Long.fromValue(object.depositId) : Long.UZERO;
         return message;
     },
 };
 
-const baseQueryPoolDepositsRequest: object = { poolId: Long.UZERO };
+function createBaseQueryPoolDepositsRequest(): QueryPoolDepositsRequest {
+    return { poolId: Long.UZERO, pagination: undefined };
+}
 
 export const QueryPoolDepositsRequest = {
     encode(message: QueryPoolDepositsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -785,39 +790,40 @@ export const QueryPoolDepositsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryPoolDepositsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryPoolDepositsRequest } as QueryPoolDepositsRequest;
+        const message = createBaseQueryPoolDepositsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.poolId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryPoolDepositsRequest {
-        const message = { ...baseQueryPoolDepositsRequest } as QueryPoolDepositsRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = Long.fromString(object.poolId);
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+            pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryPoolDepositsRequest): unknown {
@@ -827,23 +833,21 @@ export const QueryPoolDepositsRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryPoolDepositsRequest>): QueryPoolDepositsRequest {
-        const message = { ...baseQueryPoolDepositsRequest } as QueryPoolDepositsRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = object.poolId as Long;
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryPoolDepositsRequest>, I>>(base?: I): QueryPoolDepositsRequest {
+        return QueryPoolDepositsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryPoolDepositsRequest>, I>>(object: I): QueryPoolDepositsRequest {
+        const message = createBaseQueryPoolDepositsRequest();
+        message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryAccountDepositsRequest: object = { depositorAddress: '' };
+function createBaseQueryAccountDepositsRequest(): QueryAccountDepositsRequest {
+    return { depositorAddress: '', pagination: undefined };
+}
 
 export const QueryAccountDepositsRequest = {
     encode(message: QueryAccountDepositsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -857,39 +861,40 @@ export const QueryAccountDepositsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryAccountDepositsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryAccountDepositsRequest } as QueryAccountDepositsRequest;
+        const message = createBaseQueryAccountDepositsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.depositorAddress = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryAccountDepositsRequest {
-        const message = { ...baseQueryAccountDepositsRequest } as QueryAccountDepositsRequest;
-        if (object.depositorAddress !== undefined && object.depositorAddress !== null) {
-            message.depositorAddress = String(object.depositorAddress);
-        } else {
-            message.depositorAddress = '';
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            depositorAddress: isSet(object.depositorAddress) ? String(object.depositorAddress) : '',
+            pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryAccountDepositsRequest): unknown {
@@ -899,19 +904,21 @@ export const QueryAccountDepositsRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryAccountDepositsRequest>): QueryAccountDepositsRequest {
-        const message = { ...baseQueryAccountDepositsRequest } as QueryAccountDepositsRequest;
+    create<I extends Exact<DeepPartial<QueryAccountDepositsRequest>, I>>(base?: I): QueryAccountDepositsRequest {
+        return QueryAccountDepositsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryAccountDepositsRequest>, I>>(object: I): QueryAccountDepositsRequest {
+        const message = createBaseQueryAccountDepositsRequest();
         message.depositorAddress = object.depositorAddress ?? '';
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryAccountPoolDepositsRequest: object = { depositorAddress: '', poolId: Long.UZERO };
+function createBaseQueryAccountPoolDepositsRequest(): QueryAccountPoolDepositsRequest {
+    return { depositorAddress: '', poolId: Long.UZERO, pagination: undefined };
+}
 
 export const QueryAccountPoolDepositsRequest = {
     encode(message: QueryAccountPoolDepositsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -928,47 +935,48 @@ export const QueryAccountPoolDepositsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryAccountPoolDepositsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryAccountPoolDepositsRequest } as QueryAccountPoolDepositsRequest;
+        const message = createBaseQueryAccountPoolDepositsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.depositorAddress = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
                     message.poolId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryAccountPoolDepositsRequest {
-        const message = { ...baseQueryAccountPoolDepositsRequest } as QueryAccountPoolDepositsRequest;
-        if (object.depositorAddress !== undefined && object.depositorAddress !== null) {
-            message.depositorAddress = String(object.depositorAddress);
-        } else {
-            message.depositorAddress = '';
-        }
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = Long.fromString(object.poolId);
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            depositorAddress: isSet(object.depositorAddress) ? String(object.depositorAddress) : '',
+            poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+            pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryAccountPoolDepositsRequest): unknown {
@@ -979,24 +987,22 @@ export const QueryAccountPoolDepositsRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryAccountPoolDepositsRequest>): QueryAccountPoolDepositsRequest {
-        const message = { ...baseQueryAccountPoolDepositsRequest } as QueryAccountPoolDepositsRequest;
+    create<I extends Exact<DeepPartial<QueryAccountPoolDepositsRequest>, I>>(base?: I): QueryAccountPoolDepositsRequest {
+        return QueryAccountPoolDepositsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryAccountPoolDepositsRequest>, I>>(object: I): QueryAccountPoolDepositsRequest {
+        const message = createBaseQueryAccountPoolDepositsRequest();
         message.depositorAddress = object.depositorAddress ?? '';
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = object.poolId as Long;
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+        message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryDrawResponse: object = {};
+function createBaseQueryDrawResponse(): QueryDrawResponse {
+    return { draw: undefined };
+}
 
 export const QueryDrawResponse = {
     encode(message: QueryDrawResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1007,31 +1013,30 @@ export const QueryDrawResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryDrawResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryDrawResponse } as QueryDrawResponse;
+        const message = createBaseQueryDrawResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.draw = Draw.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryDrawResponse {
-        const message = { ...baseQueryDrawResponse } as QueryDrawResponse;
-        if (object.draw !== undefined && object.draw !== null) {
-            message.draw = Draw.fromJSON(object.draw);
-        } else {
-            message.draw = undefined;
-        }
-        return message;
+        return { draw: isSet(object.draw) ? Draw.fromJSON(object.draw) : undefined };
     },
 
     toJSON(message: QueryDrawResponse): unknown {
@@ -1040,18 +1045,20 @@ export const QueryDrawResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryDrawResponse>): QueryDrawResponse {
-        const message = { ...baseQueryDrawResponse } as QueryDrawResponse;
-        if (object.draw !== undefined && object.draw !== null) {
-            message.draw = Draw.fromPartial(object.draw);
-        } else {
-            message.draw = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryDrawResponse>, I>>(base?: I): QueryDrawResponse {
+        return QueryDrawResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryDrawResponse>, I>>(object: I): QueryDrawResponse {
+        const message = createBaseQueryDrawResponse();
+        message.draw = object.draw !== undefined && object.draw !== null ? Draw.fromPartial(object.draw) : undefined;
         return message;
     },
 };
 
-const baseQueryDrawsResponse: object = {};
+function createBaseQueryDrawsResponse(): QueryDrawsResponse {
+    return { draws: [], pagination: undefined };
+}
 
 export const QueryDrawsResponse = {
     encode(message: QueryDrawsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1065,41 +1072,40 @@ export const QueryDrawsResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryDrawsResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryDrawsResponse } as QueryDrawsResponse;
-        message.draws = [];
+        const message = createBaseQueryDrawsResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.draws.push(Draw.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageResponse.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryDrawsResponse {
-        const message = { ...baseQueryDrawsResponse } as QueryDrawsResponse;
-        message.draws = [];
-        if (object.draws !== undefined && object.draws !== null) {
-            for (const e of object.draws) {
-                message.draws.push(Draw.fromJSON(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            draws: Array.isArray(object?.draws) ? object.draws.map((e: any) => Draw.fromJSON(e)) : [],
+            pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryDrawsResponse): unknown {
@@ -1113,24 +1119,21 @@ export const QueryDrawsResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryDrawsResponse>): QueryDrawsResponse {
-        const message = { ...baseQueryDrawsResponse } as QueryDrawsResponse;
-        message.draws = [];
-        if (object.draws !== undefined && object.draws !== null) {
-            for (const e of object.draws) {
-                message.draws.push(Draw.fromPartial(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryDrawsResponse>, I>>(base?: I): QueryDrawsResponse {
+        return QueryDrawsResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryDrawsResponse>, I>>(object: I): QueryDrawsResponse {
+        const message = createBaseQueryDrawsResponse();
+        message.draws = object.draws?.map((e) => Draw.fromPartial(e)) || [];
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageResponse.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryDrawsRequest: object = {};
+function createBaseQueryDrawsRequest(): QueryDrawsRequest {
+    return { pagination: undefined };
+}
 
 export const QueryDrawsRequest = {
     encode(message: QueryDrawsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1141,31 +1144,30 @@ export const QueryDrawsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryDrawsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryDrawsRequest } as QueryDrawsRequest;
+        const message = createBaseQueryDrawsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryDrawsRequest {
-        const message = { ...baseQueryDrawsRequest } as QueryDrawsRequest;
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
     },
 
     toJSON(message: QueryDrawsRequest): unknown {
@@ -1174,18 +1176,20 @@ export const QueryDrawsRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryDrawsRequest>): QueryDrawsRequest {
-        const message = { ...baseQueryDrawsRequest } as QueryDrawsRequest;
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryDrawsRequest>, I>>(base?: I): QueryDrawsRequest {
+        return QueryDrawsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryDrawsRequest>, I>>(object: I): QueryDrawsRequest {
+        const message = createBaseQueryDrawsRequest();
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryPoolDrawsRequest: object = { poolId: Long.UZERO };
+function createBaseQueryPoolDrawsRequest(): QueryPoolDrawsRequest {
+    return { poolId: Long.UZERO, pagination: undefined };
+}
 
 export const QueryPoolDrawsRequest = {
     encode(message: QueryPoolDrawsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1199,39 +1203,40 @@ export const QueryPoolDrawsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryPoolDrawsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryPoolDrawsRequest } as QueryPoolDrawsRequest;
+        const message = createBaseQueryPoolDrawsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.poolId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryPoolDrawsRequest {
-        const message = { ...baseQueryPoolDrawsRequest } as QueryPoolDrawsRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = Long.fromString(object.poolId);
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+            pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryPoolDrawsRequest): unknown {
@@ -1241,23 +1246,21 @@ export const QueryPoolDrawsRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryPoolDrawsRequest>): QueryPoolDrawsRequest {
-        const message = { ...baseQueryPoolDrawsRequest } as QueryPoolDrawsRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = object.poolId as Long;
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryPoolDrawsRequest>, I>>(base?: I): QueryPoolDrawsRequest {
+        return QueryPoolDrawsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryPoolDrawsRequest>, I>>(object: I): QueryPoolDrawsRequest {
+        const message = createBaseQueryPoolDrawsRequest();
+        message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryPoolDrawRequest: object = { poolId: Long.UZERO, drawId: Long.UZERO };
+function createBaseQueryPoolDrawRequest(): QueryPoolDrawRequest {
+    return { poolId: Long.UZERO, drawId: Long.UZERO };
+}
 
 export const QueryPoolDrawRequest = {
     encode(message: QueryPoolDrawRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1271,39 +1274,40 @@ export const QueryPoolDrawRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryPoolDrawRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryPoolDrawRequest } as QueryPoolDrawRequest;
+        const message = createBaseQueryPoolDrawRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.poolId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
                     message.drawId = reader.uint64() as Long;
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryPoolDrawRequest {
-        const message = { ...baseQueryPoolDrawRequest } as QueryPoolDrawRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = Long.fromString(object.poolId);
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.drawId !== undefined && object.drawId !== null) {
-            message.drawId = Long.fromString(object.drawId);
-        } else {
-            message.drawId = Long.UZERO;
-        }
-        return message;
+        return {
+            poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+            drawId: isSet(object.drawId) ? Long.fromValue(object.drawId) : Long.UZERO,
+        };
     },
 
     toJSON(message: QueryPoolDrawRequest): unknown {
@@ -1313,23 +1317,21 @@ export const QueryPoolDrawRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryPoolDrawRequest>): QueryPoolDrawRequest {
-        const message = { ...baseQueryPoolDrawRequest } as QueryPoolDrawRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = object.poolId as Long;
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.drawId !== undefined && object.drawId !== null) {
-            message.drawId = object.drawId as Long;
-        } else {
-            message.drawId = Long.UZERO;
-        }
+    create<I extends Exact<DeepPartial<QueryPoolDrawRequest>, I>>(base?: I): QueryPoolDrawRequest {
+        return QueryPoolDrawRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryPoolDrawRequest>, I>>(object: I): QueryPoolDrawRequest {
+        const message = createBaseQueryPoolDrawRequest();
+        message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
+        message.drawId = object.drawId !== undefined && object.drawId !== null ? Long.fromValue(object.drawId) : Long.UZERO;
         return message;
     },
 };
 
-const baseQueryPrizeResponse: object = {};
+function createBaseQueryPrizeResponse(): QueryPrizeResponse {
+    return { prize: undefined };
+}
 
 export const QueryPrizeResponse = {
     encode(message: QueryPrizeResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1340,31 +1342,30 @@ export const QueryPrizeResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryPrizeResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryPrizeResponse } as QueryPrizeResponse;
+        const message = createBaseQueryPrizeResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.prize = Prize.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryPrizeResponse {
-        const message = { ...baseQueryPrizeResponse } as QueryPrizeResponse;
-        if (object.prize !== undefined && object.prize !== null) {
-            message.prize = Prize.fromJSON(object.prize);
-        } else {
-            message.prize = undefined;
-        }
-        return message;
+        return { prize: isSet(object.prize) ? Prize.fromJSON(object.prize) : undefined };
     },
 
     toJSON(message: QueryPrizeResponse): unknown {
@@ -1373,18 +1374,20 @@ export const QueryPrizeResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryPrizeResponse>): QueryPrizeResponse {
-        const message = { ...baseQueryPrizeResponse } as QueryPrizeResponse;
-        if (object.prize !== undefined && object.prize !== null) {
-            message.prize = Prize.fromPartial(object.prize);
-        } else {
-            message.prize = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryPrizeResponse>, I>>(base?: I): QueryPrizeResponse {
+        return QueryPrizeResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryPrizeResponse>, I>>(object: I): QueryPrizeResponse {
+        const message = createBaseQueryPrizeResponse();
+        message.prize = object.prize !== undefined && object.prize !== null ? Prize.fromPartial(object.prize) : undefined;
         return message;
     },
 };
 
-const baseQueryPrizesResponse: object = {};
+function createBaseQueryPrizesResponse(): QueryPrizesResponse {
+    return { prizes: [], pagination: undefined };
+}
 
 export const QueryPrizesResponse = {
     encode(message: QueryPrizesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1398,41 +1401,40 @@ export const QueryPrizesResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryPrizesResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryPrizesResponse } as QueryPrizesResponse;
-        message.prizes = [];
+        const message = createBaseQueryPrizesResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.prizes.push(Prize.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageResponse.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryPrizesResponse {
-        const message = { ...baseQueryPrizesResponse } as QueryPrizesResponse;
-        message.prizes = [];
-        if (object.prizes !== undefined && object.prizes !== null) {
-            for (const e of object.prizes) {
-                message.prizes.push(Prize.fromJSON(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            prizes: Array.isArray(object?.prizes) ? object.prizes.map((e: any) => Prize.fromJSON(e)) : [],
+            pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryPrizesResponse): unknown {
@@ -1446,24 +1448,21 @@ export const QueryPrizesResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryPrizesResponse>): QueryPrizesResponse {
-        const message = { ...baseQueryPrizesResponse } as QueryPrizesResponse;
-        message.prizes = [];
-        if (object.prizes !== undefined && object.prizes !== null) {
-            for (const e of object.prizes) {
-                message.prizes.push(Prize.fromPartial(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryPrizesResponse>, I>>(base?: I): QueryPrizesResponse {
+        return QueryPrizesResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryPrizesResponse>, I>>(object: I): QueryPrizesResponse {
+        const message = createBaseQueryPrizesResponse();
+        message.prizes = object.prizes?.map((e) => Prize.fromPartial(e)) || [];
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageResponse.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryPoolDrawPrizeRequest: object = { poolId: Long.UZERO, drawId: Long.UZERO, prizeId: Long.UZERO };
+function createBaseQueryPoolDrawPrizeRequest(): QueryPoolDrawPrizeRequest {
+    return { poolId: Long.UZERO, drawId: Long.UZERO, prizeId: Long.UZERO };
+}
 
 export const QueryPoolDrawPrizeRequest = {
     encode(message: QueryPoolDrawPrizeRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1480,47 +1479,48 @@ export const QueryPoolDrawPrizeRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryPoolDrawPrizeRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryPoolDrawPrizeRequest } as QueryPoolDrawPrizeRequest;
+        const message = createBaseQueryPoolDrawPrizeRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.poolId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
                     message.drawId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 24) {
+                        break;
+                    }
+
                     message.prizeId = reader.uint64() as Long;
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryPoolDrawPrizeRequest {
-        const message = { ...baseQueryPoolDrawPrizeRequest } as QueryPoolDrawPrizeRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = Long.fromString(object.poolId);
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.drawId !== undefined && object.drawId !== null) {
-            message.drawId = Long.fromString(object.drawId);
-        } else {
-            message.drawId = Long.UZERO;
-        }
-        if (object.prizeId !== undefined && object.prizeId !== null) {
-            message.prizeId = Long.fromString(object.prizeId);
-        } else {
-            message.prizeId = Long.UZERO;
-        }
-        return message;
+        return {
+            poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+            drawId: isSet(object.drawId) ? Long.fromValue(object.drawId) : Long.UZERO,
+            prizeId: isSet(object.prizeId) ? Long.fromValue(object.prizeId) : Long.UZERO,
+        };
     },
 
     toJSON(message: QueryPoolDrawPrizeRequest): unknown {
@@ -1531,28 +1531,22 @@ export const QueryPoolDrawPrizeRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryPoolDrawPrizeRequest>): QueryPoolDrawPrizeRequest {
-        const message = { ...baseQueryPoolDrawPrizeRequest } as QueryPoolDrawPrizeRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = object.poolId as Long;
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.drawId !== undefined && object.drawId !== null) {
-            message.drawId = object.drawId as Long;
-        } else {
-            message.drawId = Long.UZERO;
-        }
-        if (object.prizeId !== undefined && object.prizeId !== null) {
-            message.prizeId = object.prizeId as Long;
-        } else {
-            message.prizeId = Long.UZERO;
-        }
+    create<I extends Exact<DeepPartial<QueryPoolDrawPrizeRequest>, I>>(base?: I): QueryPoolDrawPrizeRequest {
+        return QueryPoolDrawPrizeRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryPoolDrawPrizeRequest>, I>>(object: I): QueryPoolDrawPrizeRequest {
+        const message = createBaseQueryPoolDrawPrizeRequest();
+        message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
+        message.drawId = object.drawId !== undefined && object.drawId !== null ? Long.fromValue(object.drawId) : Long.UZERO;
+        message.prizeId = object.prizeId !== undefined && object.prizeId !== null ? Long.fromValue(object.prizeId) : Long.UZERO;
         return message;
     },
 };
 
-const baseQueryPrizesRequest: object = {};
+function createBaseQueryPrizesRequest(): QueryPrizesRequest {
+    return { pagination: undefined };
+}
 
 export const QueryPrizesRequest = {
     encode(message: QueryPrizesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1563,31 +1557,30 @@ export const QueryPrizesRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryPrizesRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryPrizesRequest } as QueryPrizesRequest;
+        const message = createBaseQueryPrizesRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryPrizesRequest {
-        const message = { ...baseQueryPrizesRequest } as QueryPrizesRequest;
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
     },
 
     toJSON(message: QueryPrizesRequest): unknown {
@@ -1596,18 +1589,20 @@ export const QueryPrizesRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryPrizesRequest>): QueryPrizesRequest {
-        const message = { ...baseQueryPrizesRequest } as QueryPrizesRequest;
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryPrizesRequest>, I>>(base?: I): QueryPrizesRequest {
+        return QueryPrizesRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryPrizesRequest>, I>>(object: I): QueryPrizesRequest {
+        const message = createBaseQueryPrizesRequest();
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryPoolPrizesRequest: object = { poolId: Long.UZERO };
+function createBaseQueryPoolPrizesRequest(): QueryPoolPrizesRequest {
+    return { poolId: Long.UZERO, pagination: undefined };
+}
 
 export const QueryPoolPrizesRequest = {
     encode(message: QueryPoolPrizesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1621,39 +1616,40 @@ export const QueryPoolPrizesRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryPoolPrizesRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryPoolPrizesRequest } as QueryPoolPrizesRequest;
+        const message = createBaseQueryPoolPrizesRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.poolId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryPoolPrizesRequest {
-        const message = { ...baseQueryPoolPrizesRequest } as QueryPoolPrizesRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = Long.fromString(object.poolId);
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+            pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryPoolPrizesRequest): unknown {
@@ -1663,23 +1659,21 @@ export const QueryPoolPrizesRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryPoolPrizesRequest>): QueryPoolPrizesRequest {
-        const message = { ...baseQueryPoolPrizesRequest } as QueryPoolPrizesRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = object.poolId as Long;
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryPoolPrizesRequest>, I>>(base?: I): QueryPoolPrizesRequest {
+        return QueryPoolPrizesRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryPoolPrizesRequest>, I>>(object: I): QueryPoolPrizesRequest {
+        const message = createBaseQueryPoolPrizesRequest();
+        message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryPoolDrawPrizesRequest: object = { poolId: Long.UZERO, drawId: Long.UZERO };
+function createBaseQueryPoolDrawPrizesRequest(): QueryPoolDrawPrizesRequest {
+    return { poolId: Long.UZERO, drawId: Long.UZERO, pagination: undefined };
+}
 
 export const QueryPoolDrawPrizesRequest = {
     encode(message: QueryPoolDrawPrizesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1696,47 +1690,48 @@ export const QueryPoolDrawPrizesRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryPoolDrawPrizesRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryPoolDrawPrizesRequest } as QueryPoolDrawPrizesRequest;
+        const message = createBaseQueryPoolDrawPrizesRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.poolId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
                     message.drawId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryPoolDrawPrizesRequest {
-        const message = { ...baseQueryPoolDrawPrizesRequest } as QueryPoolDrawPrizesRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = Long.fromString(object.poolId);
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.drawId !== undefined && object.drawId !== null) {
-            message.drawId = Long.fromString(object.drawId);
-        } else {
-            message.drawId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+            drawId: isSet(object.drawId) ? Long.fromValue(object.drawId) : Long.UZERO,
+            pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryPoolDrawPrizesRequest): unknown {
@@ -1747,28 +1742,22 @@ export const QueryPoolDrawPrizesRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryPoolDrawPrizesRequest>): QueryPoolDrawPrizesRequest {
-        const message = { ...baseQueryPoolDrawPrizesRequest } as QueryPoolDrawPrizesRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = object.poolId as Long;
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.drawId !== undefined && object.drawId !== null) {
-            message.drawId = object.drawId as Long;
-        } else {
-            message.drawId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryPoolDrawPrizesRequest>, I>>(base?: I): QueryPoolDrawPrizesRequest {
+        return QueryPoolDrawPrizesRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryPoolDrawPrizesRequest>, I>>(object: I): QueryPoolDrawPrizesRequest {
+        const message = createBaseQueryPoolDrawPrizesRequest();
+        message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
+        message.drawId = object.drawId !== undefined && object.drawId !== null ? Long.fromValue(object.drawId) : Long.UZERO;
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryAccountPrizesRequest: object = { winnerAddress: '' };
+function createBaseQueryAccountPrizesRequest(): QueryAccountPrizesRequest {
+    return { winnerAddress: '', pagination: undefined };
+}
 
 export const QueryAccountPrizesRequest = {
     encode(message: QueryAccountPrizesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1782,39 +1771,40 @@ export const QueryAccountPrizesRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryAccountPrizesRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryAccountPrizesRequest } as QueryAccountPrizesRequest;
+        const message = createBaseQueryAccountPrizesRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.winnerAddress = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryAccountPrizesRequest {
-        const message = { ...baseQueryAccountPrizesRequest } as QueryAccountPrizesRequest;
-        if (object.winnerAddress !== undefined && object.winnerAddress !== null) {
-            message.winnerAddress = String(object.winnerAddress);
-        } else {
-            message.winnerAddress = '';
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            winnerAddress: isSet(object.winnerAddress) ? String(object.winnerAddress) : '',
+            pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryAccountPrizesRequest): unknown {
@@ -1824,19 +1814,21 @@ export const QueryAccountPrizesRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryAccountPrizesRequest>): QueryAccountPrizesRequest {
-        const message = { ...baseQueryAccountPrizesRequest } as QueryAccountPrizesRequest;
+    create<I extends Exact<DeepPartial<QueryAccountPrizesRequest>, I>>(base?: I): QueryAccountPrizesRequest {
+        return QueryAccountPrizesRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryAccountPrizesRequest>, I>>(object: I): QueryAccountPrizesRequest {
+        const message = createBaseQueryAccountPrizesRequest();
         message.winnerAddress = object.winnerAddress ?? '';
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryAccountPoolPrizesRequest: object = { winnerAddress: '', poolId: Long.UZERO };
+function createBaseQueryAccountPoolPrizesRequest(): QueryAccountPoolPrizesRequest {
+    return { winnerAddress: '', poolId: Long.UZERO, pagination: undefined };
+}
 
 export const QueryAccountPoolPrizesRequest = {
     encode(message: QueryAccountPoolPrizesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1853,47 +1845,48 @@ export const QueryAccountPoolPrizesRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryAccountPoolPrizesRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryAccountPoolPrizesRequest } as QueryAccountPoolPrizesRequest;
+        const message = createBaseQueryAccountPoolPrizesRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.winnerAddress = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
                     message.poolId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryAccountPoolPrizesRequest {
-        const message = { ...baseQueryAccountPoolPrizesRequest } as QueryAccountPoolPrizesRequest;
-        if (object.winnerAddress !== undefined && object.winnerAddress !== null) {
-            message.winnerAddress = String(object.winnerAddress);
-        } else {
-            message.winnerAddress = '';
-        }
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = Long.fromString(object.poolId);
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            winnerAddress: isSet(object.winnerAddress) ? String(object.winnerAddress) : '',
+            poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+            pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryAccountPoolPrizesRequest): unknown {
@@ -1904,24 +1897,22 @@ export const QueryAccountPoolPrizesRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryAccountPoolPrizesRequest>): QueryAccountPoolPrizesRequest {
-        const message = { ...baseQueryAccountPoolPrizesRequest } as QueryAccountPoolPrizesRequest;
+    create<I extends Exact<DeepPartial<QueryAccountPoolPrizesRequest>, I>>(base?: I): QueryAccountPoolPrizesRequest {
+        return QueryAccountPoolPrizesRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryAccountPoolPrizesRequest>, I>>(object: I): QueryAccountPoolPrizesRequest {
+        const message = createBaseQueryAccountPoolPrizesRequest();
         message.winnerAddress = object.winnerAddress ?? '';
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = object.poolId as Long;
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+        message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryAccountPoolDrawPrizesRequest: object = { winnerAddress: '', poolId: Long.UZERO, drawId: Long.UZERO };
+function createBaseQueryAccountPoolDrawPrizesRequest(): QueryAccountPoolDrawPrizesRequest {
+    return { winnerAddress: '', poolId: Long.UZERO, drawId: Long.UZERO, pagination: undefined };
+}
 
 export const QueryAccountPoolDrawPrizesRequest = {
     encode(message: QueryAccountPoolDrawPrizesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -1941,55 +1932,56 @@ export const QueryAccountPoolDrawPrizesRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryAccountPoolDrawPrizesRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryAccountPoolDrawPrizesRequest } as QueryAccountPoolDrawPrizesRequest;
+        const message = createBaseQueryAccountPoolDrawPrizesRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.winnerAddress = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
                     message.poolId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 24) {
+                        break;
+                    }
+
                     message.drawId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryAccountPoolDrawPrizesRequest {
-        const message = { ...baseQueryAccountPoolDrawPrizesRequest } as QueryAccountPoolDrawPrizesRequest;
-        if (object.winnerAddress !== undefined && object.winnerAddress !== null) {
-            message.winnerAddress = String(object.winnerAddress);
-        } else {
-            message.winnerAddress = '';
-        }
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = Long.fromString(object.poolId);
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.drawId !== undefined && object.drawId !== null) {
-            message.drawId = Long.fromString(object.drawId);
-        } else {
-            message.drawId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            winnerAddress: isSet(object.winnerAddress) ? String(object.winnerAddress) : '',
+            poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+            drawId: isSet(object.drawId) ? Long.fromValue(object.drawId) : Long.UZERO,
+            pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryAccountPoolDrawPrizesRequest): unknown {
@@ -2001,29 +1993,23 @@ export const QueryAccountPoolDrawPrizesRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryAccountPoolDrawPrizesRequest>): QueryAccountPoolDrawPrizesRequest {
-        const message = { ...baseQueryAccountPoolDrawPrizesRequest } as QueryAccountPoolDrawPrizesRequest;
+    create<I extends Exact<DeepPartial<QueryAccountPoolDrawPrizesRequest>, I>>(base?: I): QueryAccountPoolDrawPrizesRequest {
+        return QueryAccountPoolDrawPrizesRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryAccountPoolDrawPrizesRequest>, I>>(object: I): QueryAccountPoolDrawPrizesRequest {
+        const message = createBaseQueryAccountPoolDrawPrizesRequest();
         message.winnerAddress = object.winnerAddress ?? '';
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = object.poolId as Long;
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.drawId !== undefined && object.drawId !== null) {
-            message.drawId = object.drawId as Long;
-        } else {
-            message.drawId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+        message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
+        message.drawId = object.drawId !== undefined && object.drawId !== null ? Long.fromValue(object.drawId) : Long.UZERO;
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryWithdrawalResponse: object = {};
+function createBaseQueryWithdrawalResponse(): QueryWithdrawalResponse {
+    return { withdrawal: undefined };
+}
 
 export const QueryWithdrawalResponse = {
     encode(message: QueryWithdrawalResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -2034,31 +2020,30 @@ export const QueryWithdrawalResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryWithdrawalResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryWithdrawalResponse } as QueryWithdrawalResponse;
+        const message = createBaseQueryWithdrawalResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.withdrawal = Withdrawal.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryWithdrawalResponse {
-        const message = { ...baseQueryWithdrawalResponse } as QueryWithdrawalResponse;
-        if (object.withdrawal !== undefined && object.withdrawal !== null) {
-            message.withdrawal = Withdrawal.fromJSON(object.withdrawal);
-        } else {
-            message.withdrawal = undefined;
-        }
-        return message;
+        return { withdrawal: isSet(object.withdrawal) ? Withdrawal.fromJSON(object.withdrawal) : undefined };
     },
 
     toJSON(message: QueryWithdrawalResponse): unknown {
@@ -2067,18 +2052,20 @@ export const QueryWithdrawalResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryWithdrawalResponse>): QueryWithdrawalResponse {
-        const message = { ...baseQueryWithdrawalResponse } as QueryWithdrawalResponse;
-        if (object.withdrawal !== undefined && object.withdrawal !== null) {
-            message.withdrawal = Withdrawal.fromPartial(object.withdrawal);
-        } else {
-            message.withdrawal = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryWithdrawalResponse>, I>>(base?: I): QueryWithdrawalResponse {
+        return QueryWithdrawalResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryWithdrawalResponse>, I>>(object: I): QueryWithdrawalResponse {
+        const message = createBaseQueryWithdrawalResponse();
+        message.withdrawal = object.withdrawal !== undefined && object.withdrawal !== null ? Withdrawal.fromPartial(object.withdrawal) : undefined;
         return message;
     },
 };
 
-const baseQueryWithdrawalsResponse: object = {};
+function createBaseQueryWithdrawalsResponse(): QueryWithdrawalsResponse {
+    return { withdrawals: [], pagination: undefined };
+}
 
 export const QueryWithdrawalsResponse = {
     encode(message: QueryWithdrawalsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -2092,41 +2079,40 @@ export const QueryWithdrawalsResponse = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryWithdrawalsResponse {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryWithdrawalsResponse } as QueryWithdrawalsResponse;
-        message.withdrawals = [];
+        const message = createBaseQueryWithdrawalsResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.withdrawals.push(Withdrawal.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageResponse.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryWithdrawalsResponse {
-        const message = { ...baseQueryWithdrawalsResponse } as QueryWithdrawalsResponse;
-        message.withdrawals = [];
-        if (object.withdrawals !== undefined && object.withdrawals !== null) {
-            for (const e of object.withdrawals) {
-                message.withdrawals.push(Withdrawal.fromJSON(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            withdrawals: Array.isArray(object?.withdrawals) ? object.withdrawals.map((e: any) => Withdrawal.fromJSON(e)) : [],
+            pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryWithdrawalsResponse): unknown {
@@ -2140,24 +2126,21 @@ export const QueryWithdrawalsResponse = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryWithdrawalsResponse>): QueryWithdrawalsResponse {
-        const message = { ...baseQueryWithdrawalsResponse } as QueryWithdrawalsResponse;
-        message.withdrawals = [];
-        if (object.withdrawals !== undefined && object.withdrawals !== null) {
-            for (const e of object.withdrawals) {
-                message.withdrawals.push(Withdrawal.fromPartial(e));
-            }
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageResponse.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryWithdrawalsResponse>, I>>(base?: I): QueryWithdrawalsResponse {
+        return QueryWithdrawalsResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryWithdrawalsResponse>, I>>(object: I): QueryWithdrawalsResponse {
+        const message = createBaseQueryWithdrawalsResponse();
+        message.withdrawals = object.withdrawals?.map((e) => Withdrawal.fromPartial(e)) || [];
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageResponse.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryPoolWithdrawalRequest: object = { poolId: Long.UZERO, withdrawalId: Long.UZERO };
+function createBaseQueryPoolWithdrawalRequest(): QueryPoolWithdrawalRequest {
+    return { poolId: Long.UZERO, withdrawalId: Long.UZERO };
+}
 
 export const QueryPoolWithdrawalRequest = {
     encode(message: QueryPoolWithdrawalRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -2171,39 +2154,40 @@ export const QueryPoolWithdrawalRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryPoolWithdrawalRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryPoolWithdrawalRequest } as QueryPoolWithdrawalRequest;
+        const message = createBaseQueryPoolWithdrawalRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.poolId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
                     message.withdrawalId = reader.uint64() as Long;
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryPoolWithdrawalRequest {
-        const message = { ...baseQueryPoolWithdrawalRequest } as QueryPoolWithdrawalRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = Long.fromString(object.poolId);
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.withdrawalId !== undefined && object.withdrawalId !== null) {
-            message.withdrawalId = Long.fromString(object.withdrawalId);
-        } else {
-            message.withdrawalId = Long.UZERO;
-        }
-        return message;
+        return {
+            poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+            withdrawalId: isSet(object.withdrawalId) ? Long.fromValue(object.withdrawalId) : Long.UZERO,
+        };
     },
 
     toJSON(message: QueryPoolWithdrawalRequest): unknown {
@@ -2213,23 +2197,21 @@ export const QueryPoolWithdrawalRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryPoolWithdrawalRequest>): QueryPoolWithdrawalRequest {
-        const message = { ...baseQueryPoolWithdrawalRequest } as QueryPoolWithdrawalRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = object.poolId as Long;
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.withdrawalId !== undefined && object.withdrawalId !== null) {
-            message.withdrawalId = object.withdrawalId as Long;
-        } else {
-            message.withdrawalId = Long.UZERO;
-        }
+    create<I extends Exact<DeepPartial<QueryPoolWithdrawalRequest>, I>>(base?: I): QueryPoolWithdrawalRequest {
+        return QueryPoolWithdrawalRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryPoolWithdrawalRequest>, I>>(object: I): QueryPoolWithdrawalRequest {
+        const message = createBaseQueryPoolWithdrawalRequest();
+        message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
+        message.withdrawalId = object.withdrawalId !== undefined && object.withdrawalId !== null ? Long.fromValue(object.withdrawalId) : Long.UZERO;
         return message;
     },
 };
 
-const baseQueryWithdrawalsRequest: object = {};
+function createBaseQueryWithdrawalsRequest(): QueryWithdrawalsRequest {
+    return { pagination: undefined };
+}
 
 export const QueryWithdrawalsRequest = {
     encode(message: QueryWithdrawalsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -2240,31 +2222,30 @@ export const QueryWithdrawalsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryWithdrawalsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryWithdrawalsRequest } as QueryWithdrawalsRequest;
+        const message = createBaseQueryWithdrawalsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryWithdrawalsRequest {
-        const message = { ...baseQueryWithdrawalsRequest } as QueryWithdrawalsRequest;
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
     },
 
     toJSON(message: QueryWithdrawalsRequest): unknown {
@@ -2273,18 +2254,20 @@ export const QueryWithdrawalsRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryWithdrawalsRequest>): QueryWithdrawalsRequest {
-        const message = { ...baseQueryWithdrawalsRequest } as QueryWithdrawalsRequest;
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryWithdrawalsRequest>, I>>(base?: I): QueryWithdrawalsRequest {
+        return QueryWithdrawalsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryWithdrawalsRequest>, I>>(object: I): QueryWithdrawalsRequest {
+        const message = createBaseQueryWithdrawalsRequest();
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryPoolWithdrawalsRequest: object = { poolId: Long.UZERO };
+function createBaseQueryPoolWithdrawalsRequest(): QueryPoolWithdrawalsRequest {
+    return { poolId: Long.UZERO, pagination: undefined };
+}
 
 export const QueryPoolWithdrawalsRequest = {
     encode(message: QueryPoolWithdrawalsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -2298,39 +2281,40 @@ export const QueryPoolWithdrawalsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryPoolWithdrawalsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryPoolWithdrawalsRequest } as QueryPoolWithdrawalsRequest;
+        const message = createBaseQueryPoolWithdrawalsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.poolId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryPoolWithdrawalsRequest {
-        const message = { ...baseQueryPoolWithdrawalsRequest } as QueryPoolWithdrawalsRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = Long.fromString(object.poolId);
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+            pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryPoolWithdrawalsRequest): unknown {
@@ -2340,23 +2324,21 @@ export const QueryPoolWithdrawalsRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryPoolWithdrawalsRequest>): QueryPoolWithdrawalsRequest {
-        const message = { ...baseQueryPoolWithdrawalsRequest } as QueryPoolWithdrawalsRequest;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = object.poolId as Long;
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+    create<I extends Exact<DeepPartial<QueryPoolWithdrawalsRequest>, I>>(base?: I): QueryPoolWithdrawalsRequest {
+        return QueryPoolWithdrawalsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryPoolWithdrawalsRequest>, I>>(object: I): QueryPoolWithdrawalsRequest {
+        const message = createBaseQueryPoolWithdrawalsRequest();
+        message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryAccountWithdrawalsRequest: object = { depositorAddress: '' };
+function createBaseQueryAccountWithdrawalsRequest(): QueryAccountWithdrawalsRequest {
+    return { depositorAddress: '', pagination: undefined };
+}
 
 export const QueryAccountWithdrawalsRequest = {
     encode(message: QueryAccountWithdrawalsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -2370,39 +2352,40 @@ export const QueryAccountWithdrawalsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryAccountWithdrawalsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryAccountWithdrawalsRequest } as QueryAccountWithdrawalsRequest;
+        const message = createBaseQueryAccountWithdrawalsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.depositorAddress = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryAccountWithdrawalsRequest {
-        const message = { ...baseQueryAccountWithdrawalsRequest } as QueryAccountWithdrawalsRequest;
-        if (object.depositorAddress !== undefined && object.depositorAddress !== null) {
-            message.depositorAddress = String(object.depositorAddress);
-        } else {
-            message.depositorAddress = '';
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            depositorAddress: isSet(object.depositorAddress) ? String(object.depositorAddress) : '',
+            pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryAccountWithdrawalsRequest): unknown {
@@ -2412,19 +2395,21 @@ export const QueryAccountWithdrawalsRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryAccountWithdrawalsRequest>): QueryAccountWithdrawalsRequest {
-        const message = { ...baseQueryAccountWithdrawalsRequest } as QueryAccountWithdrawalsRequest;
+    create<I extends Exact<DeepPartial<QueryAccountWithdrawalsRequest>, I>>(base?: I): QueryAccountWithdrawalsRequest {
+        return QueryAccountWithdrawalsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryAccountWithdrawalsRequest>, I>>(object: I): QueryAccountWithdrawalsRequest {
+        const message = createBaseQueryAccountWithdrawalsRequest();
         message.depositorAddress = object.depositorAddress ?? '';
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
 
-const baseQueryAccountPoolWithdrawalsRequest: object = { depositorAddress: '', poolId: Long.UZERO };
+function createBaseQueryAccountPoolWithdrawalsRequest(): QueryAccountPoolWithdrawalsRequest {
+    return { depositorAddress: '', poolId: Long.UZERO, pagination: undefined };
+}
 
 export const QueryAccountPoolWithdrawalsRequest = {
     encode(message: QueryAccountPoolWithdrawalsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -2441,47 +2426,48 @@ export const QueryAccountPoolWithdrawalsRequest = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): QueryAccountPoolWithdrawalsRequest {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseQueryAccountPoolWithdrawalsRequest } as QueryAccountPoolWithdrawalsRequest;
+        const message = createBaseQueryAccountPoolWithdrawalsRequest();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.depositorAddress = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
                     message.poolId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
                     message.pagination = PageRequest.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): QueryAccountPoolWithdrawalsRequest {
-        const message = { ...baseQueryAccountPoolWithdrawalsRequest } as QueryAccountPoolWithdrawalsRequest;
-        if (object.depositorAddress !== undefined && object.depositorAddress !== null) {
-            message.depositorAddress = String(object.depositorAddress);
-        } else {
-            message.depositorAddress = '';
-        }
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = Long.fromString(object.poolId);
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromJSON(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
-        return message;
+        return {
+            depositorAddress: isSet(object.depositorAddress) ? String(object.depositorAddress) : '',
+            poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+            pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+        };
     },
 
     toJSON(message: QueryAccountPoolWithdrawalsRequest): unknown {
@@ -2492,19 +2478,15 @@ export const QueryAccountPoolWithdrawalsRequest = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<QueryAccountPoolWithdrawalsRequest>): QueryAccountPoolWithdrawalsRequest {
-        const message = { ...baseQueryAccountPoolWithdrawalsRequest } as QueryAccountPoolWithdrawalsRequest;
+    create<I extends Exact<DeepPartial<QueryAccountPoolWithdrawalsRequest>, I>>(base?: I): QueryAccountPoolWithdrawalsRequest {
+        return QueryAccountPoolWithdrawalsRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryAccountPoolWithdrawalsRequest>, I>>(object: I): QueryAccountPoolWithdrawalsRequest {
+        const message = createBaseQueryAccountPoolWithdrawalsRequest();
         message.depositorAddress = object.depositorAddress ?? '';
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = object.poolId as Long;
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.pagination !== undefined && object.pagination !== null) {
-            message.pagination = PageRequest.fromPartial(object.pagination);
-        } else {
-            message.pagination = undefined;
-        }
+        message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
         return message;
     },
 };
@@ -2537,7 +2519,9 @@ export interface Query {
 
 export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
-    constructor(rpc: Rpc) {
+    private readonly service: string;
+    constructor(rpc: Rpc, opts?: { service?: string }) {
+        this.service = opts?.service || 'lum.network.millions.Query';
         this.rpc = rpc;
         this.Params = this.Params.bind(this);
         this.Pools = this.Pools.bind(this);
@@ -2565,140 +2549,140 @@ export class QueryClientImpl implements Query {
     }
     Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
         const data = QueryParamsRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'Params', data);
-        return promise.then((data) => QueryParamsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'Params', data);
+        return promise.then((data) => QueryParamsResponse.decode(_m0.Reader.create(data)));
     }
 
     Pools(request: QueryPoolsRequest): Promise<QueryPoolsResponse> {
         const data = QueryPoolsRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'Pools', data);
-        return promise.then((data) => QueryPoolsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'Pools', data);
+        return promise.then((data) => QueryPoolsResponse.decode(_m0.Reader.create(data)));
     }
 
     Pool(request: QueryPoolRequest): Promise<QueryPoolResponse> {
         const data = QueryPoolRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'Pool', data);
-        return promise.then((data) => QueryPoolResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'Pool', data);
+        return promise.then((data) => QueryPoolResponse.decode(_m0.Reader.create(data)));
     }
 
     Deposits(request: QueryDepositsRequest): Promise<QueryDepositsResponse> {
         const data = QueryDepositsRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'Deposits', data);
-        return promise.then((data) => QueryDepositsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'Deposits', data);
+        return promise.then((data) => QueryDepositsResponse.decode(_m0.Reader.create(data)));
     }
 
     PoolDeposits(request: QueryPoolDepositsRequest): Promise<QueryDepositsResponse> {
         const data = QueryPoolDepositsRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'PoolDeposits', data);
-        return promise.then((data) => QueryDepositsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'PoolDeposits', data);
+        return promise.then((data) => QueryDepositsResponse.decode(_m0.Reader.create(data)));
     }
 
     PoolDeposit(request: QueryPoolDepositRequest): Promise<QueryDepositResponse> {
         const data = QueryPoolDepositRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'PoolDeposit', data);
-        return promise.then((data) => QueryDepositResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'PoolDeposit', data);
+        return promise.then((data) => QueryDepositResponse.decode(_m0.Reader.create(data)));
     }
 
     AccountDeposits(request: QueryAccountDepositsRequest): Promise<QueryDepositsResponse> {
         const data = QueryAccountDepositsRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'AccountDeposits', data);
-        return promise.then((data) => QueryDepositsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'AccountDeposits', data);
+        return promise.then((data) => QueryDepositsResponse.decode(_m0.Reader.create(data)));
     }
 
     AccountPoolDeposits(request: QueryAccountPoolDepositsRequest): Promise<QueryDepositsResponse> {
         const data = QueryAccountPoolDepositsRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'AccountPoolDeposits', data);
-        return promise.then((data) => QueryDepositsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'AccountPoolDeposits', data);
+        return promise.then((data) => QueryDepositsResponse.decode(_m0.Reader.create(data)));
     }
 
     Draws(request: QueryDrawsRequest): Promise<QueryDrawsResponse> {
         const data = QueryDrawsRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'Draws', data);
-        return promise.then((data) => QueryDrawsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'Draws', data);
+        return promise.then((data) => QueryDrawsResponse.decode(_m0.Reader.create(data)));
     }
 
     PoolDraws(request: QueryPoolDrawsRequest): Promise<QueryDrawsResponse> {
         const data = QueryPoolDrawsRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'PoolDraws', data);
-        return promise.then((data) => QueryDrawsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'PoolDraws', data);
+        return promise.then((data) => QueryDrawsResponse.decode(_m0.Reader.create(data)));
     }
 
     PoolDraw(request: QueryPoolDrawRequest): Promise<QueryDrawResponse> {
         const data = QueryPoolDrawRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'PoolDraw', data);
-        return promise.then((data) => QueryDrawResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'PoolDraw', data);
+        return promise.then((data) => QueryDrawResponse.decode(_m0.Reader.create(data)));
     }
 
     Prizes(request: QueryPrizesRequest): Promise<QueryPrizesResponse> {
         const data = QueryPrizesRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'Prizes', data);
-        return promise.then((data) => QueryPrizesResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'Prizes', data);
+        return promise.then((data) => QueryPrizesResponse.decode(_m0.Reader.create(data)));
     }
 
     PoolPrizes(request: QueryPoolPrizesRequest): Promise<QueryPrizesResponse> {
         const data = QueryPoolPrizesRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'PoolPrizes', data);
-        return promise.then((data) => QueryPrizesResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'PoolPrizes', data);
+        return promise.then((data) => QueryPrizesResponse.decode(_m0.Reader.create(data)));
     }
 
     PoolDrawPrizes(request: QueryPoolDrawPrizesRequest): Promise<QueryPrizesResponse> {
         const data = QueryPoolDrawPrizesRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'PoolDrawPrizes', data);
-        return promise.then((data) => QueryPrizesResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'PoolDrawPrizes', data);
+        return promise.then((data) => QueryPrizesResponse.decode(_m0.Reader.create(data)));
     }
 
     PoolDrawPrize(request: QueryPoolDrawPrizeRequest): Promise<QueryPrizeResponse> {
         const data = QueryPoolDrawPrizeRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'PoolDrawPrize', data);
-        return promise.then((data) => QueryPrizeResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'PoolDrawPrize', data);
+        return promise.then((data) => QueryPrizeResponse.decode(_m0.Reader.create(data)));
     }
 
     AccountPrizes(request: QueryAccountPrizesRequest): Promise<QueryPrizesResponse> {
         const data = QueryAccountPrizesRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'AccountPrizes', data);
-        return promise.then((data) => QueryPrizesResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'AccountPrizes', data);
+        return promise.then((data) => QueryPrizesResponse.decode(_m0.Reader.create(data)));
     }
 
     AccountPoolPrizes(request: QueryAccountPoolPrizesRequest): Promise<QueryPrizesResponse> {
         const data = QueryAccountPoolPrizesRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'AccountPoolPrizes', data);
-        return promise.then((data) => QueryPrizesResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'AccountPoolPrizes', data);
+        return promise.then((data) => QueryPrizesResponse.decode(_m0.Reader.create(data)));
     }
 
     AccountPoolDrawPrizes(request: QueryAccountPoolDrawPrizesRequest): Promise<QueryPrizesResponse> {
         const data = QueryAccountPoolDrawPrizesRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'AccountPoolDrawPrizes', data);
-        return promise.then((data) => QueryPrizesResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'AccountPoolDrawPrizes', data);
+        return promise.then((data) => QueryPrizesResponse.decode(_m0.Reader.create(data)));
     }
 
     Withdrawals(request: QueryWithdrawalsRequest): Promise<QueryWithdrawalsResponse> {
         const data = QueryWithdrawalsRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'Withdrawals', data);
-        return promise.then((data) => QueryWithdrawalsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'Withdrawals', data);
+        return promise.then((data) => QueryWithdrawalsResponse.decode(_m0.Reader.create(data)));
     }
 
     PoolWithdrawals(request: QueryPoolWithdrawalsRequest): Promise<QueryWithdrawalsResponse> {
         const data = QueryPoolWithdrawalsRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'PoolWithdrawals', data);
-        return promise.then((data) => QueryWithdrawalsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'PoolWithdrawals', data);
+        return promise.then((data) => QueryWithdrawalsResponse.decode(_m0.Reader.create(data)));
     }
 
     PoolWithdrawal(request: QueryPoolWithdrawalRequest): Promise<QueryWithdrawalResponse> {
         const data = QueryPoolWithdrawalRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'PoolWithdrawal', data);
-        return promise.then((data) => QueryWithdrawalResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'PoolWithdrawal', data);
+        return promise.then((data) => QueryWithdrawalResponse.decode(_m0.Reader.create(data)));
     }
 
     AccountWithdrawals(request: QueryAccountWithdrawalsRequest): Promise<QueryWithdrawalsResponse> {
         const data = QueryAccountWithdrawalsRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'AccountWithdrawals', data);
-        return promise.then((data) => QueryWithdrawalsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'AccountWithdrawals', data);
+        return promise.then((data) => QueryWithdrawalsResponse.decode(_m0.Reader.create(data)));
     }
 
     AccountPoolWithdrawals(request: QueryAccountPoolWithdrawalsRequest): Promise<QueryWithdrawalsResponse> {
         const data = QueryAccountPoolWithdrawalsRequest.encode(request).finish();
-        const promise = this.rpc.request('lum.network.millions.Query', 'AccountPoolWithdrawals', data);
-        return promise.then((data) => QueryWithdrawalsResponse.decode(new _m0.Reader(data)));
+        const promise = this.rpc.request(this.service, 'AccountPoolWithdrawals', data);
+        return promise.then((data) => QueryWithdrawalsResponse.decode(_m0.Reader.create(data)));
     }
 }
 
@@ -2706,9 +2690,12 @@ interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -2717,7 +2704,14 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }

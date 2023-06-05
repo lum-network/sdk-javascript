@@ -107,6 +107,19 @@ protoc \
     "$LUM_PROTO_DIR/lum-network/dfract/tx.proto" \
     "$LUM_PROTO_DIR/lum-network/dfract/params.proto" \
     "$LUM_PROTO_DIR/lum-network/dfract/proposal.proto" \
+    "$LUM_PROTO_DIR/lum-network/millions/callbacks.proto" \
+    "$LUM_PROTO_DIR/lum-network/millions/deposit.proto" \
+    "$LUM_PROTO_DIR/lum-network/millions/draw.proto" \
+    "$LUM_PROTO_DIR/lum-network/millions/draw_schedule.proto" \
+    "$LUM_PROTO_DIR/lum-network/millions/params.proto" \
+    "$LUM_PROTO_DIR/lum-network/millions/pool.proto" \
+    "$LUM_PROTO_DIR/lum-network/millions/prize.proto" \
+    "$LUM_PROTO_DIR/lum-network/millions/prize_batch.proto" \
+    "$LUM_PROTO_DIR/lum-network/millions/prize_ref.proto" \
+    "$LUM_PROTO_DIR/lum-network/millions/prize_strategy.proto" \
+    "$LUM_PROTO_DIR/lum-network/millions/query.proto" \
+    "$LUM_PROTO_DIR/lum-network/millions/tx.proto" \
+    "$LUM_PROTO_DIR/lum-network/millions/withdrawal.proto" \
     "$LUM_PROTO_DIR/lum-network/millions/gov.proto"
 
 # Remove unnecessary codec files

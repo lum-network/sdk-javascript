@@ -24,7 +24,18 @@ export interface Params {
     minDepositDrawDelta?: Duration;
 }
 
-const baseParams: object = { minDepositAmount: '', maxPrizeStrategyBatches: Long.UZERO, maxPrizeBatchQuantity: Long.UZERO, feesStakers: '' };
+function createBaseParams(): Params {
+    return {
+        minDepositAmount: '',
+        maxPrizeStrategyBatches: Long.UZERO,
+        maxPrizeBatchQuantity: Long.UZERO,
+        minDrawScheduleDelta: undefined,
+        maxDrawScheduleDelta: undefined,
+        prizeExpirationDelta: undefined,
+        feesStakers: '',
+        minDepositDrawDelta: undefined,
+    };
+}
 
 export const Params = {
     encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -56,87 +67,88 @@ export const Params = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseParams } as Params;
+        const message = createBaseParams();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.minDepositAmount = reader.string();
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
                     message.maxPrizeStrategyBatches = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 24) {
+                        break;
+                    }
+
                     message.maxPrizeBatchQuantity = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
                     message.minDrawScheduleDelta = Duration.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 5:
+                    if (tag !== 42) {
+                        break;
+                    }
+
                     message.maxDrawScheduleDelta = Duration.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 6:
+                    if (tag !== 50) {
+                        break;
+                    }
+
                     message.prizeExpirationDelta = Duration.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 7:
+                    if (tag !== 58) {
+                        break;
+                    }
+
                     message.feesStakers = reader.string();
-                    break;
+                    continue;
                 case 8:
+                    if (tag !== 66) {
+                        break;
+                    }
+
                     message.minDepositDrawDelta = Duration.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): Params {
-        const message = { ...baseParams } as Params;
-        if (object.minDepositAmount !== undefined && object.minDepositAmount !== null) {
-            message.minDepositAmount = String(object.minDepositAmount);
-        } else {
-            message.minDepositAmount = '';
-        }
-        if (object.maxPrizeStrategyBatches !== undefined && object.maxPrizeStrategyBatches !== null) {
-            message.maxPrizeStrategyBatches = Long.fromString(object.maxPrizeStrategyBatches);
-        } else {
-            message.maxPrizeStrategyBatches = Long.UZERO;
-        }
-        if (object.maxPrizeBatchQuantity !== undefined && object.maxPrizeBatchQuantity !== null) {
-            message.maxPrizeBatchQuantity = Long.fromString(object.maxPrizeBatchQuantity);
-        } else {
-            message.maxPrizeBatchQuantity = Long.UZERO;
-        }
-        if (object.minDrawScheduleDelta !== undefined && object.minDrawScheduleDelta !== null) {
-            message.minDrawScheduleDelta = Duration.fromJSON(object.minDrawScheduleDelta);
-        } else {
-            message.minDrawScheduleDelta = undefined;
-        }
-        if (object.maxDrawScheduleDelta !== undefined && object.maxDrawScheduleDelta !== null) {
-            message.maxDrawScheduleDelta = Duration.fromJSON(object.maxDrawScheduleDelta);
-        } else {
-            message.maxDrawScheduleDelta = undefined;
-        }
-        if (object.prizeExpirationDelta !== undefined && object.prizeExpirationDelta !== null) {
-            message.prizeExpirationDelta = Duration.fromJSON(object.prizeExpirationDelta);
-        } else {
-            message.prizeExpirationDelta = undefined;
-        }
-        if (object.feesStakers !== undefined && object.feesStakers !== null) {
-            message.feesStakers = String(object.feesStakers);
-        } else {
-            message.feesStakers = '';
-        }
-        if (object.minDepositDrawDelta !== undefined && object.minDepositDrawDelta !== null) {
-            message.minDepositDrawDelta = Duration.fromJSON(object.minDepositDrawDelta);
-        } else {
-            message.minDepositDrawDelta = undefined;
-        }
-        return message;
+        return {
+            minDepositAmount: isSet(object.minDepositAmount) ? String(object.minDepositAmount) : '',
+            maxPrizeStrategyBatches: isSet(object.maxPrizeStrategyBatches) ? Long.fromValue(object.maxPrizeStrategyBatches) : Long.UZERO,
+            maxPrizeBatchQuantity: isSet(object.maxPrizeBatchQuantity) ? Long.fromValue(object.maxPrizeBatchQuantity) : Long.UZERO,
+            minDrawScheduleDelta: isSet(object.minDrawScheduleDelta) ? Duration.fromJSON(object.minDrawScheduleDelta) : undefined,
+            maxDrawScheduleDelta: isSet(object.maxDrawScheduleDelta) ? Duration.fromJSON(object.maxDrawScheduleDelta) : undefined,
+            prizeExpirationDelta: isSet(object.prizeExpirationDelta) ? Duration.fromJSON(object.prizeExpirationDelta) : undefined,
+            feesStakers: isSet(object.feesStakers) ? String(object.feesStakers) : '',
+            minDepositDrawDelta: isSet(object.minDepositDrawDelta) ? Duration.fromJSON(object.minDepositDrawDelta) : undefined,
+        };
     },
 
     toJSON(message: Params): unknown {
@@ -152,47 +164,30 @@ export const Params = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<Params>): Params {
-        const message = { ...baseParams } as Params;
+    create<I extends Exact<DeepPartial<Params>, I>>(base?: I): Params {
+        return Params.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<Params>, I>>(object: I): Params {
+        const message = createBaseParams();
         message.minDepositAmount = object.minDepositAmount ?? '';
-        if (object.maxPrizeStrategyBatches !== undefined && object.maxPrizeStrategyBatches !== null) {
-            message.maxPrizeStrategyBatches = object.maxPrizeStrategyBatches as Long;
-        } else {
-            message.maxPrizeStrategyBatches = Long.UZERO;
-        }
-        if (object.maxPrizeBatchQuantity !== undefined && object.maxPrizeBatchQuantity !== null) {
-            message.maxPrizeBatchQuantity = object.maxPrizeBatchQuantity as Long;
-        } else {
-            message.maxPrizeBatchQuantity = Long.UZERO;
-        }
-        if (object.minDrawScheduleDelta !== undefined && object.minDrawScheduleDelta !== null) {
-            message.minDrawScheduleDelta = Duration.fromPartial(object.minDrawScheduleDelta);
-        } else {
-            message.minDrawScheduleDelta = undefined;
-        }
-        if (object.maxDrawScheduleDelta !== undefined && object.maxDrawScheduleDelta !== null) {
-            message.maxDrawScheduleDelta = Duration.fromPartial(object.maxDrawScheduleDelta);
-        } else {
-            message.maxDrawScheduleDelta = undefined;
-        }
-        if (object.prizeExpirationDelta !== undefined && object.prizeExpirationDelta !== null) {
-            message.prizeExpirationDelta = Duration.fromPartial(object.prizeExpirationDelta);
-        } else {
-            message.prizeExpirationDelta = undefined;
-        }
+        message.maxPrizeStrategyBatches = object.maxPrizeStrategyBatches !== undefined && object.maxPrizeStrategyBatches !== null ? Long.fromValue(object.maxPrizeStrategyBatches) : Long.UZERO;
+        message.maxPrizeBatchQuantity = object.maxPrizeBatchQuantity !== undefined && object.maxPrizeBatchQuantity !== null ? Long.fromValue(object.maxPrizeBatchQuantity) : Long.UZERO;
+        message.minDrawScheduleDelta = object.minDrawScheduleDelta !== undefined && object.minDrawScheduleDelta !== null ? Duration.fromPartial(object.minDrawScheduleDelta) : undefined;
+        message.maxDrawScheduleDelta = object.maxDrawScheduleDelta !== undefined && object.maxDrawScheduleDelta !== null ? Duration.fromPartial(object.maxDrawScheduleDelta) : undefined;
+        message.prizeExpirationDelta = object.prizeExpirationDelta !== undefined && object.prizeExpirationDelta !== null ? Duration.fromPartial(object.prizeExpirationDelta) : undefined;
         message.feesStakers = object.feesStakers ?? '';
-        if (object.minDepositDrawDelta !== undefined && object.minDepositDrawDelta !== null) {
-            message.minDepositDrawDelta = Duration.fromPartial(object.minDepositDrawDelta);
-        } else {
-            message.minDepositDrawDelta = undefined;
-        }
+        message.minDepositDrawDelta = object.minDepositDrawDelta !== undefined && object.minDepositDrawDelta !== null ? Duration.fromPartial(object.minDepositDrawDelta) : undefined;
         return message;
     },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -201,7 +196,14 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }
