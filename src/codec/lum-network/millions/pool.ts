@@ -79,7 +79,7 @@ export interface Pool {
     transferChannelId: string;
     icaDepositPortId: string;
     icaPrizepoolPortId: string;
-    validators: { [key: string]: PoolValidator };
+    validators: PoolValidator[];
     bech32PrefixAccAddr: string;
     bech32PrefixValAddr: string;
     minDepositAmount: string;
@@ -102,11 +102,6 @@ export interface Pool {
     updatedAt?: Date;
 }
 
-export interface Pool_ValidatorsEntry {
-    key: string;
-    value?: PoolValidator;
-}
-
 export interface PoolValidator {
     operatorAddress: string;
     isEnabled: boolean;
@@ -123,7 +118,7 @@ function createBasePool(): Pool {
         transferChannelId: '',
         icaDepositPortId: '',
         icaPrizepoolPortId: '',
-        validators: {},
+        validators: [],
         bech32PrefixAccAddr: '',
         bech32PrefixValAddr: '',
         minDepositAmount: '',
@@ -173,9 +168,9 @@ export const Pool = {
         if (message.icaPrizepoolPortId !== '') {
             writer.uint32(66).string(message.icaPrizepoolPortId);
         }
-        Object.entries(message.validators).forEach(([key, value]) => {
-            Pool_ValidatorsEntry.encode({ key: key as any, value }, writer.uint32(82).fork()).ldelim();
-        });
+        for (const v of message.validators) {
+            PoolValidator.encode(v!, writer.uint32(82).fork()).ldelim();
+        }
         if (message.bech32PrefixAccAddr !== '') {
             writer.uint32(90).string(message.bech32PrefixAccAddr);
         }
@@ -307,10 +302,7 @@ export const Pool = {
                         break;
                     }
 
-                    const entry10 = Pool_ValidatorsEntry.decode(reader, reader.uint32());
-                    if (entry10.value !== undefined) {
-                        message.validators[entry10.key] = entry10.value;
-                    }
+                    message.validators.push(PoolValidator.decode(reader, reader.uint32()));
                     continue;
                 case 11:
                     if (tag !== 90) {
@@ -471,12 +463,7 @@ export const Pool = {
             transferChannelId: isSet(object.transferChannelId) ? String(object.transferChannelId) : '',
             icaDepositPortId: isSet(object.icaDepositPortId) ? String(object.icaDepositPortId) : '',
             icaPrizepoolPortId: isSet(object.icaPrizepoolPortId) ? String(object.icaPrizepoolPortId) : '',
-            validators: isObject(object.validators)
-                ? Object.entries(object.validators).reduce<{ [key: string]: PoolValidator }>((acc, [key, value]) => {
-                      acc[key] = PoolValidator.fromJSON(value);
-                      return acc;
-                  }, {})
-                : {},
+            validators: Array.isArray(object?.validators) ? object.validators.map((e: any) => PoolValidator.fromJSON(e)) : [],
             bech32PrefixAccAddr: isSet(object.bech32PrefixAccAddr) ? String(object.bech32PrefixAccAddr) : '',
             bech32PrefixValAddr: isSet(object.bech32PrefixValAddr) ? String(object.bech32PrefixValAddr) : '',
             minDepositAmount: isSet(object.minDepositAmount) ? String(object.minDepositAmount) : '',
@@ -510,11 +497,10 @@ export const Pool = {
         message.transferChannelId !== undefined && (obj.transferChannelId = message.transferChannelId);
         message.icaDepositPortId !== undefined && (obj.icaDepositPortId = message.icaDepositPortId);
         message.icaPrizepoolPortId !== undefined && (obj.icaPrizepoolPortId = message.icaPrizepoolPortId);
-        obj.validators = {};
         if (message.validators) {
-            Object.entries(message.validators).forEach(([k, v]) => {
-                obj.validators[k] = PoolValidator.toJSON(v);
-            });
+            obj.validators = message.validators.map((e) => (e ? PoolValidator.toJSON(e) : undefined));
+        } else {
+            obj.validators = [];
         }
         message.bech32PrefixAccAddr !== undefined && (obj.bech32PrefixAccAddr = message.bech32PrefixAccAddr);
         message.bech32PrefixValAddr !== undefined && (obj.bech32PrefixValAddr = message.bech32PrefixValAddr);
@@ -553,12 +539,7 @@ export const Pool = {
         message.transferChannelId = object.transferChannelId ?? '';
         message.icaDepositPortId = object.icaDepositPortId ?? '';
         message.icaPrizepoolPortId = object.icaPrizepoolPortId ?? '';
-        message.validators = Object.entries(object.validators ?? {}).reduce<{ [key: string]: PoolValidator }>((acc, [key, value]) => {
-            if (value !== undefined) {
-                acc[key] = PoolValidator.fromPartial(value);
-            }
-            return acc;
-        }, {});
+        message.validators = object.validators?.map((e) => PoolValidator.fromPartial(e)) || [];
         message.bech32PrefixAccAddr = object.bech32PrefixAccAddr ?? '';
         message.bech32PrefixValAddr = object.bech32PrefixValAddr ?? '';
         message.minDepositAmount = object.minDepositAmount ?? '';
@@ -579,77 +560,6 @@ export const Pool = {
         message.updatedAtHeight = object.updatedAtHeight !== undefined && object.updatedAtHeight !== null ? Long.fromValue(object.updatedAtHeight) : Long.ZERO;
         message.createdAt = object.createdAt ?? undefined;
         message.updatedAt = object.updatedAt ?? undefined;
-        return message;
-    },
-};
-
-function createBasePool_ValidatorsEntry(): Pool_ValidatorsEntry {
-    return { key: '', value: undefined };
-}
-
-export const Pool_ValidatorsEntry = {
-    encode(message: Pool_ValidatorsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-        if (message.key !== '') {
-            writer.uint32(10).string(message.key);
-        }
-        if (message.value !== undefined) {
-            PoolValidator.encode(message.value, writer.uint32(18).fork()).ldelim();
-        }
-        return writer;
-    },
-
-    decode(input: _m0.Reader | Uint8Array, length?: number): Pool_ValidatorsEntry {
-        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBasePool_ValidatorsEntry();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    if (tag !== 10) {
-                        break;
-                    }
-
-                    message.key = reader.string();
-                    continue;
-                case 2:
-                    if (tag !== 18) {
-                        break;
-                    }
-
-                    message.value = PoolValidator.decode(reader, reader.uint32());
-                    continue;
-            }
-            if ((tag & 7) === 4 || tag === 0) {
-                break;
-            }
-            reader.skipType(tag & 7);
-        }
-        return message;
-    },
-
-    fromJSON(object: any): Pool_ValidatorsEntry {
-        return {
-            key: isSet(object.key) ? String(object.key) : '',
-            value: isSet(object.value) ? PoolValidator.fromJSON(object.value) : undefined,
-        };
-    },
-
-    toJSON(message: Pool_ValidatorsEntry): unknown {
-        const obj: any = {};
-        message.key !== undefined && (obj.key = message.key);
-        message.value !== undefined && (obj.value = message.value ? PoolValidator.toJSON(message.value) : undefined);
-        return obj;
-    },
-
-    create<I extends Exact<DeepPartial<Pool_ValidatorsEntry>, I>>(base?: I): Pool_ValidatorsEntry {
-        return Pool_ValidatorsEntry.fromPartial(base ?? {});
-    },
-
-    fromPartial<I extends Exact<DeepPartial<Pool_ValidatorsEntry>, I>>(object: I): Pool_ValidatorsEntry {
-        const message = createBasePool_ValidatorsEntry();
-        message.key = object.key ?? '';
-        message.value = object.value !== undefined && object.value !== null ? PoolValidator.fromPartial(object.value) : undefined;
         return message;
     },
 };
@@ -784,10 +694,6 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
-}
-
-function isObject(value: any): boolean {
-    return typeof value === 'object' && value !== null;
 }
 
 function isSet(value: any): boolean {
