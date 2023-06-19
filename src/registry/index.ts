@@ -43,7 +43,7 @@ import { MsgClaimBeam, MsgOpenBeam, MsgUpdateBeam } from '../codec/lum-network/b
 import { MsgDeposit as MsgDepositDfract } from '../codec/lum-network/dfract/tx';
 import { WithdrawAndMintProposal } from '../codec/lum-network/dfract/proposal';
 import { MsgClaimPrize, MsgDeposit as MsgDepositMillions, MsgDepositRetry, MsgDrawRetry, MsgUpdateParams, MsgWithdrawDeposit, MsgWithdrawDepositRetry } from '../codec/lum-network/millions/tx';
-import { ProposalRegisterPool } from "../codec/lum-network/millions/gov";
+import { ProposalRegisterPool, ProposalUpdateParams, ProposalUpdatePool } from "../codec/lum-network/millions/gov";
 
 const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/cosmos.auth.v1beta1.BaseAccount', BaseAccount],
@@ -126,6 +126,8 @@ const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/lum.network.millions.MsgWithdrawDeposit', MsgWithdrawDeposit],
     ['/lum.network.millions.MsgWithdrawDepositRetry', MsgWithdrawDepositRetry],
     ['/lum.network.millions.ProposalRegisterPool', ProposalRegisterPool],
+    ['/lum.network.millions.ProposalUpdateParams', ProposalUpdateParams],
+    ['/lum.network.millions.ProposalUpdatePool', ProposalUpdatePool],
 ];
 
 class ExtendedRegistry extends Registry {

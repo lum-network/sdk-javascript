@@ -51,8 +51,9 @@ export function withdrawalStateToJSON(object: WithdrawalState): string {
             return 'WITHDRAWAL_STATE_IBC_TRANSFER';
         case WithdrawalState.WITHDRAWAL_STATE_FAILURE:
             return 'WITHDRAWAL_STATE_FAILURE';
+        case WithdrawalState.UNRECOGNIZED:
         default:
-            return 'UNKNOWN';
+            return 'UNRECOGNIZED';
     }
 }
 
@@ -81,17 +82,23 @@ export interface WithdrawalIDsCollection {
     withdrawalsIds: WithdrawalIDs[];
 }
 
-const baseWithdrawal: object = {
-    poolId: Long.UZERO,
-    depositId: Long.UZERO,
-    withdrawalId: Long.UZERO,
-    state: 0,
-    errorState: 0,
-    depositorAddress: '',
-    toAddress: '',
-    createdAtHeight: Long.ZERO,
-    updatedAtHeight: Long.ZERO,
-};
+function createBaseWithdrawal(): Withdrawal {
+    return {
+        poolId: Long.UZERO,
+        depositId: Long.UZERO,
+        withdrawalId: Long.UZERO,
+        state: 0,
+        errorState: 0,
+        depositorAddress: '',
+        toAddress: '',
+        amount: undefined,
+        createdAtHeight: Long.ZERO,
+        updatedAtHeight: Long.ZERO,
+        unbondingEndsAt: undefined,
+        createdAt: undefined,
+        updatedAt: undefined,
+    };
+}
 
 export const Withdrawal = {
     encode(message: Withdrawal, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -138,127 +145,128 @@ export const Withdrawal = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Withdrawal {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseWithdrawal } as Withdrawal;
+        const message = createBaseWithdrawal();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.poolId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
                     message.depositId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 24) {
+                        break;
+                    }
+
                     message.withdrawalId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 32) {
+                        break;
+                    }
+
                     message.state = reader.int32() as any;
-                    break;
+                    continue;
                 case 5:
+                    if (tag !== 40) {
+                        break;
+                    }
+
                     message.errorState = reader.int32() as any;
-                    break;
+                    continue;
                 case 6:
+                    if (tag !== 50) {
+                        break;
+                    }
+
                     message.depositorAddress = reader.string();
-                    break;
+                    continue;
                 case 7:
+                    if (tag !== 58) {
+                        break;
+                    }
+
                     message.toAddress = reader.string();
-                    break;
+                    continue;
                 case 8:
+                    if (tag !== 66) {
+                        break;
+                    }
+
                     message.amount = Coin.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 9:
+                    if (tag !== 72) {
+                        break;
+                    }
+
                     message.createdAtHeight = reader.int64() as Long;
-                    break;
+                    continue;
                 case 10:
+                    if (tag !== 80) {
+                        break;
+                    }
+
                     message.updatedAtHeight = reader.int64() as Long;
-                    break;
+                    continue;
                 case 11:
+                    if (tag !== 90) {
+                        break;
+                    }
+
                     message.unbondingEndsAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 12:
+                    if (tag !== 98) {
+                        break;
+                    }
+
                     message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 13:
+                    if (tag !== 106) {
+                        break;
+                    }
+
                     message.updatedAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): Withdrawal {
-        const message = { ...baseWithdrawal } as Withdrawal;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = Long.fromString(object.poolId);
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.depositId !== undefined && object.depositId !== null) {
-            message.depositId = Long.fromString(object.depositId);
-        } else {
-            message.depositId = Long.UZERO;
-        }
-        if (object.withdrawalId !== undefined && object.withdrawalId !== null) {
-            message.withdrawalId = Long.fromString(object.withdrawalId);
-        } else {
-            message.withdrawalId = Long.UZERO;
-        }
-        if (object.state !== undefined && object.state !== null) {
-            message.state = withdrawalStateFromJSON(object.state);
-        } else {
-            message.state = 0;
-        }
-        if (object.errorState !== undefined && object.errorState !== null) {
-            message.errorState = withdrawalStateFromJSON(object.errorState);
-        } else {
-            message.errorState = 0;
-        }
-        if (object.depositorAddress !== undefined && object.depositorAddress !== null) {
-            message.depositorAddress = String(object.depositorAddress);
-        } else {
-            message.depositorAddress = '';
-        }
-        if (object.toAddress !== undefined && object.toAddress !== null) {
-            message.toAddress = String(object.toAddress);
-        } else {
-            message.toAddress = '';
-        }
-        if (object.amount !== undefined && object.amount !== null) {
-            message.amount = Coin.fromJSON(object.amount);
-        } else {
-            message.amount = undefined;
-        }
-        if (object.createdAtHeight !== undefined && object.createdAtHeight !== null) {
-            message.createdAtHeight = Long.fromString(object.createdAtHeight);
-        } else {
-            message.createdAtHeight = Long.ZERO;
-        }
-        if (object.updatedAtHeight !== undefined && object.updatedAtHeight !== null) {
-            message.updatedAtHeight = Long.fromString(object.updatedAtHeight);
-        } else {
-            message.updatedAtHeight = Long.ZERO;
-        }
-        if (object.unbondingEndsAt !== undefined && object.unbondingEndsAt !== null) {
-            message.unbondingEndsAt = fromJsonTimestamp(object.unbondingEndsAt);
-        } else {
-            message.unbondingEndsAt = undefined;
-        }
-        if (object.createdAt !== undefined && object.createdAt !== null) {
-            message.createdAt = fromJsonTimestamp(object.createdAt);
-        } else {
-            message.createdAt = undefined;
-        }
-        if (object.updatedAt !== undefined && object.updatedAt !== null) {
-            message.updatedAt = fromJsonTimestamp(object.updatedAt);
-        } else {
-            message.updatedAt = undefined;
-        }
-        return message;
+        return {
+            poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+            depositId: isSet(object.depositId) ? Long.fromValue(object.depositId) : Long.UZERO,
+            withdrawalId: isSet(object.withdrawalId) ? Long.fromValue(object.withdrawalId) : Long.UZERO,
+            state: isSet(object.state) ? withdrawalStateFromJSON(object.state) : 0,
+            errorState: isSet(object.errorState) ? withdrawalStateFromJSON(object.errorState) : 0,
+            depositorAddress: isSet(object.depositorAddress) ? String(object.depositorAddress) : '',
+            toAddress: isSet(object.toAddress) ? String(object.toAddress) : '',
+            amount: isSet(object.amount) ? Coin.fromJSON(object.amount) : undefined,
+            createdAtHeight: isSet(object.createdAtHeight) ? Long.fromValue(object.createdAtHeight) : Long.ZERO,
+            updatedAtHeight: isSet(object.updatedAtHeight) ? Long.fromValue(object.updatedAtHeight) : Long.ZERO,
+            unbondingEndsAt: isSet(object.unbondingEndsAt) ? fromJsonTimestamp(object.unbondingEndsAt) : undefined,
+            createdAt: isSet(object.createdAt) ? fromJsonTimestamp(object.createdAt) : undefined,
+            updatedAt: isSet(object.updatedAt) ? fromJsonTimestamp(object.updatedAt) : undefined,
+        };
     },
 
     toJSON(message: Withdrawal): unknown {
@@ -279,42 +287,22 @@ export const Withdrawal = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<Withdrawal>): Withdrawal {
-        const message = { ...baseWithdrawal } as Withdrawal;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = object.poolId as Long;
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.depositId !== undefined && object.depositId !== null) {
-            message.depositId = object.depositId as Long;
-        } else {
-            message.depositId = Long.UZERO;
-        }
-        if (object.withdrawalId !== undefined && object.withdrawalId !== null) {
-            message.withdrawalId = object.withdrawalId as Long;
-        } else {
-            message.withdrawalId = Long.UZERO;
-        }
+    create<I extends Exact<DeepPartial<Withdrawal>, I>>(base?: I): Withdrawal {
+        return Withdrawal.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<Withdrawal>, I>>(object: I): Withdrawal {
+        const message = createBaseWithdrawal();
+        message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
+        message.depositId = object.depositId !== undefined && object.depositId !== null ? Long.fromValue(object.depositId) : Long.UZERO;
+        message.withdrawalId = object.withdrawalId !== undefined && object.withdrawalId !== null ? Long.fromValue(object.withdrawalId) : Long.UZERO;
         message.state = object.state ?? 0;
         message.errorState = object.errorState ?? 0;
         message.depositorAddress = object.depositorAddress ?? '';
         message.toAddress = object.toAddress ?? '';
-        if (object.amount !== undefined && object.amount !== null) {
-            message.amount = Coin.fromPartial(object.amount);
-        } else {
-            message.amount = undefined;
-        }
-        if (object.createdAtHeight !== undefined && object.createdAtHeight !== null) {
-            message.createdAtHeight = object.createdAtHeight as Long;
-        } else {
-            message.createdAtHeight = Long.ZERO;
-        }
-        if (object.updatedAtHeight !== undefined && object.updatedAtHeight !== null) {
-            message.updatedAtHeight = object.updatedAtHeight as Long;
-        } else {
-            message.updatedAtHeight = Long.ZERO;
-        }
+        message.amount = object.amount !== undefined && object.amount !== null ? Coin.fromPartial(object.amount) : undefined;
+        message.createdAtHeight = object.createdAtHeight !== undefined && object.createdAtHeight !== null ? Long.fromValue(object.createdAtHeight) : Long.ZERO;
+        message.updatedAtHeight = object.updatedAtHeight !== undefined && object.updatedAtHeight !== null ? Long.fromValue(object.updatedAtHeight) : Long.ZERO;
         message.unbondingEndsAt = object.unbondingEndsAt ?? undefined;
         message.createdAt = object.createdAt ?? undefined;
         message.updatedAt = object.updatedAt ?? undefined;
@@ -322,7 +310,9 @@ export const Withdrawal = {
     },
 };
 
-const baseWithdrawalIDs: object = { poolId: Long.UZERO, withdrawalId: Long.UZERO };
+function createBaseWithdrawalIDs(): WithdrawalIDs {
+    return { poolId: Long.UZERO, withdrawalId: Long.UZERO };
+}
 
 export const WithdrawalIDs = {
     encode(message: WithdrawalIDs, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -336,39 +326,40 @@ export const WithdrawalIDs = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): WithdrawalIDs {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseWithdrawalIDs } as WithdrawalIDs;
+        const message = createBaseWithdrawalIDs();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.poolId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
                     message.withdrawalId = reader.uint64() as Long;
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): WithdrawalIDs {
-        const message = { ...baseWithdrawalIDs } as WithdrawalIDs;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = Long.fromString(object.poolId);
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.withdrawalId !== undefined && object.withdrawalId !== null) {
-            message.withdrawalId = Long.fromString(object.withdrawalId);
-        } else {
-            message.withdrawalId = Long.UZERO;
-        }
-        return message;
+        return {
+            poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+            withdrawalId: isSet(object.withdrawalId) ? Long.fromValue(object.withdrawalId) : Long.UZERO,
+        };
     },
 
     toJSON(message: WithdrawalIDs): unknown {
@@ -378,23 +369,21 @@ export const WithdrawalIDs = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<WithdrawalIDs>): WithdrawalIDs {
-        const message = { ...baseWithdrawalIDs } as WithdrawalIDs;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = object.poolId as Long;
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.withdrawalId !== undefined && object.withdrawalId !== null) {
-            message.withdrawalId = object.withdrawalId as Long;
-        } else {
-            message.withdrawalId = Long.UZERO;
-        }
+    create<I extends Exact<DeepPartial<WithdrawalIDs>, I>>(base?: I): WithdrawalIDs {
+        return WithdrawalIDs.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<WithdrawalIDs>, I>>(object: I): WithdrawalIDs {
+        const message = createBaseWithdrawalIDs();
+        message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
+        message.withdrawalId = object.withdrawalId !== undefined && object.withdrawalId !== null ? Long.fromValue(object.withdrawalId) : Long.UZERO;
         return message;
     },
 };
 
-const baseWithdrawalIDsCollection: object = {};
+function createBaseWithdrawalIDsCollection(): WithdrawalIDsCollection {
+    return { withdrawalsIds: [] };
+}
 
 export const WithdrawalIDsCollection = {
     encode(message: WithdrawalIDsCollection, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -405,33 +394,32 @@ export const WithdrawalIDsCollection = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): WithdrawalIDsCollection {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseWithdrawalIDsCollection } as WithdrawalIDsCollection;
-        message.withdrawalsIds = [];
+        const message = createBaseWithdrawalIDsCollection();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
                     message.withdrawalsIds.push(WithdrawalIDs.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): WithdrawalIDsCollection {
-        const message = { ...baseWithdrawalIDsCollection } as WithdrawalIDsCollection;
-        message.withdrawalsIds = [];
-        if (object.withdrawalsIds !== undefined && object.withdrawalsIds !== null) {
-            for (const e of object.withdrawalsIds) {
-                message.withdrawalsIds.push(WithdrawalIDs.fromJSON(e));
-            }
-        }
-        return message;
+        return {
+            withdrawalsIds: Array.isArray(object?.withdrawalsIds) ? object.withdrawalsIds.map((e: any) => WithdrawalIDs.fromJSON(e)) : [],
+        };
     },
 
     toJSON(message: WithdrawalIDsCollection): unknown {
@@ -444,21 +432,23 @@ export const WithdrawalIDsCollection = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<WithdrawalIDsCollection>): WithdrawalIDsCollection {
-        const message = { ...baseWithdrawalIDsCollection } as WithdrawalIDsCollection;
-        message.withdrawalsIds = [];
-        if (object.withdrawalsIds !== undefined && object.withdrawalsIds !== null) {
-            for (const e of object.withdrawalsIds) {
-                message.withdrawalsIds.push(WithdrawalIDs.fromPartial(e));
-            }
-        }
+    create<I extends Exact<DeepPartial<WithdrawalIDsCollection>, I>>(base?: I): WithdrawalIDsCollection {
+        return WithdrawalIDsCollection.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<WithdrawalIDsCollection>, I>>(object: I): WithdrawalIDsCollection {
+        const message = createBaseWithdrawalIDsCollection();
+        message.withdrawalsIds = object.withdrawalsIds?.map((e) => WithdrawalIDs.fromPartial(e)) || [];
         return message;
     },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -467,6 +457,9 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 function toTimestamp(date: Date): Timestamp {
     const seconds = numberToLong(date.getTime() / 1_000);
     const nanos = (date.getTime() % 1_000) * 1_000_000;
@@ -474,8 +467,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-    let millis = t.seconds.toNumber() * 1_000;
-    millis += t.nanos / 1_000_000;
+    let millis = (t.seconds.toNumber() || 0) * 1_000;
+    millis += (t.nanos || 0) / 1_000_000;
     return new Date(millis);
 }
 
@@ -496,4 +489,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }

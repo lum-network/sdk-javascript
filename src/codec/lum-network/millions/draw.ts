@@ -3,7 +3,7 @@ import Long from 'long';
 import _m0 from 'protobufjs/minimal';
 import { Coin } from '../../cosmos/base/v1beta1/coin';
 import { Timestamp } from '../../google/protobuf/timestamp';
-import { PrizeRef } from '../../lum-network/millions/prize_ref';
+import { PrizeRef } from './prize_ref';
 
 export const protobufPackage = 'lum.network.millions';
 
@@ -64,8 +64,9 @@ export function drawStateToJSON(object: DrawState): string {
             return 'DRAW_STATE_SUCCESS';
         case DrawState.DRAW_STATE_FAILURE:
             return 'DRAW_STATE_FAILURE';
+        case DrawState.UNRECOGNIZED:
         default:
-            return 'UNKNOWN';
+            return 'UNRECOGNIZED';
     }
 }
 
@@ -94,19 +95,25 @@ export interface Draw {
     updatedAt?: Date;
 }
 
-const baseDraw: object = {
-    poolId: Long.UZERO,
-    drawId: Long.UZERO,
-    state: 0,
-    errorState: 0,
-    randSeed: Long.ZERO,
-    prizePoolFreshAmount: '',
-    prizePoolRemainsAmount: '',
-    totalWinCount: Long.UZERO,
-    totalWinAmount: '',
-    createdAtHeight: Long.ZERO,
-    updatedAtHeight: Long.ZERO,
-};
+function createBaseDraw(): Draw {
+    return {
+        poolId: Long.UZERO,
+        drawId: Long.UZERO,
+        state: 0,
+        errorState: 0,
+        randSeed: Long.ZERO,
+        prizePool: undefined,
+        prizePoolFreshAmount: '',
+        prizePoolRemainsAmount: '',
+        prizesRefs: [],
+        totalWinCount: Long.UZERO,
+        totalWinAmount: '',
+        createdAtHeight: Long.ZERO,
+        updatedAtHeight: Long.ZERO,
+        createdAt: undefined,
+        updatedAt: undefined,
+    };
+}
 
 export const Draw = {
     encode(message: Draw, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -159,145 +166,144 @@ export const Draw = {
     },
 
     decode(input: _m0.Reader | Uint8Array, length?: number): Draw {
-        const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = { ...baseDraw } as Draw;
-        message.prizesRefs = [];
+        const message = createBaseDraw();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
                     message.poolId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
                     message.drawId = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 3:
+                    if (tag !== 24) {
+                        break;
+                    }
+
                     message.state = reader.int32() as any;
-                    break;
+                    continue;
                 case 4:
+                    if (tag !== 32) {
+                        break;
+                    }
+
                     message.errorState = reader.int32() as any;
-                    break;
+                    continue;
                 case 5:
+                    if (tag !== 40) {
+                        break;
+                    }
+
                     message.randSeed = reader.int64() as Long;
-                    break;
+                    continue;
                 case 6:
+                    if (tag !== 50) {
+                        break;
+                    }
+
                     message.prizePool = Coin.decode(reader, reader.uint32());
-                    break;
+                    continue;
                 case 7:
+                    if (tag !== 58) {
+                        break;
+                    }
+
                     message.prizePoolFreshAmount = reader.string();
-                    break;
+                    continue;
                 case 8:
+                    if (tag !== 66) {
+                        break;
+                    }
+
                     message.prizePoolRemainsAmount = reader.string();
-                    break;
+                    continue;
                 case 11:
+                    if (tag !== 90) {
+                        break;
+                    }
+
                     message.prizesRefs.push(PrizeRef.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 12:
+                    if (tag !== 96) {
+                        break;
+                    }
+
                     message.totalWinCount = reader.uint64() as Long;
-                    break;
+                    continue;
                 case 13:
+                    if (tag !== 106) {
+                        break;
+                    }
+
                     message.totalWinAmount = reader.string();
-                    break;
+                    continue;
                 case 15:
+                    if (tag !== 120) {
+                        break;
+                    }
+
                     message.createdAtHeight = reader.int64() as Long;
-                    break;
+                    continue;
                 case 16:
+                    if (tag !== 128) {
+                        break;
+                    }
+
                     message.updatedAtHeight = reader.int64() as Long;
-                    break;
+                    continue;
                 case 17:
+                    if (tag !== 138) {
+                        break;
+                    }
+
                     message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-                    break;
+                    continue;
                 case 18:
+                    if (tag !== 146) {
+                        break;
+                    }
+
                     message.updatedAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    continue;
             }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
         }
         return message;
     },
 
     fromJSON(object: any): Draw {
-        const message = { ...baseDraw } as Draw;
-        message.prizesRefs = [];
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = Long.fromString(object.poolId);
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.drawId !== undefined && object.drawId !== null) {
-            message.drawId = Long.fromString(object.drawId);
-        } else {
-            message.drawId = Long.UZERO;
-        }
-        if (object.state !== undefined && object.state !== null) {
-            message.state = drawStateFromJSON(object.state);
-        } else {
-            message.state = 0;
-        }
-        if (object.errorState !== undefined && object.errorState !== null) {
-            message.errorState = drawStateFromJSON(object.errorState);
-        } else {
-            message.errorState = 0;
-        }
-        if (object.randSeed !== undefined && object.randSeed !== null) {
-            message.randSeed = Long.fromString(object.randSeed);
-        } else {
-            message.randSeed = Long.ZERO;
-        }
-        if (object.prizePool !== undefined && object.prizePool !== null) {
-            message.prizePool = Coin.fromJSON(object.prizePool);
-        } else {
-            message.prizePool = undefined;
-        }
-        if (object.prizePoolFreshAmount !== undefined && object.prizePoolFreshAmount !== null) {
-            message.prizePoolFreshAmount = String(object.prizePoolFreshAmount);
-        } else {
-            message.prizePoolFreshAmount = '';
-        }
-        if (object.prizePoolRemainsAmount !== undefined && object.prizePoolRemainsAmount !== null) {
-            message.prizePoolRemainsAmount = String(object.prizePoolRemainsAmount);
-        } else {
-            message.prizePoolRemainsAmount = '';
-        }
-        if (object.prizesRefs !== undefined && object.prizesRefs !== null) {
-            for (const e of object.prizesRefs) {
-                message.prizesRefs.push(PrizeRef.fromJSON(e));
-            }
-        }
-        if (object.totalWinCount !== undefined && object.totalWinCount !== null) {
-            message.totalWinCount = Long.fromString(object.totalWinCount);
-        } else {
-            message.totalWinCount = Long.UZERO;
-        }
-        if (object.totalWinAmount !== undefined && object.totalWinAmount !== null) {
-            message.totalWinAmount = String(object.totalWinAmount);
-        } else {
-            message.totalWinAmount = '';
-        }
-        if (object.createdAtHeight !== undefined && object.createdAtHeight !== null) {
-            message.createdAtHeight = Long.fromString(object.createdAtHeight);
-        } else {
-            message.createdAtHeight = Long.ZERO;
-        }
-        if (object.updatedAtHeight !== undefined && object.updatedAtHeight !== null) {
-            message.updatedAtHeight = Long.fromString(object.updatedAtHeight);
-        } else {
-            message.updatedAtHeight = Long.ZERO;
-        }
-        if (object.createdAt !== undefined && object.createdAt !== null) {
-            message.createdAt = fromJsonTimestamp(object.createdAt);
-        } else {
-            message.createdAt = undefined;
-        }
-        if (object.updatedAt !== undefined && object.updatedAt !== null) {
-            message.updatedAt = fromJsonTimestamp(object.updatedAt);
-        } else {
-            message.updatedAt = undefined;
-        }
-        return message;
+        return {
+            poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+            drawId: isSet(object.drawId) ? Long.fromValue(object.drawId) : Long.UZERO,
+            state: isSet(object.state) ? drawStateFromJSON(object.state) : 0,
+            errorState: isSet(object.errorState) ? drawStateFromJSON(object.errorState) : 0,
+            randSeed: isSet(object.randSeed) ? Long.fromValue(object.randSeed) : Long.ZERO,
+            prizePool: isSet(object.prizePool) ? Coin.fromJSON(object.prizePool) : undefined,
+            prizePoolFreshAmount: isSet(object.prizePoolFreshAmount) ? String(object.prizePoolFreshAmount) : '',
+            prizePoolRemainsAmount: isSet(object.prizePoolRemainsAmount) ? String(object.prizePoolRemainsAmount) : '',
+            prizesRefs: Array.isArray(object?.prizesRefs) ? object.prizesRefs.map((e: any) => PrizeRef.fromJSON(e)) : [],
+            totalWinCount: isSet(object.totalWinCount) ? Long.fromValue(object.totalWinCount) : Long.UZERO,
+            totalWinAmount: isSet(object.totalWinAmount) ? String(object.totalWinAmount) : '',
+            createdAtHeight: isSet(object.createdAtHeight) ? Long.fromValue(object.createdAtHeight) : Long.ZERO,
+            updatedAtHeight: isSet(object.updatedAtHeight) ? Long.fromValue(object.updatedAtHeight) : Long.ZERO,
+            createdAt: isSet(object.createdAt) ? fromJsonTimestamp(object.createdAt) : undefined,
+            updatedAt: isSet(object.updatedAt) ? fromJsonTimestamp(object.updatedAt) : undefined,
+        };
     },
 
     toJSON(message: Draw): unknown {
@@ -324,63 +330,37 @@ export const Draw = {
         return obj;
     },
 
-    fromPartial(object: DeepPartial<Draw>): Draw {
-        const message = { ...baseDraw } as Draw;
-        if (object.poolId !== undefined && object.poolId !== null) {
-            message.poolId = object.poolId as Long;
-        } else {
-            message.poolId = Long.UZERO;
-        }
-        if (object.drawId !== undefined && object.drawId !== null) {
-            message.drawId = object.drawId as Long;
-        } else {
-            message.drawId = Long.UZERO;
-        }
+    create<I extends Exact<DeepPartial<Draw>, I>>(base?: I): Draw {
+        return Draw.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<Draw>, I>>(object: I): Draw {
+        const message = createBaseDraw();
+        message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
+        message.drawId = object.drawId !== undefined && object.drawId !== null ? Long.fromValue(object.drawId) : Long.UZERO;
         message.state = object.state ?? 0;
         message.errorState = object.errorState ?? 0;
-        if (object.randSeed !== undefined && object.randSeed !== null) {
-            message.randSeed = object.randSeed as Long;
-        } else {
-            message.randSeed = Long.ZERO;
-        }
-        if (object.prizePool !== undefined && object.prizePool !== null) {
-            message.prizePool = Coin.fromPartial(object.prizePool);
-        } else {
-            message.prizePool = undefined;
-        }
+        message.randSeed = object.randSeed !== undefined && object.randSeed !== null ? Long.fromValue(object.randSeed) : Long.ZERO;
+        message.prizePool = object.prizePool !== undefined && object.prizePool !== null ? Coin.fromPartial(object.prizePool) : undefined;
         message.prizePoolFreshAmount = object.prizePoolFreshAmount ?? '';
         message.prizePoolRemainsAmount = object.prizePoolRemainsAmount ?? '';
-        message.prizesRefs = [];
-        if (object.prizesRefs !== undefined && object.prizesRefs !== null) {
-            for (const e of object.prizesRefs) {
-                message.prizesRefs.push(PrizeRef.fromPartial(e));
-            }
-        }
-        if (object.totalWinCount !== undefined && object.totalWinCount !== null) {
-            message.totalWinCount = object.totalWinCount as Long;
-        } else {
-            message.totalWinCount = Long.UZERO;
-        }
+        message.prizesRefs = object.prizesRefs?.map((e) => PrizeRef.fromPartial(e)) || [];
+        message.totalWinCount = object.totalWinCount !== undefined && object.totalWinCount !== null ? Long.fromValue(object.totalWinCount) : Long.UZERO;
         message.totalWinAmount = object.totalWinAmount ?? '';
-        if (object.createdAtHeight !== undefined && object.createdAtHeight !== null) {
-            message.createdAtHeight = object.createdAtHeight as Long;
-        } else {
-            message.createdAtHeight = Long.ZERO;
-        }
-        if (object.updatedAtHeight !== undefined && object.updatedAtHeight !== null) {
-            message.updatedAtHeight = object.updatedAtHeight as Long;
-        } else {
-            message.updatedAtHeight = Long.ZERO;
-        }
+        message.createdAtHeight = object.createdAtHeight !== undefined && object.createdAtHeight !== null ? Long.fromValue(object.createdAtHeight) : Long.ZERO;
+        message.updatedAtHeight = object.updatedAtHeight !== undefined && object.updatedAtHeight !== null ? Long.fromValue(object.updatedAtHeight) : Long.ZERO;
         message.createdAt = object.createdAt ?? undefined;
         message.updatedAt = object.updatedAt ?? undefined;
         return message;
     },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
     ? T
+    : T extends Long
+    ? string | number | Long
     : T extends Array<infer U>
     ? Array<DeepPartial<U>>
     : T extends ReadonlyArray<infer U>
@@ -389,6 +369,9 @@ export type DeepPartial<T> = T extends Builtin
     ? { [K in keyof T]?: DeepPartial<T[K]> }
     : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
 function toTimestamp(date: Date): Timestamp {
     const seconds = numberToLong(date.getTime() / 1_000);
     const nanos = (date.getTime() % 1_000) * 1_000_000;
@@ -396,8 +379,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-    let millis = t.seconds.toNumber() * 1_000;
-    millis += t.nanos / 1_000_000;
+    let millis = (t.seconds.toNumber() || 0) * 1_000;
+    millis += (t.nanos || 0) / 1_000_000;
     return new Date(millis);
 }
 
@@ -418,4 +401,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
     _m0.util.Long = Long as any;
     _m0.configure();
+}
+
+function isSet(value: any): boolean {
+    return value !== null && value !== undefined;
 }
