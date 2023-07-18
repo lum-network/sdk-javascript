@@ -14,7 +14,7 @@ export function createProtobufRpcClient(base: QueryClient): ProtobufRpcClient {
             const path = `/${service}/${method}`;
             const response = await base.queryAbci(path, data, undefined);
             return response.value;
-          },
+        },
     };
 }
 
