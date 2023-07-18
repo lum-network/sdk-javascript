@@ -1,4 +1,4 @@
-import {RpcClient, HttpClient, WebsocketClient} from '@cosmjs/tendermint-rpc';
+import { RpcClient, HttpClient, WebsocketClient } from '@cosmjs/tendermint-rpc';
 import { Tendermint37Client, StatusResponse, Method as RpcMethod } from '@cosmjs/tendermint-rpc/build/tendermint37';
 import { QueryClient as StargateQueryClient } from '@cosmjs/stargate';
 import { JsonRpcRequest } from '@cosmjs/json-rpc';
