@@ -25,6 +25,9 @@
         "cosmos",
         "tendermint"
     ],
+    "engines": {
+        "node": "^16.0.0 || >=18.0.0"
+    },
     "scripts": {
         "test": "cross-env NODE_ENV=test jest",
         "build": "yarn clean && yarn build:lib && yarn build:docs",
