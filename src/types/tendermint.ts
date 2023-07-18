@@ -4,7 +4,6 @@
 
 export type { DateTime, ReadonlyDateWithNanoseconds, fromRfc3339WithNanoseconds, toRfc3339WithNanoseconds } from '@cosmjs/tendermint-rpc';
 export type { BlockIdFlag, CommitSignature, ValidatorEd25519Pubkey, ValidatorPubkey } from '@cosmjs/tendermint-rpc';
-export type { TxSearchParams } from '@cosmjs/tendermint-rpc';
 export type {
     Block,
     BlockchainResponse,
@@ -40,6 +39,7 @@ export type {
     TxEvent,
     TxProof,
     TxResponse,
+    TxSearchParams,
     TxSearchResponse,
     TxSizeParams,
     Validator,
@@ -47,4 +47,4 @@ export type {
     Version,
     Vote,
     VoteType,
-} from '@cosmjs/tendermint-rpc';
+} from '@cosmjs/tendermint-rpc/build/tendermint37';
