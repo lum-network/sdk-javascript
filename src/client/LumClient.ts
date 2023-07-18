@@ -1,4 +1,5 @@
-import { Tendermint34Client, StatusResponse, RpcClient, HttpClient, WebsocketClient, Method as RpcMethod } from '@cosmjs/tendermint-rpc';
+import { RpcClient, HttpClient, WebsocketClient } from '@cosmjs/tendermint-rpc';
+import { Tendermint37Client, StatusResponse, Method as RpcMethod } from '@cosmjs/tendermint-rpc/build/tendermint37';
 import { QueryClient as StargateQueryClient } from '@cosmjs/stargate';
 import { JsonRpcRequest } from '@cosmjs/json-rpc';
 
@@ -38,7 +39,7 @@ function defaultErrorHandler(error: unknown): void {
 }
 
 export class LumClient {
-    readonly tmClient: Tendermint34Client;
+    readonly tmClient: Tendermint37Client;
     readonly queryClient: StargateQueryClient &
         AuthExtension &
         AuthzExtension &
@@ -62,7 +63,7 @@ export class LumClient {
      *
      * @param tmClient tendermint RPC client
      */
-    constructor(tmClient: Tendermint34Client) {
+    constructor(tmClient: Tendermint37Client) {
         this.tmClient = tmClient;
         this.queryClient = StargateQueryClient.withExtensions(
             tmClient,
@@ -132,7 +133,7 @@ export class LumClient {
             rpcClient = useHttp ? new HttpClient(endpoint) : new WebsocketClient(endpoint, onWebsocketError);
         }
         await this.detectVersion(rpcClient);
-        const tmClient = await Tendermint34Client.create(rpcClient);
+        const tmClient = await Tendermint37Client.create(rpcClient);
         return new LumClient(tmClient);
     };
 
