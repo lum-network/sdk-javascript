@@ -1,5 +1,6 @@
 export * from './MsgUpdateParams';
 export * from './MsgDeposit';
+export * from './MsgDepositEdit';
 export * from './MsgDepositRetry';
 export * from './MsgClaimPrize';
 export * from './MsgWithdrawDeposit';

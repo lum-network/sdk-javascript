@@ -7,7 +7,7 @@ export const protobufPackage = 'ibc.applications.interchain_accounts.v1';
 
 /** An InterchainAccount is defined as a BaseAccount & the address of the account owner on the controller chain */
 export interface InterchainAccount {
-    baseAccount?: BaseAccount;
+    baseAccount?: BaseAccount | undefined;
     accountOwner: string;
 }
 
@@ -65,8 +65,12 @@ export const InterchainAccount = {
 
     toJSON(message: InterchainAccount): unknown {
         const obj: any = {};
-        message.baseAccount !== undefined && (obj.baseAccount = message.baseAccount ? BaseAccount.toJSON(message.baseAccount) : undefined);
-        message.accountOwner !== undefined && (obj.accountOwner = message.accountOwner);
+        if (message.baseAccount !== undefined) {
+            obj.baseAccount = BaseAccount.toJSON(message.baseAccount);
+        }
+        if (message.accountOwner !== '') {
+            obj.accountOwner = message.accountOwner;
+        }
         return obj;
     },
 

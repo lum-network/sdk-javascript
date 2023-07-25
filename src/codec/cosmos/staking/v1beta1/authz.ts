@@ -19,6 +19,8 @@ export enum AuthorizationType {
     AUTHORIZATION_TYPE_UNDELEGATE = 2,
     /** AUTHORIZATION_TYPE_REDELEGATE - AUTHORIZATION_TYPE_REDELEGATE defines an authorization type for Msg/BeginRedelegate */
     AUTHORIZATION_TYPE_REDELEGATE = 3,
+    /** AUTHORIZATION_TYPE_CANCEL_UNBONDING_DELEGATION - AUTHORIZATION_TYPE_CANCEL_UNBONDING_DELEGATION defines an authorization type for Msg/MsgCancelUnbondingDelegation */
+    AUTHORIZATION_TYPE_CANCEL_UNBONDING_DELEGATION = 4,
     UNRECOGNIZED = -1,
 }
 
@@ -36,6 +38,9 @@ export function authorizationTypeFromJSON(object: any): AuthorizationType {
         case 3:
         case 'AUTHORIZATION_TYPE_REDELEGATE':
             return AuthorizationType.AUTHORIZATION_TYPE_REDELEGATE;
+        case 4:
+        case 'AUTHORIZATION_TYPE_CANCEL_UNBONDING_DELEGATION':
+            return AuthorizationType.AUTHORIZATION_TYPE_CANCEL_UNBONDING_DELEGATION;
         case -1:
         case 'UNRECOGNIZED':
         default:
@@ -53,6 +58,8 @@ export function authorizationTypeToJSON(object: AuthorizationType): string {
             return 'AUTHORIZATION_TYPE_UNDELEGATE';
         case AuthorizationType.AUTHORIZATION_TYPE_REDELEGATE:
             return 'AUTHORIZATION_TYPE_REDELEGATE';
+        case AuthorizationType.AUTHORIZATION_TYPE_CANCEL_UNBONDING_DELEGATION:
+            return 'AUTHORIZATION_TYPE_CANCEL_UNBONDING_DELEGATION';
         case AuthorizationType.UNRECOGNIZED:
         default:
             return 'UNRECOGNIZED';
@@ -69,7 +76,7 @@ export interface StakeAuthorization {
      * max_tokens specifies the maximum amount of tokens can be delegate to a validator. If it is
      * empty, there is no spend limit and any amount of coins can be delegated.
      */
-    maxTokens?: Coin;
+    maxTokens?: Coin | undefined;
     /**
      * allow_list specifies list of validator addresses to whom grantee can delegate tokens on behalf of granter's
      * account.
@@ -162,10 +169,18 @@ export const StakeAuthorization = {
 
     toJSON(message: StakeAuthorization): unknown {
         const obj: any = {};
-        message.maxTokens !== undefined && (obj.maxTokens = message.maxTokens ? Coin.toJSON(message.maxTokens) : undefined);
-        message.allowList !== undefined && (obj.allowList = message.allowList ? StakeAuthorization_Validators.toJSON(message.allowList) : undefined);
-        message.denyList !== undefined && (obj.denyList = message.denyList ? StakeAuthorization_Validators.toJSON(message.denyList) : undefined);
-        message.authorizationType !== undefined && (obj.authorizationType = authorizationTypeToJSON(message.authorizationType));
+        if (message.maxTokens !== undefined) {
+            obj.maxTokens = Coin.toJSON(message.maxTokens);
+        }
+        if (message.allowList !== undefined) {
+            obj.allowList = StakeAuthorization_Validators.toJSON(message.allowList);
+        }
+        if (message.denyList !== undefined) {
+            obj.denyList = StakeAuthorization_Validators.toJSON(message.denyList);
+        }
+        if (message.authorizationType !== 0) {
+            obj.authorizationType = authorizationTypeToJSON(message.authorizationType);
+        }
         return obj;
     },
 
@@ -224,10 +239,8 @@ export const StakeAuthorization_Validators = {
 
     toJSON(message: StakeAuthorization_Validators): unknown {
         const obj: any = {};
-        if (message.address) {
-            obj.address = message.address.map((e) => e);
-        } else {
-            obj.address = [];
+        if (message.address?.length) {
+            obj.address = message.address;
         }
         return obj;
     },

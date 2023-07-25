@@ -11,7 +11,7 @@ export interface QueryParamsRequest {}
 
 /** QueryParamsResponse is the response type for the Query/Params RPC method */
 export interface QueryParamsResponse {
-    params?: Params;
+    params?: Params | undefined;
 }
 
 /**
@@ -29,7 +29,7 @@ export interface QuerySigningInfoRequest {
  */
 export interface QuerySigningInfoResponse {
     /** val_signing_info is the signing info of requested val cons address */
-    valSigningInfo?: ValidatorSigningInfo;
+    valSigningInfo?: ValidatorSigningInfo | undefined;
 }
 
 /**
@@ -37,7 +37,7 @@ export interface QuerySigningInfoResponse {
  * method
  */
 export interface QuerySigningInfosRequest {
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /**
@@ -47,7 +47,7 @@ export interface QuerySigningInfosRequest {
 export interface QuerySigningInfosResponse {
     /** info is the signing info of all validators */
     info: ValidatorSigningInfo[];
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -135,7 +135,9 @@ export const QueryParamsResponse = {
 
     toJSON(message: QueryParamsResponse): unknown {
         const obj: any = {};
-        message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+        if (message.params !== undefined) {
+            obj.params = Params.toJSON(message.params);
+        }
         return obj;
     },
 
@@ -191,7 +193,9 @@ export const QuerySigningInfoRequest = {
 
     toJSON(message: QuerySigningInfoRequest): unknown {
         const obj: any = {};
-        message.consAddress !== undefined && (obj.consAddress = message.consAddress);
+        if (message.consAddress !== '') {
+            obj.consAddress = message.consAddress;
+        }
         return obj;
     },
 
@@ -249,7 +253,9 @@ export const QuerySigningInfoResponse = {
 
     toJSON(message: QuerySigningInfoResponse): unknown {
         const obj: any = {};
-        message.valSigningInfo !== undefined && (obj.valSigningInfo = message.valSigningInfo ? ValidatorSigningInfo.toJSON(message.valSigningInfo) : undefined);
+        if (message.valSigningInfo !== undefined) {
+            obj.valSigningInfo = ValidatorSigningInfo.toJSON(message.valSigningInfo);
+        }
         return obj;
     },
 
@@ -305,7 +311,9 @@ export const QuerySigningInfosRequest = {
 
     toJSON(message: QuerySigningInfosRequest): unknown {
         const obj: any = {};
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -374,12 +382,12 @@ export const QuerySigningInfosResponse = {
 
     toJSON(message: QuerySigningInfosResponse): unknown {
         const obj: any = {};
-        if (message.info) {
-            obj.info = message.info.map((e) => (e ? ValidatorSigningInfo.toJSON(e) : undefined));
-        } else {
-            obj.info = [];
+        if (message.info?.length) {
+            obj.info = message.info.map((e) => ValidatorSigningInfo.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -405,11 +413,12 @@ export interface Query {
     SigningInfos(request: QuerySigningInfosRequest): Promise<QuerySigningInfosResponse>;
 }
 
+export const QueryServiceName = 'cosmos.slashing.v1beta1.Query';
 export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'cosmos.slashing.v1beta1.Query';
+        this.service = opts?.service || QueryServiceName;
         this.rpc = rpc;
         this.Params = this.Params.bind(this);
         this.SigningInfo = this.SigningInfo.bind(this);

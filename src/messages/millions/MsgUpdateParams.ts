@@ -1,5 +1,5 @@
 import { Message } from '../Message';
-import { MsgUpdateParams } from '../../codec/lum-network/millions/tx';
+import { MsgUpdateParams } from '../../codec/lum/network/millions/tx';
 import { Duration } from '../../codec/google/protobuf/duration';
 
 export const MsgUpdateParamsUrl = '/lum.network.millions.MsgUpdateParams';

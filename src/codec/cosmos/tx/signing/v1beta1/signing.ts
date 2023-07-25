@@ -30,7 +30,9 @@ export enum SignMode {
     /**
      * SIGN_MODE_TEXTUAL - SIGN_MODE_TEXTUAL is a future signing mode that will verify some
      * human-readable textual representation on top of the binary representation
-     * from SIGN_MODE_DIRECT. It is currently not supported.
+     * from SIGN_MODE_DIRECT. It is currently experimental, and should be used
+     * for testing purposes only, until Textual is fully released. Please follow
+     * the tracking issue https://github.com/cosmos/cosmos-sdk/issues/11970.
      */
     SIGN_MODE_TEXTUAL = 2,
     /**
@@ -124,8 +126,8 @@ export interface SignatureDescriptors {
  */
 export interface SignatureDescriptor {
     /** public_key is the public key of the signer */
-    publicKey?: Any;
-    data?: SignatureDescriptor_Data;
+    publicKey?: Any | undefined;
+    data?: SignatureDescriptor_Data | undefined;
     /**
      * sequence is the sequence of the account, which describes the
      * number of committed transactions signed by a given address. It is used to prevent
@@ -153,7 +155,7 @@ export interface SignatureDescriptor_Data_Single {
 /** Multi is the signature data for a multisig public key */
 export interface SignatureDescriptor_Data_Multi {
     /** bitarray specifies which keys within the multisig are signing */
-    bitarray?: CompactBitArray;
+    bitarray?: CompactBitArray | undefined;
     /** signatures is the signatures of the multi-signature */
     signatures: SignatureDescriptor_Data[];
 }
@@ -201,10 +203,8 @@ export const SignatureDescriptors = {
 
     toJSON(message: SignatureDescriptors): unknown {
         const obj: any = {};
-        if (message.signatures) {
-            obj.signatures = message.signatures.map((e) => (e ? SignatureDescriptor.toJSON(e) : undefined));
-        } else {
-            obj.signatures = [];
+        if (message.signatures?.length) {
+            obj.signatures = message.signatures.map((e) => SignatureDescriptor.toJSON(e));
         }
         return obj;
     },
@@ -285,9 +285,15 @@ export const SignatureDescriptor = {
 
     toJSON(message: SignatureDescriptor): unknown {
         const obj: any = {};
-        message.publicKey !== undefined && (obj.publicKey = message.publicKey ? Any.toJSON(message.publicKey) : undefined);
-        message.data !== undefined && (obj.data = message.data ? SignatureDescriptor_Data.toJSON(message.data) : undefined);
-        message.sequence !== undefined && (obj.sequence = (message.sequence || Long.UZERO).toString());
+        if (message.publicKey !== undefined) {
+            obj.publicKey = Any.toJSON(message.publicKey);
+        }
+        if (message.data !== undefined) {
+            obj.data = SignatureDescriptor_Data.toJSON(message.data);
+        }
+        if (!message.sequence.isZero()) {
+            obj.sequence = (message.sequence || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -358,8 +364,12 @@ export const SignatureDescriptor_Data = {
 
     toJSON(message: SignatureDescriptor_Data): unknown {
         const obj: any = {};
-        message.single !== undefined && (obj.single = message.single ? SignatureDescriptor_Data_Single.toJSON(message.single) : undefined);
-        message.multi !== undefined && (obj.multi = message.multi ? SignatureDescriptor_Data_Multi.toJSON(message.multi) : undefined);
+        if (message.single !== undefined) {
+            obj.single = SignatureDescriptor_Data_Single.toJSON(message.single);
+        }
+        if (message.multi !== undefined) {
+            obj.multi = SignatureDescriptor_Data_Multi.toJSON(message.multi);
+        }
         return obj;
     },
 
@@ -376,7 +386,7 @@ export const SignatureDescriptor_Data = {
 };
 
 function createBaseSignatureDescriptor_Data_Single(): SignatureDescriptor_Data_Single {
-    return { mode: 0, signature: new Uint8Array() };
+    return { mode: 0, signature: new Uint8Array(0) };
 }
 
 export const SignatureDescriptor_Data_Single = {
@@ -423,14 +433,18 @@ export const SignatureDescriptor_Data_Single = {
     fromJSON(object: any): SignatureDescriptor_Data_Single {
         return {
             mode: isSet(object.mode) ? signModeFromJSON(object.mode) : 0,
-            signature: isSet(object.signature) ? bytesFromBase64(object.signature) : new Uint8Array(),
+            signature: isSet(object.signature) ? bytesFromBase64(object.signature) : new Uint8Array(0),
         };
     },
 
     toJSON(message: SignatureDescriptor_Data_Single): unknown {
         const obj: any = {};
-        message.mode !== undefined && (obj.mode = signModeToJSON(message.mode));
-        message.signature !== undefined && (obj.signature = base64FromBytes(message.signature !== undefined ? message.signature : new Uint8Array()));
+        if (message.mode !== 0) {
+            obj.mode = signModeToJSON(message.mode);
+        }
+        if (message.signature.length !== 0) {
+            obj.signature = base64FromBytes(message.signature);
+        }
         return obj;
     },
 
@@ -441,7 +455,7 @@ export const SignatureDescriptor_Data_Single = {
     fromPartial<I extends Exact<DeepPartial<SignatureDescriptor_Data_Single>, I>>(object: I): SignatureDescriptor_Data_Single {
         const message = createBaseSignatureDescriptor_Data_Single();
         message.mode = object.mode ?? 0;
-        message.signature = object.signature ?? new Uint8Array();
+        message.signature = object.signature ?? new Uint8Array(0);
         return message;
     },
 };
@@ -500,11 +514,11 @@ export const SignatureDescriptor_Data_Multi = {
 
     toJSON(message: SignatureDescriptor_Data_Multi): unknown {
         const obj: any = {};
-        message.bitarray !== undefined && (obj.bitarray = message.bitarray ? CompactBitArray.toJSON(message.bitarray) : undefined);
-        if (message.signatures) {
-            obj.signatures = message.signatures.map((e) => (e ? SignatureDescriptor_Data.toJSON(e) : undefined));
-        } else {
-            obj.signatures = [];
+        if (message.bitarray !== undefined) {
+            obj.bitarray = CompactBitArray.toJSON(message.bitarray);
+        }
+        if (message.signatures?.length) {
+            obj.signatures = message.signatures.map((e) => SignatureDescriptor_Data.toJSON(e));
         }
         return obj;
     },
@@ -521,10 +535,10 @@ export const SignatureDescriptor_Data_Multi = {
     },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }

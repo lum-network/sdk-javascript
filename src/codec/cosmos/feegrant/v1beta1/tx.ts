@@ -17,7 +17,7 @@ export interface MsgGrantAllowance {
     /** grantee is the address of the user being granted an allowance of another user's funds. */
     grantee: string;
     /** allowance can be any of basic, periodic, allowed fee allowance. */
-    allowance?: Any;
+    allowance?: Any | undefined;
 }
 
 /** MsgGrantAllowanceResponse defines the Msg/GrantAllowanceResponse response type. */
@@ -99,9 +99,15 @@ export const MsgGrantAllowance = {
 
     toJSON(message: MsgGrantAllowance): unknown {
         const obj: any = {};
-        message.granter !== undefined && (obj.granter = message.granter);
-        message.grantee !== undefined && (obj.grantee = message.grantee);
-        message.allowance !== undefined && (obj.allowance = message.allowance ? Any.toJSON(message.allowance) : undefined);
+        if (message.granter !== '') {
+            obj.granter = message.granter;
+        }
+        if (message.grantee !== '') {
+            obj.grantee = message.grantee;
+        }
+        if (message.allowance !== undefined) {
+            obj.allowance = Any.toJSON(message.allowance);
+        }
         return obj;
     },
 
@@ -216,8 +222,12 @@ export const MsgRevokeAllowance = {
 
     toJSON(message: MsgRevokeAllowance): unknown {
         const obj: any = {};
-        message.granter !== undefined && (obj.granter = message.granter);
-        message.grantee !== undefined && (obj.grantee = message.grantee);
+        if (message.granter !== '') {
+            obj.granter = message.granter;
+        }
+        if (message.grantee !== '') {
+            obj.grantee = message.grantee;
+        }
         return obj;
     },
 
@@ -291,11 +301,12 @@ export interface Msg {
     RevokeAllowance(request: MsgRevokeAllowance): Promise<MsgRevokeAllowanceResponse>;
 }
 
+export const MsgServiceName = 'cosmos.feegrant.v1beta1.Msg';
 export class MsgClientImpl implements Msg {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'cosmos.feegrant.v1beta1.Msg';
+        this.service = opts?.service || MsgServiceName;
         this.rpc = rpc;
         this.GrantAllowance = this.GrantAllowance.bind(this);
         this.RevokeAllowance = this.RevokeAllowance.bind(this);

@@ -2,11 +2,19 @@
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
 import { PageRequest, PageResponse } from '../../base/query/v1beta1/pagination';
-import { Deposit, DepositParams, Proposal, ProposalStatus, proposalStatusFromJSON, proposalStatusToJSON, TallyParams, TallyResult, Vote, VotingParams } from './gov';
+import { Deposit, DepositParams, Params, Proposal, ProposalStatus, proposalStatusFromJSON, proposalStatusToJSON, TallyParams, TallyResult, Vote, VotingParams } from './gov';
 
 export const protobufPackage = 'cosmos.gov.v1';
 
 /** Since: cosmos-sdk 0.46 */
+
+/** QueryConstitutionRequest is the request type for the Query/Constitution RPC method */
+export interface QueryConstitutionRequest {}
+
+/** QueryConstitutionResponse is the response type for the Query/Constitution RPC method */
+export interface QueryConstitutionResponse {
+    constitution: string;
+}
 
 /** QueryProposalRequest is the request type for the Query/Proposal RPC method. */
 export interface QueryProposalRequest {
@@ -16,7 +24,8 @@ export interface QueryProposalRequest {
 
 /** QueryProposalResponse is the response type for the Query/Proposal RPC method. */
 export interface QueryProposalResponse {
-    proposal?: Proposal;
+    /** proposal is the requested governance proposal. */
+    proposal?: Proposal | undefined;
 }
 
 /** QueryProposalsRequest is the request type for the Query/Proposals RPC method. */
@@ -28,7 +37,7 @@ export interface QueryProposalsRequest {
     /** depositor defines the deposit addresses from the proposals. */
     depositor: string;
     /** pagination defines an optional pagination for the request. */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /**
@@ -36,9 +45,10 @@ export interface QueryProposalsRequest {
  * method.
  */
 export interface QueryProposalsResponse {
+    /** proposals defines all the requested governance proposals. */
     proposals: Proposal[];
     /** pagination defines the pagination in the response. */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
 }
 
 /** QueryVoteRequest is the request type for the Query/Vote RPC method. */
@@ -51,8 +61,8 @@ export interface QueryVoteRequest {
 
 /** QueryVoteResponse is the response type for the Query/Vote RPC method. */
 export interface QueryVoteResponse {
-    /** vote defined the queried vote. */
-    vote?: Vote;
+    /** vote defines the queried vote. */
+    vote?: Vote | undefined;
 }
 
 /** QueryVotesRequest is the request type for the Query/Votes RPC method. */
@@ -60,15 +70,15 @@ export interface QueryVotesRequest {
     /** proposal_id defines the unique id of the proposal. */
     proposalId: Long;
     /** pagination defines an optional pagination for the request. */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /** QueryVotesResponse is the response type for the Query/Votes RPC method. */
 export interface QueryVotesResponse {
-    /** votes defined the queried votes. */
+    /** votes defines the queried votes. */
     votes: Vote[];
     /** pagination defines the pagination in the response. */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
 }
 
 /** QueryParamsRequest is the request type for the Query/Params RPC method. */
@@ -82,12 +92,33 @@ export interface QueryParamsRequest {
 
 /** QueryParamsResponse is the response type for the Query/Params RPC method. */
 export interface QueryParamsResponse {
-    /** voting_params defines the parameters related to voting. */
-    votingParams?: VotingParams;
-    /** deposit_params defines the parameters related to deposit. */
-    depositParams?: DepositParams;
-    /** tally_params defines the parameters related to tally. */
-    tallyParams?: TallyParams;
+    /**
+     * Deprecated: Prefer to use `params` instead.
+     * voting_params defines the parameters related to voting.
+     *
+     * @deprecated
+     */
+    votingParams?: VotingParams | undefined;
+    /**
+     * Deprecated: Prefer to use `params` instead.
+     * deposit_params defines the parameters related to deposit.
+     *
+     * @deprecated
+     */
+    depositParams?: DepositParams | undefined;
+    /**
+     * Deprecated: Prefer to use `params` instead.
+     * tally_params defines the parameters related to tally.
+     *
+     * @deprecated
+     */
+    tallyParams?: TallyParams | undefined;
+    /**
+     * params defines all the paramaters of x/gov module.
+     *
+     * Since: cosmos-sdk 0.47
+     */
+    params?: Params | undefined;
 }
 
 /** QueryDepositRequest is the request type for the Query/Deposit RPC method. */
@@ -101,7 +132,7 @@ export interface QueryDepositRequest {
 /** QueryDepositResponse is the response type for the Query/Deposit RPC method. */
 export interface QueryDepositResponse {
     /** deposit defines the requested deposit. */
-    deposit?: Deposit;
+    deposit?: Deposit | undefined;
 }
 
 /** QueryDepositsRequest is the request type for the Query/Deposits RPC method. */
@@ -109,14 +140,15 @@ export interface QueryDepositsRequest {
     /** proposal_id defines the unique id of the proposal. */
     proposalId: Long;
     /** pagination defines an optional pagination for the request. */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /** QueryDepositsResponse is the response type for the Query/Deposits RPC method. */
 export interface QueryDepositsResponse {
+    /** deposits defines the requested deposits. */
     deposits: Deposit[];
     /** pagination defines the pagination in the response. */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
 }
 
 /** QueryTallyResultRequest is the request type for the Query/Tally RPC method. */
@@ -128,8 +160,110 @@ export interface QueryTallyResultRequest {
 /** QueryTallyResultResponse is the response type for the Query/Tally RPC method. */
 export interface QueryTallyResultResponse {
     /** tally defines the requested tally. */
-    tally?: TallyResult;
+    tally?: TallyResult | undefined;
 }
+
+function createBaseQueryConstitutionRequest(): QueryConstitutionRequest {
+    return {};
+}
+
+export const QueryConstitutionRequest = {
+    encode(_: QueryConstitutionRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): QueryConstitutionRequest {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseQueryConstitutionRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(_: any): QueryConstitutionRequest {
+        return {};
+    },
+
+    toJSON(_: QueryConstitutionRequest): unknown {
+        const obj: any = {};
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<QueryConstitutionRequest>, I>>(base?: I): QueryConstitutionRequest {
+        return QueryConstitutionRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryConstitutionRequest>, I>>(_: I): QueryConstitutionRequest {
+        const message = createBaseQueryConstitutionRequest();
+        return message;
+    },
+};
+
+function createBaseQueryConstitutionResponse(): QueryConstitutionResponse {
+    return { constitution: '' };
+}
+
+export const QueryConstitutionResponse = {
+    encode(message: QueryConstitutionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (message.constitution !== '') {
+            writer.uint32(10).string(message.constitution);
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): QueryConstitutionResponse {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseQueryConstitutionResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.constitution = reader.string();
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): QueryConstitutionResponse {
+        return { constitution: isSet(object.constitution) ? String(object.constitution) : '' };
+    },
+
+    toJSON(message: QueryConstitutionResponse): unknown {
+        const obj: any = {};
+        if (message.constitution !== '') {
+            obj.constitution = message.constitution;
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<QueryConstitutionResponse>, I>>(base?: I): QueryConstitutionResponse {
+        return QueryConstitutionResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryConstitutionResponse>, I>>(object: I): QueryConstitutionResponse {
+        const message = createBaseQueryConstitutionResponse();
+        message.constitution = object.constitution ?? '';
+        return message;
+    },
+};
 
 function createBaseQueryProposalRequest(): QueryProposalRequest {
     return { proposalId: Long.UZERO };
@@ -172,7 +306,9 @@ export const QueryProposalRequest = {
 
     toJSON(message: QueryProposalRequest): unknown {
         const obj: any = {};
-        message.proposalId !== undefined && (obj.proposalId = (message.proposalId || Long.UZERO).toString());
+        if (!message.proposalId.isZero()) {
+            obj.proposalId = (message.proposalId || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -228,7 +364,9 @@ export const QueryProposalResponse = {
 
     toJSON(message: QueryProposalResponse): unknown {
         const obj: any = {};
-        message.proposal !== undefined && (obj.proposal = message.proposal ? Proposal.toJSON(message.proposal) : undefined);
+        if (message.proposal !== undefined) {
+            obj.proposal = Proposal.toJSON(message.proposal);
+        }
         return obj;
     },
 
@@ -319,10 +457,18 @@ export const QueryProposalsRequest = {
 
     toJSON(message: QueryProposalsRequest): unknown {
         const obj: any = {};
-        message.proposalStatus !== undefined && (obj.proposalStatus = proposalStatusToJSON(message.proposalStatus));
-        message.voter !== undefined && (obj.voter = message.voter);
-        message.depositor !== undefined && (obj.depositor = message.depositor);
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (message.proposalStatus !== 0) {
+            obj.proposalStatus = proposalStatusToJSON(message.proposalStatus);
+        }
+        if (message.voter !== '') {
+            obj.voter = message.voter;
+        }
+        if (message.depositor !== '') {
+            obj.depositor = message.depositor;
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -394,12 +540,12 @@ export const QueryProposalsResponse = {
 
     toJSON(message: QueryProposalsResponse): unknown {
         const obj: any = {};
-        if (message.proposals) {
-            obj.proposals = message.proposals.map((e) => (e ? Proposal.toJSON(e) : undefined));
-        } else {
-            obj.proposals = [];
+        if (message.proposals?.length) {
+            obj.proposals = message.proposals.map((e) => Proposal.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -469,8 +615,12 @@ export const QueryVoteRequest = {
 
     toJSON(message: QueryVoteRequest): unknown {
         const obj: any = {};
-        message.proposalId !== undefined && (obj.proposalId = (message.proposalId || Long.UZERO).toString());
-        message.voter !== undefined && (obj.voter = message.voter);
+        if (!message.proposalId.isZero()) {
+            obj.proposalId = (message.proposalId || Long.UZERO).toString();
+        }
+        if (message.voter !== '') {
+            obj.voter = message.voter;
+        }
         return obj;
     },
 
@@ -527,7 +677,9 @@ export const QueryVoteResponse = {
 
     toJSON(message: QueryVoteResponse): unknown {
         const obj: any = {};
-        message.vote !== undefined && (obj.vote = message.vote ? Vote.toJSON(message.vote) : undefined);
+        if (message.vote !== undefined) {
+            obj.vote = Vote.toJSON(message.vote);
+        }
         return obj;
     },
 
@@ -596,8 +748,12 @@ export const QueryVotesRequest = {
 
     toJSON(message: QueryVotesRequest): unknown {
         const obj: any = {};
-        message.proposalId !== undefined && (obj.proposalId = (message.proposalId || Long.UZERO).toString());
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (!message.proposalId.isZero()) {
+            obj.proposalId = (message.proposalId || Long.UZERO).toString();
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -667,12 +823,12 @@ export const QueryVotesResponse = {
 
     toJSON(message: QueryVotesResponse): unknown {
         const obj: any = {};
-        if (message.votes) {
-            obj.votes = message.votes.map((e) => (e ? Vote.toJSON(e) : undefined));
-        } else {
-            obj.votes = [];
+        if (message.votes?.length) {
+            obj.votes = message.votes.map((e) => Vote.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -729,7 +885,9 @@ export const QueryParamsRequest = {
 
     toJSON(message: QueryParamsRequest): unknown {
         const obj: any = {};
-        message.paramsType !== undefined && (obj.paramsType = message.paramsType);
+        if (message.paramsType !== '') {
+            obj.paramsType = message.paramsType;
+        }
         return obj;
     },
 
@@ -745,7 +903,7 @@ export const QueryParamsRequest = {
 };
 
 function createBaseQueryParamsResponse(): QueryParamsResponse {
-    return { votingParams: undefined, depositParams: undefined, tallyParams: undefined };
+    return { votingParams: undefined, depositParams: undefined, tallyParams: undefined, params: undefined };
 }
 
 export const QueryParamsResponse = {
@@ -758,6 +916,9 @@ export const QueryParamsResponse = {
         }
         if (message.tallyParams !== undefined) {
             TallyParams.encode(message.tallyParams, writer.uint32(26).fork()).ldelim();
+        }
+        if (message.params !== undefined) {
+            Params.encode(message.params, writer.uint32(34).fork()).ldelim();
         }
         return writer;
     },
@@ -790,6 +951,13 @@ export const QueryParamsResponse = {
 
                     message.tallyParams = TallyParams.decode(reader, reader.uint32());
                     continue;
+                case 4:
+                    if (tag !== 34) {
+                        break;
+                    }
+
+                    message.params = Params.decode(reader, reader.uint32());
+                    continue;
             }
             if ((tag & 7) === 4 || tag === 0) {
                 break;
@@ -804,14 +972,24 @@ export const QueryParamsResponse = {
             votingParams: isSet(object.votingParams) ? VotingParams.fromJSON(object.votingParams) : undefined,
             depositParams: isSet(object.depositParams) ? DepositParams.fromJSON(object.depositParams) : undefined,
             tallyParams: isSet(object.tallyParams) ? TallyParams.fromJSON(object.tallyParams) : undefined,
+            params: isSet(object.params) ? Params.fromJSON(object.params) : undefined,
         };
     },
 
     toJSON(message: QueryParamsResponse): unknown {
         const obj: any = {};
-        message.votingParams !== undefined && (obj.votingParams = message.votingParams ? VotingParams.toJSON(message.votingParams) : undefined);
-        message.depositParams !== undefined && (obj.depositParams = message.depositParams ? DepositParams.toJSON(message.depositParams) : undefined);
-        message.tallyParams !== undefined && (obj.tallyParams = message.tallyParams ? TallyParams.toJSON(message.tallyParams) : undefined);
+        if (message.votingParams !== undefined) {
+            obj.votingParams = VotingParams.toJSON(message.votingParams);
+        }
+        if (message.depositParams !== undefined) {
+            obj.depositParams = DepositParams.toJSON(message.depositParams);
+        }
+        if (message.tallyParams !== undefined) {
+            obj.tallyParams = TallyParams.toJSON(message.tallyParams);
+        }
+        if (message.params !== undefined) {
+            obj.params = Params.toJSON(message.params);
+        }
         return obj;
     },
 
@@ -824,6 +1002,7 @@ export const QueryParamsResponse = {
         message.votingParams = object.votingParams !== undefined && object.votingParams !== null ? VotingParams.fromPartial(object.votingParams) : undefined;
         message.depositParams = object.depositParams !== undefined && object.depositParams !== null ? DepositParams.fromPartial(object.depositParams) : undefined;
         message.tallyParams = object.tallyParams !== undefined && object.tallyParams !== null ? TallyParams.fromPartial(object.tallyParams) : undefined;
+        message.params = object.params !== undefined && object.params !== null ? Params.fromPartial(object.params) : undefined;
         return message;
     },
 };
@@ -882,8 +1061,12 @@ export const QueryDepositRequest = {
 
     toJSON(message: QueryDepositRequest): unknown {
         const obj: any = {};
-        message.proposalId !== undefined && (obj.proposalId = (message.proposalId || Long.UZERO).toString());
-        message.depositor !== undefined && (obj.depositor = message.depositor);
+        if (!message.proposalId.isZero()) {
+            obj.proposalId = (message.proposalId || Long.UZERO).toString();
+        }
+        if (message.depositor !== '') {
+            obj.depositor = message.depositor;
+        }
         return obj;
     },
 
@@ -940,7 +1123,9 @@ export const QueryDepositResponse = {
 
     toJSON(message: QueryDepositResponse): unknown {
         const obj: any = {};
-        message.deposit !== undefined && (obj.deposit = message.deposit ? Deposit.toJSON(message.deposit) : undefined);
+        if (message.deposit !== undefined) {
+            obj.deposit = Deposit.toJSON(message.deposit);
+        }
         return obj;
     },
 
@@ -1009,8 +1194,12 @@ export const QueryDepositsRequest = {
 
     toJSON(message: QueryDepositsRequest): unknown {
         const obj: any = {};
-        message.proposalId !== undefined && (obj.proposalId = (message.proposalId || Long.UZERO).toString());
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (!message.proposalId.isZero()) {
+            obj.proposalId = (message.proposalId || Long.UZERO).toString();
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -1080,12 +1269,12 @@ export const QueryDepositsResponse = {
 
     toJSON(message: QueryDepositsResponse): unknown {
         const obj: any = {};
-        if (message.deposits) {
-            obj.deposits = message.deposits.map((e) => (e ? Deposit.toJSON(e) : undefined));
-        } else {
-            obj.deposits = [];
+        if (message.deposits?.length) {
+            obj.deposits = message.deposits.map((e) => Deposit.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -1142,7 +1331,9 @@ export const QueryTallyResultRequest = {
 
     toJSON(message: QueryTallyResultRequest): unknown {
         const obj: any = {};
-        message.proposalId !== undefined && (obj.proposalId = (message.proposalId || Long.UZERO).toString());
+        if (!message.proposalId.isZero()) {
+            obj.proposalId = (message.proposalId || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -1198,7 +1389,9 @@ export const QueryTallyResultResponse = {
 
     toJSON(message: QueryTallyResultResponse): unknown {
         const obj: any = {};
-        message.tally !== undefined && (obj.tally = message.tally ? TallyResult.toJSON(message.tally) : undefined);
+        if (message.tally !== undefined) {
+            obj.tally = TallyResult.toJSON(message.tally);
+        }
         return obj;
     },
 
@@ -1215,6 +1408,8 @@ export const QueryTallyResultResponse = {
 
 /** Query defines the gRPC querier service for gov module */
 export interface Query {
+    /** Constitution queries the chain's constitution. */
+    Constitution(request: QueryConstitutionRequest): Promise<QueryConstitutionResponse>;
     /** Proposal queries proposal details based on ProposalID. */
     Proposal(request: QueryProposalRequest): Promise<QueryProposalResponse>;
     /** Proposals queries all proposals based on given status. */
@@ -1225,7 +1420,7 @@ export interface Query {
     Votes(request: QueryVotesRequest): Promise<QueryVotesResponse>;
     /** Params queries all parameters of the gov module. */
     Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
-    /** Deposit queries single deposit information based proposalID, depositAddr. */
+    /** Deposit queries single deposit information based on proposalID, depositAddr. */
     Deposit(request: QueryDepositRequest): Promise<QueryDepositResponse>;
     /** Deposits queries all deposits of a single proposal. */
     Deposits(request: QueryDepositsRequest): Promise<QueryDepositsResponse>;
@@ -1233,12 +1428,14 @@ export interface Query {
     TallyResult(request: QueryTallyResultRequest): Promise<QueryTallyResultResponse>;
 }
 
+export const QueryServiceName = 'cosmos.gov.v1.Query';
 export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'cosmos.gov.v1.Query';
+        this.service = opts?.service || QueryServiceName;
         this.rpc = rpc;
+        this.Constitution = this.Constitution.bind(this);
         this.Proposal = this.Proposal.bind(this);
         this.Proposals = this.Proposals.bind(this);
         this.Vote = this.Vote.bind(this);
@@ -1248,6 +1445,12 @@ export class QueryClientImpl implements Query {
         this.Deposits = this.Deposits.bind(this);
         this.TallyResult = this.TallyResult.bind(this);
     }
+    Constitution(request: QueryConstitutionRequest): Promise<QueryConstitutionResponse> {
+        const data = QueryConstitutionRequest.encode(request).finish();
+        const promise = this.rpc.request(this.service, 'Constitution', data);
+        return promise.then((data) => QueryConstitutionResponse.decode(_m0.Reader.create(data)));
+    }
+
     Proposal(request: QueryProposalRequest): Promise<QueryProposalResponse> {
         const data = QueryProposalRequest.encode(request).finish();
         const promise = this.rpc.request(this.service, 'Proposal', data);

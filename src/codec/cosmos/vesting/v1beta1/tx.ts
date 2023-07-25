@@ -14,6 +14,7 @@ export interface MsgCreateVestingAccount {
     fromAddress: string;
     toAddress: string;
     amount: Coin[];
+    /** end of vesting as unix time (in seconds). */
     endTime: Long;
     delayed: boolean;
 }
@@ -49,6 +50,7 @@ export interface MsgCreatePermanentLockedAccountResponse {}
 export interface MsgCreatePeriodicVestingAccount {
     fromAddress: string;
     toAddress: string;
+    /** start of vesting as unix time (in seconds). */
     startTime: Long;
     vestingPeriods: Period[];
 }
@@ -148,15 +150,21 @@ export const MsgCreateVestingAccount = {
 
     toJSON(message: MsgCreateVestingAccount): unknown {
         const obj: any = {};
-        message.fromAddress !== undefined && (obj.fromAddress = message.fromAddress);
-        message.toAddress !== undefined && (obj.toAddress = message.toAddress);
-        if (message.amount) {
-            obj.amount = message.amount.map((e) => (e ? Coin.toJSON(e) : undefined));
-        } else {
-            obj.amount = [];
+        if (message.fromAddress !== '') {
+            obj.fromAddress = message.fromAddress;
         }
-        message.endTime !== undefined && (obj.endTime = (message.endTime || Long.ZERO).toString());
-        message.delayed !== undefined && (obj.delayed = message.delayed);
+        if (message.toAddress !== '') {
+            obj.toAddress = message.toAddress;
+        }
+        if (message.amount?.length) {
+            obj.amount = message.amount.map((e) => Coin.toJSON(e));
+        }
+        if (!message.endTime.isZero()) {
+            obj.endTime = (message.endTime || Long.ZERO).toString();
+        }
+        if (message.delayed === true) {
+            obj.delayed = message.delayed;
+        }
         return obj;
     },
 
@@ -284,12 +292,14 @@ export const MsgCreatePermanentLockedAccount = {
 
     toJSON(message: MsgCreatePermanentLockedAccount): unknown {
         const obj: any = {};
-        message.fromAddress !== undefined && (obj.fromAddress = message.fromAddress);
-        message.toAddress !== undefined && (obj.toAddress = message.toAddress);
-        if (message.amount) {
-            obj.amount = message.amount.map((e) => (e ? Coin.toJSON(e) : undefined));
-        } else {
-            obj.amount = [];
+        if (message.fromAddress !== '') {
+            obj.fromAddress = message.fromAddress;
+        }
+        if (message.toAddress !== '') {
+            obj.toAddress = message.toAddress;
+        }
+        if (message.amount?.length) {
+            obj.amount = message.amount.map((e) => Coin.toJSON(e));
         }
         return obj;
     },
@@ -427,13 +437,17 @@ export const MsgCreatePeriodicVestingAccount = {
 
     toJSON(message: MsgCreatePeriodicVestingAccount): unknown {
         const obj: any = {};
-        message.fromAddress !== undefined && (obj.fromAddress = message.fromAddress);
-        message.toAddress !== undefined && (obj.toAddress = message.toAddress);
-        message.startTime !== undefined && (obj.startTime = (message.startTime || Long.ZERO).toString());
-        if (message.vestingPeriods) {
-            obj.vestingPeriods = message.vestingPeriods.map((e) => (e ? Period.toJSON(e) : undefined));
-        } else {
-            obj.vestingPeriods = [];
+        if (message.fromAddress !== '') {
+            obj.fromAddress = message.fromAddress;
+        }
+        if (message.toAddress !== '') {
+            obj.toAddress = message.toAddress;
+        }
+        if (!message.startTime.isZero()) {
+            obj.startTime = (message.startTime || Long.ZERO).toString();
+        }
+        if (message.vestingPeriods?.length) {
+            obj.vestingPeriods = message.vestingPeriods.map((e) => Period.toJSON(e));
         }
         return obj;
     },
@@ -519,11 +533,12 @@ export interface Msg {
     CreatePeriodicVestingAccount(request: MsgCreatePeriodicVestingAccount): Promise<MsgCreatePeriodicVestingAccountResponse>;
 }
 
+export const MsgServiceName = 'cosmos.vesting.v1beta1.Msg';
 export class MsgClientImpl implements Msg {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'cosmos.vesting.v1beta1.Msg';
+        this.service = opts?.service || MsgServiceName;
         this.rpc = rpc;
         this.CreateVestingAccount = this.CreateVestingAccount.bind(this);
         this.CreatePermanentLockedAccount = this.CreatePermanentLockedAccount.bind(this);

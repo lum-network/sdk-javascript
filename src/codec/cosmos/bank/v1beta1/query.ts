@@ -3,7 +3,7 @@ import Long from 'long';
 import _m0 from 'protobufjs/minimal';
 import { PageRequest, PageResponse } from '../../base/query/v1beta1/pagination';
 import { Coin } from '../../base/v1beta1/coin';
-import { Metadata, Params } from './bank';
+import { Metadata, Params, SendEnabled } from './bank';
 
 export const protobufPackage = 'cosmos.bank.v1beta1';
 
@@ -18,7 +18,7 @@ export interface QueryBalanceRequest {
 /** QueryBalanceResponse is the response type for the Query/Balance RPC method. */
 export interface QueryBalanceResponse {
     /** balance is the balance of the coin. */
-    balance?: Coin;
+    balance?: Coin | undefined;
 }
 
 /** QueryBalanceRequest is the request type for the Query/AllBalances RPC method. */
@@ -26,7 +26,13 @@ export interface QueryAllBalancesRequest {
     /** address is the address to query balances for. */
     address: string;
     /** pagination defines an optional pagination for the request. */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
+    /**
+     * resolve_denom is the flag to resolve the denom into a human-readable form from the metadata.
+     *
+     * Since: cosmos-sdk 0.50
+     */
+    resolveDenom: boolean;
 }
 
 /**
@@ -37,7 +43,7 @@ export interface QueryAllBalancesResponse {
     /** balances is the balances of all the coins. */
     balances: Coin[];
     /** pagination defines the pagination in the response. */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
 }
 
 /**
@@ -50,7 +56,7 @@ export interface QuerySpendableBalancesRequest {
     /** address is the address to query spendable balances for. */
     address: string;
     /** pagination defines an optional pagination for the request. */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /**
@@ -63,7 +69,31 @@ export interface QuerySpendableBalancesResponse {
     /** balances is the spendable balances of all the coins. */
     balances: Coin[];
     /** pagination defines the pagination in the response. */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
+}
+
+/**
+ * QuerySpendableBalanceByDenomRequest defines the gRPC request structure for
+ * querying an account's spendable balance for a specific denom.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface QuerySpendableBalanceByDenomRequest {
+    /** address is the address to query balances for. */
+    address: string;
+    /** denom is the coin denom to query balances for. */
+    denom: string;
+}
+
+/**
+ * QuerySpendableBalanceByDenomResponse defines the gRPC response structure for
+ * querying an account's spendable balance for a specific denom.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface QuerySpendableBalanceByDenomResponse {
+    /** balance is the balance of the coin. */
+    balance?: Coin | undefined;
 }
 
 /**
@@ -76,7 +106,7 @@ export interface QueryTotalSupplyRequest {
      *
      * Since: cosmos-sdk 0.43
      */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /**
@@ -91,7 +121,7 @@ export interface QueryTotalSupplyResponse {
      *
      * Since: cosmos-sdk 0.43
      */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
 }
 
 /** QuerySupplyOfRequest is the request type for the Query/SupplyOf RPC method. */
@@ -103,7 +133,7 @@ export interface QuerySupplyOfRequest {
 /** QuerySupplyOfResponse is the response type for the Query/SupplyOf RPC method. */
 export interface QuerySupplyOfResponse {
     /** amount is the supply of the coin. */
-    amount?: Coin;
+    amount?: Coin | undefined;
 }
 
 /** QueryParamsRequest defines the request type for querying x/bank parameters. */
@@ -111,13 +141,14 @@ export interface QueryParamsRequest {}
 
 /** QueryParamsResponse defines the response type for querying x/bank parameters. */
 export interface QueryParamsResponse {
-    params?: Params;
+    /** params provides the parameters of the bank module. */
+    params?: Params | undefined;
 }
 
 /** QueryDenomsMetadataRequest is the request type for the Query/DenomsMetadata RPC method. */
 export interface QueryDenomsMetadataRequest {
     /** pagination defines an optional pagination for the request. */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /**
@@ -128,7 +159,7 @@ export interface QueryDenomsMetadataResponse {
     /** metadata provides the client information for all the registered tokens. */
     metadatas: Metadata[];
     /** pagination defines the pagination in the response. */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
 }
 
 /** QueryDenomMetadataRequest is the request type for the Query/DenomMetadata RPC method. */
@@ -143,7 +174,7 @@ export interface QueryDenomMetadataRequest {
  */
 export interface QueryDenomMetadataResponse {
     /** metadata describes and provides all the client information for the requested token. */
-    metadata?: Metadata;
+    metadata?: Metadata | undefined;
 }
 
 /**
@@ -155,7 +186,7 @@ export interface QueryDenomOwnersRequest {
     /** denom defines the coin denomination to query all account holders for. */
     denom: string;
     /** pagination defines an optional pagination for the request. */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /**
@@ -169,7 +200,7 @@ export interface DenomOwner {
     /** address defines the address that owns a particular denomination. */
     address: string;
     /** balance is the balance of the denominated coin for an account. */
-    balance?: Coin;
+    balance?: Coin | undefined;
 }
 
 /**
@@ -180,7 +211,36 @@ export interface DenomOwner {
 export interface QueryDenomOwnersResponse {
     denomOwners: DenomOwner[];
     /** pagination defines the pagination in the response. */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
+}
+
+/**
+ * QuerySendEnabledRequest defines the RPC request for looking up SendEnabled entries.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface QuerySendEnabledRequest {
+    /** denoms is the specific denoms you want look up. Leave empty to get all entries. */
+    denoms: string[];
+    /**
+     * pagination defines an optional pagination for the request. This field is
+     * only read if the denoms field is empty.
+     */
+    pagination?: PageRequest | undefined;
+}
+
+/**
+ * QuerySendEnabledResponse defines the RPC response of a SendEnable query.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface QuerySendEnabledResponse {
+    sendEnabled: SendEnabled[];
+    /**
+     * pagination defines the pagination in the response. This field is only
+     * populated if the denoms field in the request is empty.
+     */
+    pagination?: PageResponse | undefined;
 }
 
 function createBaseQueryBalanceRequest(): QueryBalanceRequest {
@@ -237,8 +297,12 @@ export const QueryBalanceRequest = {
 
     toJSON(message: QueryBalanceRequest): unknown {
         const obj: any = {};
-        message.address !== undefined && (obj.address = message.address);
-        message.denom !== undefined && (obj.denom = message.denom);
+        if (message.address !== '') {
+            obj.address = message.address;
+        }
+        if (message.denom !== '') {
+            obj.denom = message.denom;
+        }
         return obj;
     },
 
@@ -295,7 +359,9 @@ export const QueryBalanceResponse = {
 
     toJSON(message: QueryBalanceResponse): unknown {
         const obj: any = {};
-        message.balance !== undefined && (obj.balance = message.balance ? Coin.toJSON(message.balance) : undefined);
+        if (message.balance !== undefined) {
+            obj.balance = Coin.toJSON(message.balance);
+        }
         return obj;
     },
 
@@ -311,7 +377,7 @@ export const QueryBalanceResponse = {
 };
 
 function createBaseQueryAllBalancesRequest(): QueryAllBalancesRequest {
-    return { address: '', pagination: undefined };
+    return { address: '', pagination: undefined, resolveDenom: false };
 }
 
 export const QueryAllBalancesRequest = {
@@ -321,6 +387,9 @@ export const QueryAllBalancesRequest = {
         }
         if (message.pagination !== undefined) {
             PageRequest.encode(message.pagination, writer.uint32(18).fork()).ldelim();
+        }
+        if (message.resolveDenom === true) {
+            writer.uint32(24).bool(message.resolveDenom);
         }
         return writer;
     },
@@ -346,6 +415,13 @@ export const QueryAllBalancesRequest = {
 
                     message.pagination = PageRequest.decode(reader, reader.uint32());
                     continue;
+                case 3:
+                    if (tag !== 24) {
+                        break;
+                    }
+
+                    message.resolveDenom = reader.bool();
+                    continue;
             }
             if ((tag & 7) === 4 || tag === 0) {
                 break;
@@ -359,13 +435,21 @@ export const QueryAllBalancesRequest = {
         return {
             address: isSet(object.address) ? String(object.address) : '',
             pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+            resolveDenom: isSet(object.resolveDenom) ? Boolean(object.resolveDenom) : false,
         };
     },
 
     toJSON(message: QueryAllBalancesRequest): unknown {
         const obj: any = {};
-        message.address !== undefined && (obj.address = message.address);
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (message.address !== '') {
+            obj.address = message.address;
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
+        if (message.resolveDenom === true) {
+            obj.resolveDenom = message.resolveDenom;
+        }
         return obj;
     },
 
@@ -377,6 +461,7 @@ export const QueryAllBalancesRequest = {
         const message = createBaseQueryAllBalancesRequest();
         message.address = object.address ?? '';
         message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
+        message.resolveDenom = object.resolveDenom ?? false;
         return message;
     },
 };
@@ -435,12 +520,12 @@ export const QueryAllBalancesResponse = {
 
     toJSON(message: QueryAllBalancesResponse): unknown {
         const obj: any = {};
-        if (message.balances) {
-            obj.balances = message.balances.map((e) => (e ? Coin.toJSON(e) : undefined));
-        } else {
-            obj.balances = [];
+        if (message.balances?.length) {
+            obj.balances = message.balances.map((e) => Coin.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -510,8 +595,12 @@ export const QuerySpendableBalancesRequest = {
 
     toJSON(message: QuerySpendableBalancesRequest): unknown {
         const obj: any = {};
-        message.address !== undefined && (obj.address = message.address);
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (message.address !== '') {
+            obj.address = message.address;
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -581,12 +670,12 @@ export const QuerySpendableBalancesResponse = {
 
     toJSON(message: QuerySpendableBalancesResponse): unknown {
         const obj: any = {};
-        if (message.balances) {
-            obj.balances = message.balances.map((e) => (e ? Coin.toJSON(e) : undefined));
-        } else {
-            obj.balances = [];
+        if (message.balances?.length) {
+            obj.balances = message.balances.map((e) => Coin.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -598,6 +687,139 @@ export const QuerySpendableBalancesResponse = {
         const message = createBaseQuerySpendableBalancesResponse();
         message.balances = object.balances?.map((e) => Coin.fromPartial(e)) || [];
         message.pagination = object.pagination !== undefined && object.pagination !== null ? PageResponse.fromPartial(object.pagination) : undefined;
+        return message;
+    },
+};
+
+function createBaseQuerySpendableBalanceByDenomRequest(): QuerySpendableBalanceByDenomRequest {
+    return { address: '', denom: '' };
+}
+
+export const QuerySpendableBalanceByDenomRequest = {
+    encode(message: QuerySpendableBalanceByDenomRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (message.address !== '') {
+            writer.uint32(10).string(message.address);
+        }
+        if (message.denom !== '') {
+            writer.uint32(18).string(message.denom);
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): QuerySpendableBalanceByDenomRequest {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseQuerySpendableBalanceByDenomRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.address = reader.string();
+                    continue;
+                case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
+                    message.denom = reader.string();
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): QuerySpendableBalanceByDenomRequest {
+        return {
+            address: isSet(object.address) ? String(object.address) : '',
+            denom: isSet(object.denom) ? String(object.denom) : '',
+        };
+    },
+
+    toJSON(message: QuerySpendableBalanceByDenomRequest): unknown {
+        const obj: any = {};
+        if (message.address !== '') {
+            obj.address = message.address;
+        }
+        if (message.denom !== '') {
+            obj.denom = message.denom;
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<QuerySpendableBalanceByDenomRequest>, I>>(base?: I): QuerySpendableBalanceByDenomRequest {
+        return QuerySpendableBalanceByDenomRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QuerySpendableBalanceByDenomRequest>, I>>(object: I): QuerySpendableBalanceByDenomRequest {
+        const message = createBaseQuerySpendableBalanceByDenomRequest();
+        message.address = object.address ?? '';
+        message.denom = object.denom ?? '';
+        return message;
+    },
+};
+
+function createBaseQuerySpendableBalanceByDenomResponse(): QuerySpendableBalanceByDenomResponse {
+    return { balance: undefined };
+}
+
+export const QuerySpendableBalanceByDenomResponse = {
+    encode(message: QuerySpendableBalanceByDenomResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (message.balance !== undefined) {
+            Coin.encode(message.balance, writer.uint32(10).fork()).ldelim();
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): QuerySpendableBalanceByDenomResponse {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseQuerySpendableBalanceByDenomResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.balance = Coin.decode(reader, reader.uint32());
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): QuerySpendableBalanceByDenomResponse {
+        return { balance: isSet(object.balance) ? Coin.fromJSON(object.balance) : undefined };
+    },
+
+    toJSON(message: QuerySpendableBalanceByDenomResponse): unknown {
+        const obj: any = {};
+        if (message.balance !== undefined) {
+            obj.balance = Coin.toJSON(message.balance);
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<QuerySpendableBalanceByDenomResponse>, I>>(base?: I): QuerySpendableBalanceByDenomResponse {
+        return QuerySpendableBalanceByDenomResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QuerySpendableBalanceByDenomResponse>, I>>(object: I): QuerySpendableBalanceByDenomResponse {
+        const message = createBaseQuerySpendableBalanceByDenomResponse();
+        message.balance = object.balance !== undefined && object.balance !== null ? Coin.fromPartial(object.balance) : undefined;
         return message;
     },
 };
@@ -643,7 +865,9 @@ export const QueryTotalSupplyRequest = {
 
     toJSON(message: QueryTotalSupplyRequest): unknown {
         const obj: any = {};
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -712,12 +936,12 @@ export const QueryTotalSupplyResponse = {
 
     toJSON(message: QueryTotalSupplyResponse): unknown {
         const obj: any = {};
-        if (message.supply) {
-            obj.supply = message.supply.map((e) => (e ? Coin.toJSON(e) : undefined));
-        } else {
-            obj.supply = [];
+        if (message.supply?.length) {
+            obj.supply = message.supply.map((e) => Coin.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -774,7 +998,9 @@ export const QuerySupplyOfRequest = {
 
     toJSON(message: QuerySupplyOfRequest): unknown {
         const obj: any = {};
-        message.denom !== undefined && (obj.denom = message.denom);
+        if (message.denom !== '') {
+            obj.denom = message.denom;
+        }
         return obj;
     },
 
@@ -830,7 +1056,9 @@ export const QuerySupplyOfResponse = {
 
     toJSON(message: QuerySupplyOfResponse): unknown {
         const obj: any = {};
-        message.amount !== undefined && (obj.amount = message.amount ? Coin.toJSON(message.amount) : undefined);
+        if (message.amount !== undefined) {
+            obj.amount = Coin.toJSON(message.amount);
+        }
         return obj;
     },
 
@@ -930,7 +1158,9 @@ export const QueryParamsResponse = {
 
     toJSON(message: QueryParamsResponse): unknown {
         const obj: any = {};
-        message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+        if (message.params !== undefined) {
+            obj.params = Params.toJSON(message.params);
+        }
         return obj;
     },
 
@@ -986,7 +1216,9 @@ export const QueryDenomsMetadataRequest = {
 
     toJSON(message: QueryDenomsMetadataRequest): unknown {
         const obj: any = {};
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -1055,12 +1287,12 @@ export const QueryDenomsMetadataResponse = {
 
     toJSON(message: QueryDenomsMetadataResponse): unknown {
         const obj: any = {};
-        if (message.metadatas) {
-            obj.metadatas = message.metadatas.map((e) => (e ? Metadata.toJSON(e) : undefined));
-        } else {
-            obj.metadatas = [];
+        if (message.metadatas?.length) {
+            obj.metadatas = message.metadatas.map((e) => Metadata.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -1117,7 +1349,9 @@ export const QueryDenomMetadataRequest = {
 
     toJSON(message: QueryDenomMetadataRequest): unknown {
         const obj: any = {};
-        message.denom !== undefined && (obj.denom = message.denom);
+        if (message.denom !== '') {
+            obj.denom = message.denom;
+        }
         return obj;
     },
 
@@ -1173,7 +1407,9 @@ export const QueryDenomMetadataResponse = {
 
     toJSON(message: QueryDenomMetadataResponse): unknown {
         const obj: any = {};
-        message.metadata !== undefined && (obj.metadata = message.metadata ? Metadata.toJSON(message.metadata) : undefined);
+        if (message.metadata !== undefined) {
+            obj.metadata = Metadata.toJSON(message.metadata);
+        }
         return obj;
     },
 
@@ -1242,8 +1478,12 @@ export const QueryDenomOwnersRequest = {
 
     toJSON(message: QueryDenomOwnersRequest): unknown {
         const obj: any = {};
-        message.denom !== undefined && (obj.denom = message.denom);
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (message.denom !== '') {
+            obj.denom = message.denom;
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -1313,8 +1553,12 @@ export const DenomOwner = {
 
     toJSON(message: DenomOwner): unknown {
         const obj: any = {};
-        message.address !== undefined && (obj.address = message.address);
-        message.balance !== undefined && (obj.balance = message.balance ? Coin.toJSON(message.balance) : undefined);
+        if (message.address !== '') {
+            obj.address = message.address;
+        }
+        if (message.balance !== undefined) {
+            obj.balance = Coin.toJSON(message.balance);
+        }
         return obj;
     },
 
@@ -1384,12 +1628,12 @@ export const QueryDenomOwnersResponse = {
 
     toJSON(message: QueryDenomOwnersResponse): unknown {
         const obj: any = {};
-        if (message.denomOwners) {
-            obj.denomOwners = message.denomOwners.map((e) => (e ? DenomOwner.toJSON(e) : undefined));
-        } else {
-            obj.denomOwners = [];
+        if (message.denomOwners?.length) {
+            obj.denomOwners = message.denomOwners.map((e) => DenomOwner.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -1405,22 +1649,200 @@ export const QueryDenomOwnersResponse = {
     },
 };
 
+function createBaseQuerySendEnabledRequest(): QuerySendEnabledRequest {
+    return { denoms: [], pagination: undefined };
+}
+
+export const QuerySendEnabledRequest = {
+    encode(message: QuerySendEnabledRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        for (const v of message.denoms) {
+            writer.uint32(10).string(v!);
+        }
+        if (message.pagination !== undefined) {
+            PageRequest.encode(message.pagination, writer.uint32(794).fork()).ldelim();
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): QuerySendEnabledRequest {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseQuerySendEnabledRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.denoms.push(reader.string());
+                    continue;
+                case 99:
+                    if (tag !== 794) {
+                        break;
+                    }
+
+                    message.pagination = PageRequest.decode(reader, reader.uint32());
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): QuerySendEnabledRequest {
+        return {
+            denoms: Array.isArray(object?.denoms) ? object.denoms.map((e: any) => String(e)) : [],
+            pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+        };
+    },
+
+    toJSON(message: QuerySendEnabledRequest): unknown {
+        const obj: any = {};
+        if (message.denoms?.length) {
+            obj.denoms = message.denoms;
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<QuerySendEnabledRequest>, I>>(base?: I): QuerySendEnabledRequest {
+        return QuerySendEnabledRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QuerySendEnabledRequest>, I>>(object: I): QuerySendEnabledRequest {
+        const message = createBaseQuerySendEnabledRequest();
+        message.denoms = object.denoms?.map((e) => e) || [];
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageRequest.fromPartial(object.pagination) : undefined;
+        return message;
+    },
+};
+
+function createBaseQuerySendEnabledResponse(): QuerySendEnabledResponse {
+    return { sendEnabled: [], pagination: undefined };
+}
+
+export const QuerySendEnabledResponse = {
+    encode(message: QuerySendEnabledResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        for (const v of message.sendEnabled) {
+            SendEnabled.encode(v!, writer.uint32(10).fork()).ldelim();
+        }
+        if (message.pagination !== undefined) {
+            PageResponse.encode(message.pagination, writer.uint32(794).fork()).ldelim();
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): QuerySendEnabledResponse {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseQuerySendEnabledResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.sendEnabled.push(SendEnabled.decode(reader, reader.uint32()));
+                    continue;
+                case 99:
+                    if (tag !== 794) {
+                        break;
+                    }
+
+                    message.pagination = PageResponse.decode(reader, reader.uint32());
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): QuerySendEnabledResponse {
+        return {
+            sendEnabled: Array.isArray(object?.sendEnabled) ? object.sendEnabled.map((e: any) => SendEnabled.fromJSON(e)) : [],
+            pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+        };
+    },
+
+    toJSON(message: QuerySendEnabledResponse): unknown {
+        const obj: any = {};
+        if (message.sendEnabled?.length) {
+            obj.sendEnabled = message.sendEnabled.map((e) => SendEnabled.toJSON(e));
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<QuerySendEnabledResponse>, I>>(base?: I): QuerySendEnabledResponse {
+        return QuerySendEnabledResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QuerySendEnabledResponse>, I>>(object: I): QuerySendEnabledResponse {
+        const message = createBaseQuerySendEnabledResponse();
+        message.sendEnabled = object.sendEnabled?.map((e) => SendEnabled.fromPartial(e)) || [];
+        message.pagination = object.pagination !== undefined && object.pagination !== null ? PageResponse.fromPartial(object.pagination) : undefined;
+        return message;
+    },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
     /** Balance queries the balance of a single coin for a single account. */
     Balance(request: QueryBalanceRequest): Promise<QueryBalanceResponse>;
-    /** AllBalances queries the balance of all coins for a single account. */
+    /**
+     * AllBalances queries the balance of all coins for a single account.
+     *
+     * When called from another module, this query might consume a high amount of
+     * gas if the pagination field is incorrectly set.
+     */
     AllBalances(request: QueryAllBalancesRequest): Promise<QueryAllBalancesResponse>;
     /**
-     * SpendableBalances queries the spenable balance of all coins for a single
+     * SpendableBalances queries the spendable balance of all coins for a single
      * account.
+     *
+     * When called from another module, this query might consume a high amount of
+     * gas if the pagination field is incorrectly set.
      *
      * Since: cosmos-sdk 0.46
      */
     SpendableBalances(request: QuerySpendableBalancesRequest): Promise<QuerySpendableBalancesResponse>;
-    /** TotalSupply queries the total supply of all coins. */
+    /**
+     * SpendableBalanceByDenom queries the spendable balance of a single denom for
+     * a single account.
+     *
+     * When called from another module, this query might consume a high amount of
+     * gas if the pagination field is incorrectly set.
+     *
+     * Since: cosmos-sdk 0.47
+     */
+    SpendableBalanceByDenom(request: QuerySpendableBalanceByDenomRequest): Promise<QuerySpendableBalanceByDenomResponse>;
+    /**
+     * TotalSupply queries the total supply of all coins.
+     *
+     * When called from another module, this query might consume a high amount of
+     * gas if the pagination field is incorrectly set.
+     */
     TotalSupply(request: QueryTotalSupplyRequest): Promise<QueryTotalSupplyResponse>;
-    /** SupplyOf queries the supply of a single coin. */
+    /**
+     * SupplyOf queries the supply of a single coin.
+     *
+     * When called from another module, this query might consume a high amount of
+     * gas if the pagination field is incorrectly set.
+     */
     SupplyOf(request: QuerySupplyOfRequest): Promise<QuerySupplyOfResponse>;
     /** Params queries the parameters of x/bank module. */
     Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
@@ -1435,26 +1857,42 @@ export interface Query {
      * DenomOwners queries for all account addresses that own a particular token
      * denomination.
      *
+     * When called from another module, this query might consume a high amount of
+     * gas if the pagination field is incorrectly set.
+     *
      * Since: cosmos-sdk 0.46
      */
     DenomOwners(request: QueryDenomOwnersRequest): Promise<QueryDenomOwnersResponse>;
+    /**
+     * SendEnabled queries for SendEnabled entries.
+     *
+     * This query only returns denominations that have specific SendEnabled settings.
+     * Any denomination that does not have a specific setting will use the default
+     * params.default_send_enabled, and will not be returned by this query.
+     *
+     * Since: cosmos-sdk 0.47
+     */
+    SendEnabled(request: QuerySendEnabledRequest): Promise<QuerySendEnabledResponse>;
 }
 
+export const QueryServiceName = 'cosmos.bank.v1beta1.Query';
 export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'cosmos.bank.v1beta1.Query';
+        this.service = opts?.service || QueryServiceName;
         this.rpc = rpc;
         this.Balance = this.Balance.bind(this);
         this.AllBalances = this.AllBalances.bind(this);
         this.SpendableBalances = this.SpendableBalances.bind(this);
+        this.SpendableBalanceByDenom = this.SpendableBalanceByDenom.bind(this);
         this.TotalSupply = this.TotalSupply.bind(this);
         this.SupplyOf = this.SupplyOf.bind(this);
         this.Params = this.Params.bind(this);
         this.DenomMetadata = this.DenomMetadata.bind(this);
         this.DenomsMetadata = this.DenomsMetadata.bind(this);
         this.DenomOwners = this.DenomOwners.bind(this);
+        this.SendEnabled = this.SendEnabled.bind(this);
     }
     Balance(request: QueryBalanceRequest): Promise<QueryBalanceResponse> {
         const data = QueryBalanceRequest.encode(request).finish();
@@ -1472,6 +1910,12 @@ export class QueryClientImpl implements Query {
         const data = QuerySpendableBalancesRequest.encode(request).finish();
         const promise = this.rpc.request(this.service, 'SpendableBalances', data);
         return promise.then((data) => QuerySpendableBalancesResponse.decode(_m0.Reader.create(data)));
+    }
+
+    SpendableBalanceByDenom(request: QuerySpendableBalanceByDenomRequest): Promise<QuerySpendableBalanceByDenomResponse> {
+        const data = QuerySpendableBalanceByDenomRequest.encode(request).finish();
+        const promise = this.rpc.request(this.service, 'SpendableBalanceByDenom', data);
+        return promise.then((data) => QuerySpendableBalanceByDenomResponse.decode(_m0.Reader.create(data)));
     }
 
     TotalSupply(request: QueryTotalSupplyRequest): Promise<QueryTotalSupplyResponse> {
@@ -1508,6 +1952,12 @@ export class QueryClientImpl implements Query {
         const data = QueryDenomOwnersRequest.encode(request).finish();
         const promise = this.rpc.request(this.service, 'DenomOwners', data);
         return promise.then((data) => QueryDenomOwnersResponse.decode(_m0.Reader.create(data)));
+    }
+
+    SendEnabled(request: QuerySendEnabledRequest): Promise<QuerySendEnabledResponse> {
+        const data = QuerySendEnabledRequest.encode(request).finish();
+        const promise = this.rpc.request(this.service, 'SendEnabled', data);
+        return promise.then((data) => QuerySendEnabledResponse.decode(_m0.Reader.create(data)));
     }
 }
 

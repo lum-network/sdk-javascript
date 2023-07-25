@@ -86,12 +86,14 @@ export const ParameterChangeProposal = {
 
     toJSON(message: ParameterChangeProposal): unknown {
         const obj: any = {};
-        message.title !== undefined && (obj.title = message.title);
-        message.description !== undefined && (obj.description = message.description);
-        if (message.changes) {
-            obj.changes = message.changes.map((e) => (e ? ParamChange.toJSON(e) : undefined));
-        } else {
-            obj.changes = [];
+        if (message.title !== '') {
+            obj.title = message.title;
+        }
+        if (message.description !== '') {
+            obj.description = message.description;
+        }
+        if (message.changes?.length) {
+            obj.changes = message.changes.map((e) => ParamChange.toJSON(e));
         }
         return obj;
     },
@@ -174,9 +176,15 @@ export const ParamChange = {
 
     toJSON(message: ParamChange): unknown {
         const obj: any = {};
-        message.subspace !== undefined && (obj.subspace = message.subspace);
-        message.key !== undefined && (obj.key = message.key);
-        message.value !== undefined && (obj.value = message.value);
+        if (message.subspace !== '') {
+            obj.subspace = message.subspace;
+        }
+        if (message.key !== '') {
+            obj.key = message.key;
+        }
+        if (message.value !== '') {
+            obj.value = message.value;
+        }
         return obj;
     },
 

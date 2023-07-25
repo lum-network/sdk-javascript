@@ -150,7 +150,9 @@ export function proposalStatusToJSON(object: ProposalStatus): string {
  * Since: cosmos-sdk 0.43
  */
 export interface WeightedVoteOption {
+    /** option defines the valid vote options, it must not contain duplicate vote options. */
     option: VoteOption;
+    /** weight is the vote weight associated with the vote option. */
     weight: string;
 }
 
@@ -159,7 +161,9 @@ export interface WeightedVoteOption {
  * manually updated in case of approval.
  */
 export interface TextProposal {
+    /** title of the proposal. */
     title: string;
+    /** description associated with the proposal. */
     description: string;
 }
 
@@ -168,34 +172,49 @@ export interface TextProposal {
  * proposal.
  */
 export interface Deposit {
+    /** proposal_id defines the unique id of the proposal. */
     proposalId: Long;
+    /** depositor defines the deposit addresses from the proposals. */
     depositor: string;
+    /** amount to be deposited by depositor. */
     amount: Coin[];
 }
 
 /** Proposal defines the core field members of a governance proposal. */
 export interface Proposal {
+    /** proposal_id defines the unique id of the proposal. */
     proposalId: Long;
-    content?: Any;
+    /** content is the proposal's content. */
+    content?: Any | undefined;
+    /** status defines the proposal status. */
     status: ProposalStatus;
     /**
      * final_tally_result is the final tally result of the proposal. When
      * querying a proposal via gRPC, this field is not populated until the
      * proposal's voting period has ended.
      */
-    finalTallyResult?: TallyResult;
-    submitTime?: Date;
-    depositEndTime?: Date;
+    finalTallyResult?: TallyResult | undefined;
+    /** submit_time is the time of proposal submission. */
+    submitTime?: Date | undefined;
+    /** deposit_end_time is the end time for deposition. */
+    depositEndTime?: Date | undefined;
+    /** total_deposit is the total deposit on the proposal. */
     totalDeposit: Coin[];
-    votingStartTime?: Date;
-    votingEndTime?: Date;
+    /** voting_start_time is the starting time to vote on a proposal. */
+    votingStartTime?: Date | undefined;
+    /** voting_end_time is the end time of voting on a proposal. */
+    votingEndTime?: Date | undefined;
 }
 
 /** TallyResult defines a standard tally for a governance proposal. */
 export interface TallyResult {
+    /** yes is the number of yes votes on a proposal. */
     yes: string;
+    /** abstain is the number of abstain votes on a proposal. */
     abstain: string;
+    /** no is the number of no votes on a proposal. */
     no: string;
+    /** no_with_veto is the number of no with veto votes on a proposal. */
     noWithVeto: string;
 }
 
@@ -204,7 +223,9 @@ export interface TallyResult {
  * A Vote consists of a proposal ID, the voter, and the vote option.
  */
 export interface Vote {
+    /** proposal_id defines the unique id of the proposal. */
     proposalId: Long;
+    /** voter is the voter address of the proposal. */
     voter: string;
     /**
      * Deprecated: Prefer to use `options` instead. This field is set in queries
@@ -214,7 +235,11 @@ export interface Vote {
      * @deprecated
      */
     option: VoteOption;
-    /** Since: cosmos-sdk 0.43 */
+    /**
+     * options is the weighted vote options.
+     *
+     * Since: cosmos-sdk 0.43
+     */
     options: WeightedVoteOption[];
 }
 
@@ -224,29 +249,29 @@ export interface DepositParams {
     minDeposit: Coin[];
     /**
      * Maximum period for Atom holders to deposit on a proposal. Initial value: 2
-     *  months.
+     * months.
      */
-    maxDepositPeriod?: Duration;
+    maxDepositPeriod?: Duration | undefined;
 }
 
 /** VotingParams defines the params for voting on governance proposals. */
 export interface VotingParams {
-    /** Length of the voting period. */
-    votingPeriod?: Duration;
+    /** Duration of the voting period. */
+    votingPeriod?: Duration | undefined;
 }
 
 /** TallyParams defines the params for tallying votes on governance proposals. */
 export interface TallyParams {
     /**
      * Minimum percentage of total stake needed to vote for a result to be
-     *  considered valid.
+     * considered valid.
      */
     quorum: Uint8Array;
     /** Minimum proportion of Yes votes for proposal to pass. Default value: 0.5. */
     threshold: Uint8Array;
     /**
      * Minimum value of Veto votes to Total votes ratio for proposal to be
-     *  vetoed. Default value: 1/3.
+     * vetoed. Default value: 1/3.
      */
     vetoThreshold: Uint8Array;
 }
@@ -305,8 +330,12 @@ export const WeightedVoteOption = {
 
     toJSON(message: WeightedVoteOption): unknown {
         const obj: any = {};
-        message.option !== undefined && (obj.option = voteOptionToJSON(message.option));
-        message.weight !== undefined && (obj.weight = message.weight);
+        if (message.option !== 0) {
+            obj.option = voteOptionToJSON(message.option);
+        }
+        if (message.weight !== '') {
+            obj.weight = message.weight;
+        }
         return obj;
     },
 
@@ -376,8 +405,12 @@ export const TextProposal = {
 
     toJSON(message: TextProposal): unknown {
         const obj: any = {};
-        message.title !== undefined && (obj.title = message.title);
-        message.description !== undefined && (obj.description = message.description);
+        if (message.title !== '') {
+            obj.title = message.title;
+        }
+        if (message.description !== '') {
+            obj.description = message.description;
+        }
         return obj;
     },
 
@@ -458,12 +491,14 @@ export const Deposit = {
 
     toJSON(message: Deposit): unknown {
         const obj: any = {};
-        message.proposalId !== undefined && (obj.proposalId = (message.proposalId || Long.UZERO).toString());
-        message.depositor !== undefined && (obj.depositor = message.depositor);
-        if (message.amount) {
-            obj.amount = message.amount.map((e) => (e ? Coin.toJSON(e) : undefined));
-        } else {
-            obj.amount = [];
+        if (!message.proposalId.isZero()) {
+            obj.proposalId = (message.proposalId || Long.UZERO).toString();
+        }
+        if (message.depositor !== '') {
+            obj.depositor = message.depositor;
+        }
+        if (message.amount?.length) {
+            obj.amount = message.amount.map((e) => Coin.toJSON(e));
         }
         return obj;
     },
@@ -622,19 +657,33 @@ export const Proposal = {
 
     toJSON(message: Proposal): unknown {
         const obj: any = {};
-        message.proposalId !== undefined && (obj.proposalId = (message.proposalId || Long.UZERO).toString());
-        message.content !== undefined && (obj.content = message.content ? Any.toJSON(message.content) : undefined);
-        message.status !== undefined && (obj.status = proposalStatusToJSON(message.status));
-        message.finalTallyResult !== undefined && (obj.finalTallyResult = message.finalTallyResult ? TallyResult.toJSON(message.finalTallyResult) : undefined);
-        message.submitTime !== undefined && (obj.submitTime = message.submitTime.toISOString());
-        message.depositEndTime !== undefined && (obj.depositEndTime = message.depositEndTime.toISOString());
-        if (message.totalDeposit) {
-            obj.totalDeposit = message.totalDeposit.map((e) => (e ? Coin.toJSON(e) : undefined));
-        } else {
-            obj.totalDeposit = [];
+        if (!message.proposalId.isZero()) {
+            obj.proposalId = (message.proposalId || Long.UZERO).toString();
         }
-        message.votingStartTime !== undefined && (obj.votingStartTime = message.votingStartTime.toISOString());
-        message.votingEndTime !== undefined && (obj.votingEndTime = message.votingEndTime.toISOString());
+        if (message.content !== undefined) {
+            obj.content = Any.toJSON(message.content);
+        }
+        if (message.status !== 0) {
+            obj.status = proposalStatusToJSON(message.status);
+        }
+        if (message.finalTallyResult !== undefined) {
+            obj.finalTallyResult = TallyResult.toJSON(message.finalTallyResult);
+        }
+        if (message.submitTime !== undefined) {
+            obj.submitTime = message.submitTime.toISOString();
+        }
+        if (message.depositEndTime !== undefined) {
+            obj.depositEndTime = message.depositEndTime.toISOString();
+        }
+        if (message.totalDeposit?.length) {
+            obj.totalDeposit = message.totalDeposit.map((e) => Coin.toJSON(e));
+        }
+        if (message.votingStartTime !== undefined) {
+            obj.votingStartTime = message.votingStartTime.toISOString();
+        }
+        if (message.votingEndTime !== undefined) {
+            obj.votingEndTime = message.votingEndTime.toISOString();
+        }
         return obj;
     },
 
@@ -733,10 +782,18 @@ export const TallyResult = {
 
     toJSON(message: TallyResult): unknown {
         const obj: any = {};
-        message.yes !== undefined && (obj.yes = message.yes);
-        message.abstain !== undefined && (obj.abstain = message.abstain);
-        message.no !== undefined && (obj.no = message.no);
-        message.noWithVeto !== undefined && (obj.noWithVeto = message.noWithVeto);
+        if (message.yes !== '') {
+            obj.yes = message.yes;
+        }
+        if (message.abstain !== '') {
+            obj.abstain = message.abstain;
+        }
+        if (message.no !== '') {
+            obj.no = message.no;
+        }
+        if (message.noWithVeto !== '') {
+            obj.noWithVeto = message.noWithVeto;
+        }
         return obj;
     },
 
@@ -830,13 +887,17 @@ export const Vote = {
 
     toJSON(message: Vote): unknown {
         const obj: any = {};
-        message.proposalId !== undefined && (obj.proposalId = (message.proposalId || Long.UZERO).toString());
-        message.voter !== undefined && (obj.voter = message.voter);
-        message.option !== undefined && (obj.option = voteOptionToJSON(message.option));
-        if (message.options) {
-            obj.options = message.options.map((e) => (e ? WeightedVoteOption.toJSON(e) : undefined));
-        } else {
-            obj.options = [];
+        if (!message.proposalId.isZero()) {
+            obj.proposalId = (message.proposalId || Long.UZERO).toString();
+        }
+        if (message.voter !== '') {
+            obj.voter = message.voter;
+        }
+        if (message.option !== 0) {
+            obj.option = voteOptionToJSON(message.option);
+        }
+        if (message.options?.length) {
+            obj.options = message.options.map((e) => WeightedVoteOption.toJSON(e));
         }
         return obj;
     },
@@ -909,12 +970,12 @@ export const DepositParams = {
 
     toJSON(message: DepositParams): unknown {
         const obj: any = {};
-        if (message.minDeposit) {
-            obj.minDeposit = message.minDeposit.map((e) => (e ? Coin.toJSON(e) : undefined));
-        } else {
-            obj.minDeposit = [];
+        if (message.minDeposit?.length) {
+            obj.minDeposit = message.minDeposit.map((e) => Coin.toJSON(e));
         }
-        message.maxDepositPeriod !== undefined && (obj.maxDepositPeriod = message.maxDepositPeriod ? Duration.toJSON(message.maxDepositPeriod) : undefined);
+        if (message.maxDepositPeriod !== undefined) {
+            obj.maxDepositPeriod = Duration.toJSON(message.maxDepositPeriod);
+        }
         return obj;
     },
 
@@ -971,7 +1032,9 @@ export const VotingParams = {
 
     toJSON(message: VotingParams): unknown {
         const obj: any = {};
-        message.votingPeriod !== undefined && (obj.votingPeriod = message.votingPeriod ? Duration.toJSON(message.votingPeriod) : undefined);
+        if (message.votingPeriod !== undefined) {
+            obj.votingPeriod = Duration.toJSON(message.votingPeriod);
+        }
         return obj;
     },
 
@@ -987,7 +1050,7 @@ export const VotingParams = {
 };
 
 function createBaseTallyParams(): TallyParams {
-    return { quorum: new Uint8Array(), threshold: new Uint8Array(), vetoThreshold: new Uint8Array() };
+    return { quorum: new Uint8Array(0), threshold: new Uint8Array(0), vetoThreshold: new Uint8Array(0) };
 }
 
 export const TallyParams = {
@@ -1043,17 +1106,23 @@ export const TallyParams = {
 
     fromJSON(object: any): TallyParams {
         return {
-            quorum: isSet(object.quorum) ? bytesFromBase64(object.quorum) : new Uint8Array(),
-            threshold: isSet(object.threshold) ? bytesFromBase64(object.threshold) : new Uint8Array(),
-            vetoThreshold: isSet(object.vetoThreshold) ? bytesFromBase64(object.vetoThreshold) : new Uint8Array(),
+            quorum: isSet(object.quorum) ? bytesFromBase64(object.quorum) : new Uint8Array(0),
+            threshold: isSet(object.threshold) ? bytesFromBase64(object.threshold) : new Uint8Array(0),
+            vetoThreshold: isSet(object.vetoThreshold) ? bytesFromBase64(object.vetoThreshold) : new Uint8Array(0),
         };
     },
 
     toJSON(message: TallyParams): unknown {
         const obj: any = {};
-        message.quorum !== undefined && (obj.quorum = base64FromBytes(message.quorum !== undefined ? message.quorum : new Uint8Array()));
-        message.threshold !== undefined && (obj.threshold = base64FromBytes(message.threshold !== undefined ? message.threshold : new Uint8Array()));
-        message.vetoThreshold !== undefined && (obj.vetoThreshold = base64FromBytes(message.vetoThreshold !== undefined ? message.vetoThreshold : new Uint8Array()));
+        if (message.quorum.length !== 0) {
+            obj.quorum = base64FromBytes(message.quorum);
+        }
+        if (message.threshold.length !== 0) {
+            obj.threshold = base64FromBytes(message.threshold);
+        }
+        if (message.vetoThreshold.length !== 0) {
+            obj.vetoThreshold = base64FromBytes(message.vetoThreshold);
+        }
         return obj;
     },
 
@@ -1063,17 +1132,17 @@ export const TallyParams = {
 
     fromPartial<I extends Exact<DeepPartial<TallyParams>, I>>(object: I): TallyParams {
         const message = createBaseTallyParams();
-        message.quorum = object.quorum ?? new Uint8Array();
-        message.threshold = object.threshold ?? new Uint8Array();
-        message.vetoThreshold = object.vetoThreshold ?? new Uint8Array();
+        message.quorum = object.quorum ?? new Uint8Array(0);
+        message.threshold = object.threshold ?? new Uint8Array(0);
+        message.vetoThreshold = object.vetoThreshold ?? new Uint8Array(0);
         return message;
     },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }

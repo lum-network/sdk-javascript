@@ -22,13 +22,13 @@ export interface GenericAuthorization {
  * the provide method with expiration time.
  */
 export interface Grant {
-    authorization?: Any;
+    authorization?: Any | undefined;
     /**
      * time when the grant will expire and will be pruned. If null, then the grant
      * doesn't have a time expiration (other conditions  in `authorization`
      * may apply to invalidate the grant)
      */
-    expiration?: Date;
+    expiration?: Date | undefined;
 }
 
 /**
@@ -38,8 +38,8 @@ export interface Grant {
 export interface GrantAuthorization {
     granter: string;
     grantee: string;
-    authorization?: Any;
-    expiration?: Date;
+    authorization?: Any | undefined;
+    expiration?: Date | undefined;
 }
 
 /** GrantQueueItem contains the list of TypeURL of a sdk.Msg. */
@@ -89,7 +89,9 @@ export const GenericAuthorization = {
 
     toJSON(message: GenericAuthorization): unknown {
         const obj: any = {};
-        message.msg !== undefined && (obj.msg = message.msg);
+        if (message.msg !== '') {
+            obj.msg = message.msg;
+        }
         return obj;
     },
 
@@ -158,8 +160,12 @@ export const Grant = {
 
     toJSON(message: Grant): unknown {
         const obj: any = {};
-        message.authorization !== undefined && (obj.authorization = message.authorization ? Any.toJSON(message.authorization) : undefined);
-        message.expiration !== undefined && (obj.expiration = message.expiration.toISOString());
+        if (message.authorization !== undefined) {
+            obj.authorization = Any.toJSON(message.authorization);
+        }
+        if (message.expiration !== undefined) {
+            obj.expiration = message.expiration.toISOString();
+        }
         return obj;
     },
 
@@ -251,10 +257,18 @@ export const GrantAuthorization = {
 
     toJSON(message: GrantAuthorization): unknown {
         const obj: any = {};
-        message.granter !== undefined && (obj.granter = message.granter);
-        message.grantee !== undefined && (obj.grantee = message.grantee);
-        message.authorization !== undefined && (obj.authorization = message.authorization ? Any.toJSON(message.authorization) : undefined);
-        message.expiration !== undefined && (obj.expiration = message.expiration.toISOString());
+        if (message.granter !== '') {
+            obj.granter = message.granter;
+        }
+        if (message.grantee !== '') {
+            obj.grantee = message.grantee;
+        }
+        if (message.authorization !== undefined) {
+            obj.authorization = Any.toJSON(message.authorization);
+        }
+        if (message.expiration !== undefined) {
+            obj.expiration = message.expiration.toISOString();
+        }
         return obj;
     },
 
@@ -313,10 +327,8 @@ export const GrantQueueItem = {
 
     toJSON(message: GrantQueueItem): unknown {
         const obj: any = {};
-        if (message.msgTypeUrls) {
-            obj.msgTypeUrls = message.msgTypeUrls.map((e) => e);
-        } else {
-            obj.msgTypeUrls = [];
+        if (message.msgTypeUrls?.length) {
+            obj.msgTypeUrls = message.msgTypeUrls;
         }
         return obj;
     },

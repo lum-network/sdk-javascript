@@ -1,9 +1,9 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
+import { ProofSpec } from '../../../../cosmos/ics23/v1/proofs';
 import { Duration } from '../../../../google/protobuf/duration';
 import { Timestamp } from '../../../../google/protobuf/timestamp';
-import { ProofSpec } from '../../../../proofs';
 import { SignedHeader } from '../../../../tendermint/types/types';
 import { ValidatorSet } from '../../../../tendermint/types/validator';
 import { Height } from '../../../core/client/v1/client';
@@ -17,20 +17,20 @@ export const protobufPackage = 'ibc.lightclients.tendermint.v1';
  */
 export interface ClientState {
     chainId: string;
-    trustLevel?: Fraction;
+    trustLevel?: Fraction | undefined;
     /**
      * duration of the period since the LastestTimestamp during which the
      * submitted headers are valid for upgrade
      */
-    trustingPeriod?: Duration;
+    trustingPeriod?: Duration | undefined;
     /** duration of the staking unbonding period */
-    unbondingPeriod?: Duration;
+    unbondingPeriod?: Duration | undefined;
     /** defines how much new (untrusted) header's Time can drift into the future. */
-    maxClockDrift?: Duration;
+    maxClockDrift?: Duration | undefined;
     /** Block height when the client was frozen due to a misbehaviour */
-    frozenHeight?: Height;
+    frozenHeight?: Height | undefined;
     /** Latest height the client was updated to */
-    latestHeight?: Height;
+    latestHeight?: Height | undefined;
     /** Proof specifications used in verifying counterparty state */
     proofSpecs: ProofSpec[];
     /**
@@ -63,9 +63,9 @@ export interface ConsensusState {
      * timestamp that corresponds to the block height in which the ConsensusState
      * was stored.
      */
-    timestamp?: Date;
+    timestamp?: Date | undefined;
     /** commitment root (i.e app hash) */
-    root?: MerkleRoot;
+    root?: MerkleRoot | undefined;
     nextValidatorsHash: Uint8Array;
 }
 
@@ -74,9 +74,14 @@ export interface ConsensusState {
  * that implements Misbehaviour interface expected by ICS-02
  */
 export interface Misbehaviour {
+    /**
+     * ClientID is deprecated
+     *
+     * @deprecated
+     */
     clientId: string;
-    header1?: Header;
-    header2?: Header;
+    header1?: Header | undefined;
+    header2?: Header | undefined;
 }
 
 /**
@@ -94,10 +99,10 @@ export interface Misbehaviour {
  * trusted validator set at the TrustedHeight.
  */
 export interface Header {
-    signedHeader?: SignedHeader;
-    validatorSet?: ValidatorSet;
-    trustedHeight?: Height;
-    trustedValidators?: ValidatorSet;
+    signedHeader?: SignedHeader | undefined;
+    validatorSet?: ValidatorSet | undefined;
+    trustedHeight?: Height | undefined;
+    trustedValidators?: ValidatorSet | undefined;
 }
 
 /**
@@ -274,25 +279,39 @@ export const ClientState = {
 
     toJSON(message: ClientState): unknown {
         const obj: any = {};
-        message.chainId !== undefined && (obj.chainId = message.chainId);
-        message.trustLevel !== undefined && (obj.trustLevel = message.trustLevel ? Fraction.toJSON(message.trustLevel) : undefined);
-        message.trustingPeriod !== undefined && (obj.trustingPeriod = message.trustingPeriod ? Duration.toJSON(message.trustingPeriod) : undefined);
-        message.unbondingPeriod !== undefined && (obj.unbondingPeriod = message.unbondingPeriod ? Duration.toJSON(message.unbondingPeriod) : undefined);
-        message.maxClockDrift !== undefined && (obj.maxClockDrift = message.maxClockDrift ? Duration.toJSON(message.maxClockDrift) : undefined);
-        message.frozenHeight !== undefined && (obj.frozenHeight = message.frozenHeight ? Height.toJSON(message.frozenHeight) : undefined);
-        message.latestHeight !== undefined && (obj.latestHeight = message.latestHeight ? Height.toJSON(message.latestHeight) : undefined);
-        if (message.proofSpecs) {
-            obj.proofSpecs = message.proofSpecs.map((e) => (e ? ProofSpec.toJSON(e) : undefined));
-        } else {
-            obj.proofSpecs = [];
+        if (message.chainId !== '') {
+            obj.chainId = message.chainId;
         }
-        if (message.upgradePath) {
-            obj.upgradePath = message.upgradePath.map((e) => e);
-        } else {
-            obj.upgradePath = [];
+        if (message.trustLevel !== undefined) {
+            obj.trustLevel = Fraction.toJSON(message.trustLevel);
         }
-        message.allowUpdateAfterExpiry !== undefined && (obj.allowUpdateAfterExpiry = message.allowUpdateAfterExpiry);
-        message.allowUpdateAfterMisbehaviour !== undefined && (obj.allowUpdateAfterMisbehaviour = message.allowUpdateAfterMisbehaviour);
+        if (message.trustingPeriod !== undefined) {
+            obj.trustingPeriod = Duration.toJSON(message.trustingPeriod);
+        }
+        if (message.unbondingPeriod !== undefined) {
+            obj.unbondingPeriod = Duration.toJSON(message.unbondingPeriod);
+        }
+        if (message.maxClockDrift !== undefined) {
+            obj.maxClockDrift = Duration.toJSON(message.maxClockDrift);
+        }
+        if (message.frozenHeight !== undefined) {
+            obj.frozenHeight = Height.toJSON(message.frozenHeight);
+        }
+        if (message.latestHeight !== undefined) {
+            obj.latestHeight = Height.toJSON(message.latestHeight);
+        }
+        if (message.proofSpecs?.length) {
+            obj.proofSpecs = message.proofSpecs.map((e) => ProofSpec.toJSON(e));
+        }
+        if (message.upgradePath?.length) {
+            obj.upgradePath = message.upgradePath;
+        }
+        if (message.allowUpdateAfterExpiry === true) {
+            obj.allowUpdateAfterExpiry = message.allowUpdateAfterExpiry;
+        }
+        if (message.allowUpdateAfterMisbehaviour === true) {
+            obj.allowUpdateAfterMisbehaviour = message.allowUpdateAfterMisbehaviour;
+        }
         return obj;
     },
 
@@ -318,7 +337,7 @@ export const ClientState = {
 };
 
 function createBaseConsensusState(): ConsensusState {
-    return { timestamp: undefined, root: undefined, nextValidatorsHash: new Uint8Array() };
+    return { timestamp: undefined, root: undefined, nextValidatorsHash: new Uint8Array(0) };
 }
 
 export const ConsensusState = {
@@ -376,15 +395,21 @@ export const ConsensusState = {
         return {
             timestamp: isSet(object.timestamp) ? fromJsonTimestamp(object.timestamp) : undefined,
             root: isSet(object.root) ? MerkleRoot.fromJSON(object.root) : undefined,
-            nextValidatorsHash: isSet(object.nextValidatorsHash) ? bytesFromBase64(object.nextValidatorsHash) : new Uint8Array(),
+            nextValidatorsHash: isSet(object.nextValidatorsHash) ? bytesFromBase64(object.nextValidatorsHash) : new Uint8Array(0),
         };
     },
 
     toJSON(message: ConsensusState): unknown {
         const obj: any = {};
-        message.timestamp !== undefined && (obj.timestamp = message.timestamp.toISOString());
-        message.root !== undefined && (obj.root = message.root ? MerkleRoot.toJSON(message.root) : undefined);
-        message.nextValidatorsHash !== undefined && (obj.nextValidatorsHash = base64FromBytes(message.nextValidatorsHash !== undefined ? message.nextValidatorsHash : new Uint8Array()));
+        if (message.timestamp !== undefined) {
+            obj.timestamp = message.timestamp.toISOString();
+        }
+        if (message.root !== undefined) {
+            obj.root = MerkleRoot.toJSON(message.root);
+        }
+        if (message.nextValidatorsHash.length !== 0) {
+            obj.nextValidatorsHash = base64FromBytes(message.nextValidatorsHash);
+        }
         return obj;
     },
 
@@ -396,7 +421,7 @@ export const ConsensusState = {
         const message = createBaseConsensusState();
         message.timestamp = object.timestamp ?? undefined;
         message.root = object.root !== undefined && object.root !== null ? MerkleRoot.fromPartial(object.root) : undefined;
-        message.nextValidatorsHash = object.nextValidatorsHash ?? new Uint8Array();
+        message.nextValidatorsHash = object.nextValidatorsHash ?? new Uint8Array(0);
         return message;
     },
 };
@@ -466,9 +491,15 @@ export const Misbehaviour = {
 
     toJSON(message: Misbehaviour): unknown {
         const obj: any = {};
-        message.clientId !== undefined && (obj.clientId = message.clientId);
-        message.header1 !== undefined && (obj.header1 = message.header1 ? Header.toJSON(message.header1) : undefined);
-        message.header2 !== undefined && (obj.header2 = message.header2 ? Header.toJSON(message.header2) : undefined);
+        if (message.clientId !== '') {
+            obj.clientId = message.clientId;
+        }
+        if (message.header1 !== undefined) {
+            obj.header1 = Header.toJSON(message.header1);
+        }
+        if (message.header2 !== undefined) {
+            obj.header2 = Header.toJSON(message.header2);
+        }
         return obj;
     },
 
@@ -561,10 +592,18 @@ export const Header = {
 
     toJSON(message: Header): unknown {
         const obj: any = {};
-        message.signedHeader !== undefined && (obj.signedHeader = message.signedHeader ? SignedHeader.toJSON(message.signedHeader) : undefined);
-        message.validatorSet !== undefined && (obj.validatorSet = message.validatorSet ? ValidatorSet.toJSON(message.validatorSet) : undefined);
-        message.trustedHeight !== undefined && (obj.trustedHeight = message.trustedHeight ? Height.toJSON(message.trustedHeight) : undefined);
-        message.trustedValidators !== undefined && (obj.trustedValidators = message.trustedValidators ? ValidatorSet.toJSON(message.trustedValidators) : undefined);
+        if (message.signedHeader !== undefined) {
+            obj.signedHeader = SignedHeader.toJSON(message.signedHeader);
+        }
+        if (message.validatorSet !== undefined) {
+            obj.validatorSet = ValidatorSet.toJSON(message.validatorSet);
+        }
+        if (message.trustedHeight !== undefined) {
+            obj.trustedHeight = Height.toJSON(message.trustedHeight);
+        }
+        if (message.trustedValidators !== undefined) {
+            obj.trustedValidators = ValidatorSet.toJSON(message.trustedValidators);
+        }
         return obj;
     },
 
@@ -636,8 +675,12 @@ export const Fraction = {
 
     toJSON(message: Fraction): unknown {
         const obj: any = {};
-        message.numerator !== undefined && (obj.numerator = (message.numerator || Long.UZERO).toString());
-        message.denominator !== undefined && (obj.denominator = (message.denominator || Long.UZERO).toString());
+        if (!message.numerator.isZero()) {
+            obj.numerator = (message.numerator || Long.UZERO).toString();
+        }
+        if (!message.denominator.isZero()) {
+            obj.denominator = (message.denominator || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -653,10 +696,10 @@ export const Fraction = {
     },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }

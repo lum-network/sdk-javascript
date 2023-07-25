@@ -19,14 +19,14 @@ export interface QueryAllowanceRequest {
 /** QueryAllowanceResponse is the response type for the Query/Allowance RPC method. */
 export interface QueryAllowanceResponse {
     /** allowance is a allowance granted for grantee by granter. */
-    allowance?: Grant;
+    allowance?: Grant | undefined;
 }
 
 /** QueryAllowancesRequest is the request type for the Query/Allowances RPC method. */
 export interface QueryAllowancesRequest {
     grantee: string;
     /** pagination defines an pagination for the request. */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /** QueryAllowancesResponse is the response type for the Query/Allowances RPC method. */
@@ -34,7 +34,7 @@ export interface QueryAllowancesResponse {
     /** allowances are allowance's granted for grantee by granter. */
     allowances: Grant[];
     /** pagination defines an pagination for the response. */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
 }
 
 /**
@@ -45,7 +45,7 @@ export interface QueryAllowancesResponse {
 export interface QueryAllowancesByGranterRequest {
     granter: string;
     /** pagination defines an pagination for the request. */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /**
@@ -57,7 +57,7 @@ export interface QueryAllowancesByGranterResponse {
     /** allowances that have been issued by the granter. */
     allowances: Grant[];
     /** pagination defines an pagination for the response. */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
 }
 
 function createBaseQueryAllowanceRequest(): QueryAllowanceRequest {
@@ -114,8 +114,12 @@ export const QueryAllowanceRequest = {
 
     toJSON(message: QueryAllowanceRequest): unknown {
         const obj: any = {};
-        message.granter !== undefined && (obj.granter = message.granter);
-        message.grantee !== undefined && (obj.grantee = message.grantee);
+        if (message.granter !== '') {
+            obj.granter = message.granter;
+        }
+        if (message.grantee !== '') {
+            obj.grantee = message.grantee;
+        }
         return obj;
     },
 
@@ -172,7 +176,9 @@ export const QueryAllowanceResponse = {
 
     toJSON(message: QueryAllowanceResponse): unknown {
         const obj: any = {};
-        message.allowance !== undefined && (obj.allowance = message.allowance ? Grant.toJSON(message.allowance) : undefined);
+        if (message.allowance !== undefined) {
+            obj.allowance = Grant.toJSON(message.allowance);
+        }
         return obj;
     },
 
@@ -241,8 +247,12 @@ export const QueryAllowancesRequest = {
 
     toJSON(message: QueryAllowancesRequest): unknown {
         const obj: any = {};
-        message.grantee !== undefined && (obj.grantee = message.grantee);
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (message.grantee !== '') {
+            obj.grantee = message.grantee;
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -312,12 +322,12 @@ export const QueryAllowancesResponse = {
 
     toJSON(message: QueryAllowancesResponse): unknown {
         const obj: any = {};
-        if (message.allowances) {
-            obj.allowances = message.allowances.map((e) => (e ? Grant.toJSON(e) : undefined));
-        } else {
-            obj.allowances = [];
+        if (message.allowances?.length) {
+            obj.allowances = message.allowances.map((e) => Grant.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -387,8 +397,12 @@ export const QueryAllowancesByGranterRequest = {
 
     toJSON(message: QueryAllowancesByGranterRequest): unknown {
         const obj: any = {};
-        message.granter !== undefined && (obj.granter = message.granter);
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (message.granter !== '') {
+            obj.granter = message.granter;
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -458,12 +472,12 @@ export const QueryAllowancesByGranterResponse = {
 
     toJSON(message: QueryAllowancesByGranterResponse): unknown {
         const obj: any = {};
-        if (message.allowances) {
-            obj.allowances = message.allowances.map((e) => (e ? Grant.toJSON(e) : undefined));
-        } else {
-            obj.allowances = [];
+        if (message.allowances?.length) {
+            obj.allowances = message.allowances.map((e) => Grant.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -481,9 +495,9 @@ export const QueryAllowancesByGranterResponse = {
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-    /** Allowance returns fee granted to the grantee by the granter. */
+    /** Allowance returns granted allwance to the grantee by the granter. */
     Allowance(request: QueryAllowanceRequest): Promise<QueryAllowanceResponse>;
-    /** Allowances returns all the grants for address. */
+    /** Allowances returns all the grants for the given grantee address. */
     Allowances(request: QueryAllowancesRequest): Promise<QueryAllowancesResponse>;
     /**
      * AllowancesByGranter returns all the grants given by an address
@@ -493,11 +507,12 @@ export interface Query {
     AllowancesByGranter(request: QueryAllowancesByGranterRequest): Promise<QueryAllowancesByGranterResponse>;
 }
 
+export const QueryServiceName = 'cosmos.feegrant.v1beta1.Query';
 export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'cosmos.feegrant.v1beta1.Query';
+        this.service = opts?.service || QueryServiceName;
         this.rpc = rpc;
         this.Allowance = this.Allowance.bind(this);
         this.Allowances = this.Allowances.bind(this);

@@ -13,10 +13,10 @@ export const protobufPackage = 'cosmos.upgrade.v1beta1';
  * Since: cosmos-sdk 0.46
  */
 export interface MsgSoftwareUpgrade {
-    /** authority is the address of the governance account. */
+    /** authority is the address that controls the module (defaults to x/gov unless overwritten). */
     authority: string;
     /** plan is the upgrade plan. */
-    plan?: Plan;
+    plan?: Plan | undefined;
 }
 
 /**
@@ -32,7 +32,7 @@ export interface MsgSoftwareUpgradeResponse {}
  * Since: cosmos-sdk 0.46
  */
 export interface MsgCancelUpgrade {
-    /** authority is the address of the governance account. */
+    /** authority is the address that controls the module (defaults to x/gov unless overwritten). */
     authority: string;
 }
 
@@ -97,8 +97,12 @@ export const MsgSoftwareUpgrade = {
 
     toJSON(message: MsgSoftwareUpgrade): unknown {
         const obj: any = {};
-        message.authority !== undefined && (obj.authority = message.authority);
-        message.plan !== undefined && (obj.plan = message.plan ? Plan.toJSON(message.plan) : undefined);
+        if (message.authority !== '') {
+            obj.authority = message.authority;
+        }
+        if (message.plan !== undefined) {
+            obj.plan = Plan.toJSON(message.plan);
+        }
         return obj;
     },
 
@@ -199,7 +203,9 @@ export const MsgCancelUpgrade = {
 
     toJSON(message: MsgCancelUpgrade): unknown {
         const obj: any = {};
-        message.authority !== undefined && (obj.authority = message.authority);
+        if (message.authority !== '') {
+            obj.authority = message.authority;
+        }
         return obj;
     },
 
@@ -268,18 +274,19 @@ export interface Msg {
     SoftwareUpgrade(request: MsgSoftwareUpgrade): Promise<MsgSoftwareUpgradeResponse>;
     /**
      * CancelUpgrade is a governance operation for cancelling a previously
-     * approvid software upgrade.
+     * approved software upgrade.
      *
      * Since: cosmos-sdk 0.46
      */
     CancelUpgrade(request: MsgCancelUpgrade): Promise<MsgCancelUpgradeResponse>;
 }
 
+export const MsgServiceName = 'cosmos.upgrade.v1beta1.Msg';
 export class MsgClientImpl implements Msg {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'cosmos.upgrade.v1beta1.Msg';
+        this.service = opts?.service || MsgServiceName;
         this.rpc = rpc;
         this.SoftwareUpgrade = this.SoftwareUpgrade.bind(this);
         this.CancelUpgrade = this.CancelUpgrade.bind(this);

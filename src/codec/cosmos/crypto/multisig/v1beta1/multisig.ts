@@ -67,10 +67,8 @@ export const MultiSignature = {
 
     toJSON(message: MultiSignature): unknown {
         const obj: any = {};
-        if (message.signatures) {
-            obj.signatures = message.signatures.map((e) => base64FromBytes(e !== undefined ? e : new Uint8Array()));
-        } else {
-            obj.signatures = [];
+        if (message.signatures?.length) {
+            obj.signatures = message.signatures.map((e) => base64FromBytes(e));
         }
         return obj;
     },
@@ -87,7 +85,7 @@ export const MultiSignature = {
 };
 
 function createBaseCompactBitArray(): CompactBitArray {
-    return { extraBitsStored: 0, elems: new Uint8Array() };
+    return { extraBitsStored: 0, elems: new Uint8Array(0) };
 }
 
 export const CompactBitArray = {
@@ -134,14 +132,18 @@ export const CompactBitArray = {
     fromJSON(object: any): CompactBitArray {
         return {
             extraBitsStored: isSet(object.extraBitsStored) ? Number(object.extraBitsStored) : 0,
-            elems: isSet(object.elems) ? bytesFromBase64(object.elems) : new Uint8Array(),
+            elems: isSet(object.elems) ? bytesFromBase64(object.elems) : new Uint8Array(0),
         };
     },
 
     toJSON(message: CompactBitArray): unknown {
         const obj: any = {};
-        message.extraBitsStored !== undefined && (obj.extraBitsStored = Math.round(message.extraBitsStored));
-        message.elems !== undefined && (obj.elems = base64FromBytes(message.elems !== undefined ? message.elems : new Uint8Array()));
+        if (message.extraBitsStored !== 0) {
+            obj.extraBitsStored = Math.round(message.extraBitsStored);
+        }
+        if (message.elems.length !== 0) {
+            obj.elems = base64FromBytes(message.elems);
+        }
         return obj;
     },
 
@@ -152,15 +154,15 @@ export const CompactBitArray = {
     fromPartial<I extends Exact<DeepPartial<CompactBitArray>, I>>(object: I): CompactBitArray {
         const message = createBaseCompactBitArray();
         message.extraBitsStored = object.extraBitsStored ?? 0;
-        message.elems = object.elems ?? new Uint8Array();
+        message.elems = object.elems ?? new Uint8Array(0);
         return message;
     },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }

@@ -2,7 +2,7 @@ import Long from 'long';
 
 import { Coin } from '../../types';
 import { Message } from '../Message';
-import { MsgDeposit } from '../../codec/lum-network/millions/tx';
+import { MsgDeposit } from '../../codec/lum/network/millions/tx';
 
 export const MsgMillionsDepositUrl = '/lum.network.millions.MsgDeposit';
 

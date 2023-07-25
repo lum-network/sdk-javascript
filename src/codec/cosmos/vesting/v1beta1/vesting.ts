@@ -11,10 +11,11 @@ export const protobufPackage = 'cosmos.vesting.v1beta1';
  * the necessary fields needed for any vesting account implementation.
  */
 export interface BaseVestingAccount {
-    baseAccount?: BaseAccount;
+    baseAccount?: BaseAccount | undefined;
     originalVesting: Coin[];
     delegatedFree: Coin[];
     delegatedVesting: Coin[];
+    /** Vesting end time, as unix timestamp (in seconds). */
     endTime: Long;
 }
 
@@ -23,7 +24,8 @@ export interface BaseVestingAccount {
  * continuously vests by unlocking coins linearly with respect to time.
  */
 export interface ContinuousVestingAccount {
-    baseVestingAccount?: BaseVestingAccount;
+    baseVestingAccount?: BaseVestingAccount | undefined;
+    /** Vesting start time, as unix timestamp (in seconds). */
     startTime: Long;
 }
 
@@ -33,11 +35,12 @@ export interface ContinuousVestingAccount {
  * locked until a specified time.
  */
 export interface DelayedVestingAccount {
-    baseVestingAccount?: BaseVestingAccount;
+    baseVestingAccount?: BaseVestingAccount | undefined;
 }
 
 /** Period defines a length of time and amount of coins that will vest. */
 export interface Period {
+    /** Period duration in seconds. */
     length: Long;
     amount: Coin[];
 }
@@ -47,7 +50,7 @@ export interface Period {
  * periodically vests by unlocking coins during each specified period.
  */
 export interface PeriodicVestingAccount {
-    baseVestingAccount?: BaseVestingAccount;
+    baseVestingAccount?: BaseVestingAccount | undefined;
     startTime: Long;
     vestingPeriods: Period[];
 }
@@ -60,7 +63,7 @@ export interface PeriodicVestingAccount {
  * Since: cosmos-sdk 0.43
  */
 export interface PermanentLockedAccount {
-    baseVestingAccount?: BaseVestingAccount;
+    baseVestingAccount?: BaseVestingAccount | undefined;
 }
 
 function createBaseBaseVestingAccount(): BaseVestingAccount {
@@ -150,23 +153,21 @@ export const BaseVestingAccount = {
 
     toJSON(message: BaseVestingAccount): unknown {
         const obj: any = {};
-        message.baseAccount !== undefined && (obj.baseAccount = message.baseAccount ? BaseAccount.toJSON(message.baseAccount) : undefined);
-        if (message.originalVesting) {
-            obj.originalVesting = message.originalVesting.map((e) => (e ? Coin.toJSON(e) : undefined));
-        } else {
-            obj.originalVesting = [];
+        if (message.baseAccount !== undefined) {
+            obj.baseAccount = BaseAccount.toJSON(message.baseAccount);
         }
-        if (message.delegatedFree) {
-            obj.delegatedFree = message.delegatedFree.map((e) => (e ? Coin.toJSON(e) : undefined));
-        } else {
-            obj.delegatedFree = [];
+        if (message.originalVesting?.length) {
+            obj.originalVesting = message.originalVesting.map((e) => Coin.toJSON(e));
         }
-        if (message.delegatedVesting) {
-            obj.delegatedVesting = message.delegatedVesting.map((e) => (e ? Coin.toJSON(e) : undefined));
-        } else {
-            obj.delegatedVesting = [];
+        if (message.delegatedFree?.length) {
+            obj.delegatedFree = message.delegatedFree.map((e) => Coin.toJSON(e));
         }
-        message.endTime !== undefined && (obj.endTime = (message.endTime || Long.ZERO).toString());
+        if (message.delegatedVesting?.length) {
+            obj.delegatedVesting = message.delegatedVesting.map((e) => Coin.toJSON(e));
+        }
+        if (!message.endTime.isZero()) {
+            obj.endTime = (message.endTime || Long.ZERO).toString();
+        }
         return obj;
     },
 
@@ -239,8 +240,12 @@ export const ContinuousVestingAccount = {
 
     toJSON(message: ContinuousVestingAccount): unknown {
         const obj: any = {};
-        message.baseVestingAccount !== undefined && (obj.baseVestingAccount = message.baseVestingAccount ? BaseVestingAccount.toJSON(message.baseVestingAccount) : undefined);
-        message.startTime !== undefined && (obj.startTime = (message.startTime || Long.ZERO).toString());
+        if (message.baseVestingAccount !== undefined) {
+            obj.baseVestingAccount = BaseVestingAccount.toJSON(message.baseVestingAccount);
+        }
+        if (!message.startTime.isZero()) {
+            obj.startTime = (message.startTime || Long.ZERO).toString();
+        }
         return obj;
     },
 
@@ -299,7 +304,9 @@ export const DelayedVestingAccount = {
 
     toJSON(message: DelayedVestingAccount): unknown {
         const obj: any = {};
-        message.baseVestingAccount !== undefined && (obj.baseVestingAccount = message.baseVestingAccount ? BaseVestingAccount.toJSON(message.baseVestingAccount) : undefined);
+        if (message.baseVestingAccount !== undefined) {
+            obj.baseVestingAccount = BaseVestingAccount.toJSON(message.baseVestingAccount);
+        }
         return obj;
     },
 
@@ -368,11 +375,11 @@ export const Period = {
 
     toJSON(message: Period): unknown {
         const obj: any = {};
-        message.length !== undefined && (obj.length = (message.length || Long.ZERO).toString());
-        if (message.amount) {
-            obj.amount = message.amount.map((e) => (e ? Coin.toJSON(e) : undefined));
-        } else {
-            obj.amount = [];
+        if (!message.length.isZero()) {
+            obj.length = (message.length || Long.ZERO).toString();
+        }
+        if (message.amount?.length) {
+            obj.amount = message.amount.map((e) => Coin.toJSON(e));
         }
         return obj;
     },
@@ -454,12 +461,14 @@ export const PeriodicVestingAccount = {
 
     toJSON(message: PeriodicVestingAccount): unknown {
         const obj: any = {};
-        message.baseVestingAccount !== undefined && (obj.baseVestingAccount = message.baseVestingAccount ? BaseVestingAccount.toJSON(message.baseVestingAccount) : undefined);
-        message.startTime !== undefined && (obj.startTime = (message.startTime || Long.ZERO).toString());
-        if (message.vestingPeriods) {
-            obj.vestingPeriods = message.vestingPeriods.map((e) => (e ? Period.toJSON(e) : undefined));
-        } else {
-            obj.vestingPeriods = [];
+        if (message.baseVestingAccount !== undefined) {
+            obj.baseVestingAccount = BaseVestingAccount.toJSON(message.baseVestingAccount);
+        }
+        if (!message.startTime.isZero()) {
+            obj.startTime = (message.startTime || Long.ZERO).toString();
+        }
+        if (message.vestingPeriods?.length) {
+            obj.vestingPeriods = message.vestingPeriods.map((e) => Period.toJSON(e));
         }
         return obj;
     },
@@ -520,7 +529,9 @@ export const PermanentLockedAccount = {
 
     toJSON(message: PermanentLockedAccount): unknown {
         const obj: any = {};
-        message.baseVestingAccount !== undefined && (obj.baseVestingAccount = message.baseVestingAccount ? BaseVestingAccount.toJSON(message.baseVestingAccount) : undefined);
+        if (message.baseVestingAccount !== undefined) {
+            obj.baseVestingAccount = BaseVestingAccount.toJSON(message.baseVestingAccount);
+        }
         return obj;
     },
 

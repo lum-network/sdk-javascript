@@ -1,14 +1,14 @@
-import { QueryClientImpl, QueryDepositsResponse, QueryDrawsResponse, QueryPoolsResponse, QueryPrizesResponse, QueryWithdrawalsResponse } from '../codec/lum-network/millions/query';
+import { QueryClientImpl, QueryDepositsResponse, QueryDrawsResponse, QueryPoolsResponse, QueryPrizesResponse, QueryWithdrawalsResponse } from '../codec/lum/network/millions/query';
 import { assert } from '@cosmjs/utils';
 import { createPagination, createProtobufRpcClient } from './utils';
 import { QueryClient } from '@cosmjs/stargate';
-import { Pool } from '../codec/lum-network/millions/pool';
-import { Params } from '../codec/lum-network/millions/params';
+import { Pool } from '../codec/lum/network/millions/pool';
+import { Params } from '../codec/lum/network/millions/params';
 import Long from 'long';
-import { Deposit } from '../codec/lum-network/millions/deposit';
-import { Draw } from '../codec/lum-network/millions/draw';
-import { Prize } from '../codec/lum-network/millions/prize';
-import { Withdrawal } from '../codec/lum-network/millions/withdrawal';
+import { Deposit } from '../codec/lum/network/millions/deposit';
+import { Draw } from '../codec/lum/network/millions/draw';
+import { Prize } from '../codec/lum/network/millions/prize';
+import { Withdrawal } from '../codec/lum/network/millions/withdrawal';
 
 export interface MillionsExtension {
     readonly millions: {

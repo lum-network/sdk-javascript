@@ -12,20 +12,27 @@ export const protobufPackage = 'cosmos.gov.v1beta1';
  * proposal Content.
  */
 export interface MsgSubmitProposal {
-    content?: Any;
+    /** content is the proposal's content. */
+    content?: Any | undefined;
+    /** initial_deposit is the deposit value that must be paid at proposal submission. */
     initialDeposit: Coin[];
+    /** proposer is the account address of the proposer. */
     proposer: string;
 }
 
 /** MsgSubmitProposalResponse defines the Msg/SubmitProposal response type. */
 export interface MsgSubmitProposalResponse {
+    /** proposal_id defines the unique id of the proposal. */
     proposalId: Long;
 }
 
 /** MsgVote defines a message to cast a vote. */
 export interface MsgVote {
+    /** proposal_id defines the unique id of the proposal. */
     proposalId: Long;
+    /** voter is the voter address for the proposal. */
     voter: string;
+    /** option defines the vote option. */
     option: VoteOption;
 }
 
@@ -38,8 +45,11 @@ export interface MsgVoteResponse {}
  * Since: cosmos-sdk 0.43
  */
 export interface MsgVoteWeighted {
+    /** proposal_id defines the unique id of the proposal. */
     proposalId: Long;
+    /** voter is the voter address for the proposal. */
     voter: string;
+    /** options defines the weighted vote options. */
     options: WeightedVoteOption[];
 }
 
@@ -52,8 +62,11 @@ export interface MsgVoteWeightedResponse {}
 
 /** MsgDeposit defines a message to submit a deposit to an existing proposal. */
 export interface MsgDeposit {
+    /** proposal_id defines the unique id of the proposal. */
     proposalId: Long;
+    /** depositor defines the deposit addresses from the proposals. */
     depositor: string;
+    /** amount to be deposited by depositor. */
     amount: Coin[];
 }
 
@@ -125,13 +138,15 @@ export const MsgSubmitProposal = {
 
     toJSON(message: MsgSubmitProposal): unknown {
         const obj: any = {};
-        message.content !== undefined && (obj.content = message.content ? Any.toJSON(message.content) : undefined);
-        if (message.initialDeposit) {
-            obj.initialDeposit = message.initialDeposit.map((e) => (e ? Coin.toJSON(e) : undefined));
-        } else {
-            obj.initialDeposit = [];
+        if (message.content !== undefined) {
+            obj.content = Any.toJSON(message.content);
         }
-        message.proposer !== undefined && (obj.proposer = message.proposer);
+        if (message.initialDeposit?.length) {
+            obj.initialDeposit = message.initialDeposit.map((e) => Coin.toJSON(e));
+        }
+        if (message.proposer !== '') {
+            obj.proposer = message.proposer;
+        }
         return obj;
     },
 
@@ -189,7 +204,9 @@ export const MsgSubmitProposalResponse = {
 
     toJSON(message: MsgSubmitProposalResponse): unknown {
         const obj: any = {};
-        message.proposalId !== undefined && (obj.proposalId = (message.proposalId || Long.UZERO).toString());
+        if (!message.proposalId.isZero()) {
+            obj.proposalId = (message.proposalId || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -269,9 +286,15 @@ export const MsgVote = {
 
     toJSON(message: MsgVote): unknown {
         const obj: any = {};
-        message.proposalId !== undefined && (obj.proposalId = (message.proposalId || Long.UZERO).toString());
-        message.voter !== undefined && (obj.voter = message.voter);
-        message.option !== undefined && (obj.option = voteOptionToJSON(message.option));
+        if (!message.proposalId.isZero()) {
+            obj.proposalId = (message.proposalId || Long.UZERO).toString();
+        }
+        if (message.voter !== '') {
+            obj.voter = message.voter;
+        }
+        if (message.option !== 0) {
+            obj.option = voteOptionToJSON(message.option);
+        }
         return obj;
     },
 
@@ -397,12 +420,14 @@ export const MsgVoteWeighted = {
 
     toJSON(message: MsgVoteWeighted): unknown {
         const obj: any = {};
-        message.proposalId !== undefined && (obj.proposalId = (message.proposalId || Long.UZERO).toString());
-        message.voter !== undefined && (obj.voter = message.voter);
-        if (message.options) {
-            obj.options = message.options.map((e) => (e ? WeightedVoteOption.toJSON(e) : undefined));
-        } else {
-            obj.options = [];
+        if (!message.proposalId.isZero()) {
+            obj.proposalId = (message.proposalId || Long.UZERO).toString();
+        }
+        if (message.voter !== '') {
+            obj.voter = message.voter;
+        }
+        if (message.options?.length) {
+            obj.options = message.options.map((e) => WeightedVoteOption.toJSON(e));
         }
         return obj;
     },
@@ -529,12 +554,14 @@ export const MsgDeposit = {
 
     toJSON(message: MsgDeposit): unknown {
         const obj: any = {};
-        message.proposalId !== undefined && (obj.proposalId = (message.proposalId || Long.UZERO).toString());
-        message.depositor !== undefined && (obj.depositor = message.depositor);
-        if (message.amount) {
-            obj.amount = message.amount.map((e) => (e ? Coin.toJSON(e) : undefined));
-        } else {
-            obj.amount = [];
+        if (!message.proposalId.isZero()) {
+            obj.proposalId = (message.proposalId || Long.UZERO).toString();
+        }
+        if (message.depositor !== '') {
+            obj.depositor = message.depositor;
+        }
+        if (message.amount?.length) {
+            obj.amount = message.amount.map((e) => Coin.toJSON(e));
         }
         return obj;
     },
@@ -596,7 +623,7 @@ export const MsgDepositResponse = {
     },
 };
 
-/** Msg defines the bank Msg service. */
+/** Msg defines the gov Msg service. */
 export interface Msg {
     /** SubmitProposal defines a method to create new proposal given a content. */
     SubmitProposal(request: MsgSubmitProposal): Promise<MsgSubmitProposalResponse>;
@@ -612,11 +639,12 @@ export interface Msg {
     Deposit(request: MsgDeposit): Promise<MsgDepositResponse>;
 }
 
+export const MsgServiceName = 'cosmos.gov.v1beta1.Msg';
 export class MsgClientImpl implements Msg {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'cosmos.gov.v1beta1.Msg';
+        this.service = opts?.service || MsgServiceName;
         this.rpc = rpc;
         this.SubmitProposal = this.SubmitProposal.bind(this);
         this.Vote = this.Vote.bind(this);

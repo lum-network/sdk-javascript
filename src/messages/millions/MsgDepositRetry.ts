@@ -1,7 +1,7 @@
 import Long from 'long';
 
 import { Message } from '../Message';
-import { MsgDepositRetry } from '../../codec/lum-network/millions/tx';
+import { MsgDepositRetry } from '../../codec/lum/network/millions/tx';
 
 export const MsgDepositRetryUrl = '/lum.network.millions.MsgDepositRetry';
 

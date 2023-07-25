@@ -2,13 +2,9 @@
 set -o errexit -o nounset -o pipefail
 command -v shellcheck >/dev/null && shellcheck "$0"
 
-ROOT_PROTO_DIR="./proto/cosmos/cosmos-sdk"
-COSMOS_PROTO_DIR="$ROOT_PROTO_DIR/proto"
-COSMOS_THIRD_PARTY_PROTO_DIR="$ROOT_PROTO_DIR/third_party/proto"
+COSMOS_PROTO_DIR="./proto/cosmos/cosmos-sdk"
 
-ROOT_IBC_PROTO_DIR="./proto/ibc/ibc-go"
-IBC_PROTO_DIR="$ROOT_IBC_PROTO_DIR/proto"
-IBC_THIRD_PARTY_PROTO_DIR="$ROOT_IBC_PROTO_DIR/third_party/proto"
+IBC_PROTO_DIR="./proto/ibc/ibc-go"
 
 ROOT_LUM_PROTO_DIR="./proto/lum-network/chain"
 LUM_PROTO_DIR="$ROOT_LUM_PROTO_DIR/proto"
@@ -21,8 +17,6 @@ protoc \
     --plugin="$(yarn bin protoc-gen-ts_proto)" \
     --ts_proto_out="$OUT_DIR" \
     --proto_path="$COSMOS_PROTO_DIR" \
-    --proto_path="$COSMOS_THIRD_PARTY_PROTO_DIR" \
-    --proto_path="$IBC_THIRD_PARTY_PROTO_DIR" \
     --proto_path="$LUM_PROTO_DIR" \
     --proto_path="$IBC_PROTO_DIR" \
     --ts_proto_opt="esModuleInterop=true,forceLong=long,useOptionals=true" \
@@ -40,7 +34,6 @@ protoc \
     "$COSMOS_PROTO_DIR/cosmos/base/query/v1beta1/pagination.proto" \
     "$COSMOS_PROTO_DIR/cosmos/base/tendermint/v1beta1/query.proto" \
     "$COSMOS_PROTO_DIR/cosmos/base/v1beta1/coin.proto" \
-    "$COSMOS_PROTO_DIR/cosmos/capability/v1beta1/capability.proto" \
     "$COSMOS_PROTO_DIR/cosmos/crypto/secp256k1/keys.proto" \
     "$COSMOS_PROTO_DIR/cosmos/crypto/multisig/v1beta1/multisig.proto" \
     "$COSMOS_PROTO_DIR/cosmos/distribution/v1beta1/distribution.proto" \
@@ -96,31 +89,31 @@ protoc \
     "$IBC_PROTO_DIR/ibc/core/connection/v1/query.proto" \
     "$IBC_PROTO_DIR/ibc/core/connection/v1/tx.proto" \
     "$IBC_PROTO_DIR/ibc/lightclients/tendermint/v1/tendermint.proto" \
-    "$LUM_PROTO_DIR/lum-network/airdrop/claim.proto" \
-    "$LUM_PROTO_DIR/lum-network/airdrop/query.proto" \
-    "$LUM_PROTO_DIR/lum-network/airdrop/params.proto" \
-    "$LUM_PROTO_DIR/lum-network/beam/beam.proto" \
-    "$LUM_PROTO_DIR/lum-network/beam/query.proto" \
-    "$LUM_PROTO_DIR/lum-network/beam/tx.proto" \
-    "$LUM_PROTO_DIR/lum-network/dfract/deposit.proto" \
-    "$LUM_PROTO_DIR/lum-network/dfract/query.proto" \
-    "$LUM_PROTO_DIR/lum-network/dfract/tx.proto" \
-    "$LUM_PROTO_DIR/lum-network/dfract/params.proto" \
-    "$LUM_PROTO_DIR/lum-network/dfract/proposal.proto" \
-    "$LUM_PROTO_DIR/lum-network/millions/callbacks.proto" \
-    "$LUM_PROTO_DIR/lum-network/millions/deposit.proto" \
-    "$LUM_PROTO_DIR/lum-network/millions/draw.proto" \
-    "$LUM_PROTO_DIR/lum-network/millions/draw_schedule.proto" \
-    "$LUM_PROTO_DIR/lum-network/millions/params.proto" \
-    "$LUM_PROTO_DIR/lum-network/millions/pool.proto" \
-    "$LUM_PROTO_DIR/lum-network/millions/prize.proto" \
-    "$LUM_PROTO_DIR/lum-network/millions/prize_batch.proto" \
-    "$LUM_PROTO_DIR/lum-network/millions/prize_ref.proto" \
-    "$LUM_PROTO_DIR/lum-network/millions/prize_strategy.proto" \
-    "$LUM_PROTO_DIR/lum-network/millions/query.proto" \
-    "$LUM_PROTO_DIR/lum-network/millions/tx.proto" \
-    "$LUM_PROTO_DIR/lum-network/millions/withdrawal.proto" \
-    "$LUM_PROTO_DIR/lum-network/millions/gov.proto"
+    "$LUM_PROTO_DIR/lum/network/airdrop/claim.proto" \
+    "$LUM_PROTO_DIR/lum/network/airdrop/query.proto" \
+    "$LUM_PROTO_DIR/lum/network/airdrop/params.proto" \
+    "$LUM_PROTO_DIR/lum/network/beam/beam.proto" \
+    "$LUM_PROTO_DIR/lum/network/beam/query.proto" \
+    "$LUM_PROTO_DIR/lum/network/beam/tx.proto" \
+    "$LUM_PROTO_DIR/lum/network/dfract/deposit.proto" \
+    "$LUM_PROTO_DIR/lum/network/dfract/query.proto" \
+    "$LUM_PROTO_DIR/lum/network/dfract/tx.proto" \
+    "$LUM_PROTO_DIR/lum/network/dfract/params.proto" \
+    "$LUM_PROTO_DIR/lum/network/dfract/proposal.proto" \
+    "$LUM_PROTO_DIR/lum/network/millions/callbacks.proto" \
+    "$LUM_PROTO_DIR/lum/network/millions/deposit.proto" \
+    "$LUM_PROTO_DIR/lum/network/millions/draw.proto" \
+    "$LUM_PROTO_DIR/lum/network/millions/draw_schedule.proto" \
+    "$LUM_PROTO_DIR/lum/network/millions/params.proto" \
+    "$LUM_PROTO_DIR/lum/network/millions/pool.proto" \
+    "$LUM_PROTO_DIR/lum/network/millions/prize.proto" \
+    "$LUM_PROTO_DIR/lum/network/millions/prize_batch.proto" \
+    "$LUM_PROTO_DIR/lum/network/millions/prize_ref.proto" \
+    "$LUM_PROTO_DIR/lum/network/millions/prize_strategy.proto" \
+    "$LUM_PROTO_DIR/lum/network/millions/query.proto" \
+    "$LUM_PROTO_DIR/lum/network/millions/tx.proto" \
+    "$LUM_PROTO_DIR/lum/network/millions/withdrawal.proto" \
+    "$LUM_PROTO_DIR/lum/network/millions/gov.proto"
 
 # Remove unnecessary codec files
 rm -rf \

@@ -57,7 +57,7 @@ export interface CosmosTx {
 }
 
 function createBaseInterchainAccountPacketData(): InterchainAccountPacketData {
-    return { type: 0, data: new Uint8Array(), memo: '' };
+    return { type: 0, data: new Uint8Array(0), memo: '' };
 }
 
 export const InterchainAccountPacketData = {
@@ -114,16 +114,22 @@ export const InterchainAccountPacketData = {
     fromJSON(object: any): InterchainAccountPacketData {
         return {
             type: isSet(object.type) ? typeFromJSON(object.type) : 0,
-            data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(),
+            data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(0),
             memo: isSet(object.memo) ? String(object.memo) : '',
         };
     },
 
     toJSON(message: InterchainAccountPacketData): unknown {
         const obj: any = {};
-        message.type !== undefined && (obj.type = typeToJSON(message.type));
-        message.data !== undefined && (obj.data = base64FromBytes(message.data !== undefined ? message.data : new Uint8Array()));
-        message.memo !== undefined && (obj.memo = message.memo);
+        if (message.type !== 0) {
+            obj.type = typeToJSON(message.type);
+        }
+        if (message.data.length !== 0) {
+            obj.data = base64FromBytes(message.data);
+        }
+        if (message.memo !== '') {
+            obj.memo = message.memo;
+        }
         return obj;
     },
 
@@ -134,7 +140,7 @@ export const InterchainAccountPacketData = {
     fromPartial<I extends Exact<DeepPartial<InterchainAccountPacketData>, I>>(object: I): InterchainAccountPacketData {
         const message = createBaseInterchainAccountPacketData();
         message.type = object.type ?? 0;
-        message.data = object.data ?? new Uint8Array();
+        message.data = object.data ?? new Uint8Array(0);
         message.memo = object.memo ?? '';
         return message;
     },
@@ -181,10 +187,8 @@ export const CosmosTx = {
 
     toJSON(message: CosmosTx): unknown {
         const obj: any = {};
-        if (message.messages) {
-            obj.messages = message.messages.map((e) => (e ? Any.toJSON(e) : undefined));
-        } else {
-            obj.messages = [];
+        if (message.messages?.length) {
+            obj.messages = message.messages.map((e) => Any.toJSON(e));
         }
         return obj;
     },
@@ -200,10 +204,10 @@ export const CosmosTx = {
     },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }

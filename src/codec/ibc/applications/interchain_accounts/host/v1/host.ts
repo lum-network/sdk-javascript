@@ -69,11 +69,11 @@ export const Params = {
 
     toJSON(message: Params): unknown {
         const obj: any = {};
-        message.hostEnabled !== undefined && (obj.hostEnabled = message.hostEnabled);
-        if (message.allowMessages) {
-            obj.allowMessages = message.allowMessages.map((e) => e);
-        } else {
-            obj.allowMessages = [];
+        if (message.hostEnabled === true) {
+            obj.hostEnabled = message.hostEnabled;
+        }
+        if (message.allowMessages?.length) {
+            obj.allowMessages = message.allowMessages;
         }
         return obj;
     },

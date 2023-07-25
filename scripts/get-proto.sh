@@ -9,7 +9,6 @@ PROTO_DIR="./proto"
 ##
 COSMOS_DIR="$PROTO_DIR/cosmos"
 COSMOS_SDK_DIR="$COSMOS_DIR/cosmos-sdk"
-COSMOS_ZIP_FILE="$COSMOS_DIR/tmp.zip"
 
 # Init Cosmos REF
 COSMOS_REF=${COSMOS_REF:-"master"}
@@ -19,11 +18,9 @@ COSMOS_SUFFIX=${COSMOS_REF}
 # Create the Cosmos dir
 mkdir -p "$COSMOS_DIR"
 
-# Download the Cosmos archive
-wget -qO "$COSMOS_ZIP_FILE" "https://github.com/cosmos/cosmos-sdk/archive/$COSMOS_REF.zip"
-unzip "$COSMOS_ZIP_FILE" "*.proto" -d "$COSMOS_DIR"
-mv "$COSMOS_SDK_DIR-$COSMOS_SUFFIX" "$COSMOS_SDK_DIR"
-rm "$COSMOS_ZIP_FILE"
+# Download the Cosmos/ics23 archive
+buf export buf.build/cosmos/cosmos-sdk:$COSMOS_REF --output "$COSMOS_SDK_DIR"
+buf export buf.build/cosmos/ics23:$ICS_23_REF --output "$COSMOS_SDK_DIR"
 
 ##
 ## IBC SDK
@@ -31,7 +28,6 @@ rm "$COSMOS_ZIP_FILE"
 
 IBC_DIR="$PROTO_DIR/ibc"
 IBC_SDK_DIR="$IBC_DIR/ibc-go"
-IBC_ZIP_FILE="$IBC_DIR/tmp.zip"
 
 # Init IBC REF
 IBC_REF=${IBC_REF:-"main"}
@@ -42,10 +38,7 @@ IBC_SUFFIX=${IBC_REF}
 mkdir -p "$IBC_DIR"
 
 # Download the IBC archive
-wget -qO "$IBC_ZIP_FILE" "https://github.com/cosmos/ibc-go/archive/$IBC_REF.zip"
-unzip "$IBC_ZIP_FILE" "*.proto" -d "$IBC_DIR"
-mv "$IBC_SDK_DIR-$IBC_SUFFIX" "$IBC_SDK_DIR"
-rm "$IBC_ZIP_FILE"
+buf export buf.build/cosmos/ibc:$IBC_REF --output "$IBC_SDK_DIR"
 
 ##
 ## LUM SDK

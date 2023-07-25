@@ -7,7 +7,7 @@ import { PubKey } from '../codec/cosmos/crypto/secp256k1/keys';
 import { BaseAccount, ModuleAccount, Params as AuthParams } from '../codec/cosmos/auth/v1beta1/auth';
 import { MsgExec, MsgGrant, MsgRevoke } from '../codec/cosmos/authz/v1beta1/tx';
 import { MsgSend, MsgMultiSend } from '../codec/cosmos/bank/v1beta1/tx';
-import { Coin, DecCoin, DecProto, IntProto } from '../codec/cosmos/base/v1beta1/coin';
+import { Coin, DecCoin } from '../codec/cosmos/base/v1beta1/coin';
 import { CommunityPoolSpendProposal, CommunityPoolSpendProposalWithDeposit } from '../codec/cosmos/distribution/v1beta1/distribution';
 import { MsgFundCommunityPool, MsgSetWithdrawAddress, MsgWithdrawDelegatorReward, MsgWithdrawValidatorCommission } from '../codec/cosmos/distribution/v1beta1/tx';
 import { MsgGrantAllowance, MsgRevokeAllowance } from '../codec/cosmos/feegrant/v1beta1/tx';
@@ -39,11 +39,20 @@ import { MsgCreateClient, MsgSubmitMisbehaviour, MsgUpdateClient, MsgUpgradeClie
 import { MsgConnectionOpenAck, MsgConnectionOpenConfirm, MsgConnectionOpenInit, MsgConnectionOpenTry } from '../codec/ibc/core/connection/v1/tx';
 import { MsgTransfer } from '../codec/ibc/applications/transfer/v1/tx';
 
-import { MsgClaimBeam, MsgOpenBeam, MsgUpdateBeam } from '../codec/lum-network/beam/tx';
-import { MsgDeposit as MsgDepositDfract } from '../codec/lum-network/dfract/tx';
-import { WithdrawAndMintProposal } from '../codec/lum-network/dfract/proposal';
-import { MsgClaimPrize, MsgDeposit as MsgDepositMillions, MsgDepositRetry, MsgDrawRetry, MsgUpdateParams, MsgWithdrawDeposit, MsgWithdrawDepositRetry } from '../codec/lum-network/millions/tx';
-import { ProposalRegisterPool, ProposalUpdateParams, ProposalUpdatePool } from '../codec/lum-network/millions/gov';
+import { MsgClaimBeam, MsgOpenBeam, MsgUpdateBeam } from '../codec/lum/network/beam/tx';
+import { MsgDeposit as MsgDepositDfract } from '../codec/lum/network/dfract/tx';
+import { WithdrawAndMintProposal } from '../codec/lum/network/dfract/proposal';
+import {
+    MsgClaimPrize,
+    MsgDeposit as MsgDepositMillions,
+    MsgDepositRetry,
+    MsgDepositEdit,
+    MsgDrawRetry,
+    MsgUpdateParams,
+    MsgWithdrawDeposit,
+    MsgWithdrawDepositRetry,
+} from '../codec/lum/network/millions/tx';
+import { ProposalRegisterPool, ProposalUpdateParams, ProposalUpdatePool } from '../codec/lum/network/millions/gov';
 
 const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/cosmos.auth.v1beta1.BaseAccount', BaseAccount],
@@ -56,8 +65,6 @@ const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/cosmos.bank.v1beta1.MsgMultiSend', MsgMultiSend],
     ['/cosmos.base.v1beta1.Coin', Coin],
     ['/cosmos.base.v1beta1.DecCoin', DecCoin],
-    ['/cosmos.base.v1beta1.IntProto', IntProto],
-    ['/cosmos.base.v1beta1.DecProto', DecProto],
     ['/cosmos.crypto.ed25519.PubKey', PubKey],
     ['/cosmos.crypto.secp256k1.PubKey', PubKey],
     ['/cosmos.distribution.v1beta1.MsgFundCommunityPool', MsgFundCommunityPool],
@@ -120,6 +127,7 @@ const registryTypes: Iterable<[string, GeneratedType]> = [
     ['/lum.network.dfract.WithdrawAndMintProposal', WithdrawAndMintProposal],
     ['/lum.network.millions.MsgClaimPrize', MsgClaimPrize],
     ['/lum.network.millions.MsgDeposit', MsgDepositMillions],
+    ['/lum.network.millions.MsgDepositEdit', MsgDepositEdit],
     ['/lum.network.millions.MsgDepositRetry', MsgDepositRetry],
     ['/lum.network.millions.MsgDrawRetry', MsgDrawRetry],
     ['/lum.network.millions.MsgUpdateParams', MsgUpdateParams],

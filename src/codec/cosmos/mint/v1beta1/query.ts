@@ -11,7 +11,7 @@ export interface QueryParamsRequest {}
 /** QueryParamsResponse is the response type for the Query/Params RPC method. */
 export interface QueryParamsResponse {
     /** params defines the parameters of the module. */
-    params?: Params;
+    params?: Params | undefined;
 }
 
 /** QueryInflationRequest is the request type for the Query/Inflation RPC method. */
@@ -126,7 +126,9 @@ export const QueryParamsResponse = {
 
     toJSON(message: QueryParamsResponse): unknown {
         const obj: any = {};
-        message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+        if (message.params !== undefined) {
+            obj.params = Params.toJSON(message.params);
+        }
         return obj;
     },
 
@@ -186,7 +188,7 @@ export const QueryInflationRequest = {
 };
 
 function createBaseQueryInflationResponse(): QueryInflationResponse {
-    return { inflation: new Uint8Array() };
+    return { inflation: new Uint8Array(0) };
 }
 
 export const QueryInflationResponse = {
@@ -221,12 +223,14 @@ export const QueryInflationResponse = {
     },
 
     fromJSON(object: any): QueryInflationResponse {
-        return { inflation: isSet(object.inflation) ? bytesFromBase64(object.inflation) : new Uint8Array() };
+        return { inflation: isSet(object.inflation) ? bytesFromBase64(object.inflation) : new Uint8Array(0) };
     },
 
     toJSON(message: QueryInflationResponse): unknown {
         const obj: any = {};
-        message.inflation !== undefined && (obj.inflation = base64FromBytes(message.inflation !== undefined ? message.inflation : new Uint8Array()));
+        if (message.inflation.length !== 0) {
+            obj.inflation = base64FromBytes(message.inflation);
+        }
         return obj;
     },
 
@@ -236,7 +240,7 @@ export const QueryInflationResponse = {
 
     fromPartial<I extends Exact<DeepPartial<QueryInflationResponse>, I>>(object: I): QueryInflationResponse {
         const message = createBaseQueryInflationResponse();
-        message.inflation = object.inflation ?? new Uint8Array();
+        message.inflation = object.inflation ?? new Uint8Array(0);
         return message;
     },
 };
@@ -286,7 +290,7 @@ export const QueryAnnualProvisionsRequest = {
 };
 
 function createBaseQueryAnnualProvisionsResponse(): QueryAnnualProvisionsResponse {
-    return { annualProvisions: new Uint8Array() };
+    return { annualProvisions: new Uint8Array(0) };
 }
 
 export const QueryAnnualProvisionsResponse = {
@@ -322,13 +326,15 @@ export const QueryAnnualProvisionsResponse = {
 
     fromJSON(object: any): QueryAnnualProvisionsResponse {
         return {
-            annualProvisions: isSet(object.annualProvisions) ? bytesFromBase64(object.annualProvisions) : new Uint8Array(),
+            annualProvisions: isSet(object.annualProvisions) ? bytesFromBase64(object.annualProvisions) : new Uint8Array(0),
         };
     },
 
     toJSON(message: QueryAnnualProvisionsResponse): unknown {
         const obj: any = {};
-        message.annualProvisions !== undefined && (obj.annualProvisions = base64FromBytes(message.annualProvisions !== undefined ? message.annualProvisions : new Uint8Array()));
+        if (message.annualProvisions.length !== 0) {
+            obj.annualProvisions = base64FromBytes(message.annualProvisions);
+        }
         return obj;
     },
 
@@ -338,7 +344,7 @@ export const QueryAnnualProvisionsResponse = {
 
     fromPartial<I extends Exact<DeepPartial<QueryAnnualProvisionsResponse>, I>>(object: I): QueryAnnualProvisionsResponse {
         const message = createBaseQueryAnnualProvisionsResponse();
-        message.annualProvisions = object.annualProvisions ?? new Uint8Array();
+        message.annualProvisions = object.annualProvisions ?? new Uint8Array(0);
         return message;
     },
 };
@@ -353,11 +359,12 @@ export interface Query {
     AnnualProvisions(request: QueryAnnualProvisionsRequest): Promise<QueryAnnualProvisionsResponse>;
 }
 
+export const QueryServiceName = 'cosmos.mint.v1beta1.Query';
 export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'cosmos.mint.v1beta1.Query';
+        this.service = opts?.service || QueryServiceName;
         this.rpc = rpc;
         this.Params = this.Params.bind(this);
         this.Inflation = this.Inflation.bind(this);
@@ -386,10 +393,10 @@ interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }

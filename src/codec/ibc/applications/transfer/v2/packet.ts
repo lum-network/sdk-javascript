@@ -18,10 +18,12 @@ export interface FungibleTokenPacketData {
     sender: string;
     /** the recipient address on the destination chain */
     receiver: string;
+    /** optional memo */
+    memo: string;
 }
 
 function createBaseFungibleTokenPacketData(): FungibleTokenPacketData {
-    return { denom: '', amount: '', sender: '', receiver: '' };
+    return { denom: '', amount: '', sender: '', receiver: '', memo: '' };
 }
 
 export const FungibleTokenPacketData = {
@@ -37,6 +39,9 @@ export const FungibleTokenPacketData = {
         }
         if (message.receiver !== '') {
             writer.uint32(34).string(message.receiver);
+        }
+        if (message.memo !== '') {
+            writer.uint32(42).string(message.memo);
         }
         return writer;
     },
@@ -76,6 +81,13 @@ export const FungibleTokenPacketData = {
 
                     message.receiver = reader.string();
                     continue;
+                case 5:
+                    if (tag !== 42) {
+                        break;
+                    }
+
+                    message.memo = reader.string();
+                    continue;
             }
             if ((tag & 7) === 4 || tag === 0) {
                 break;
@@ -91,15 +103,27 @@ export const FungibleTokenPacketData = {
             amount: isSet(object.amount) ? String(object.amount) : '',
             sender: isSet(object.sender) ? String(object.sender) : '',
             receiver: isSet(object.receiver) ? String(object.receiver) : '',
+            memo: isSet(object.memo) ? String(object.memo) : '',
         };
     },
 
     toJSON(message: FungibleTokenPacketData): unknown {
         const obj: any = {};
-        message.denom !== undefined && (obj.denom = message.denom);
-        message.amount !== undefined && (obj.amount = message.amount);
-        message.sender !== undefined && (obj.sender = message.sender);
-        message.receiver !== undefined && (obj.receiver = message.receiver);
+        if (message.denom !== '') {
+            obj.denom = message.denom;
+        }
+        if (message.amount !== '') {
+            obj.amount = message.amount;
+        }
+        if (message.sender !== '') {
+            obj.sender = message.sender;
+        }
+        if (message.receiver !== '') {
+            obj.receiver = message.receiver;
+        }
+        if (message.memo !== '') {
+            obj.memo = message.memo;
+        }
         return obj;
     },
 
@@ -113,6 +137,7 @@ export const FungibleTokenPacketData = {
         message.amount = object.amount ?? '';
         message.sender = object.sender ?? '';
         message.receiver = object.receiver ?? '';
+        message.memo = object.memo ?? '';
         return message;
     },
 };

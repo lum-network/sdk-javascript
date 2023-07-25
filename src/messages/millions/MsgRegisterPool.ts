@@ -1,7 +1,7 @@
-import { DrawSchedule } from '../../codec/lum-network/millions/draw_schedule';
-import { PrizeStrategy } from '../../codec/lum-network/millions/prize_strategy';
+import { DrawSchedule } from '../../codec/lum/network/millions/draw_schedule';
+import { PrizeStrategy } from '../../codec/lum/network/millions/prize_strategy';
 import { Message } from '../Message';
-import { MsgRegisterPool } from '../../codec/lum-network/millions/tx';
+import { MsgRegisterPool } from '../../codec/lum/network/millions/tx';
 
 export const MsgRegisterPoolUrl = '/lum.network.millions.MsgRegisterPool';
 
