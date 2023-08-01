@@ -1,7 +1,7 @@
 import Long from 'long';
 
 import { Message } from '../Message';
-import { MsgClaimPrize } from '../../codec/lum-network/millions/tx';
+import { MsgClaimPrize } from '../../codec/lum/network/millions/tx';
 
 export const MsgClaimPrizeUrl = '/lum.network.millions.MsgClaimPrize';
 

@@ -3,6 +3,7 @@ import Long from 'long';
 import _m0 from 'protobufjs/minimal';
 import { Any } from '../../../../google/protobuf/any';
 import { Event } from '../../../../tendermint/abci/types';
+import { Block } from '../../../../tendermint/types/block';
 
 export const protobufPackage = 'cosmos.base.abci.v1beta1';
 
@@ -35,7 +36,7 @@ export interface TxResponse {
     /** Amount of gas consumed by transaction. */
     gasUsed: Long;
     /** The request transaction bytes. */
-    tx?: Any;
+    tx?: Any | undefined;
     /**
      * Time of the previous block. For heights > 1, it's the weighted median of
      * the timestamps of the valid votes in the block.LastCommit. For height == 1,
@@ -121,8 +122,8 @@ export interface Result {
  * successfully simulated.
  */
 export interface SimulationResponse {
-    gasInfo?: GasInfo;
-    result?: Result;
+    gasInfo?: GasInfo | undefined;
+    result?: Result | undefined;
 }
 
 /**
@@ -169,6 +170,22 @@ export interface SearchTxsResult {
     limit: Long;
     /** List of txs in current page */
     txs: TxResponse[];
+}
+
+/** SearchBlocksResult defines a structure for querying blocks pageable */
+export interface SearchBlocksResult {
+    /** Count of all blocks */
+    totalCount: Long;
+    /** Count of blocks in current page */
+    count: Long;
+    /** Index of current page, start from 1 */
+    pageNumber: Long;
+    /** Count of total pages */
+    pageTotal: Long;
+    /** Max count blocks per page */
+    limit: Long;
+    /** List of blocks in current page */
+    blocks: Block[];
 }
 
 function createBaseTxResponse(): TxResponse {
@@ -360,26 +377,44 @@ export const TxResponse = {
 
     toJSON(message: TxResponse): unknown {
         const obj: any = {};
-        message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
-        message.txhash !== undefined && (obj.txhash = message.txhash);
-        message.codespace !== undefined && (obj.codespace = message.codespace);
-        message.code !== undefined && (obj.code = Math.round(message.code));
-        message.data !== undefined && (obj.data = message.data);
-        message.rawLog !== undefined && (obj.rawLog = message.rawLog);
-        if (message.logs) {
-            obj.logs = message.logs.map((e) => (e ? ABCIMessageLog.toJSON(e) : undefined));
-        } else {
-            obj.logs = [];
+        if (!message.height.isZero()) {
+            obj.height = (message.height || Long.ZERO).toString();
         }
-        message.info !== undefined && (obj.info = message.info);
-        message.gasWanted !== undefined && (obj.gasWanted = (message.gasWanted || Long.ZERO).toString());
-        message.gasUsed !== undefined && (obj.gasUsed = (message.gasUsed || Long.ZERO).toString());
-        message.tx !== undefined && (obj.tx = message.tx ? Any.toJSON(message.tx) : undefined);
-        message.timestamp !== undefined && (obj.timestamp = message.timestamp);
-        if (message.events) {
-            obj.events = message.events.map((e) => (e ? Event.toJSON(e) : undefined));
-        } else {
-            obj.events = [];
+        if (message.txhash !== '') {
+            obj.txhash = message.txhash;
+        }
+        if (message.codespace !== '') {
+            obj.codespace = message.codespace;
+        }
+        if (message.code !== 0) {
+            obj.code = Math.round(message.code);
+        }
+        if (message.data !== '') {
+            obj.data = message.data;
+        }
+        if (message.rawLog !== '') {
+            obj.rawLog = message.rawLog;
+        }
+        if (message.logs?.length) {
+            obj.logs = message.logs.map((e) => ABCIMessageLog.toJSON(e));
+        }
+        if (message.info !== '') {
+            obj.info = message.info;
+        }
+        if (!message.gasWanted.isZero()) {
+            obj.gasWanted = (message.gasWanted || Long.ZERO).toString();
+        }
+        if (!message.gasUsed.isZero()) {
+            obj.gasUsed = (message.gasUsed || Long.ZERO).toString();
+        }
+        if (message.tx !== undefined) {
+            obj.tx = Any.toJSON(message.tx);
+        }
+        if (message.timestamp !== '') {
+            obj.timestamp = message.timestamp;
+        }
+        if (message.events?.length) {
+            obj.events = message.events.map((e) => Event.toJSON(e));
         }
         return obj;
     },
@@ -472,12 +507,14 @@ export const ABCIMessageLog = {
 
     toJSON(message: ABCIMessageLog): unknown {
         const obj: any = {};
-        message.msgIndex !== undefined && (obj.msgIndex = Math.round(message.msgIndex));
-        message.log !== undefined && (obj.log = message.log);
-        if (message.events) {
-            obj.events = message.events.map((e) => (e ? StringEvent.toJSON(e) : undefined));
-        } else {
-            obj.events = [];
+        if (message.msgIndex !== 0) {
+            obj.msgIndex = Math.round(message.msgIndex);
+        }
+        if (message.log !== '') {
+            obj.log = message.log;
+        }
+        if (message.events?.length) {
+            obj.events = message.events.map((e) => StringEvent.toJSON(e));
         }
         return obj;
     },
@@ -549,11 +586,11 @@ export const StringEvent = {
 
     toJSON(message: StringEvent): unknown {
         const obj: any = {};
-        message.type !== undefined && (obj.type = message.type);
-        if (message.attributes) {
-            obj.attributes = message.attributes.map((e) => (e ? Attribute.toJSON(e) : undefined));
-        } else {
-            obj.attributes = [];
+        if (message.type !== '') {
+            obj.type = message.type;
+        }
+        if (message.attributes?.length) {
+            obj.attributes = message.attributes.map((e) => Attribute.toJSON(e));
         }
         return obj;
     },
@@ -621,8 +658,12 @@ export const Attribute = {
 
     toJSON(message: Attribute): unknown {
         const obj: any = {};
-        message.key !== undefined && (obj.key = message.key);
-        message.value !== undefined && (obj.value = message.value);
+        if (message.key !== '') {
+            obj.key = message.key;
+        }
+        if (message.value !== '') {
+            obj.value = message.value;
+        }
         return obj;
     },
 
@@ -692,8 +733,12 @@ export const GasInfo = {
 
     toJSON(message: GasInfo): unknown {
         const obj: any = {};
-        message.gasWanted !== undefined && (obj.gasWanted = (message.gasWanted || Long.UZERO).toString());
-        message.gasUsed !== undefined && (obj.gasUsed = (message.gasUsed || Long.UZERO).toString());
+        if (!message.gasWanted.isZero()) {
+            obj.gasWanted = (message.gasWanted || Long.UZERO).toString();
+        }
+        if (!message.gasUsed.isZero()) {
+            obj.gasUsed = (message.gasUsed || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -710,7 +755,7 @@ export const GasInfo = {
 };
 
 function createBaseResult(): Result {
-    return { data: new Uint8Array(), log: '', events: [], msgResponses: [] };
+    return { data: new Uint8Array(0), log: '', events: [], msgResponses: [] };
 }
 
 export const Result = {
@@ -776,7 +821,7 @@ export const Result = {
 
     fromJSON(object: any): Result {
         return {
-            data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(),
+            data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(0),
             log: isSet(object.log) ? String(object.log) : '',
             events: Array.isArray(object?.events) ? object.events.map((e: any) => Event.fromJSON(e)) : [],
             msgResponses: Array.isArray(object?.msgResponses) ? object.msgResponses.map((e: any) => Any.fromJSON(e)) : [],
@@ -785,17 +830,17 @@ export const Result = {
 
     toJSON(message: Result): unknown {
         const obj: any = {};
-        message.data !== undefined && (obj.data = base64FromBytes(message.data !== undefined ? message.data : new Uint8Array()));
-        message.log !== undefined && (obj.log = message.log);
-        if (message.events) {
-            obj.events = message.events.map((e) => (e ? Event.toJSON(e) : undefined));
-        } else {
-            obj.events = [];
+        if (message.data.length !== 0) {
+            obj.data = base64FromBytes(message.data);
         }
-        if (message.msgResponses) {
-            obj.msgResponses = message.msgResponses.map((e) => (e ? Any.toJSON(e) : undefined));
-        } else {
-            obj.msgResponses = [];
+        if (message.log !== '') {
+            obj.log = message.log;
+        }
+        if (message.events?.length) {
+            obj.events = message.events.map((e) => Event.toJSON(e));
+        }
+        if (message.msgResponses?.length) {
+            obj.msgResponses = message.msgResponses.map((e) => Any.toJSON(e));
         }
         return obj;
     },
@@ -806,7 +851,7 @@ export const Result = {
 
     fromPartial<I extends Exact<DeepPartial<Result>, I>>(object: I): Result {
         const message = createBaseResult();
-        message.data = object.data ?? new Uint8Array();
+        message.data = object.data ?? new Uint8Array(0);
         message.log = object.log ?? '';
         message.events = object.events?.map((e) => Event.fromPartial(e)) || [];
         message.msgResponses = object.msgResponses?.map((e) => Any.fromPartial(e)) || [];
@@ -868,8 +913,12 @@ export const SimulationResponse = {
 
     toJSON(message: SimulationResponse): unknown {
         const obj: any = {};
-        message.gasInfo !== undefined && (obj.gasInfo = message.gasInfo ? GasInfo.toJSON(message.gasInfo) : undefined);
-        message.result !== undefined && (obj.result = message.result ? Result.toJSON(message.result) : undefined);
+        if (message.gasInfo !== undefined) {
+            obj.gasInfo = GasInfo.toJSON(message.gasInfo);
+        }
+        if (message.result !== undefined) {
+            obj.result = Result.toJSON(message.result);
+        }
         return obj;
     },
 
@@ -886,7 +935,7 @@ export const SimulationResponse = {
 };
 
 function createBaseMsgData(): MsgData {
-    return { msgType: '', data: new Uint8Array() };
+    return { msgType: '', data: new Uint8Array(0) };
 }
 
 export const MsgData = {
@@ -933,14 +982,18 @@ export const MsgData = {
     fromJSON(object: any): MsgData {
         return {
             msgType: isSet(object.msgType) ? String(object.msgType) : '',
-            data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(),
+            data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(0),
         };
     },
 
     toJSON(message: MsgData): unknown {
         const obj: any = {};
-        message.msgType !== undefined && (obj.msgType = message.msgType);
-        message.data !== undefined && (obj.data = base64FromBytes(message.data !== undefined ? message.data : new Uint8Array()));
+        if (message.msgType !== '') {
+            obj.msgType = message.msgType;
+        }
+        if (message.data.length !== 0) {
+            obj.data = base64FromBytes(message.data);
+        }
         return obj;
     },
 
@@ -951,7 +1004,7 @@ export const MsgData = {
     fromPartial<I extends Exact<DeepPartial<MsgData>, I>>(object: I): MsgData {
         const message = createBaseMsgData();
         message.msgType = object.msgType ?? '';
-        message.data = object.data ?? new Uint8Array();
+        message.data = object.data ?? new Uint8Array(0);
         return message;
     },
 };
@@ -1010,15 +1063,11 @@ export const TxMsgData = {
 
     toJSON(message: TxMsgData): unknown {
         const obj: any = {};
-        if (message.data) {
-            obj.data = message.data.map((e) => (e ? MsgData.toJSON(e) : undefined));
-        } else {
-            obj.data = [];
+        if (message.data?.length) {
+            obj.data = message.data.map((e) => MsgData.toJSON(e));
         }
-        if (message.msgResponses) {
-            obj.msgResponses = message.msgResponses.map((e) => (e ? Any.toJSON(e) : undefined));
-        } else {
-            obj.msgResponses = [];
+        if (message.msgResponses?.length) {
+            obj.msgResponses = message.msgResponses.map((e) => Any.toJSON(e));
         }
         return obj;
     },
@@ -1140,15 +1189,23 @@ export const SearchTxsResult = {
 
     toJSON(message: SearchTxsResult): unknown {
         const obj: any = {};
-        message.totalCount !== undefined && (obj.totalCount = (message.totalCount || Long.UZERO).toString());
-        message.count !== undefined && (obj.count = (message.count || Long.UZERO).toString());
-        message.pageNumber !== undefined && (obj.pageNumber = (message.pageNumber || Long.UZERO).toString());
-        message.pageTotal !== undefined && (obj.pageTotal = (message.pageTotal || Long.UZERO).toString());
-        message.limit !== undefined && (obj.limit = (message.limit || Long.UZERO).toString());
-        if (message.txs) {
-            obj.txs = message.txs.map((e) => (e ? TxResponse.toJSON(e) : undefined));
-        } else {
-            obj.txs = [];
+        if (!message.totalCount.isZero()) {
+            obj.totalCount = (message.totalCount || Long.UZERO).toString();
+        }
+        if (!message.count.isZero()) {
+            obj.count = (message.count || Long.UZERO).toString();
+        }
+        if (!message.pageNumber.isZero()) {
+            obj.pageNumber = (message.pageNumber || Long.UZERO).toString();
+        }
+        if (!message.pageTotal.isZero()) {
+            obj.pageTotal = (message.pageTotal || Long.UZERO).toString();
+        }
+        if (!message.limit.isZero()) {
+            obj.limit = (message.limit || Long.UZERO).toString();
+        }
+        if (message.txs?.length) {
+            obj.txs = message.txs.map((e) => TxResponse.toJSON(e));
         }
         return obj;
     },
@@ -1169,10 +1226,152 @@ export const SearchTxsResult = {
     },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+function createBaseSearchBlocksResult(): SearchBlocksResult {
+    return {
+        totalCount: Long.ZERO,
+        count: Long.ZERO,
+        pageNumber: Long.ZERO,
+        pageTotal: Long.ZERO,
+        limit: Long.ZERO,
+        blocks: [],
+    };
+}
+
+export const SearchBlocksResult = {
+    encode(message: SearchBlocksResult, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (!message.totalCount.isZero()) {
+            writer.uint32(8).int64(message.totalCount);
+        }
+        if (!message.count.isZero()) {
+            writer.uint32(16).int64(message.count);
+        }
+        if (!message.pageNumber.isZero()) {
+            writer.uint32(24).int64(message.pageNumber);
+        }
+        if (!message.pageTotal.isZero()) {
+            writer.uint32(32).int64(message.pageTotal);
+        }
+        if (!message.limit.isZero()) {
+            writer.uint32(40).int64(message.limit);
+        }
+        for (const v of message.blocks) {
+            Block.encode(v!, writer.uint32(50).fork()).ldelim();
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): SearchBlocksResult {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseSearchBlocksResult();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
+                    message.totalCount = reader.int64() as Long;
+                    continue;
+                case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
+                    message.count = reader.int64() as Long;
+                    continue;
+                case 3:
+                    if (tag !== 24) {
+                        break;
+                    }
+
+                    message.pageNumber = reader.int64() as Long;
+                    continue;
+                case 4:
+                    if (tag !== 32) {
+                        break;
+                    }
+
+                    message.pageTotal = reader.int64() as Long;
+                    continue;
+                case 5:
+                    if (tag !== 40) {
+                        break;
+                    }
+
+                    message.limit = reader.int64() as Long;
+                    continue;
+                case 6:
+                    if (tag !== 50) {
+                        break;
+                    }
+
+                    message.blocks.push(Block.decode(reader, reader.uint32()));
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): SearchBlocksResult {
+        return {
+            totalCount: isSet(object.totalCount) ? Long.fromValue(object.totalCount) : Long.ZERO,
+            count: isSet(object.count) ? Long.fromValue(object.count) : Long.ZERO,
+            pageNumber: isSet(object.pageNumber) ? Long.fromValue(object.pageNumber) : Long.ZERO,
+            pageTotal: isSet(object.pageTotal) ? Long.fromValue(object.pageTotal) : Long.ZERO,
+            limit: isSet(object.limit) ? Long.fromValue(object.limit) : Long.ZERO,
+            blocks: Array.isArray(object?.blocks) ? object.blocks.map((e: any) => Block.fromJSON(e)) : [],
+        };
+    },
+
+    toJSON(message: SearchBlocksResult): unknown {
+        const obj: any = {};
+        if (!message.totalCount.isZero()) {
+            obj.totalCount = (message.totalCount || Long.ZERO).toString();
+        }
+        if (!message.count.isZero()) {
+            obj.count = (message.count || Long.ZERO).toString();
+        }
+        if (!message.pageNumber.isZero()) {
+            obj.pageNumber = (message.pageNumber || Long.ZERO).toString();
+        }
+        if (!message.pageTotal.isZero()) {
+            obj.pageTotal = (message.pageTotal || Long.ZERO).toString();
+        }
+        if (!message.limit.isZero()) {
+            obj.limit = (message.limit || Long.ZERO).toString();
+        }
+        if (message.blocks?.length) {
+            obj.blocks = message.blocks.map((e) => Block.toJSON(e));
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<SearchBlocksResult>, I>>(base?: I): SearchBlocksResult {
+        return SearchBlocksResult.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<SearchBlocksResult>, I>>(object: I): SearchBlocksResult {
+        const message = createBaseSearchBlocksResult();
+        message.totalCount = object.totalCount !== undefined && object.totalCount !== null ? Long.fromValue(object.totalCount) : Long.ZERO;
+        message.count = object.count !== undefined && object.count !== null ? Long.fromValue(object.count) : Long.ZERO;
+        message.pageNumber = object.pageNumber !== undefined && object.pageNumber !== null ? Long.fromValue(object.pageNumber) : Long.ZERO;
+        message.pageTotal = object.pageTotal !== undefined && object.pageTotal !== null ? Long.fromValue(object.pageTotal) : Long.ZERO;
+        message.limit = object.limit !== undefined && object.limit !== null ? Long.fromValue(object.limit) : Long.ZERO;
+        message.blocks = object.blocks?.map((e) => Block.fromPartial(e)) || [];
+        return message;
+    },
+};
+
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }

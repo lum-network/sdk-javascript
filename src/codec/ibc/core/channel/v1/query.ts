@@ -23,17 +23,17 @@ export interface QueryChannelRequest {
  */
 export interface QueryChannelResponse {
     /** channel associated with the request identifiers */
-    channel?: Channel;
+    channel?: Channel | undefined;
     /** merkle proof of existence */
     proof: Uint8Array;
     /** height at which the proof was retrieved */
-    proofHeight?: Height;
+    proofHeight?: Height | undefined;
 }
 
 /** QueryChannelsRequest is the request type for the Query/Channels RPC method */
 export interface QueryChannelsRequest {
     /** pagination request */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /** QueryChannelsResponse is the response type for the Query/Channels RPC method. */
@@ -41,9 +41,9 @@ export interface QueryChannelsResponse {
     /** list of stored channels of the chain. */
     channels: IdentifiedChannel[];
     /** pagination response */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
     /** query block height */
-    height?: Height;
+    height?: Height | undefined;
 }
 
 /**
@@ -54,7 +54,7 @@ export interface QueryConnectionChannelsRequest {
     /** connection unique identifier */
     connection: string;
     /** pagination request */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /**
@@ -65,9 +65,9 @@ export interface QueryConnectionChannelsResponse {
     /** list of channels associated with a connection. */
     channels: IdentifiedChannel[];
     /** pagination response */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
     /** query block height */
-    height?: Height;
+    height?: Height | undefined;
 }
 
 /**
@@ -87,11 +87,11 @@ export interface QueryChannelClientStateRequest {
  */
 export interface QueryChannelClientStateResponse {
     /** client state associated with the channel */
-    identifiedClientState?: IdentifiedClientState;
+    identifiedClientState?: IdentifiedClientState | undefined;
     /** merkle proof of existence */
     proof: Uint8Array;
     /** height at which the proof was retrieved */
-    proofHeight?: Height;
+    proofHeight?: Height | undefined;
 }
 
 /**
@@ -115,13 +115,13 @@ export interface QueryChannelConsensusStateRequest {
  */
 export interface QueryChannelConsensusStateResponse {
     /** consensus state associated with the channel */
-    consensusState?: Any;
+    consensusState?: Any | undefined;
     /** client ID associated with the consensus state */
     clientId: string;
     /** merkle proof of existence */
     proof: Uint8Array;
     /** height at which the proof was retrieved */
-    proofHeight?: Height;
+    proofHeight?: Height | undefined;
 }
 
 /**
@@ -148,7 +148,7 @@ export interface QueryPacketCommitmentResponse {
     /** merkle proof of existence */
     proof: Uint8Array;
     /** height at which the proof was retrieved */
-    proofHeight?: Height;
+    proofHeight?: Height | undefined;
 }
 
 /**
@@ -161,7 +161,7 @@ export interface QueryPacketCommitmentsRequest {
     /** channel unique identifier */
     channelId: string;
     /** pagination request */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /**
@@ -171,9 +171,9 @@ export interface QueryPacketCommitmentsRequest {
 export interface QueryPacketCommitmentsResponse {
     commitments: PacketState[];
     /** pagination response */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
     /** query block height */
-    height?: Height;
+    height?: Height | undefined;
 }
 
 /**
@@ -200,7 +200,7 @@ export interface QueryPacketReceiptResponse {
     /** merkle proof of existence */
     proof: Uint8Array;
     /** height at which the proof was retrieved */
-    proofHeight?: Height;
+    proofHeight?: Height | undefined;
 }
 
 /**
@@ -227,7 +227,7 @@ export interface QueryPacketAcknowledgementResponse {
     /** merkle proof of existence */
     proof: Uint8Array;
     /** height at which the proof was retrieved */
-    proofHeight?: Height;
+    proofHeight?: Height | undefined;
 }
 
 /**
@@ -240,7 +240,7 @@ export interface QueryPacketAcknowledgementsRequest {
     /** channel unique identifier */
     channelId: string;
     /** pagination request */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
     /** list of packet sequences */
     packetCommitmentSequences: Long[];
 }
@@ -252,9 +252,9 @@ export interface QueryPacketAcknowledgementsRequest {
 export interface QueryPacketAcknowledgementsResponse {
     acknowledgements: PacketState[];
     /** pagination response */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
     /** query block height */
-    height?: Height;
+    height?: Height | undefined;
 }
 
 /**
@@ -278,7 +278,7 @@ export interface QueryUnreceivedPacketsResponse {
     /** list of unreceived packet sequences */
     sequences: Long[];
     /** query block height */
-    height?: Height;
+    height?: Height | undefined;
 }
 
 /**
@@ -302,7 +302,7 @@ export interface QueryUnreceivedAcksResponse {
     /** list of unreceived acknowledgement sequences */
     sequences: Long[];
     /** query block height */
-    height?: Height;
+    height?: Height | undefined;
 }
 
 /**
@@ -326,7 +326,31 @@ export interface QueryNextSequenceReceiveResponse {
     /** merkle proof of existence */
     proof: Uint8Array;
     /** height at which the proof was retrieved */
-    proofHeight?: Height;
+    proofHeight?: Height | undefined;
+}
+
+/**
+ * QueryNextSequenceSendRequest is the request type for the
+ * Query/QueryNextSequenceSend RPC method
+ */
+export interface QueryNextSequenceSendRequest {
+    /** port unique identifier */
+    portId: string;
+    /** channel unique identifier */
+    channelId: string;
+}
+
+/**
+ * QueryNextSequenceSendResponse is the request type for the
+ * Query/QueryNextSequenceSend RPC method
+ */
+export interface QueryNextSequenceSendResponse {
+    /** next sequence send number */
+    nextSequenceSend: Long;
+    /** merkle proof of existence */
+    proof: Uint8Array;
+    /** height at which the proof was retrieved */
+    proofHeight?: Height | undefined;
 }
 
 function createBaseQueryChannelRequest(): QueryChannelRequest {
@@ -383,8 +407,12 @@ export const QueryChannelRequest = {
 
     toJSON(message: QueryChannelRequest): unknown {
         const obj: any = {};
-        message.portId !== undefined && (obj.portId = message.portId);
-        message.channelId !== undefined && (obj.channelId = message.channelId);
+        if (message.portId !== '') {
+            obj.portId = message.portId;
+        }
+        if (message.channelId !== '') {
+            obj.channelId = message.channelId;
+        }
         return obj;
     },
 
@@ -401,7 +429,7 @@ export const QueryChannelRequest = {
 };
 
 function createBaseQueryChannelResponse(): QueryChannelResponse {
-    return { channel: undefined, proof: new Uint8Array(), proofHeight: undefined };
+    return { channel: undefined, proof: new Uint8Array(0), proofHeight: undefined };
 }
 
 export const QueryChannelResponse = {
@@ -458,16 +486,22 @@ export const QueryChannelResponse = {
     fromJSON(object: any): QueryChannelResponse {
         return {
             channel: isSet(object.channel) ? Channel.fromJSON(object.channel) : undefined,
-            proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array(),
+            proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array(0),
             proofHeight: isSet(object.proofHeight) ? Height.fromJSON(object.proofHeight) : undefined,
         };
     },
 
     toJSON(message: QueryChannelResponse): unknown {
         const obj: any = {};
-        message.channel !== undefined && (obj.channel = message.channel ? Channel.toJSON(message.channel) : undefined);
-        message.proof !== undefined && (obj.proof = base64FromBytes(message.proof !== undefined ? message.proof : new Uint8Array()));
-        message.proofHeight !== undefined && (obj.proofHeight = message.proofHeight ? Height.toJSON(message.proofHeight) : undefined);
+        if (message.channel !== undefined) {
+            obj.channel = Channel.toJSON(message.channel);
+        }
+        if (message.proof.length !== 0) {
+            obj.proof = base64FromBytes(message.proof);
+        }
+        if (message.proofHeight !== undefined) {
+            obj.proofHeight = Height.toJSON(message.proofHeight);
+        }
         return obj;
     },
 
@@ -478,7 +512,7 @@ export const QueryChannelResponse = {
     fromPartial<I extends Exact<DeepPartial<QueryChannelResponse>, I>>(object: I): QueryChannelResponse {
         const message = createBaseQueryChannelResponse();
         message.channel = object.channel !== undefined && object.channel !== null ? Channel.fromPartial(object.channel) : undefined;
-        message.proof = object.proof ?? new Uint8Array();
+        message.proof = object.proof ?? new Uint8Array(0);
         message.proofHeight = object.proofHeight !== undefined && object.proofHeight !== null ? Height.fromPartial(object.proofHeight) : undefined;
         return message;
     },
@@ -525,7 +559,9 @@ export const QueryChannelsRequest = {
 
     toJSON(message: QueryChannelsRequest): unknown {
         const obj: any = {};
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -605,13 +641,15 @@ export const QueryChannelsResponse = {
 
     toJSON(message: QueryChannelsResponse): unknown {
         const obj: any = {};
-        if (message.channels) {
-            obj.channels = message.channels.map((e) => (e ? IdentifiedChannel.toJSON(e) : undefined));
-        } else {
-            obj.channels = [];
+        if (message.channels?.length) {
+            obj.channels = message.channels.map((e) => IdentifiedChannel.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
-        message.height !== undefined && (obj.height = message.height ? Height.toJSON(message.height) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
+        if (message.height !== undefined) {
+            obj.height = Height.toJSON(message.height);
+        }
         return obj;
     },
 
@@ -682,8 +720,12 @@ export const QueryConnectionChannelsRequest = {
 
     toJSON(message: QueryConnectionChannelsRequest): unknown {
         const obj: any = {};
-        message.connection !== undefined && (obj.connection = message.connection);
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (message.connection !== '') {
+            obj.connection = message.connection;
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -764,13 +806,15 @@ export const QueryConnectionChannelsResponse = {
 
     toJSON(message: QueryConnectionChannelsResponse): unknown {
         const obj: any = {};
-        if (message.channels) {
-            obj.channels = message.channels.map((e) => (e ? IdentifiedChannel.toJSON(e) : undefined));
-        } else {
-            obj.channels = [];
+        if (message.channels?.length) {
+            obj.channels = message.channels.map((e) => IdentifiedChannel.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
-        message.height !== undefined && (obj.height = message.height ? Height.toJSON(message.height) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
+        if (message.height !== undefined) {
+            obj.height = Height.toJSON(message.height);
+        }
         return obj;
     },
 
@@ -841,8 +885,12 @@ export const QueryChannelClientStateRequest = {
 
     toJSON(message: QueryChannelClientStateRequest): unknown {
         const obj: any = {};
-        message.portId !== undefined && (obj.portId = message.portId);
-        message.channelId !== undefined && (obj.channelId = message.channelId);
+        if (message.portId !== '') {
+            obj.portId = message.portId;
+        }
+        if (message.channelId !== '') {
+            obj.channelId = message.channelId;
+        }
         return obj;
     },
 
@@ -859,7 +907,7 @@ export const QueryChannelClientStateRequest = {
 };
 
 function createBaseQueryChannelClientStateResponse(): QueryChannelClientStateResponse {
-    return { identifiedClientState: undefined, proof: new Uint8Array(), proofHeight: undefined };
+    return { identifiedClientState: undefined, proof: new Uint8Array(0), proofHeight: undefined };
 }
 
 export const QueryChannelClientStateResponse = {
@@ -916,16 +964,22 @@ export const QueryChannelClientStateResponse = {
     fromJSON(object: any): QueryChannelClientStateResponse {
         return {
             identifiedClientState: isSet(object.identifiedClientState) ? IdentifiedClientState.fromJSON(object.identifiedClientState) : undefined,
-            proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array(),
+            proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array(0),
             proofHeight: isSet(object.proofHeight) ? Height.fromJSON(object.proofHeight) : undefined,
         };
     },
 
     toJSON(message: QueryChannelClientStateResponse): unknown {
         const obj: any = {};
-        message.identifiedClientState !== undefined && (obj.identifiedClientState = message.identifiedClientState ? IdentifiedClientState.toJSON(message.identifiedClientState) : undefined);
-        message.proof !== undefined && (obj.proof = base64FromBytes(message.proof !== undefined ? message.proof : new Uint8Array()));
-        message.proofHeight !== undefined && (obj.proofHeight = message.proofHeight ? Height.toJSON(message.proofHeight) : undefined);
+        if (message.identifiedClientState !== undefined) {
+            obj.identifiedClientState = IdentifiedClientState.toJSON(message.identifiedClientState);
+        }
+        if (message.proof.length !== 0) {
+            obj.proof = base64FromBytes(message.proof);
+        }
+        if (message.proofHeight !== undefined) {
+            obj.proofHeight = Height.toJSON(message.proofHeight);
+        }
         return obj;
     },
 
@@ -937,7 +991,7 @@ export const QueryChannelClientStateResponse = {
         const message = createBaseQueryChannelClientStateResponse();
         message.identifiedClientState =
             object.identifiedClientState !== undefined && object.identifiedClientState !== null ? IdentifiedClientState.fromPartial(object.identifiedClientState) : undefined;
-        message.proof = object.proof ?? new Uint8Array();
+        message.proof = object.proof ?? new Uint8Array(0);
         message.proofHeight = object.proofHeight !== undefined && object.proofHeight !== null ? Height.fromPartial(object.proofHeight) : undefined;
         return message;
     },
@@ -1019,10 +1073,18 @@ export const QueryChannelConsensusStateRequest = {
 
     toJSON(message: QueryChannelConsensusStateRequest): unknown {
         const obj: any = {};
-        message.portId !== undefined && (obj.portId = message.portId);
-        message.channelId !== undefined && (obj.channelId = message.channelId);
-        message.revisionNumber !== undefined && (obj.revisionNumber = (message.revisionNumber || Long.UZERO).toString());
-        message.revisionHeight !== undefined && (obj.revisionHeight = (message.revisionHeight || Long.UZERO).toString());
+        if (message.portId !== '') {
+            obj.portId = message.portId;
+        }
+        if (message.channelId !== '') {
+            obj.channelId = message.channelId;
+        }
+        if (!message.revisionNumber.isZero()) {
+            obj.revisionNumber = (message.revisionNumber || Long.UZERO).toString();
+        }
+        if (!message.revisionHeight.isZero()) {
+            obj.revisionHeight = (message.revisionHeight || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -1041,7 +1103,7 @@ export const QueryChannelConsensusStateRequest = {
 };
 
 function createBaseQueryChannelConsensusStateResponse(): QueryChannelConsensusStateResponse {
-    return { consensusState: undefined, clientId: '', proof: new Uint8Array(), proofHeight: undefined };
+    return { consensusState: undefined, clientId: '', proof: new Uint8Array(0), proofHeight: undefined };
 }
 
 export const QueryChannelConsensusStateResponse = {
@@ -1109,17 +1171,25 @@ export const QueryChannelConsensusStateResponse = {
         return {
             consensusState: isSet(object.consensusState) ? Any.fromJSON(object.consensusState) : undefined,
             clientId: isSet(object.clientId) ? String(object.clientId) : '',
-            proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array(),
+            proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array(0),
             proofHeight: isSet(object.proofHeight) ? Height.fromJSON(object.proofHeight) : undefined,
         };
     },
 
     toJSON(message: QueryChannelConsensusStateResponse): unknown {
         const obj: any = {};
-        message.consensusState !== undefined && (obj.consensusState = message.consensusState ? Any.toJSON(message.consensusState) : undefined);
-        message.clientId !== undefined && (obj.clientId = message.clientId);
-        message.proof !== undefined && (obj.proof = base64FromBytes(message.proof !== undefined ? message.proof : new Uint8Array()));
-        message.proofHeight !== undefined && (obj.proofHeight = message.proofHeight ? Height.toJSON(message.proofHeight) : undefined);
+        if (message.consensusState !== undefined) {
+            obj.consensusState = Any.toJSON(message.consensusState);
+        }
+        if (message.clientId !== '') {
+            obj.clientId = message.clientId;
+        }
+        if (message.proof.length !== 0) {
+            obj.proof = base64FromBytes(message.proof);
+        }
+        if (message.proofHeight !== undefined) {
+            obj.proofHeight = Height.toJSON(message.proofHeight);
+        }
         return obj;
     },
 
@@ -1131,7 +1201,7 @@ export const QueryChannelConsensusStateResponse = {
         const message = createBaseQueryChannelConsensusStateResponse();
         message.consensusState = object.consensusState !== undefined && object.consensusState !== null ? Any.fromPartial(object.consensusState) : undefined;
         message.clientId = object.clientId ?? '';
-        message.proof = object.proof ?? new Uint8Array();
+        message.proof = object.proof ?? new Uint8Array(0);
         message.proofHeight = object.proofHeight !== undefined && object.proofHeight !== null ? Height.fromPartial(object.proofHeight) : undefined;
         return message;
     },
@@ -1202,9 +1272,15 @@ export const QueryPacketCommitmentRequest = {
 
     toJSON(message: QueryPacketCommitmentRequest): unknown {
         const obj: any = {};
-        message.portId !== undefined && (obj.portId = message.portId);
-        message.channelId !== undefined && (obj.channelId = message.channelId);
-        message.sequence !== undefined && (obj.sequence = (message.sequence || Long.UZERO).toString());
+        if (message.portId !== '') {
+            obj.portId = message.portId;
+        }
+        if (message.channelId !== '') {
+            obj.channelId = message.channelId;
+        }
+        if (!message.sequence.isZero()) {
+            obj.sequence = (message.sequence || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -1222,7 +1298,7 @@ export const QueryPacketCommitmentRequest = {
 };
 
 function createBaseQueryPacketCommitmentResponse(): QueryPacketCommitmentResponse {
-    return { commitment: new Uint8Array(), proof: new Uint8Array(), proofHeight: undefined };
+    return { commitment: new Uint8Array(0), proof: new Uint8Array(0), proofHeight: undefined };
 }
 
 export const QueryPacketCommitmentResponse = {
@@ -1278,17 +1354,23 @@ export const QueryPacketCommitmentResponse = {
 
     fromJSON(object: any): QueryPacketCommitmentResponse {
         return {
-            commitment: isSet(object.commitment) ? bytesFromBase64(object.commitment) : new Uint8Array(),
-            proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array(),
+            commitment: isSet(object.commitment) ? bytesFromBase64(object.commitment) : new Uint8Array(0),
+            proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array(0),
             proofHeight: isSet(object.proofHeight) ? Height.fromJSON(object.proofHeight) : undefined,
         };
     },
 
     toJSON(message: QueryPacketCommitmentResponse): unknown {
         const obj: any = {};
-        message.commitment !== undefined && (obj.commitment = base64FromBytes(message.commitment !== undefined ? message.commitment : new Uint8Array()));
-        message.proof !== undefined && (obj.proof = base64FromBytes(message.proof !== undefined ? message.proof : new Uint8Array()));
-        message.proofHeight !== undefined && (obj.proofHeight = message.proofHeight ? Height.toJSON(message.proofHeight) : undefined);
+        if (message.commitment.length !== 0) {
+            obj.commitment = base64FromBytes(message.commitment);
+        }
+        if (message.proof.length !== 0) {
+            obj.proof = base64FromBytes(message.proof);
+        }
+        if (message.proofHeight !== undefined) {
+            obj.proofHeight = Height.toJSON(message.proofHeight);
+        }
         return obj;
     },
 
@@ -1298,8 +1380,8 @@ export const QueryPacketCommitmentResponse = {
 
     fromPartial<I extends Exact<DeepPartial<QueryPacketCommitmentResponse>, I>>(object: I): QueryPacketCommitmentResponse {
         const message = createBaseQueryPacketCommitmentResponse();
-        message.commitment = object.commitment ?? new Uint8Array();
-        message.proof = object.proof ?? new Uint8Array();
+        message.commitment = object.commitment ?? new Uint8Array(0);
+        message.proof = object.proof ?? new Uint8Array(0);
         message.proofHeight = object.proofHeight !== undefined && object.proofHeight !== null ? Height.fromPartial(object.proofHeight) : undefined;
         return message;
     },
@@ -1370,9 +1452,15 @@ export const QueryPacketCommitmentsRequest = {
 
     toJSON(message: QueryPacketCommitmentsRequest): unknown {
         const obj: any = {};
-        message.portId !== undefined && (obj.portId = message.portId);
-        message.channelId !== undefined && (obj.channelId = message.channelId);
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (message.portId !== '') {
+            obj.portId = message.portId;
+        }
+        if (message.channelId !== '') {
+            obj.channelId = message.channelId;
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -1454,13 +1542,15 @@ export const QueryPacketCommitmentsResponse = {
 
     toJSON(message: QueryPacketCommitmentsResponse): unknown {
         const obj: any = {};
-        if (message.commitments) {
-            obj.commitments = message.commitments.map((e) => (e ? PacketState.toJSON(e) : undefined));
-        } else {
-            obj.commitments = [];
+        if (message.commitments?.length) {
+            obj.commitments = message.commitments.map((e) => PacketState.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
-        message.height !== undefined && (obj.height = message.height ? Height.toJSON(message.height) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
+        if (message.height !== undefined) {
+            obj.height = Height.toJSON(message.height);
+        }
         return obj;
     },
 
@@ -1542,9 +1632,15 @@ export const QueryPacketReceiptRequest = {
 
     toJSON(message: QueryPacketReceiptRequest): unknown {
         const obj: any = {};
-        message.portId !== undefined && (obj.portId = message.portId);
-        message.channelId !== undefined && (obj.channelId = message.channelId);
-        message.sequence !== undefined && (obj.sequence = (message.sequence || Long.UZERO).toString());
+        if (message.portId !== '') {
+            obj.portId = message.portId;
+        }
+        if (message.channelId !== '') {
+            obj.channelId = message.channelId;
+        }
+        if (!message.sequence.isZero()) {
+            obj.sequence = (message.sequence || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -1562,7 +1658,7 @@ export const QueryPacketReceiptRequest = {
 };
 
 function createBaseQueryPacketReceiptResponse(): QueryPacketReceiptResponse {
-    return { received: false, proof: new Uint8Array(), proofHeight: undefined };
+    return { received: false, proof: new Uint8Array(0), proofHeight: undefined };
 }
 
 export const QueryPacketReceiptResponse = {
@@ -1619,16 +1715,22 @@ export const QueryPacketReceiptResponse = {
     fromJSON(object: any): QueryPacketReceiptResponse {
         return {
             received: isSet(object.received) ? Boolean(object.received) : false,
-            proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array(),
+            proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array(0),
             proofHeight: isSet(object.proofHeight) ? Height.fromJSON(object.proofHeight) : undefined,
         };
     },
 
     toJSON(message: QueryPacketReceiptResponse): unknown {
         const obj: any = {};
-        message.received !== undefined && (obj.received = message.received);
-        message.proof !== undefined && (obj.proof = base64FromBytes(message.proof !== undefined ? message.proof : new Uint8Array()));
-        message.proofHeight !== undefined && (obj.proofHeight = message.proofHeight ? Height.toJSON(message.proofHeight) : undefined);
+        if (message.received === true) {
+            obj.received = message.received;
+        }
+        if (message.proof.length !== 0) {
+            obj.proof = base64FromBytes(message.proof);
+        }
+        if (message.proofHeight !== undefined) {
+            obj.proofHeight = Height.toJSON(message.proofHeight);
+        }
         return obj;
     },
 
@@ -1639,7 +1741,7 @@ export const QueryPacketReceiptResponse = {
     fromPartial<I extends Exact<DeepPartial<QueryPacketReceiptResponse>, I>>(object: I): QueryPacketReceiptResponse {
         const message = createBaseQueryPacketReceiptResponse();
         message.received = object.received ?? false;
-        message.proof = object.proof ?? new Uint8Array();
+        message.proof = object.proof ?? new Uint8Array(0);
         message.proofHeight = object.proofHeight !== undefined && object.proofHeight !== null ? Height.fromPartial(object.proofHeight) : undefined;
         return message;
     },
@@ -1710,9 +1812,15 @@ export const QueryPacketAcknowledgementRequest = {
 
     toJSON(message: QueryPacketAcknowledgementRequest): unknown {
         const obj: any = {};
-        message.portId !== undefined && (obj.portId = message.portId);
-        message.channelId !== undefined && (obj.channelId = message.channelId);
-        message.sequence !== undefined && (obj.sequence = (message.sequence || Long.UZERO).toString());
+        if (message.portId !== '') {
+            obj.portId = message.portId;
+        }
+        if (message.channelId !== '') {
+            obj.channelId = message.channelId;
+        }
+        if (!message.sequence.isZero()) {
+            obj.sequence = (message.sequence || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -1730,7 +1838,7 @@ export const QueryPacketAcknowledgementRequest = {
 };
 
 function createBaseQueryPacketAcknowledgementResponse(): QueryPacketAcknowledgementResponse {
-    return { acknowledgement: new Uint8Array(), proof: new Uint8Array(), proofHeight: undefined };
+    return { acknowledgement: new Uint8Array(0), proof: new Uint8Array(0), proofHeight: undefined };
 }
 
 export const QueryPacketAcknowledgementResponse = {
@@ -1786,17 +1894,23 @@ export const QueryPacketAcknowledgementResponse = {
 
     fromJSON(object: any): QueryPacketAcknowledgementResponse {
         return {
-            acknowledgement: isSet(object.acknowledgement) ? bytesFromBase64(object.acknowledgement) : new Uint8Array(),
-            proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array(),
+            acknowledgement: isSet(object.acknowledgement) ? bytesFromBase64(object.acknowledgement) : new Uint8Array(0),
+            proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array(0),
             proofHeight: isSet(object.proofHeight) ? Height.fromJSON(object.proofHeight) : undefined,
         };
     },
 
     toJSON(message: QueryPacketAcknowledgementResponse): unknown {
         const obj: any = {};
-        message.acknowledgement !== undefined && (obj.acknowledgement = base64FromBytes(message.acknowledgement !== undefined ? message.acknowledgement : new Uint8Array()));
-        message.proof !== undefined && (obj.proof = base64FromBytes(message.proof !== undefined ? message.proof : new Uint8Array()));
-        message.proofHeight !== undefined && (obj.proofHeight = message.proofHeight ? Height.toJSON(message.proofHeight) : undefined);
+        if (message.acknowledgement.length !== 0) {
+            obj.acknowledgement = base64FromBytes(message.acknowledgement);
+        }
+        if (message.proof.length !== 0) {
+            obj.proof = base64FromBytes(message.proof);
+        }
+        if (message.proofHeight !== undefined) {
+            obj.proofHeight = Height.toJSON(message.proofHeight);
+        }
         return obj;
     },
 
@@ -1806,8 +1920,8 @@ export const QueryPacketAcknowledgementResponse = {
 
     fromPartial<I extends Exact<DeepPartial<QueryPacketAcknowledgementResponse>, I>>(object: I): QueryPacketAcknowledgementResponse {
         const message = createBaseQueryPacketAcknowledgementResponse();
-        message.acknowledgement = object.acknowledgement ?? new Uint8Array();
-        message.proof = object.proof ?? new Uint8Array();
+        message.acknowledgement = object.acknowledgement ?? new Uint8Array(0);
+        message.proof = object.proof ?? new Uint8Array(0);
         message.proofHeight = object.proofHeight !== undefined && object.proofHeight !== null ? Height.fromPartial(object.proofHeight) : undefined;
         return message;
     },
@@ -1901,13 +2015,17 @@ export const QueryPacketAcknowledgementsRequest = {
 
     toJSON(message: QueryPacketAcknowledgementsRequest): unknown {
         const obj: any = {};
-        message.portId !== undefined && (obj.portId = message.portId);
-        message.channelId !== undefined && (obj.channelId = message.channelId);
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
-        if (message.packetCommitmentSequences) {
+        if (message.portId !== '') {
+            obj.portId = message.portId;
+        }
+        if (message.channelId !== '') {
+            obj.channelId = message.channelId;
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
+        if (message.packetCommitmentSequences?.length) {
             obj.packetCommitmentSequences = message.packetCommitmentSequences.map((e) => (e || Long.UZERO).toString());
-        } else {
-            obj.packetCommitmentSequences = [];
         }
         return obj;
     },
@@ -1991,13 +2109,15 @@ export const QueryPacketAcknowledgementsResponse = {
 
     toJSON(message: QueryPacketAcknowledgementsResponse): unknown {
         const obj: any = {};
-        if (message.acknowledgements) {
-            obj.acknowledgements = message.acknowledgements.map((e) => (e ? PacketState.toJSON(e) : undefined));
-        } else {
-            obj.acknowledgements = [];
+        if (message.acknowledgements?.length) {
+            obj.acknowledgements = message.acknowledgements.map((e) => PacketState.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
-        message.height !== undefined && (obj.height = message.height ? Height.toJSON(message.height) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
+        if (message.height !== undefined) {
+            obj.height = Height.toJSON(message.height);
+        }
         return obj;
     },
 
@@ -2091,12 +2211,14 @@ export const QueryUnreceivedPacketsRequest = {
 
     toJSON(message: QueryUnreceivedPacketsRequest): unknown {
         const obj: any = {};
-        message.portId !== undefined && (obj.portId = message.portId);
-        message.channelId !== undefined && (obj.channelId = message.channelId);
-        if (message.packetCommitmentSequences) {
+        if (message.portId !== '') {
+            obj.portId = message.portId;
+        }
+        if (message.channelId !== '') {
+            obj.channelId = message.channelId;
+        }
+        if (message.packetCommitmentSequences?.length) {
             obj.packetCommitmentSequences = message.packetCommitmentSequences.map((e) => (e || Long.UZERO).toString());
-        } else {
-            obj.packetCommitmentSequences = [];
         }
         return obj;
     },
@@ -2180,12 +2302,12 @@ export const QueryUnreceivedPacketsResponse = {
 
     toJSON(message: QueryUnreceivedPacketsResponse): unknown {
         const obj: any = {};
-        if (message.sequences) {
+        if (message.sequences?.length) {
             obj.sequences = message.sequences.map((e) => (e || Long.UZERO).toString());
-        } else {
-            obj.sequences = [];
         }
-        message.height !== undefined && (obj.height = message.height ? Height.toJSON(message.height) : undefined);
+        if (message.height !== undefined) {
+            obj.height = Height.toJSON(message.height);
+        }
         return obj;
     },
 
@@ -2278,12 +2400,14 @@ export const QueryUnreceivedAcksRequest = {
 
     toJSON(message: QueryUnreceivedAcksRequest): unknown {
         const obj: any = {};
-        message.portId !== undefined && (obj.portId = message.portId);
-        message.channelId !== undefined && (obj.channelId = message.channelId);
-        if (message.packetAckSequences) {
+        if (message.portId !== '') {
+            obj.portId = message.portId;
+        }
+        if (message.channelId !== '') {
+            obj.channelId = message.channelId;
+        }
+        if (message.packetAckSequences?.length) {
             obj.packetAckSequences = message.packetAckSequences.map((e) => (e || Long.UZERO).toString());
-        } else {
-            obj.packetAckSequences = [];
         }
         return obj;
     },
@@ -2367,12 +2491,12 @@ export const QueryUnreceivedAcksResponse = {
 
     toJSON(message: QueryUnreceivedAcksResponse): unknown {
         const obj: any = {};
-        if (message.sequences) {
+        if (message.sequences?.length) {
             obj.sequences = message.sequences.map((e) => (e || Long.UZERO).toString());
-        } else {
-            obj.sequences = [];
         }
-        message.height !== undefined && (obj.height = message.height ? Height.toJSON(message.height) : undefined);
+        if (message.height !== undefined) {
+            obj.height = Height.toJSON(message.height);
+        }
         return obj;
     },
 
@@ -2442,8 +2566,12 @@ export const QueryNextSequenceReceiveRequest = {
 
     toJSON(message: QueryNextSequenceReceiveRequest): unknown {
         const obj: any = {};
-        message.portId !== undefined && (obj.portId = message.portId);
-        message.channelId !== undefined && (obj.channelId = message.channelId);
+        if (message.portId !== '') {
+            obj.portId = message.portId;
+        }
+        if (message.channelId !== '') {
+            obj.channelId = message.channelId;
+        }
         return obj;
     },
 
@@ -2460,7 +2588,7 @@ export const QueryNextSequenceReceiveRequest = {
 };
 
 function createBaseQueryNextSequenceReceiveResponse(): QueryNextSequenceReceiveResponse {
-    return { nextSequenceReceive: Long.UZERO, proof: new Uint8Array(), proofHeight: undefined };
+    return { nextSequenceReceive: Long.UZERO, proof: new Uint8Array(0), proofHeight: undefined };
 }
 
 export const QueryNextSequenceReceiveResponse = {
@@ -2517,16 +2645,22 @@ export const QueryNextSequenceReceiveResponse = {
     fromJSON(object: any): QueryNextSequenceReceiveResponse {
         return {
             nextSequenceReceive: isSet(object.nextSequenceReceive) ? Long.fromValue(object.nextSequenceReceive) : Long.UZERO,
-            proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array(),
+            proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array(0),
             proofHeight: isSet(object.proofHeight) ? Height.fromJSON(object.proofHeight) : undefined,
         };
     },
 
     toJSON(message: QueryNextSequenceReceiveResponse): unknown {
         const obj: any = {};
-        message.nextSequenceReceive !== undefined && (obj.nextSequenceReceive = (message.nextSequenceReceive || Long.UZERO).toString());
-        message.proof !== undefined && (obj.proof = base64FromBytes(message.proof !== undefined ? message.proof : new Uint8Array()));
-        message.proofHeight !== undefined && (obj.proofHeight = message.proofHeight ? Height.toJSON(message.proofHeight) : undefined);
+        if (!message.nextSequenceReceive.isZero()) {
+            obj.nextSequenceReceive = (message.nextSequenceReceive || Long.UZERO).toString();
+        }
+        if (message.proof.length !== 0) {
+            obj.proof = base64FromBytes(message.proof);
+        }
+        if (message.proofHeight !== undefined) {
+            obj.proofHeight = Height.toJSON(message.proofHeight);
+        }
         return obj;
     },
 
@@ -2537,7 +2671,172 @@ export const QueryNextSequenceReceiveResponse = {
     fromPartial<I extends Exact<DeepPartial<QueryNextSequenceReceiveResponse>, I>>(object: I): QueryNextSequenceReceiveResponse {
         const message = createBaseQueryNextSequenceReceiveResponse();
         message.nextSequenceReceive = object.nextSequenceReceive !== undefined && object.nextSequenceReceive !== null ? Long.fromValue(object.nextSequenceReceive) : Long.UZERO;
-        message.proof = object.proof ?? new Uint8Array();
+        message.proof = object.proof ?? new Uint8Array(0);
+        message.proofHeight = object.proofHeight !== undefined && object.proofHeight !== null ? Height.fromPartial(object.proofHeight) : undefined;
+        return message;
+    },
+};
+
+function createBaseQueryNextSequenceSendRequest(): QueryNextSequenceSendRequest {
+    return { portId: '', channelId: '' };
+}
+
+export const QueryNextSequenceSendRequest = {
+    encode(message: QueryNextSequenceSendRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (message.portId !== '') {
+            writer.uint32(10).string(message.portId);
+        }
+        if (message.channelId !== '') {
+            writer.uint32(18).string(message.channelId);
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): QueryNextSequenceSendRequest {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseQueryNextSequenceSendRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.portId = reader.string();
+                    continue;
+                case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
+                    message.channelId = reader.string();
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): QueryNextSequenceSendRequest {
+        return {
+            portId: isSet(object.portId) ? String(object.portId) : '',
+            channelId: isSet(object.channelId) ? String(object.channelId) : '',
+        };
+    },
+
+    toJSON(message: QueryNextSequenceSendRequest): unknown {
+        const obj: any = {};
+        if (message.portId !== '') {
+            obj.portId = message.portId;
+        }
+        if (message.channelId !== '') {
+            obj.channelId = message.channelId;
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<QueryNextSequenceSendRequest>, I>>(base?: I): QueryNextSequenceSendRequest {
+        return QueryNextSequenceSendRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryNextSequenceSendRequest>, I>>(object: I): QueryNextSequenceSendRequest {
+        const message = createBaseQueryNextSequenceSendRequest();
+        message.portId = object.portId ?? '';
+        message.channelId = object.channelId ?? '';
+        return message;
+    },
+};
+
+function createBaseQueryNextSequenceSendResponse(): QueryNextSequenceSendResponse {
+    return { nextSequenceSend: Long.UZERO, proof: new Uint8Array(0), proofHeight: undefined };
+}
+
+export const QueryNextSequenceSendResponse = {
+    encode(message: QueryNextSequenceSendResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (!message.nextSequenceSend.isZero()) {
+            writer.uint32(8).uint64(message.nextSequenceSend);
+        }
+        if (message.proof.length !== 0) {
+            writer.uint32(18).bytes(message.proof);
+        }
+        if (message.proofHeight !== undefined) {
+            Height.encode(message.proofHeight, writer.uint32(26).fork()).ldelim();
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): QueryNextSequenceSendResponse {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseQueryNextSequenceSendResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 8) {
+                        break;
+                    }
+
+                    message.nextSequenceSend = reader.uint64() as Long;
+                    continue;
+                case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
+                    message.proof = reader.bytes();
+                    continue;
+                case 3:
+                    if (tag !== 26) {
+                        break;
+                    }
+
+                    message.proofHeight = Height.decode(reader, reader.uint32());
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): QueryNextSequenceSendResponse {
+        return {
+            nextSequenceSend: isSet(object.nextSequenceSend) ? Long.fromValue(object.nextSequenceSend) : Long.UZERO,
+            proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array(0),
+            proofHeight: isSet(object.proofHeight) ? Height.fromJSON(object.proofHeight) : undefined,
+        };
+    },
+
+    toJSON(message: QueryNextSequenceSendResponse): unknown {
+        const obj: any = {};
+        if (!message.nextSequenceSend.isZero()) {
+            obj.nextSequenceSend = (message.nextSequenceSend || Long.UZERO).toString();
+        }
+        if (message.proof.length !== 0) {
+            obj.proof = base64FromBytes(message.proof);
+        }
+        if (message.proofHeight !== undefined) {
+            obj.proofHeight = Height.toJSON(message.proofHeight);
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<QueryNextSequenceSendResponse>, I>>(base?: I): QueryNextSequenceSendResponse {
+        return QueryNextSequenceSendResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryNextSequenceSendResponse>, I>>(object: I): QueryNextSequenceSendResponse {
+        const message = createBaseQueryNextSequenceSendResponse();
+        message.nextSequenceSend = object.nextSequenceSend !== undefined && object.nextSequenceSend !== null ? Long.fromValue(object.nextSequenceSend) : Long.UZERO;
+        message.proof = object.proof ?? new Uint8Array(0);
         message.proofHeight = object.proofHeight !== undefined && object.proofHeight !== null ? Height.fromPartial(object.proofHeight) : undefined;
         return message;
     },
@@ -2595,13 +2894,16 @@ export interface Query {
     UnreceivedAcks(request: QueryUnreceivedAcksRequest): Promise<QueryUnreceivedAcksResponse>;
     /** NextSequenceReceive returns the next receive sequence for a given channel. */
     NextSequenceReceive(request: QueryNextSequenceReceiveRequest): Promise<QueryNextSequenceReceiveResponse>;
+    /** NextSequenceSend returns the next send sequence for a given channel. */
+    NextSequenceSend(request: QueryNextSequenceSendRequest): Promise<QueryNextSequenceSendResponse>;
 }
 
+export const QueryServiceName = 'ibc.core.channel.v1.Query';
 export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'ibc.core.channel.v1.Query';
+        this.service = opts?.service || QueryServiceName;
         this.rpc = rpc;
         this.Channel = this.Channel.bind(this);
         this.Channels = this.Channels.bind(this);
@@ -2616,6 +2918,7 @@ export class QueryClientImpl implements Query {
         this.UnreceivedPackets = this.UnreceivedPackets.bind(this);
         this.UnreceivedAcks = this.UnreceivedAcks.bind(this);
         this.NextSequenceReceive = this.NextSequenceReceive.bind(this);
+        this.NextSequenceSend = this.NextSequenceSend.bind(this);
     }
     Channel(request: QueryChannelRequest): Promise<QueryChannelResponse> {
         const data = QueryChannelRequest.encode(request).finish();
@@ -2694,16 +2997,22 @@ export class QueryClientImpl implements Query {
         const promise = this.rpc.request(this.service, 'NextSequenceReceive', data);
         return promise.then((data) => QueryNextSequenceReceiveResponse.decode(_m0.Reader.create(data)));
     }
+
+    NextSequenceSend(request: QueryNextSequenceSendRequest): Promise<QueryNextSequenceSendResponse> {
+        const data = QueryNextSequenceSendRequest.encode(request).finish();
+        const promise = this.rpc.request(this.service, 'NextSequenceSend', data);
+        return promise.then((data) => QueryNextSequenceSendResponse.decode(_m0.Reader.create(data)));
+    }
 }
 
 interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }

@@ -14,7 +14,7 @@ export interface IdentifiedClientState {
     /** client identifier */
     clientId: string;
     /** client state */
-    clientState?: Any;
+    clientState?: Any | undefined;
 }
 
 /**
@@ -23,9 +23,9 @@ export interface IdentifiedClientState {
  */
 export interface ConsensusStateWithHeight {
     /** consensus state height */
-    height?: Height;
+    height?: Height | undefined;
     /** consensus state */
-    consensusState?: Any;
+    consensusState?: Any | undefined;
 }
 
 /**
@@ -66,7 +66,7 @@ export interface ClientUpdateProposal {
 export interface UpgradeProposal {
     title: string;
     description: string;
-    plan?: Plan;
+    plan?: Plan | undefined;
     /**
      * An UpgradedClientState must be provided to perform an IBC breaking upgrade.
      * This will make the chain commit to the correct upgraded (self) client state
@@ -75,7 +75,7 @@ export interface UpgradeProposal {
      * of the chain. This will allow IBC connections to persist smoothly across
      * planned chain upgrades
      */
-    upgradedClientState?: Any;
+    upgradedClientState?: Any | undefined;
 }
 
 /**
@@ -99,7 +99,11 @@ export interface Height {
 
 /** Params defines the set of IBC light client parameters. */
 export interface Params {
-    /** allowed_clients defines the list of allowed client state types. */
+    /**
+     * allowed_clients defines the list of allowed client state types which can be created
+     * and interacted with. If a client type is removed from the allowed clients list, usage
+     * of this client will be disabled until it is added again to the list.
+     */
     allowedClients: string[];
 }
 
@@ -157,8 +161,12 @@ export const IdentifiedClientState = {
 
     toJSON(message: IdentifiedClientState): unknown {
         const obj: any = {};
-        message.clientId !== undefined && (obj.clientId = message.clientId);
-        message.clientState !== undefined && (obj.clientState = message.clientState ? Any.toJSON(message.clientState) : undefined);
+        if (message.clientId !== '') {
+            obj.clientId = message.clientId;
+        }
+        if (message.clientState !== undefined) {
+            obj.clientState = Any.toJSON(message.clientState);
+        }
         return obj;
     },
 
@@ -228,8 +236,12 @@ export const ConsensusStateWithHeight = {
 
     toJSON(message: ConsensusStateWithHeight): unknown {
         const obj: any = {};
-        message.height !== undefined && (obj.height = message.height ? Height.toJSON(message.height) : undefined);
-        message.consensusState !== undefined && (obj.consensusState = message.consensusState ? Any.toJSON(message.consensusState) : undefined);
+        if (message.height !== undefined) {
+            obj.height = Height.toJSON(message.height);
+        }
+        if (message.consensusState !== undefined) {
+            obj.consensusState = Any.toJSON(message.consensusState);
+        }
         return obj;
     },
 
@@ -299,11 +311,11 @@ export const ClientConsensusStates = {
 
     toJSON(message: ClientConsensusStates): unknown {
         const obj: any = {};
-        message.clientId !== undefined && (obj.clientId = message.clientId);
-        if (message.consensusStates) {
-            obj.consensusStates = message.consensusStates.map((e) => (e ? ConsensusStateWithHeight.toJSON(e) : undefined));
-        } else {
-            obj.consensusStates = [];
+        if (message.clientId !== '') {
+            obj.clientId = message.clientId;
+        }
+        if (message.consensusStates?.length) {
+            obj.consensusStates = message.consensusStates.map((e) => ConsensusStateWithHeight.toJSON(e));
         }
         return obj;
     },
@@ -396,10 +408,18 @@ export const ClientUpdateProposal = {
 
     toJSON(message: ClientUpdateProposal): unknown {
         const obj: any = {};
-        message.title !== undefined && (obj.title = message.title);
-        message.description !== undefined && (obj.description = message.description);
-        message.subjectClientId !== undefined && (obj.subjectClientId = message.subjectClientId);
-        message.substituteClientId !== undefined && (obj.substituteClientId = message.substituteClientId);
+        if (message.title !== '') {
+            obj.title = message.title;
+        }
+        if (message.description !== '') {
+            obj.description = message.description;
+        }
+        if (message.subjectClientId !== '') {
+            obj.subjectClientId = message.subjectClientId;
+        }
+        if (message.substituteClientId !== '') {
+            obj.substituteClientId = message.substituteClientId;
+        }
         return obj;
     },
 
@@ -493,10 +513,18 @@ export const UpgradeProposal = {
 
     toJSON(message: UpgradeProposal): unknown {
         const obj: any = {};
-        message.title !== undefined && (obj.title = message.title);
-        message.description !== undefined && (obj.description = message.description);
-        message.plan !== undefined && (obj.plan = message.plan ? Plan.toJSON(message.plan) : undefined);
-        message.upgradedClientState !== undefined && (obj.upgradedClientState = message.upgradedClientState ? Any.toJSON(message.upgradedClientState) : undefined);
+        if (message.title !== '') {
+            obj.title = message.title;
+        }
+        if (message.description !== '') {
+            obj.description = message.description;
+        }
+        if (message.plan !== undefined) {
+            obj.plan = Plan.toJSON(message.plan);
+        }
+        if (message.upgradedClientState !== undefined) {
+            obj.upgradedClientState = Any.toJSON(message.upgradedClientState);
+        }
         return obj;
     },
 
@@ -568,8 +596,12 @@ export const Height = {
 
     toJSON(message: Height): unknown {
         const obj: any = {};
-        message.revisionNumber !== undefined && (obj.revisionNumber = (message.revisionNumber || Long.UZERO).toString());
-        message.revisionHeight !== undefined && (obj.revisionHeight = (message.revisionHeight || Long.UZERO).toString());
+        if (!message.revisionNumber.isZero()) {
+            obj.revisionNumber = (message.revisionNumber || Long.UZERO).toString();
+        }
+        if (!message.revisionHeight.isZero()) {
+            obj.revisionHeight = (message.revisionHeight || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -628,10 +660,8 @@ export const Params = {
 
     toJSON(message: Params): unknown {
         const obj: any = {};
-        if (message.allowedClients) {
-            obj.allowedClients = message.allowedClients.map((e) => e);
-        } else {
-            obj.allowedClients = [];
+        if (message.allowedClients?.length) {
+            obj.allowedClients = message.allowedClients;
         }
         return obj;
     },

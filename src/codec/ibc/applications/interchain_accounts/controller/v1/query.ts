@@ -22,7 +22,7 @@ export interface QueryParamsRequest {}
 /** QueryParamsResponse is the response type for the Query/Params RPC method. */
 export interface QueryParamsResponse {
     /** params defines the parameters of the module. */
-    params?: Params;
+    params?: Params | undefined;
 }
 
 function createBaseQueryInterchainAccountRequest(): QueryInterchainAccountRequest {
@@ -79,8 +79,12 @@ export const QueryInterchainAccountRequest = {
 
     toJSON(message: QueryInterchainAccountRequest): unknown {
         const obj: any = {};
-        message.owner !== undefined && (obj.owner = message.owner);
-        message.connectionId !== undefined && (obj.connectionId = message.connectionId);
+        if (message.owner !== '') {
+            obj.owner = message.owner;
+        }
+        if (message.connectionId !== '') {
+            obj.connectionId = message.connectionId;
+        }
         return obj;
     },
 
@@ -137,7 +141,9 @@ export const QueryInterchainAccountResponse = {
 
     toJSON(message: QueryInterchainAccountResponse): unknown {
         const obj: any = {};
-        message.address !== undefined && (obj.address = message.address);
+        if (message.address !== '') {
+            obj.address = message.address;
+        }
         return obj;
     },
 
@@ -237,7 +243,9 @@ export const QueryParamsResponse = {
 
     toJSON(message: QueryParamsResponse): unknown {
         const obj: any = {};
-        message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+        if (message.params !== undefined) {
+            obj.params = Params.toJSON(message.params);
+        }
         return obj;
     },
 
@@ -260,11 +268,12 @@ export interface Query {
     Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
 }
 
+export const QueryServiceName = 'ibc.applications.interchain_accounts.controller.v1.Query';
 export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'ibc.applications.interchain_accounts.controller.v1.Query';
+        this.service = opts?.service || QueryServiceName;
         this.rpc = rpc;
         this.InterchainAccount = this.InterchainAccount.bind(this);
         this.Params = this.Params.bind(this);

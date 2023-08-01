@@ -3,7 +3,7 @@ import Long from 'long';
 import _m0 from 'protobufjs/minimal';
 import { Any } from '../../../google/protobuf/any';
 import { PageRequest, PageResponse } from '../../base/query/v1beta1/pagination';
-import { Params } from './auth';
+import { BaseAccount, Params } from './auth';
 
 export const protobufPackage = 'cosmos.auth.v1beta1';
 
@@ -14,7 +14,7 @@ export const protobufPackage = 'cosmos.auth.v1beta1';
  */
 export interface QueryAccountsRequest {
     /** pagination defines an optional pagination for the request. */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /**
@@ -26,7 +26,7 @@ export interface QueryAccountsResponse {
     /** accounts are the existing accounts */
     accounts: Any[];
     /** pagination defines the pagination in the response. */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
 }
 
 /** QueryAccountRequest is the request type for the Query/Account RPC method. */
@@ -38,7 +38,7 @@ export interface QueryAccountRequest {
 /** QueryAccountResponse is the response type for the Query/Account RPC method. */
 export interface QueryAccountResponse {
     /** account defines the account of the corresponding address. */
-    account?: Any;
+    account?: Any | undefined;
 }
 
 /** QueryParamsRequest is the request type for the Query/Params RPC method. */
@@ -47,7 +47,7 @@ export interface QueryParamsRequest {}
 /** QueryParamsResponse is the response type for the Query/Params RPC method. */
 export interface QueryParamsResponse {
     /** params defines the parameters of the module. */
-    params?: Params;
+    params?: Params | undefined;
 }
 
 /**
@@ -73,7 +73,7 @@ export interface QueryModuleAccountByNameRequest {
 
 /** QueryModuleAccountByNameResponse is the response type for the Query/ModuleAccountByName RPC method. */
 export interface QueryModuleAccountByNameResponse {
-    account?: Any;
+    account?: Any | undefined;
 }
 
 /**
@@ -135,11 +135,21 @@ export interface AddressStringToBytesResponse {
  */
 export interface QueryAccountAddressByIDRequest {
     /**
+     * Deprecated, use account_id instead
+     *
      * id is the account number of the address to be queried. This field
      * should have been an uint64 (like all account numbers), and will be
      * updated to uint64 in a future version of the auth query.
+     *
+     * @deprecated
      */
     id: Long;
+    /**
+     * account_id is the account number of the address to be queried.
+     *
+     * Since: cosmos-sdk 0.47
+     */
+    accountId: Long;
 }
 
 /**
@@ -149,6 +159,26 @@ export interface QueryAccountAddressByIDRequest {
  */
 export interface QueryAccountAddressByIDResponse {
     accountAddress: string;
+}
+
+/**
+ * QueryAccountInfoRequest is the Query/AccountInfo request type.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface QueryAccountInfoRequest {
+    /** address is the account address string. */
+    address: string;
+}
+
+/**
+ * QueryAccountInfoResponse is the Query/AccountInfo response type.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface QueryAccountInfoResponse {
+    /** info is the account info which is represented by BaseAccount. */
+    info?: BaseAccount | undefined;
 }
 
 function createBaseQueryAccountsRequest(): QueryAccountsRequest {
@@ -192,7 +222,9 @@ export const QueryAccountsRequest = {
 
     toJSON(message: QueryAccountsRequest): unknown {
         const obj: any = {};
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -261,12 +293,12 @@ export const QueryAccountsResponse = {
 
     toJSON(message: QueryAccountsResponse): unknown {
         const obj: any = {};
-        if (message.accounts) {
-            obj.accounts = message.accounts.map((e) => (e ? Any.toJSON(e) : undefined));
-        } else {
-            obj.accounts = [];
+        if (message.accounts?.length) {
+            obj.accounts = message.accounts.map((e) => Any.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -323,7 +355,9 @@ export const QueryAccountRequest = {
 
     toJSON(message: QueryAccountRequest): unknown {
         const obj: any = {};
-        message.address !== undefined && (obj.address = message.address);
+        if (message.address !== '') {
+            obj.address = message.address;
+        }
         return obj;
     },
 
@@ -379,7 +413,9 @@ export const QueryAccountResponse = {
 
     toJSON(message: QueryAccountResponse): unknown {
         const obj: any = {};
-        message.account !== undefined && (obj.account = message.account ? Any.toJSON(message.account) : undefined);
+        if (message.account !== undefined) {
+            obj.account = Any.toJSON(message.account);
+        }
         return obj;
     },
 
@@ -479,7 +515,9 @@ export const QueryParamsResponse = {
 
     toJSON(message: QueryParamsResponse): unknown {
         const obj: any = {};
-        message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+        if (message.params !== undefined) {
+            obj.params = Params.toJSON(message.params);
+        }
         return obj;
     },
 
@@ -579,10 +617,8 @@ export const QueryModuleAccountsResponse = {
 
     toJSON(message: QueryModuleAccountsResponse): unknown {
         const obj: any = {};
-        if (message.accounts) {
-            obj.accounts = message.accounts.map((e) => (e ? Any.toJSON(e) : undefined));
-        } else {
-            obj.accounts = [];
+        if (message.accounts?.length) {
+            obj.accounts = message.accounts.map((e) => Any.toJSON(e));
         }
         return obj;
     },
@@ -639,7 +675,9 @@ export const QueryModuleAccountByNameRequest = {
 
     toJSON(message: QueryModuleAccountByNameRequest): unknown {
         const obj: any = {};
-        message.name !== undefined && (obj.name = message.name);
+        if (message.name !== '') {
+            obj.name = message.name;
+        }
         return obj;
     },
 
@@ -695,7 +733,9 @@ export const QueryModuleAccountByNameResponse = {
 
     toJSON(message: QueryModuleAccountByNameResponse): unknown {
         const obj: any = {};
-        message.account !== undefined && (obj.account = message.account ? Any.toJSON(message.account) : undefined);
+        if (message.account !== undefined) {
+            obj.account = Any.toJSON(message.account);
+        }
         return obj;
     },
 
@@ -795,7 +835,9 @@ export const Bech32PrefixResponse = {
 
     toJSON(message: Bech32PrefixResponse): unknown {
         const obj: any = {};
-        message.bech32Prefix !== undefined && (obj.bech32Prefix = message.bech32Prefix);
+        if (message.bech32Prefix !== '') {
+            obj.bech32Prefix = message.bech32Prefix;
+        }
         return obj;
     },
 
@@ -811,7 +853,7 @@ export const Bech32PrefixResponse = {
 };
 
 function createBaseAddressBytesToStringRequest(): AddressBytesToStringRequest {
-    return { addressBytes: new Uint8Array() };
+    return { addressBytes: new Uint8Array(0) };
 }
 
 export const AddressBytesToStringRequest = {
@@ -846,12 +888,14 @@ export const AddressBytesToStringRequest = {
     },
 
     fromJSON(object: any): AddressBytesToStringRequest {
-        return { addressBytes: isSet(object.addressBytes) ? bytesFromBase64(object.addressBytes) : new Uint8Array() };
+        return { addressBytes: isSet(object.addressBytes) ? bytesFromBase64(object.addressBytes) : new Uint8Array(0) };
     },
 
     toJSON(message: AddressBytesToStringRequest): unknown {
         const obj: any = {};
-        message.addressBytes !== undefined && (obj.addressBytes = base64FromBytes(message.addressBytes !== undefined ? message.addressBytes : new Uint8Array()));
+        if (message.addressBytes.length !== 0) {
+            obj.addressBytes = base64FromBytes(message.addressBytes);
+        }
         return obj;
     },
 
@@ -861,7 +905,7 @@ export const AddressBytesToStringRequest = {
 
     fromPartial<I extends Exact<DeepPartial<AddressBytesToStringRequest>, I>>(object: I): AddressBytesToStringRequest {
         const message = createBaseAddressBytesToStringRequest();
-        message.addressBytes = object.addressBytes ?? new Uint8Array();
+        message.addressBytes = object.addressBytes ?? new Uint8Array(0);
         return message;
     },
 };
@@ -907,7 +951,9 @@ export const AddressBytesToStringResponse = {
 
     toJSON(message: AddressBytesToStringResponse): unknown {
         const obj: any = {};
-        message.addressString !== undefined && (obj.addressString = message.addressString);
+        if (message.addressString !== '') {
+            obj.addressString = message.addressString;
+        }
         return obj;
     },
 
@@ -963,7 +1009,9 @@ export const AddressStringToBytesRequest = {
 
     toJSON(message: AddressStringToBytesRequest): unknown {
         const obj: any = {};
-        message.addressString !== undefined && (obj.addressString = message.addressString);
+        if (message.addressString !== '') {
+            obj.addressString = message.addressString;
+        }
         return obj;
     },
 
@@ -979,7 +1027,7 @@ export const AddressStringToBytesRequest = {
 };
 
 function createBaseAddressStringToBytesResponse(): AddressStringToBytesResponse {
-    return { addressBytes: new Uint8Array() };
+    return { addressBytes: new Uint8Array(0) };
 }
 
 export const AddressStringToBytesResponse = {
@@ -1014,12 +1062,14 @@ export const AddressStringToBytesResponse = {
     },
 
     fromJSON(object: any): AddressStringToBytesResponse {
-        return { addressBytes: isSet(object.addressBytes) ? bytesFromBase64(object.addressBytes) : new Uint8Array() };
+        return { addressBytes: isSet(object.addressBytes) ? bytesFromBase64(object.addressBytes) : new Uint8Array(0) };
     },
 
     toJSON(message: AddressStringToBytesResponse): unknown {
         const obj: any = {};
-        message.addressBytes !== undefined && (obj.addressBytes = base64FromBytes(message.addressBytes !== undefined ? message.addressBytes : new Uint8Array()));
+        if (message.addressBytes.length !== 0) {
+            obj.addressBytes = base64FromBytes(message.addressBytes);
+        }
         return obj;
     },
 
@@ -1029,19 +1079,22 @@ export const AddressStringToBytesResponse = {
 
     fromPartial<I extends Exact<DeepPartial<AddressStringToBytesResponse>, I>>(object: I): AddressStringToBytesResponse {
         const message = createBaseAddressStringToBytesResponse();
-        message.addressBytes = object.addressBytes ?? new Uint8Array();
+        message.addressBytes = object.addressBytes ?? new Uint8Array(0);
         return message;
     },
 };
 
 function createBaseQueryAccountAddressByIDRequest(): QueryAccountAddressByIDRequest {
-    return { id: Long.ZERO };
+    return { id: Long.ZERO, accountId: Long.UZERO };
 }
 
 export const QueryAccountAddressByIDRequest = {
     encode(message: QueryAccountAddressByIDRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
         if (!message.id.isZero()) {
             writer.uint32(8).int64(message.id);
+        }
+        if (!message.accountId.isZero()) {
+            writer.uint32(16).uint64(message.accountId);
         }
         return writer;
     },
@@ -1060,6 +1113,13 @@ export const QueryAccountAddressByIDRequest = {
 
                     message.id = reader.int64() as Long;
                     continue;
+                case 2:
+                    if (tag !== 16) {
+                        break;
+                    }
+
+                    message.accountId = reader.uint64() as Long;
+                    continue;
             }
             if ((tag & 7) === 4 || tag === 0) {
                 break;
@@ -1070,12 +1130,20 @@ export const QueryAccountAddressByIDRequest = {
     },
 
     fromJSON(object: any): QueryAccountAddressByIDRequest {
-        return { id: isSet(object.id) ? Long.fromValue(object.id) : Long.ZERO };
+        return {
+            id: isSet(object.id) ? Long.fromValue(object.id) : Long.ZERO,
+            accountId: isSet(object.accountId) ? Long.fromValue(object.accountId) : Long.UZERO,
+        };
     },
 
     toJSON(message: QueryAccountAddressByIDRequest): unknown {
         const obj: any = {};
-        message.id !== undefined && (obj.id = (message.id || Long.ZERO).toString());
+        if (!message.id.isZero()) {
+            obj.id = (message.id || Long.ZERO).toString();
+        }
+        if (!message.accountId.isZero()) {
+            obj.accountId = (message.accountId || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -1086,6 +1154,7 @@ export const QueryAccountAddressByIDRequest = {
     fromPartial<I extends Exact<DeepPartial<QueryAccountAddressByIDRequest>, I>>(object: I): QueryAccountAddressByIDRequest {
         const message = createBaseQueryAccountAddressByIDRequest();
         message.id = object.id !== undefined && object.id !== null ? Long.fromValue(object.id) : Long.ZERO;
+        message.accountId = object.accountId !== undefined && object.accountId !== null ? Long.fromValue(object.accountId) : Long.UZERO;
         return message;
     },
 };
@@ -1131,7 +1200,9 @@ export const QueryAccountAddressByIDResponse = {
 
     toJSON(message: QueryAccountAddressByIDResponse): unknown {
         const obj: any = {};
-        message.accountAddress !== undefined && (obj.accountAddress = message.accountAddress);
+        if (message.accountAddress !== '') {
+            obj.accountAddress = message.accountAddress;
+        }
         return obj;
     },
 
@@ -1146,10 +1217,129 @@ export const QueryAccountAddressByIDResponse = {
     },
 };
 
+function createBaseQueryAccountInfoRequest(): QueryAccountInfoRequest {
+    return { address: '' };
+}
+
+export const QueryAccountInfoRequest = {
+    encode(message: QueryAccountInfoRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (message.address !== '') {
+            writer.uint32(10).string(message.address);
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): QueryAccountInfoRequest {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseQueryAccountInfoRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.address = reader.string();
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): QueryAccountInfoRequest {
+        return { address: isSet(object.address) ? String(object.address) : '' };
+    },
+
+    toJSON(message: QueryAccountInfoRequest): unknown {
+        const obj: any = {};
+        if (message.address !== '') {
+            obj.address = message.address;
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<QueryAccountInfoRequest>, I>>(base?: I): QueryAccountInfoRequest {
+        return QueryAccountInfoRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryAccountInfoRequest>, I>>(object: I): QueryAccountInfoRequest {
+        const message = createBaseQueryAccountInfoRequest();
+        message.address = object.address ?? '';
+        return message;
+    },
+};
+
+function createBaseQueryAccountInfoResponse(): QueryAccountInfoResponse {
+    return { info: undefined };
+}
+
+export const QueryAccountInfoResponse = {
+    encode(message: QueryAccountInfoResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (message.info !== undefined) {
+            BaseAccount.encode(message.info, writer.uint32(10).fork()).ldelim();
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): QueryAccountInfoResponse {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseQueryAccountInfoResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.info = BaseAccount.decode(reader, reader.uint32());
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): QueryAccountInfoResponse {
+        return { info: isSet(object.info) ? BaseAccount.fromJSON(object.info) : undefined };
+    },
+
+    toJSON(message: QueryAccountInfoResponse): unknown {
+        const obj: any = {};
+        if (message.info !== undefined) {
+            obj.info = BaseAccount.toJSON(message.info);
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<QueryAccountInfoResponse>, I>>(base?: I): QueryAccountInfoResponse {
+        return QueryAccountInfoResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<QueryAccountInfoResponse>, I>>(object: I): QueryAccountInfoResponse {
+        const message = createBaseQueryAccountInfoResponse();
+        message.info = object.info !== undefined && object.info !== null ? BaseAccount.fromPartial(object.info) : undefined;
+        return message;
+    },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
     /**
-     * Accounts returns all the existing accounts
+     * Accounts returns all the existing accounts.
+     *
+     * When called from another module, this query might consume a high amount of
+     * gas if the pagination field is incorrectly set.
      *
      * Since: cosmos-sdk 0.43
      */
@@ -1190,13 +1380,20 @@ export interface Query {
      * Since: cosmos-sdk 0.46
      */
     AddressStringToBytes(request: AddressStringToBytesRequest): Promise<AddressStringToBytesResponse>;
+    /**
+     * AccountInfo queries account info which is common to all account types.
+     *
+     * Since: cosmos-sdk 0.47
+     */
+    AccountInfo(request: QueryAccountInfoRequest): Promise<QueryAccountInfoResponse>;
 }
 
+export const QueryServiceName = 'cosmos.auth.v1beta1.Query';
 export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'cosmos.auth.v1beta1.Query';
+        this.service = opts?.service || QueryServiceName;
         this.rpc = rpc;
         this.Accounts = this.Accounts.bind(this);
         this.Account = this.Account.bind(this);
@@ -1207,6 +1404,7 @@ export class QueryClientImpl implements Query {
         this.Bech32Prefix = this.Bech32Prefix.bind(this);
         this.AddressBytesToString = this.AddressBytesToString.bind(this);
         this.AddressStringToBytes = this.AddressStringToBytes.bind(this);
+        this.AccountInfo = this.AccountInfo.bind(this);
     }
     Accounts(request: QueryAccountsRequest): Promise<QueryAccountsResponse> {
         const data = QueryAccountsRequest.encode(request).finish();
@@ -1261,16 +1459,22 @@ export class QueryClientImpl implements Query {
         const promise = this.rpc.request(this.service, 'AddressStringToBytes', data);
         return promise.then((data) => AddressStringToBytesResponse.decode(_m0.Reader.create(data)));
     }
+
+    AccountInfo(request: QueryAccountInfoRequest): Promise<QueryAccountInfoResponse> {
+        const data = QueryAccountInfoRequest.encode(request).finish();
+        const promise = this.rpc.request(this.service, 'AccountInfo', data);
+        return promise.then((data) => QueryAccountInfoResponse.decode(_m0.Reader.create(data)));
+    }
 }
 
 interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }

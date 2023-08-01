@@ -124,12 +124,24 @@ export const Metadata = {
 
     toJSON(message: Metadata): unknown {
         const obj: any = {};
-        message.version !== undefined && (obj.version = message.version);
-        message.controllerConnectionId !== undefined && (obj.controllerConnectionId = message.controllerConnectionId);
-        message.hostConnectionId !== undefined && (obj.hostConnectionId = message.hostConnectionId);
-        message.address !== undefined && (obj.address = message.address);
-        message.encoding !== undefined && (obj.encoding = message.encoding);
-        message.txType !== undefined && (obj.txType = message.txType);
+        if (message.version !== '') {
+            obj.version = message.version;
+        }
+        if (message.controllerConnectionId !== '') {
+            obj.controllerConnectionId = message.controllerConnectionId;
+        }
+        if (message.hostConnectionId !== '') {
+            obj.hostConnectionId = message.hostConnectionId;
+        }
+        if (message.address !== '') {
+            obj.address = message.address;
+        }
+        if (message.encoding !== '') {
+            obj.encoding = message.encoding;
+        }
+        if (message.txType !== '') {
+            obj.txType = message.txType;
+        }
         return obj;
     },
 

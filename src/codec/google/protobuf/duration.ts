@@ -136,8 +136,12 @@ export const Duration = {
 
     toJSON(message: Duration): unknown {
         const obj: any = {};
-        message.seconds !== undefined && (obj.seconds = (message.seconds || Long.ZERO).toString());
-        message.nanos !== undefined && (obj.nanos = Math.round(message.nanos));
+        if (!message.seconds.isZero()) {
+            obj.seconds = (message.seconds || Long.ZERO).toString();
+        }
+        if (message.nanos !== 0) {
+            obj.nanos = Math.round(message.nanos);
+        }
         return obj;
     },
 

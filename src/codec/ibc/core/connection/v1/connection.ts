@@ -78,7 +78,7 @@ export interface ConnectionEnd {
     /** current state of the connection end. */
     state: State;
     /** counterparty chain associated with this connection. */
-    counterparty?: Counterparty;
+    counterparty?: Counterparty | undefined;
     /**
      * delay period that must pass before a consensus state can be used for
      * packet-verification NOTE: delay period logic is only implemented by some
@@ -104,7 +104,7 @@ export interface IdentifiedConnection {
     /** current state of the connection end. */
     state: State;
     /** counterparty chain associated with this connection. */
-    counterparty?: Counterparty;
+    counterparty?: Counterparty | undefined;
     /** delay period associated with this connection. */
     delayPeriod: Long;
 }
@@ -122,7 +122,7 @@ export interface Counterparty {
      */
     connectionId: string;
     /** commitment merkle prefix of the counterparty chain. */
-    prefix?: MerklePrefix;
+    prefix?: MerklePrefix | undefined;
 }
 
 /** ClientPaths define all the connection paths for a client state. */
@@ -247,15 +247,21 @@ export const ConnectionEnd = {
 
     toJSON(message: ConnectionEnd): unknown {
         const obj: any = {};
-        message.clientId !== undefined && (obj.clientId = message.clientId);
-        if (message.versions) {
-            obj.versions = message.versions.map((e) => (e ? Version.toJSON(e) : undefined));
-        } else {
-            obj.versions = [];
+        if (message.clientId !== '') {
+            obj.clientId = message.clientId;
         }
-        message.state !== undefined && (obj.state = stateToJSON(message.state));
-        message.counterparty !== undefined && (obj.counterparty = message.counterparty ? Counterparty.toJSON(message.counterparty) : undefined);
-        message.delayPeriod !== undefined && (obj.delayPeriod = (message.delayPeriod || Long.UZERO).toString());
+        if (message.versions?.length) {
+            obj.versions = message.versions.map((e) => Version.toJSON(e));
+        }
+        if (message.state !== 0) {
+            obj.state = stateToJSON(message.state);
+        }
+        if (message.counterparty !== undefined) {
+            obj.counterparty = Counterparty.toJSON(message.counterparty);
+        }
+        if (!message.delayPeriod.isZero()) {
+            obj.delayPeriod = (message.delayPeriod || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -372,16 +378,24 @@ export const IdentifiedConnection = {
 
     toJSON(message: IdentifiedConnection): unknown {
         const obj: any = {};
-        message.id !== undefined && (obj.id = message.id);
-        message.clientId !== undefined && (obj.clientId = message.clientId);
-        if (message.versions) {
-            obj.versions = message.versions.map((e) => (e ? Version.toJSON(e) : undefined));
-        } else {
-            obj.versions = [];
+        if (message.id !== '') {
+            obj.id = message.id;
         }
-        message.state !== undefined && (obj.state = stateToJSON(message.state));
-        message.counterparty !== undefined && (obj.counterparty = message.counterparty ? Counterparty.toJSON(message.counterparty) : undefined);
-        message.delayPeriod !== undefined && (obj.delayPeriod = (message.delayPeriod || Long.UZERO).toString());
+        if (message.clientId !== '') {
+            obj.clientId = message.clientId;
+        }
+        if (message.versions?.length) {
+            obj.versions = message.versions.map((e) => Version.toJSON(e));
+        }
+        if (message.state !== 0) {
+            obj.state = stateToJSON(message.state);
+        }
+        if (message.counterparty !== undefined) {
+            obj.counterparty = Counterparty.toJSON(message.counterparty);
+        }
+        if (!message.delayPeriod.isZero()) {
+            obj.delayPeriod = (message.delayPeriod || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -466,9 +480,15 @@ export const Counterparty = {
 
     toJSON(message: Counterparty): unknown {
         const obj: any = {};
-        message.clientId !== undefined && (obj.clientId = message.clientId);
-        message.connectionId !== undefined && (obj.connectionId = message.connectionId);
-        message.prefix !== undefined && (obj.prefix = message.prefix ? MerklePrefix.toJSON(message.prefix) : undefined);
+        if (message.clientId !== '') {
+            obj.clientId = message.clientId;
+        }
+        if (message.connectionId !== '') {
+            obj.connectionId = message.connectionId;
+        }
+        if (message.prefix !== undefined) {
+            obj.prefix = MerklePrefix.toJSON(message.prefix);
+        }
         return obj;
     },
 
@@ -526,10 +546,8 @@ export const ClientPaths = {
 
     toJSON(message: ClientPaths): unknown {
         const obj: any = {};
-        if (message.paths) {
-            obj.paths = message.paths.map((e) => e);
-        } else {
-            obj.paths = [];
+        if (message.paths?.length) {
+            obj.paths = message.paths;
         }
         return obj;
     },
@@ -599,11 +617,11 @@ export const ConnectionPaths = {
 
     toJSON(message: ConnectionPaths): unknown {
         const obj: any = {};
-        message.clientId !== undefined && (obj.clientId = message.clientId);
-        if (message.paths) {
-            obj.paths = message.paths.map((e) => e);
-        } else {
-            obj.paths = [];
+        if (message.clientId !== '') {
+            obj.clientId = message.clientId;
+        }
+        if (message.paths?.length) {
+            obj.paths = message.paths;
         }
         return obj;
     },
@@ -674,11 +692,11 @@ export const Version = {
 
     toJSON(message: Version): unknown {
         const obj: any = {};
-        message.identifier !== undefined && (obj.identifier = message.identifier);
-        if (message.features) {
-            obj.features = message.features.map((e) => e);
-        } else {
-            obj.features = [];
+        if (message.identifier !== '') {
+            obj.identifier = message.identifier;
+        }
+        if (message.features?.length) {
+            obj.features = message.features;
         }
         return obj;
     },
@@ -738,7 +756,9 @@ export const Params = {
 
     toJSON(message: Params): unknown {
         const obj: any = {};
-        message.maxExpectedTimePerBlock !== undefined && (obj.maxExpectedTimePerBlock = (message.maxExpectedTimePerBlock || Long.UZERO).toString());
+        if (!message.maxExpectedTimePerBlock.isZero()) {
+            obj.maxExpectedTimePerBlock = (message.maxExpectedTimePerBlock || Long.UZERO).toString();
+        }
         return obj;
     },
 

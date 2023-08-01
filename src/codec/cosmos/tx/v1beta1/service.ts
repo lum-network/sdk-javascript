@@ -11,7 +11,10 @@ export const protobufPackage = 'cosmos.tx.v1beta1';
 
 /** OrderBy defines the sorting order */
 export enum OrderBy {
-    /** ORDER_BY_UNSPECIFIED - ORDER_BY_UNSPECIFIED specifies an unknown sorting order. OrderBy defaults to ASC in this case. */
+    /**
+     * ORDER_BY_UNSPECIFIED - ORDER_BY_UNSPECIFIED specifies an unknown sorting order. OrderBy defaults
+     * to ASC in this case.
+     */
     ORDER_BY_UNSPECIFIED = 0,
     /** ORDER_BY_ASC - ORDER_BY_ASC defines ascending order */
     ORDER_BY_ASC = 1,
@@ -52,23 +55,28 @@ export function orderByToJSON(object: OrderBy): string {
     }
 }
 
-/** BroadcastMode specifies the broadcast mode for the TxService.Broadcast RPC method. */
+/**
+ * BroadcastMode specifies the broadcast mode for the TxService.Broadcast RPC
+ * method.
+ */
 export enum BroadcastMode {
     /** BROADCAST_MODE_UNSPECIFIED - zero-value for mode ordering */
     BROADCAST_MODE_UNSPECIFIED = 0,
     /**
-     * BROADCAST_MODE_BLOCK - BROADCAST_MODE_BLOCK defines a tx broadcasting mode where the client waits for
-     * the tx to be committed in a block.
+     * BROADCAST_MODE_BLOCK - DEPRECATED: use BROADCAST_MODE_SYNC instead,
+     * BROADCAST_MODE_BLOCK is not supported by the SDK from v0.47.x onwards.
+     *
+     * @deprecated
      */
     BROADCAST_MODE_BLOCK = 1,
     /**
-     * BROADCAST_MODE_SYNC - BROADCAST_MODE_SYNC defines a tx broadcasting mode where the client waits for
-     * a CheckTx execution response only.
+     * BROADCAST_MODE_SYNC - BROADCAST_MODE_SYNC defines a tx broadcasting mode where the client waits
+     * for a CheckTx execution response only.
      */
     BROADCAST_MODE_SYNC = 2,
     /**
-     * BROADCAST_MODE_ASYNC - BROADCAST_MODE_ASYNC defines a tx broadcasting mode where the client returns
-     * immediately.
+     * BROADCAST_MODE_ASYNC - BROADCAST_MODE_ASYNC defines a tx broadcasting mode where the client
+     * returns immediately.
      */
     BROADCAST_MODE_ASYNC = 3,
     UNRECOGNIZED = -1,
@@ -116,7 +124,13 @@ export function broadcastModeToJSON(object: BroadcastMode): string {
  * RPC method.
  */
 export interface GetTxsEventRequest {
-    /** events is the list of transaction event type. */
+    /**
+     * events is the list of transaction event type.
+     * Deprecated post v0.47.x: use query instead, which should contain a valid
+     * events query.
+     *
+     * @deprecated
+     */
     events: string[];
     /**
      * pagination defines a pagination for the request.
@@ -124,15 +138,25 @@ export interface GetTxsEventRequest {
      *
      * @deprecated
      */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
     orderBy: OrderBy;
-    /** page is the page number to query, starts at 1. If not provided, will default to first page. */
+    /**
+     * page is the page number to query, starts at 1. If not provided, will
+     * default to first page.
+     */
     page: Long;
     /**
      * limit is the total number of results to be returned in the result page.
      * If left empty it will default to a value to be set by each app.
      */
     limit: Long;
+    /**
+     * query defines the transaction event query that is proxied to Tendermint's
+     * TxSearch RPC method. The query must be valid.
+     *
+     * Since cosmos-sdk 0.50
+     */
+    query: string;
 }
 
 /**
@@ -150,7 +174,7 @@ export interface GetTxsEventResponse {
      *
      * @deprecated
      */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
     /** total is total number of results available */
     total: Long;
 }
@@ -171,7 +195,7 @@ export interface BroadcastTxRequest {
  */
 export interface BroadcastTxResponse {
     /** tx_response is the queried TxResponses. */
-    txResponse?: TxResponse;
+    txResponse?: TxResponse | undefined;
 }
 
 /**
@@ -185,7 +209,7 @@ export interface SimulateRequest {
      *
      * @deprecated
      */
-    tx?: Tx;
+    tx?: Tx | undefined;
     /**
      * tx_bytes is the raw transaction.
      *
@@ -200,9 +224,9 @@ export interface SimulateRequest {
  */
 export interface SimulateResponse {
     /** gas_info is the information about gas used in the simulation. */
-    gasInfo?: GasInfo;
+    gasInfo?: GasInfo | undefined;
     /** result is the result of the simulation. */
-    result?: Result;
+    result?: Result | undefined;
 }
 
 /**
@@ -217,9 +241,9 @@ export interface GetTxRequest {
 /** GetTxResponse is the response type for the Service.GetTx method. */
 export interface GetTxResponse {
     /** tx is the queried transaction. */
-    tx?: Tx;
+    tx?: Tx | undefined;
     /** tx_response is the queried TxResponses. */
-    txResponse?: TxResponse;
+    txResponse?: TxResponse | undefined;
 }
 
 /**
@@ -232,25 +256,110 @@ export interface GetBlockWithTxsRequest {
     /** height is the height of the block to query. */
     height: Long;
     /** pagination defines a pagination for the request. */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /**
- * GetBlockWithTxsResponse is the response type for the Service.GetBlockWithTxs method.
+ * GetBlockWithTxsResponse is the response type for the Service.GetBlockWithTxs
+ * method.
  *
  * Since: cosmos-sdk 0.45.2
  */
 export interface GetBlockWithTxsResponse {
     /** txs are the transactions in the block. */
     txs: Tx[];
-    blockId?: BlockID;
-    block?: Block;
+    blockId?: BlockID | undefined;
+    block?: Block | undefined;
     /** pagination defines a pagination for the response. */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
+}
+
+/**
+ * TxDecodeRequest is the request type for the Service.TxDecode
+ * RPC method.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface TxDecodeRequest {
+    /** tx_bytes is the raw transaction. */
+    txBytes: Uint8Array;
+}
+
+/**
+ * TxDecodeResponse is the response type for the
+ * Service.TxDecode method.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface TxDecodeResponse {
+    /** tx is the decoded transaction. */
+    tx?: Tx | undefined;
+}
+
+/**
+ * TxEncodeRequest is the request type for the Service.TxEncode
+ * RPC method.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface TxEncodeRequest {
+    /** tx is the transaction to encode. */
+    tx?: Tx | undefined;
+}
+
+/**
+ * TxEncodeResponse is the response type for the
+ * Service.TxEncode method.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface TxEncodeResponse {
+    /** tx_bytes is the encoded transaction bytes. */
+    txBytes: Uint8Array;
+}
+
+/**
+ * TxEncodeAminoRequest is the request type for the Service.TxEncodeAmino
+ * RPC method.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface TxEncodeAminoRequest {
+    aminoJson: string;
+}
+
+/**
+ * TxEncodeAminoResponse is the response type for the Service.TxEncodeAmino
+ * RPC method.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface TxEncodeAminoResponse {
+    aminoBinary: Uint8Array;
+}
+
+/**
+ * TxDecodeAminoRequest is the request type for the Service.TxDecodeAmino
+ * RPC method.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface TxDecodeAminoRequest {
+    aminoBinary: Uint8Array;
+}
+
+/**
+ * TxDecodeAminoResponse is the response type for the Service.TxDecodeAmino
+ * RPC method.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface TxDecodeAminoResponse {
+    aminoJson: string;
 }
 
 function createBaseGetTxsEventRequest(): GetTxsEventRequest {
-    return { events: [], pagination: undefined, orderBy: 0, page: Long.UZERO, limit: Long.UZERO };
+    return { events: [], pagination: undefined, orderBy: 0, page: Long.UZERO, limit: Long.UZERO, query: '' };
 }
 
 export const GetTxsEventRequest = {
@@ -269,6 +378,9 @@ export const GetTxsEventRequest = {
         }
         if (!message.limit.isZero()) {
             writer.uint32(40).uint64(message.limit);
+        }
+        if (message.query !== '') {
+            writer.uint32(50).string(message.query);
         }
         return writer;
     },
@@ -315,6 +427,13 @@ export const GetTxsEventRequest = {
 
                     message.limit = reader.uint64() as Long;
                     continue;
+                case 6:
+                    if (tag !== 50) {
+                        break;
+                    }
+
+                    message.query = reader.string();
+                    continue;
             }
             if ((tag & 7) === 4 || tag === 0) {
                 break;
@@ -331,20 +450,30 @@ export const GetTxsEventRequest = {
             orderBy: isSet(object.orderBy) ? orderByFromJSON(object.orderBy) : 0,
             page: isSet(object.page) ? Long.fromValue(object.page) : Long.UZERO,
             limit: isSet(object.limit) ? Long.fromValue(object.limit) : Long.UZERO,
+            query: isSet(object.query) ? String(object.query) : '',
         };
     },
 
     toJSON(message: GetTxsEventRequest): unknown {
         const obj: any = {};
-        if (message.events) {
-            obj.events = message.events.map((e) => e);
-        } else {
-            obj.events = [];
+        if (message.events?.length) {
+            obj.events = message.events;
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
-        message.orderBy !== undefined && (obj.orderBy = orderByToJSON(message.orderBy));
-        message.page !== undefined && (obj.page = (message.page || Long.UZERO).toString());
-        message.limit !== undefined && (obj.limit = (message.limit || Long.UZERO).toString());
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
+        if (message.orderBy !== 0) {
+            obj.orderBy = orderByToJSON(message.orderBy);
+        }
+        if (!message.page.isZero()) {
+            obj.page = (message.page || Long.UZERO).toString();
+        }
+        if (!message.limit.isZero()) {
+            obj.limit = (message.limit || Long.UZERO).toString();
+        }
+        if (message.query !== '') {
+            obj.query = message.query;
+        }
         return obj;
     },
 
@@ -359,6 +488,7 @@ export const GetTxsEventRequest = {
         message.orderBy = object.orderBy ?? 0;
         message.page = object.page !== undefined && object.page !== null ? Long.fromValue(object.page) : Long.UZERO;
         message.limit = object.limit !== undefined && object.limit !== null ? Long.fromValue(object.limit) : Long.UZERO;
+        message.query = object.query ?? '';
         return message;
     },
 };
@@ -439,18 +569,18 @@ export const GetTxsEventResponse = {
 
     toJSON(message: GetTxsEventResponse): unknown {
         const obj: any = {};
-        if (message.txs) {
-            obj.txs = message.txs.map((e) => (e ? Tx.toJSON(e) : undefined));
-        } else {
-            obj.txs = [];
+        if (message.txs?.length) {
+            obj.txs = message.txs.map((e) => Tx.toJSON(e));
         }
-        if (message.txResponses) {
-            obj.txResponses = message.txResponses.map((e) => (e ? TxResponse.toJSON(e) : undefined));
-        } else {
-            obj.txResponses = [];
+        if (message.txResponses?.length) {
+            obj.txResponses = message.txResponses.map((e) => TxResponse.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
-        message.total !== undefined && (obj.total = (message.total || Long.UZERO).toString());
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
+        if (!message.total.isZero()) {
+            obj.total = (message.total || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -469,7 +599,7 @@ export const GetTxsEventResponse = {
 };
 
 function createBaseBroadcastTxRequest(): BroadcastTxRequest {
-    return { txBytes: new Uint8Array(), mode: 0 };
+    return { txBytes: new Uint8Array(0), mode: 0 };
 }
 
 export const BroadcastTxRequest = {
@@ -515,15 +645,19 @@ export const BroadcastTxRequest = {
 
     fromJSON(object: any): BroadcastTxRequest {
         return {
-            txBytes: isSet(object.txBytes) ? bytesFromBase64(object.txBytes) : new Uint8Array(),
+            txBytes: isSet(object.txBytes) ? bytesFromBase64(object.txBytes) : new Uint8Array(0),
             mode: isSet(object.mode) ? broadcastModeFromJSON(object.mode) : 0,
         };
     },
 
     toJSON(message: BroadcastTxRequest): unknown {
         const obj: any = {};
-        message.txBytes !== undefined && (obj.txBytes = base64FromBytes(message.txBytes !== undefined ? message.txBytes : new Uint8Array()));
-        message.mode !== undefined && (obj.mode = broadcastModeToJSON(message.mode));
+        if (message.txBytes.length !== 0) {
+            obj.txBytes = base64FromBytes(message.txBytes);
+        }
+        if (message.mode !== 0) {
+            obj.mode = broadcastModeToJSON(message.mode);
+        }
         return obj;
     },
 
@@ -533,7 +667,7 @@ export const BroadcastTxRequest = {
 
     fromPartial<I extends Exact<DeepPartial<BroadcastTxRequest>, I>>(object: I): BroadcastTxRequest {
         const message = createBaseBroadcastTxRequest();
-        message.txBytes = object.txBytes ?? new Uint8Array();
+        message.txBytes = object.txBytes ?? new Uint8Array(0);
         message.mode = object.mode ?? 0;
         return message;
     },
@@ -580,7 +714,9 @@ export const BroadcastTxResponse = {
 
     toJSON(message: BroadcastTxResponse): unknown {
         const obj: any = {};
-        message.txResponse !== undefined && (obj.txResponse = message.txResponse ? TxResponse.toJSON(message.txResponse) : undefined);
+        if (message.txResponse !== undefined) {
+            obj.txResponse = TxResponse.toJSON(message.txResponse);
+        }
         return obj;
     },
 
@@ -596,7 +732,7 @@ export const BroadcastTxResponse = {
 };
 
 function createBaseSimulateRequest(): SimulateRequest {
-    return { tx: undefined, txBytes: new Uint8Array() };
+    return { tx: undefined, txBytes: new Uint8Array(0) };
 }
 
 export const SimulateRequest = {
@@ -643,14 +779,18 @@ export const SimulateRequest = {
     fromJSON(object: any): SimulateRequest {
         return {
             tx: isSet(object.tx) ? Tx.fromJSON(object.tx) : undefined,
-            txBytes: isSet(object.txBytes) ? bytesFromBase64(object.txBytes) : new Uint8Array(),
+            txBytes: isSet(object.txBytes) ? bytesFromBase64(object.txBytes) : new Uint8Array(0),
         };
     },
 
     toJSON(message: SimulateRequest): unknown {
         const obj: any = {};
-        message.tx !== undefined && (obj.tx = message.tx ? Tx.toJSON(message.tx) : undefined);
-        message.txBytes !== undefined && (obj.txBytes = base64FromBytes(message.txBytes !== undefined ? message.txBytes : new Uint8Array()));
+        if (message.tx !== undefined) {
+            obj.tx = Tx.toJSON(message.tx);
+        }
+        if (message.txBytes.length !== 0) {
+            obj.txBytes = base64FromBytes(message.txBytes);
+        }
         return obj;
     },
 
@@ -661,7 +801,7 @@ export const SimulateRequest = {
     fromPartial<I extends Exact<DeepPartial<SimulateRequest>, I>>(object: I): SimulateRequest {
         const message = createBaseSimulateRequest();
         message.tx = object.tx !== undefined && object.tx !== null ? Tx.fromPartial(object.tx) : undefined;
-        message.txBytes = object.txBytes ?? new Uint8Array();
+        message.txBytes = object.txBytes ?? new Uint8Array(0);
         return message;
     },
 };
@@ -720,8 +860,12 @@ export const SimulateResponse = {
 
     toJSON(message: SimulateResponse): unknown {
         const obj: any = {};
-        message.gasInfo !== undefined && (obj.gasInfo = message.gasInfo ? GasInfo.toJSON(message.gasInfo) : undefined);
-        message.result !== undefined && (obj.result = message.result ? Result.toJSON(message.result) : undefined);
+        if (message.gasInfo !== undefined) {
+            obj.gasInfo = GasInfo.toJSON(message.gasInfo);
+        }
+        if (message.result !== undefined) {
+            obj.result = Result.toJSON(message.result);
+        }
         return obj;
     },
 
@@ -778,7 +922,9 @@ export const GetTxRequest = {
 
     toJSON(message: GetTxRequest): unknown {
         const obj: any = {};
-        message.hash !== undefined && (obj.hash = message.hash);
+        if (message.hash !== '') {
+            obj.hash = message.hash;
+        }
         return obj;
     },
 
@@ -847,8 +993,12 @@ export const GetTxResponse = {
 
     toJSON(message: GetTxResponse): unknown {
         const obj: any = {};
-        message.tx !== undefined && (obj.tx = message.tx ? Tx.toJSON(message.tx) : undefined);
-        message.txResponse !== undefined && (obj.txResponse = message.txResponse ? TxResponse.toJSON(message.txResponse) : undefined);
+        if (message.tx !== undefined) {
+            obj.tx = Tx.toJSON(message.tx);
+        }
+        if (message.txResponse !== undefined) {
+            obj.txResponse = TxResponse.toJSON(message.txResponse);
+        }
         return obj;
     },
 
@@ -918,8 +1068,12 @@ export const GetBlockWithTxsRequest = {
 
     toJSON(message: GetBlockWithTxsRequest): unknown {
         const obj: any = {};
-        message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (!message.height.isZero()) {
+            obj.height = (message.height || Long.ZERO).toString();
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -1011,14 +1165,18 @@ export const GetBlockWithTxsResponse = {
 
     toJSON(message: GetBlockWithTxsResponse): unknown {
         const obj: any = {};
-        if (message.txs) {
-            obj.txs = message.txs.map((e) => (e ? Tx.toJSON(e) : undefined));
-        } else {
-            obj.txs = [];
+        if (message.txs?.length) {
+            obj.txs = message.txs.map((e) => Tx.toJSON(e));
         }
-        message.blockId !== undefined && (obj.blockId = message.blockId ? BlockID.toJSON(message.blockId) : undefined);
-        message.block !== undefined && (obj.block = message.block ? Block.toJSON(message.block) : undefined);
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.blockId !== undefined) {
+            obj.blockId = BlockID.toJSON(message.blockId);
+        }
+        if (message.block !== undefined) {
+            obj.block = Block.toJSON(message.block);
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -1032,6 +1190,470 @@ export const GetBlockWithTxsResponse = {
         message.blockId = object.blockId !== undefined && object.blockId !== null ? BlockID.fromPartial(object.blockId) : undefined;
         message.block = object.block !== undefined && object.block !== null ? Block.fromPartial(object.block) : undefined;
         message.pagination = object.pagination !== undefined && object.pagination !== null ? PageResponse.fromPartial(object.pagination) : undefined;
+        return message;
+    },
+};
+
+function createBaseTxDecodeRequest(): TxDecodeRequest {
+    return { txBytes: new Uint8Array(0) };
+}
+
+export const TxDecodeRequest = {
+    encode(message: TxDecodeRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (message.txBytes.length !== 0) {
+            writer.uint32(10).bytes(message.txBytes);
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): TxDecodeRequest {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseTxDecodeRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.txBytes = reader.bytes();
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): TxDecodeRequest {
+        return { txBytes: isSet(object.txBytes) ? bytesFromBase64(object.txBytes) : new Uint8Array(0) };
+    },
+
+    toJSON(message: TxDecodeRequest): unknown {
+        const obj: any = {};
+        if (message.txBytes.length !== 0) {
+            obj.txBytes = base64FromBytes(message.txBytes);
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<TxDecodeRequest>, I>>(base?: I): TxDecodeRequest {
+        return TxDecodeRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<TxDecodeRequest>, I>>(object: I): TxDecodeRequest {
+        const message = createBaseTxDecodeRequest();
+        message.txBytes = object.txBytes ?? new Uint8Array(0);
+        return message;
+    },
+};
+
+function createBaseTxDecodeResponse(): TxDecodeResponse {
+    return { tx: undefined };
+}
+
+export const TxDecodeResponse = {
+    encode(message: TxDecodeResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (message.tx !== undefined) {
+            Tx.encode(message.tx, writer.uint32(10).fork()).ldelim();
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): TxDecodeResponse {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseTxDecodeResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.tx = Tx.decode(reader, reader.uint32());
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): TxDecodeResponse {
+        return { tx: isSet(object.tx) ? Tx.fromJSON(object.tx) : undefined };
+    },
+
+    toJSON(message: TxDecodeResponse): unknown {
+        const obj: any = {};
+        if (message.tx !== undefined) {
+            obj.tx = Tx.toJSON(message.tx);
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<TxDecodeResponse>, I>>(base?: I): TxDecodeResponse {
+        return TxDecodeResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<TxDecodeResponse>, I>>(object: I): TxDecodeResponse {
+        const message = createBaseTxDecodeResponse();
+        message.tx = object.tx !== undefined && object.tx !== null ? Tx.fromPartial(object.tx) : undefined;
+        return message;
+    },
+};
+
+function createBaseTxEncodeRequest(): TxEncodeRequest {
+    return { tx: undefined };
+}
+
+export const TxEncodeRequest = {
+    encode(message: TxEncodeRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (message.tx !== undefined) {
+            Tx.encode(message.tx, writer.uint32(10).fork()).ldelim();
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): TxEncodeRequest {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseTxEncodeRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.tx = Tx.decode(reader, reader.uint32());
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): TxEncodeRequest {
+        return { tx: isSet(object.tx) ? Tx.fromJSON(object.tx) : undefined };
+    },
+
+    toJSON(message: TxEncodeRequest): unknown {
+        const obj: any = {};
+        if (message.tx !== undefined) {
+            obj.tx = Tx.toJSON(message.tx);
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<TxEncodeRequest>, I>>(base?: I): TxEncodeRequest {
+        return TxEncodeRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<TxEncodeRequest>, I>>(object: I): TxEncodeRequest {
+        const message = createBaseTxEncodeRequest();
+        message.tx = object.tx !== undefined && object.tx !== null ? Tx.fromPartial(object.tx) : undefined;
+        return message;
+    },
+};
+
+function createBaseTxEncodeResponse(): TxEncodeResponse {
+    return { txBytes: new Uint8Array(0) };
+}
+
+export const TxEncodeResponse = {
+    encode(message: TxEncodeResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (message.txBytes.length !== 0) {
+            writer.uint32(10).bytes(message.txBytes);
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): TxEncodeResponse {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseTxEncodeResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.txBytes = reader.bytes();
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): TxEncodeResponse {
+        return { txBytes: isSet(object.txBytes) ? bytesFromBase64(object.txBytes) : new Uint8Array(0) };
+    },
+
+    toJSON(message: TxEncodeResponse): unknown {
+        const obj: any = {};
+        if (message.txBytes.length !== 0) {
+            obj.txBytes = base64FromBytes(message.txBytes);
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<TxEncodeResponse>, I>>(base?: I): TxEncodeResponse {
+        return TxEncodeResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<TxEncodeResponse>, I>>(object: I): TxEncodeResponse {
+        const message = createBaseTxEncodeResponse();
+        message.txBytes = object.txBytes ?? new Uint8Array(0);
+        return message;
+    },
+};
+
+function createBaseTxEncodeAminoRequest(): TxEncodeAminoRequest {
+    return { aminoJson: '' };
+}
+
+export const TxEncodeAminoRequest = {
+    encode(message: TxEncodeAminoRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (message.aminoJson !== '') {
+            writer.uint32(10).string(message.aminoJson);
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): TxEncodeAminoRequest {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseTxEncodeAminoRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.aminoJson = reader.string();
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): TxEncodeAminoRequest {
+        return { aminoJson: isSet(object.aminoJson) ? String(object.aminoJson) : '' };
+    },
+
+    toJSON(message: TxEncodeAminoRequest): unknown {
+        const obj: any = {};
+        if (message.aminoJson !== '') {
+            obj.aminoJson = message.aminoJson;
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<TxEncodeAminoRequest>, I>>(base?: I): TxEncodeAminoRequest {
+        return TxEncodeAminoRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<TxEncodeAminoRequest>, I>>(object: I): TxEncodeAminoRequest {
+        const message = createBaseTxEncodeAminoRequest();
+        message.aminoJson = object.aminoJson ?? '';
+        return message;
+    },
+};
+
+function createBaseTxEncodeAminoResponse(): TxEncodeAminoResponse {
+    return { aminoBinary: new Uint8Array(0) };
+}
+
+export const TxEncodeAminoResponse = {
+    encode(message: TxEncodeAminoResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (message.aminoBinary.length !== 0) {
+            writer.uint32(10).bytes(message.aminoBinary);
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): TxEncodeAminoResponse {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseTxEncodeAminoResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.aminoBinary = reader.bytes();
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): TxEncodeAminoResponse {
+        return { aminoBinary: isSet(object.aminoBinary) ? bytesFromBase64(object.aminoBinary) : new Uint8Array(0) };
+    },
+
+    toJSON(message: TxEncodeAminoResponse): unknown {
+        const obj: any = {};
+        if (message.aminoBinary.length !== 0) {
+            obj.aminoBinary = base64FromBytes(message.aminoBinary);
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<TxEncodeAminoResponse>, I>>(base?: I): TxEncodeAminoResponse {
+        return TxEncodeAminoResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<TxEncodeAminoResponse>, I>>(object: I): TxEncodeAminoResponse {
+        const message = createBaseTxEncodeAminoResponse();
+        message.aminoBinary = object.aminoBinary ?? new Uint8Array(0);
+        return message;
+    },
+};
+
+function createBaseTxDecodeAminoRequest(): TxDecodeAminoRequest {
+    return { aminoBinary: new Uint8Array(0) };
+}
+
+export const TxDecodeAminoRequest = {
+    encode(message: TxDecodeAminoRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (message.aminoBinary.length !== 0) {
+            writer.uint32(10).bytes(message.aminoBinary);
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): TxDecodeAminoRequest {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseTxDecodeAminoRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.aminoBinary = reader.bytes();
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): TxDecodeAminoRequest {
+        return { aminoBinary: isSet(object.aminoBinary) ? bytesFromBase64(object.aminoBinary) : new Uint8Array(0) };
+    },
+
+    toJSON(message: TxDecodeAminoRequest): unknown {
+        const obj: any = {};
+        if (message.aminoBinary.length !== 0) {
+            obj.aminoBinary = base64FromBytes(message.aminoBinary);
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<TxDecodeAminoRequest>, I>>(base?: I): TxDecodeAminoRequest {
+        return TxDecodeAminoRequest.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<TxDecodeAminoRequest>, I>>(object: I): TxDecodeAminoRequest {
+        const message = createBaseTxDecodeAminoRequest();
+        message.aminoBinary = object.aminoBinary ?? new Uint8Array(0);
+        return message;
+    },
+};
+
+function createBaseTxDecodeAminoResponse(): TxDecodeAminoResponse {
+    return { aminoJson: '' };
+}
+
+export const TxDecodeAminoResponse = {
+    encode(message: TxDecodeAminoResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (message.aminoJson !== '') {
+            writer.uint32(10).string(message.aminoJson);
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): TxDecodeAminoResponse {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseTxDecodeAminoResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.aminoJson = reader.string();
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): TxDecodeAminoResponse {
+        return { aminoJson: isSet(object.aminoJson) ? String(object.aminoJson) : '' };
+    },
+
+    toJSON(message: TxDecodeAminoResponse): unknown {
+        const obj: any = {};
+        if (message.aminoJson !== '') {
+            obj.aminoJson = message.aminoJson;
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<TxDecodeAminoResponse>, I>>(base?: I): TxDecodeAminoResponse {
+        return TxDecodeAminoResponse.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<TxDecodeAminoResponse>, I>>(object: I): TxDecodeAminoResponse {
+        const message = createBaseTxDecodeAminoResponse();
+        message.aminoJson = object.aminoJson ?? '';
         return message;
     },
 };
@@ -1052,19 +1674,48 @@ export interface Service {
      * Since: cosmos-sdk 0.45.2
      */
     GetBlockWithTxs(request: GetBlockWithTxsRequest): Promise<GetBlockWithTxsResponse>;
+    /**
+     * TxDecode decodes the transaction.
+     *
+     * Since: cosmos-sdk 0.47
+     */
+    TxDecode(request: TxDecodeRequest): Promise<TxDecodeResponse>;
+    /**
+     * TxEncode encodes the transaction.
+     *
+     * Since: cosmos-sdk 0.47
+     */
+    TxEncode(request: TxEncodeRequest): Promise<TxEncodeResponse>;
+    /**
+     * TxEncodeAmino encodes an Amino transaction from JSON to encoded bytes.
+     *
+     * Since: cosmos-sdk 0.47
+     */
+    TxEncodeAmino(request: TxEncodeAminoRequest): Promise<TxEncodeAminoResponse>;
+    /**
+     * TxDecodeAmino decodes an Amino transaction from encoded bytes to JSON.
+     *
+     * Since: cosmos-sdk 0.47
+     */
+    TxDecodeAmino(request: TxDecodeAminoRequest): Promise<TxDecodeAminoResponse>;
 }
 
+export const ServiceServiceName = 'cosmos.tx.v1beta1.Service';
 export class ServiceClientImpl implements Service {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'cosmos.tx.v1beta1.Service';
+        this.service = opts?.service || ServiceServiceName;
         this.rpc = rpc;
         this.Simulate = this.Simulate.bind(this);
         this.GetTx = this.GetTx.bind(this);
         this.BroadcastTx = this.BroadcastTx.bind(this);
         this.GetTxsEvent = this.GetTxsEvent.bind(this);
         this.GetBlockWithTxs = this.GetBlockWithTxs.bind(this);
+        this.TxDecode = this.TxDecode.bind(this);
+        this.TxEncode = this.TxEncode.bind(this);
+        this.TxEncodeAmino = this.TxEncodeAmino.bind(this);
+        this.TxDecodeAmino = this.TxDecodeAmino.bind(this);
     }
     Simulate(request: SimulateRequest): Promise<SimulateResponse> {
         const data = SimulateRequest.encode(request).finish();
@@ -1095,16 +1746,40 @@ export class ServiceClientImpl implements Service {
         const promise = this.rpc.request(this.service, 'GetBlockWithTxs', data);
         return promise.then((data) => GetBlockWithTxsResponse.decode(_m0.Reader.create(data)));
     }
+
+    TxDecode(request: TxDecodeRequest): Promise<TxDecodeResponse> {
+        const data = TxDecodeRequest.encode(request).finish();
+        const promise = this.rpc.request(this.service, 'TxDecode', data);
+        return promise.then((data) => TxDecodeResponse.decode(_m0.Reader.create(data)));
+    }
+
+    TxEncode(request: TxEncodeRequest): Promise<TxEncodeResponse> {
+        const data = TxEncodeRequest.encode(request).finish();
+        const promise = this.rpc.request(this.service, 'TxEncode', data);
+        return promise.then((data) => TxEncodeResponse.decode(_m0.Reader.create(data)));
+    }
+
+    TxEncodeAmino(request: TxEncodeAminoRequest): Promise<TxEncodeAminoResponse> {
+        const data = TxEncodeAminoRequest.encode(request).finish();
+        const promise = this.rpc.request(this.service, 'TxEncodeAmino', data);
+        return promise.then((data) => TxEncodeAminoResponse.decode(_m0.Reader.create(data)));
+    }
+
+    TxDecodeAmino(request: TxDecodeAminoRequest): Promise<TxDecodeAminoResponse> {
+        const data = TxDecodeAminoRequest.encode(request).finish();
+        const promise = this.rpc.request(this.service, 'TxDecodeAmino', data);
+        return promise.then((data) => TxDecodeAminoResponse.decode(_m0.Reader.create(data)));
+    }
 }
 
 interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }

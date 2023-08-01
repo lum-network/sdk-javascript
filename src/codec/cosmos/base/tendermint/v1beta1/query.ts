@@ -10,91 +10,67 @@ import { Block as Block1 } from './types';
 
 export const protobufPackage = 'cosmos.base.tendermint.v1beta1';
 
-/**
- * GetValidatorSetByHeightRequest is the request type for the
- * Query/GetValidatorSetByHeight RPC method.
- */
+/** GetValidatorSetByHeightRequest is the request type for the Query/GetValidatorSetByHeight RPC method. */
 export interface GetValidatorSetByHeightRequest {
     height: Long;
     /** pagination defines an pagination for the request. */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
-/**
- * GetValidatorSetByHeightResponse is the response type for the
- * Query/GetValidatorSetByHeight RPC method.
- */
+/** GetValidatorSetByHeightResponse is the response type for the Query/GetValidatorSetByHeight RPC method. */
 export interface GetValidatorSetByHeightResponse {
     blockHeight: Long;
     validators: Validator[];
     /** pagination defines an pagination for the response. */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
 }
 
-/**
- * GetLatestValidatorSetRequest is the request type for the
- * Query/GetValidatorSetByHeight RPC method.
- */
+/** GetLatestValidatorSetRequest is the request type for the Query/GetValidatorSetByHeight RPC method. */
 export interface GetLatestValidatorSetRequest {
     /** pagination defines an pagination for the request. */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
-/**
- * GetLatestValidatorSetResponse is the response type for the
- * Query/GetValidatorSetByHeight RPC method.
- */
+/** GetLatestValidatorSetResponse is the response type for the Query/GetValidatorSetByHeight RPC method. */
 export interface GetLatestValidatorSetResponse {
     blockHeight: Long;
     validators: Validator[];
     /** pagination defines an pagination for the response. */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
 }
 
 /** Validator is the type for the validator-set. */
 export interface Validator {
     address: string;
-    pubKey?: Any;
+    pubKey?: Any | undefined;
     votingPower: Long;
     proposerPriority: Long;
 }
 
-/**
- * GetBlockByHeightRequest is the request type for the Query/GetBlockByHeight
- * RPC method.
- */
+/** GetBlockByHeightRequest is the request type for the Query/GetBlockByHeight RPC method. */
 export interface GetBlockByHeightRequest {
     height: Long;
 }
 
-/**
- * GetBlockByHeightResponse is the response type for the Query/GetBlockByHeight
- * RPC method.
- */
+/** GetBlockByHeightResponse is the response type for the Query/GetBlockByHeight RPC method. */
 export interface GetBlockByHeightResponse {
-    blockId?: BlockID;
+    blockId?: BlockID | undefined;
     /** Deprecated: please use `sdk_block` instead */
-    block?: Block;
+    block?: Block | undefined;
     /** Since: cosmos-sdk 0.47 */
-    sdkBlock?: Block1;
+    sdkBlock?: Block1 | undefined;
 }
 
-/**
- * GetLatestBlockRequest is the request type for the Query/GetLatestBlock RPC
- * method.
- */
+/** GetLatestBlockRequest is the request type for the Query/GetLatestBlock RPC method. */
 export interface GetLatestBlockRequest {}
 
-/**
- * GetLatestBlockResponse is the response type for the Query/GetLatestBlock RPC
- * method.
- */
+/** GetLatestBlockResponse is the response type for the Query/GetLatestBlock RPC method. */
 export interface GetLatestBlockResponse {
-    blockId?: BlockID;
+    blockId?: BlockID | undefined;
     /** Deprecated: please use `sdk_block` instead */
-    block?: Block;
+    block?: Block | undefined;
     /** Since: cosmos-sdk 0.47 */
-    sdkBlock?: Block1;
+    sdkBlock?: Block1 | undefined;
 }
 
 /** GetSyncingRequest is the request type for the Query/GetSyncing RPC method. */
@@ -108,13 +84,10 @@ export interface GetSyncingResponse {
 /** GetNodeInfoRequest is the request type for the Query/GetNodeInfo RPC method. */
 export interface GetNodeInfoRequest {}
 
-/**
- * GetNodeInfoResponse is the response type for the Query/GetNodeInfo RPC
- * method.
- */
+/** GetNodeInfoResponse is the response type for the Query/GetNodeInfo RPC method. */
 export interface GetNodeInfoResponse {
-    defaultNodeInfo?: DefaultNodeInfo;
-    applicationVersion?: VersionInfo;
+    defaultNodeInfo?: DefaultNodeInfo | undefined;
+    applicationVersion?: VersionInfo | undefined;
 }
 
 /** VersionInfo is the type for the GetNodeInfoResponse message. */
@@ -149,8 +122,7 @@ export interface ABCIQueryRequest {
 }
 
 /**
- * ABCIQueryResponse defines the response structure for the ABCIQuery gRPC
- * query.
+ * ABCIQueryResponse defines the response structure for the ABCIQuery gRPC query.
  *
  * Note: This type is a duplicate of the ResponseQuery proto type defined in
  * Tendermint.
@@ -164,18 +136,17 @@ export interface ABCIQueryResponse {
     index: Long;
     key: Uint8Array;
     value: Uint8Array;
-    proofOps?: ProofOps;
+    proofOps?: ProofOps | undefined;
     height: Long;
     codespace: string;
 }
 
 /**
  * ProofOp defines an operation used for calculating Merkle root. The data could
- * be arbitrary format, providing nessecary data for example neighbouring node
+ * be arbitrary format, providing necessary data for example neighbouring node
  * hash.
  *
- * Note: This type is a duplicate of the ProofOp proto type defined in
- * Tendermint.
+ * Note: This type is a duplicate of the ProofOp proto type defined in Tendermint.
  */
 export interface ProofOp {
     type: string;
@@ -186,8 +157,7 @@ export interface ProofOp {
 /**
  * ProofOps is Merkle proof defined by the list of ProofOps.
  *
- * Note: This type is a duplicate of the ProofOps proto type defined in
- * Tendermint.
+ * Note: This type is a duplicate of the ProofOps proto type defined in Tendermint.
  */
 export interface ProofOps {
     ops: ProofOp[];
@@ -247,8 +217,12 @@ export const GetValidatorSetByHeightRequest = {
 
     toJSON(message: GetValidatorSetByHeightRequest): unknown {
         const obj: any = {};
-        message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (!message.height.isZero()) {
+            obj.height = (message.height || Long.ZERO).toString();
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -329,13 +303,15 @@ export const GetValidatorSetByHeightResponse = {
 
     toJSON(message: GetValidatorSetByHeightResponse): unknown {
         const obj: any = {};
-        message.blockHeight !== undefined && (obj.blockHeight = (message.blockHeight || Long.ZERO).toString());
-        if (message.validators) {
-            obj.validators = message.validators.map((e) => (e ? Validator.toJSON(e) : undefined));
-        } else {
-            obj.validators = [];
+        if (!message.blockHeight.isZero()) {
+            obj.blockHeight = (message.blockHeight || Long.ZERO).toString();
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.validators?.length) {
+            obj.validators = message.validators.map((e) => Validator.toJSON(e));
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -393,7 +369,9 @@ export const GetLatestValidatorSetRequest = {
 
     toJSON(message: GetLatestValidatorSetRequest): unknown {
         const obj: any = {};
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -473,13 +451,15 @@ export const GetLatestValidatorSetResponse = {
 
     toJSON(message: GetLatestValidatorSetResponse): unknown {
         const obj: any = {};
-        message.blockHeight !== undefined && (obj.blockHeight = (message.blockHeight || Long.ZERO).toString());
-        if (message.validators) {
-            obj.validators = message.validators.map((e) => (e ? Validator.toJSON(e) : undefined));
-        } else {
-            obj.validators = [];
+        if (!message.blockHeight.isZero()) {
+            obj.blockHeight = (message.blockHeight || Long.ZERO).toString();
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.validators?.length) {
+            obj.validators = message.validators.map((e) => Validator.toJSON(e));
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -572,10 +552,18 @@ export const Validator = {
 
     toJSON(message: Validator): unknown {
         const obj: any = {};
-        message.address !== undefined && (obj.address = message.address);
-        message.pubKey !== undefined && (obj.pubKey = message.pubKey ? Any.toJSON(message.pubKey) : undefined);
-        message.votingPower !== undefined && (obj.votingPower = (message.votingPower || Long.ZERO).toString());
-        message.proposerPriority !== undefined && (obj.proposerPriority = (message.proposerPriority || Long.ZERO).toString());
+        if (message.address !== '') {
+            obj.address = message.address;
+        }
+        if (message.pubKey !== undefined) {
+            obj.pubKey = Any.toJSON(message.pubKey);
+        }
+        if (!message.votingPower.isZero()) {
+            obj.votingPower = (message.votingPower || Long.ZERO).toString();
+        }
+        if (!message.proposerPriority.isZero()) {
+            obj.proposerPriority = (message.proposerPriority || Long.ZERO).toString();
+        }
         return obj;
     },
 
@@ -634,7 +622,9 @@ export const GetBlockByHeightRequest = {
 
     toJSON(message: GetBlockByHeightRequest): unknown {
         const obj: any = {};
-        message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
+        if (!message.height.isZero()) {
+            obj.height = (message.height || Long.ZERO).toString();
+        }
         return obj;
     },
 
@@ -714,9 +704,15 @@ export const GetBlockByHeightResponse = {
 
     toJSON(message: GetBlockByHeightResponse): unknown {
         const obj: any = {};
-        message.blockId !== undefined && (obj.blockId = message.blockId ? BlockID.toJSON(message.blockId) : undefined);
-        message.block !== undefined && (obj.block = message.block ? Block.toJSON(message.block) : undefined);
-        message.sdkBlock !== undefined && (obj.sdkBlock = message.sdkBlock ? Block1.toJSON(message.sdkBlock) : undefined);
+        if (message.blockId !== undefined) {
+            obj.blockId = BlockID.toJSON(message.blockId);
+        }
+        if (message.block !== undefined) {
+            obj.block = Block.toJSON(message.block);
+        }
+        if (message.sdkBlock !== undefined) {
+            obj.sdkBlock = Block1.toJSON(message.sdkBlock);
+        }
         return obj;
     },
 
@@ -842,9 +838,15 @@ export const GetLatestBlockResponse = {
 
     toJSON(message: GetLatestBlockResponse): unknown {
         const obj: any = {};
-        message.blockId !== undefined && (obj.blockId = message.blockId ? BlockID.toJSON(message.blockId) : undefined);
-        message.block !== undefined && (obj.block = message.block ? Block.toJSON(message.block) : undefined);
-        message.sdkBlock !== undefined && (obj.sdkBlock = message.sdkBlock ? Block1.toJSON(message.sdkBlock) : undefined);
+        if (message.blockId !== undefined) {
+            obj.blockId = BlockID.toJSON(message.blockId);
+        }
+        if (message.block !== undefined) {
+            obj.block = Block.toJSON(message.block);
+        }
+        if (message.sdkBlock !== undefined) {
+            obj.sdkBlock = Block1.toJSON(message.sdkBlock);
+        }
         return obj;
     },
 
@@ -946,7 +948,9 @@ export const GetSyncingResponse = {
 
     toJSON(message: GetSyncingResponse): unknown {
         const obj: any = {};
-        message.syncing !== undefined && (obj.syncing = message.syncing);
+        if (message.syncing === true) {
+            obj.syncing = message.syncing;
+        }
         return obj;
     },
 
@@ -1059,8 +1063,12 @@ export const GetNodeInfoResponse = {
 
     toJSON(message: GetNodeInfoResponse): unknown {
         const obj: any = {};
-        message.defaultNodeInfo !== undefined && (obj.defaultNodeInfo = message.defaultNodeInfo ? DefaultNodeInfo.toJSON(message.defaultNodeInfo) : undefined);
-        message.applicationVersion !== undefined && (obj.applicationVersion = message.applicationVersion ? VersionInfo.toJSON(message.applicationVersion) : undefined);
+        if (message.defaultNodeInfo !== undefined) {
+            obj.defaultNodeInfo = DefaultNodeInfo.toJSON(message.defaultNodeInfo);
+        }
+        if (message.applicationVersion !== undefined) {
+            obj.applicationVersion = VersionInfo.toJSON(message.applicationVersion);
+        }
         return obj;
     },
 
@@ -1205,18 +1213,30 @@ export const VersionInfo = {
 
     toJSON(message: VersionInfo): unknown {
         const obj: any = {};
-        message.name !== undefined && (obj.name = message.name);
-        message.appName !== undefined && (obj.appName = message.appName);
-        message.version !== undefined && (obj.version = message.version);
-        message.gitCommit !== undefined && (obj.gitCommit = message.gitCommit);
-        message.buildTags !== undefined && (obj.buildTags = message.buildTags);
-        message.goVersion !== undefined && (obj.goVersion = message.goVersion);
-        if (message.buildDeps) {
-            obj.buildDeps = message.buildDeps.map((e) => (e ? Module.toJSON(e) : undefined));
-        } else {
-            obj.buildDeps = [];
+        if (message.name !== '') {
+            obj.name = message.name;
         }
-        message.cosmosSdkVersion !== undefined && (obj.cosmosSdkVersion = message.cosmosSdkVersion);
+        if (message.appName !== '') {
+            obj.appName = message.appName;
+        }
+        if (message.version !== '') {
+            obj.version = message.version;
+        }
+        if (message.gitCommit !== '') {
+            obj.gitCommit = message.gitCommit;
+        }
+        if (message.buildTags !== '') {
+            obj.buildTags = message.buildTags;
+        }
+        if (message.goVersion !== '') {
+            obj.goVersion = message.goVersion;
+        }
+        if (message.buildDeps?.length) {
+            obj.buildDeps = message.buildDeps.map((e) => Module.toJSON(e));
+        }
+        if (message.cosmosSdkVersion !== '') {
+            obj.cosmosSdkVersion = message.cosmosSdkVersion;
+        }
         return obj;
     },
 
@@ -1303,9 +1323,15 @@ export const Module = {
 
     toJSON(message: Module): unknown {
         const obj: any = {};
-        message.path !== undefined && (obj.path = message.path);
-        message.version !== undefined && (obj.version = message.version);
-        message.sum !== undefined && (obj.sum = message.sum);
+        if (message.path !== '') {
+            obj.path = message.path;
+        }
+        if (message.version !== '') {
+            obj.version = message.version;
+        }
+        if (message.sum !== '') {
+            obj.sum = message.sum;
+        }
         return obj;
     },
 
@@ -1323,7 +1349,7 @@ export const Module = {
 };
 
 function createBaseABCIQueryRequest(): ABCIQueryRequest {
-    return { data: new Uint8Array(), path: '', height: Long.ZERO, prove: false };
+    return { data: new Uint8Array(0), path: '', height: Long.ZERO, prove: false };
 }
 
 export const ABCIQueryRequest = {
@@ -1389,7 +1415,7 @@ export const ABCIQueryRequest = {
 
     fromJSON(object: any): ABCIQueryRequest {
         return {
-            data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(),
+            data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(0),
             path: isSet(object.path) ? String(object.path) : '',
             height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
             prove: isSet(object.prove) ? Boolean(object.prove) : false,
@@ -1398,10 +1424,18 @@ export const ABCIQueryRequest = {
 
     toJSON(message: ABCIQueryRequest): unknown {
         const obj: any = {};
-        message.data !== undefined && (obj.data = base64FromBytes(message.data !== undefined ? message.data : new Uint8Array()));
-        message.path !== undefined && (obj.path = message.path);
-        message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
-        message.prove !== undefined && (obj.prove = message.prove);
+        if (message.data.length !== 0) {
+            obj.data = base64FromBytes(message.data);
+        }
+        if (message.path !== '') {
+            obj.path = message.path;
+        }
+        if (!message.height.isZero()) {
+            obj.height = (message.height || Long.ZERO).toString();
+        }
+        if (message.prove === true) {
+            obj.prove = message.prove;
+        }
         return obj;
     },
 
@@ -1411,7 +1445,7 @@ export const ABCIQueryRequest = {
 
     fromPartial<I extends Exact<DeepPartial<ABCIQueryRequest>, I>>(object: I): ABCIQueryRequest {
         const message = createBaseABCIQueryRequest();
-        message.data = object.data ?? new Uint8Array();
+        message.data = object.data ?? new Uint8Array(0);
         message.path = object.path ?? '';
         message.height = object.height !== undefined && object.height !== null ? Long.fromValue(object.height) : Long.ZERO;
         message.prove = object.prove ?? false;
@@ -1425,8 +1459,8 @@ function createBaseABCIQueryResponse(): ABCIQueryResponse {
         log: '',
         info: '',
         index: Long.ZERO,
-        key: new Uint8Array(),
-        value: new Uint8Array(),
+        key: new Uint8Array(0),
+        value: new Uint8Array(0),
         proofOps: undefined,
         height: Long.ZERO,
         codespace: '',
@@ -1550,8 +1584,8 @@ export const ABCIQueryResponse = {
             log: isSet(object.log) ? String(object.log) : '',
             info: isSet(object.info) ? String(object.info) : '',
             index: isSet(object.index) ? Long.fromValue(object.index) : Long.ZERO,
-            key: isSet(object.key) ? bytesFromBase64(object.key) : new Uint8Array(),
-            value: isSet(object.value) ? bytesFromBase64(object.value) : new Uint8Array(),
+            key: isSet(object.key) ? bytesFromBase64(object.key) : new Uint8Array(0),
+            value: isSet(object.value) ? bytesFromBase64(object.value) : new Uint8Array(0),
             proofOps: isSet(object.proofOps) ? ProofOps.fromJSON(object.proofOps) : undefined,
             height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
             codespace: isSet(object.codespace) ? String(object.codespace) : '',
@@ -1560,15 +1594,33 @@ export const ABCIQueryResponse = {
 
     toJSON(message: ABCIQueryResponse): unknown {
         const obj: any = {};
-        message.code !== undefined && (obj.code = Math.round(message.code));
-        message.log !== undefined && (obj.log = message.log);
-        message.info !== undefined && (obj.info = message.info);
-        message.index !== undefined && (obj.index = (message.index || Long.ZERO).toString());
-        message.key !== undefined && (obj.key = base64FromBytes(message.key !== undefined ? message.key : new Uint8Array()));
-        message.value !== undefined && (obj.value = base64FromBytes(message.value !== undefined ? message.value : new Uint8Array()));
-        message.proofOps !== undefined && (obj.proofOps = message.proofOps ? ProofOps.toJSON(message.proofOps) : undefined);
-        message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
-        message.codespace !== undefined && (obj.codespace = message.codespace);
+        if (message.code !== 0) {
+            obj.code = Math.round(message.code);
+        }
+        if (message.log !== '') {
+            obj.log = message.log;
+        }
+        if (message.info !== '') {
+            obj.info = message.info;
+        }
+        if (!message.index.isZero()) {
+            obj.index = (message.index || Long.ZERO).toString();
+        }
+        if (message.key.length !== 0) {
+            obj.key = base64FromBytes(message.key);
+        }
+        if (message.value.length !== 0) {
+            obj.value = base64FromBytes(message.value);
+        }
+        if (message.proofOps !== undefined) {
+            obj.proofOps = ProofOps.toJSON(message.proofOps);
+        }
+        if (!message.height.isZero()) {
+            obj.height = (message.height || Long.ZERO).toString();
+        }
+        if (message.codespace !== '') {
+            obj.codespace = message.codespace;
+        }
         return obj;
     },
 
@@ -1582,8 +1634,8 @@ export const ABCIQueryResponse = {
         message.log = object.log ?? '';
         message.info = object.info ?? '';
         message.index = object.index !== undefined && object.index !== null ? Long.fromValue(object.index) : Long.ZERO;
-        message.key = object.key ?? new Uint8Array();
-        message.value = object.value ?? new Uint8Array();
+        message.key = object.key ?? new Uint8Array(0);
+        message.value = object.value ?? new Uint8Array(0);
         message.proofOps = object.proofOps !== undefined && object.proofOps !== null ? ProofOps.fromPartial(object.proofOps) : undefined;
         message.height = object.height !== undefined && object.height !== null ? Long.fromValue(object.height) : Long.ZERO;
         message.codespace = object.codespace ?? '';
@@ -1592,7 +1644,7 @@ export const ABCIQueryResponse = {
 };
 
 function createBaseProofOp(): ProofOp {
-    return { type: '', key: new Uint8Array(), data: new Uint8Array() };
+    return { type: '', key: new Uint8Array(0), data: new Uint8Array(0) };
 }
 
 export const ProofOp = {
@@ -1649,16 +1701,22 @@ export const ProofOp = {
     fromJSON(object: any): ProofOp {
         return {
             type: isSet(object.type) ? String(object.type) : '',
-            key: isSet(object.key) ? bytesFromBase64(object.key) : new Uint8Array(),
-            data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(),
+            key: isSet(object.key) ? bytesFromBase64(object.key) : new Uint8Array(0),
+            data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(0),
         };
     },
 
     toJSON(message: ProofOp): unknown {
         const obj: any = {};
-        message.type !== undefined && (obj.type = message.type);
-        message.key !== undefined && (obj.key = base64FromBytes(message.key !== undefined ? message.key : new Uint8Array()));
-        message.data !== undefined && (obj.data = base64FromBytes(message.data !== undefined ? message.data : new Uint8Array()));
+        if (message.type !== '') {
+            obj.type = message.type;
+        }
+        if (message.key.length !== 0) {
+            obj.key = base64FromBytes(message.key);
+        }
+        if (message.data.length !== 0) {
+            obj.data = base64FromBytes(message.data);
+        }
         return obj;
     },
 
@@ -1669,8 +1727,8 @@ export const ProofOp = {
     fromPartial<I extends Exact<DeepPartial<ProofOp>, I>>(object: I): ProofOp {
         const message = createBaseProofOp();
         message.type = object.type ?? '';
-        message.key = object.key ?? new Uint8Array();
-        message.data = object.data ?? new Uint8Array();
+        message.key = object.key ?? new Uint8Array(0);
+        message.data = object.data ?? new Uint8Array(0);
         return message;
     },
 };
@@ -1716,10 +1774,8 @@ export const ProofOps = {
 
     toJSON(message: ProofOps): unknown {
         const obj: any = {};
-        if (message.ops) {
-            obj.ops = message.ops.map((e) => (e ? ProofOp.toJSON(e) : undefined));
-        } else {
-            obj.ops = [];
+        if (message.ops?.length) {
+            obj.ops = message.ops.map((e) => ProofOp.toJSON(e));
         }
         return obj;
     },
@@ -1750,20 +1806,21 @@ export interface Service {
     /** GetValidatorSetByHeight queries validator-set at a given height. */
     GetValidatorSetByHeight(request: GetValidatorSetByHeightRequest): Promise<GetValidatorSetByHeightResponse>;
     /**
-     * ABCIQuery defines a query handler that supports ABCI queries directly to
-     * the application, bypassing Tendermint completely. The ABCI query must
-     * contain a valid and supported path, including app, custom, p2p, and store.
+     * ABCIQuery defines a query handler that supports ABCI queries directly to the
+     * application, bypassing Tendermint completely. The ABCI query must contain
+     * a valid and supported path, including app, custom, p2p, and store.
      *
      * Since: cosmos-sdk 0.46
      */
     ABCIQuery(request: ABCIQueryRequest): Promise<ABCIQueryResponse>;
 }
 
+export const ServiceServiceName = 'cosmos.base.tendermint.v1beta1.Service';
 export class ServiceClientImpl implements Service {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'cosmos.base.tendermint.v1beta1.Service';
+        this.service = opts?.service || ServiceServiceName;
         this.rpc = rpc;
         this.GetNodeInfo = this.GetNodeInfo.bind(this);
         this.GetSyncing = this.GetSyncing.bind(this);
@@ -1820,10 +1877,10 @@ interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }

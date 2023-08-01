@@ -70,7 +70,7 @@ export interface PageResponse {
 }
 
 function createBasePageRequest(): PageRequest {
-    return { key: new Uint8Array(), offset: Long.UZERO, limit: Long.UZERO, countTotal: false, reverse: false };
+    return { key: new Uint8Array(0), offset: Long.UZERO, limit: Long.UZERO, countTotal: false, reverse: false };
 }
 
 export const PageRequest = {
@@ -146,7 +146,7 @@ export const PageRequest = {
 
     fromJSON(object: any): PageRequest {
         return {
-            key: isSet(object.key) ? bytesFromBase64(object.key) : new Uint8Array(),
+            key: isSet(object.key) ? bytesFromBase64(object.key) : new Uint8Array(0),
             offset: isSet(object.offset) ? Long.fromValue(object.offset) : Long.UZERO,
             limit: isSet(object.limit) ? Long.fromValue(object.limit) : Long.UZERO,
             countTotal: isSet(object.countTotal) ? Boolean(object.countTotal) : false,
@@ -156,11 +156,21 @@ export const PageRequest = {
 
     toJSON(message: PageRequest): unknown {
         const obj: any = {};
-        message.key !== undefined && (obj.key = base64FromBytes(message.key !== undefined ? message.key : new Uint8Array()));
-        message.offset !== undefined && (obj.offset = (message.offset || Long.UZERO).toString());
-        message.limit !== undefined && (obj.limit = (message.limit || Long.UZERO).toString());
-        message.countTotal !== undefined && (obj.countTotal = message.countTotal);
-        message.reverse !== undefined && (obj.reverse = message.reverse);
+        if (message.key.length !== 0) {
+            obj.key = base64FromBytes(message.key);
+        }
+        if (!message.offset.isZero()) {
+            obj.offset = (message.offset || Long.UZERO).toString();
+        }
+        if (!message.limit.isZero()) {
+            obj.limit = (message.limit || Long.UZERO).toString();
+        }
+        if (message.countTotal === true) {
+            obj.countTotal = message.countTotal;
+        }
+        if (message.reverse === true) {
+            obj.reverse = message.reverse;
+        }
         return obj;
     },
 
@@ -170,7 +180,7 @@ export const PageRequest = {
 
     fromPartial<I extends Exact<DeepPartial<PageRequest>, I>>(object: I): PageRequest {
         const message = createBasePageRequest();
-        message.key = object.key ?? new Uint8Array();
+        message.key = object.key ?? new Uint8Array(0);
         message.offset = object.offset !== undefined && object.offset !== null ? Long.fromValue(object.offset) : Long.UZERO;
         message.limit = object.limit !== undefined && object.limit !== null ? Long.fromValue(object.limit) : Long.UZERO;
         message.countTotal = object.countTotal ?? false;
@@ -180,7 +190,7 @@ export const PageRequest = {
 };
 
 function createBasePageResponse(): PageResponse {
-    return { nextKey: new Uint8Array(), total: Long.UZERO };
+    return { nextKey: new Uint8Array(0), total: Long.UZERO };
 }
 
 export const PageResponse = {
@@ -226,15 +236,19 @@ export const PageResponse = {
 
     fromJSON(object: any): PageResponse {
         return {
-            nextKey: isSet(object.nextKey) ? bytesFromBase64(object.nextKey) : new Uint8Array(),
+            nextKey: isSet(object.nextKey) ? bytesFromBase64(object.nextKey) : new Uint8Array(0),
             total: isSet(object.total) ? Long.fromValue(object.total) : Long.UZERO,
         };
     },
 
     toJSON(message: PageResponse): unknown {
         const obj: any = {};
-        message.nextKey !== undefined && (obj.nextKey = base64FromBytes(message.nextKey !== undefined ? message.nextKey : new Uint8Array()));
-        message.total !== undefined && (obj.total = (message.total || Long.UZERO).toString());
+        if (message.nextKey.length !== 0) {
+            obj.nextKey = base64FromBytes(message.nextKey);
+        }
+        if (!message.total.isZero()) {
+            obj.total = (message.total || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -244,16 +258,16 @@ export const PageResponse = {
 
     fromPartial<I extends Exact<DeepPartial<PageResponse>, I>>(object: I): PageResponse {
         const message = createBasePageResponse();
-        message.nextKey = object.nextKey ?? new Uint8Array();
+        message.nextKey = object.nextKey ?? new Uint8Array(0);
         message.total = object.total !== undefined && object.total !== null ? Long.fromValue(object.total) : Long.UZERO;
         return message;
     },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }

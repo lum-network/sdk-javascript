@@ -12,7 +12,7 @@ export interface Minter {
     annualProvisions: string;
 }
 
-/** Params holds parameters for the mint module. */
+/** Params defines the parameters for the x/mint module. */
 export interface Params {
     /** type of coin to mint */
     mintDenom: string;
@@ -82,8 +82,12 @@ export const Minter = {
 
     toJSON(message: Minter): unknown {
         const obj: any = {};
-        message.inflation !== undefined && (obj.inflation = message.inflation);
-        message.annualProvisions !== undefined && (obj.annualProvisions = message.annualProvisions);
+        if (message.inflation !== '') {
+            obj.inflation = message.inflation;
+        }
+        if (message.annualProvisions !== '') {
+            obj.annualProvisions = message.annualProvisions;
+        }
         return obj;
     },
 
@@ -204,12 +208,24 @@ export const Params = {
 
     toJSON(message: Params): unknown {
         const obj: any = {};
-        message.mintDenom !== undefined && (obj.mintDenom = message.mintDenom);
-        message.inflationRateChange !== undefined && (obj.inflationRateChange = message.inflationRateChange);
-        message.inflationMax !== undefined && (obj.inflationMax = message.inflationMax);
-        message.inflationMin !== undefined && (obj.inflationMin = message.inflationMin);
-        message.goalBonded !== undefined && (obj.goalBonded = message.goalBonded);
-        message.blocksPerYear !== undefined && (obj.blocksPerYear = (message.blocksPerYear || Long.UZERO).toString());
+        if (message.mintDenom !== '') {
+            obj.mintDenom = message.mintDenom;
+        }
+        if (message.inflationRateChange !== '') {
+            obj.inflationRateChange = message.inflationRateChange;
+        }
+        if (message.inflationMax !== '') {
+            obj.inflationMax = message.inflationMax;
+        }
+        if (message.inflationMin !== '') {
+            obj.inflationMin = message.inflationMin;
+        }
+        if (message.goalBonded !== '') {
+            obj.goalBonded = message.goalBonded;
+        }
+        if (!message.blocksPerYear.isZero()) {
+            obj.blocksPerYear = (message.blocksPerYear || Long.UZERO).toString();
+        }
         return obj;
     },
 

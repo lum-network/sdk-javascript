@@ -17,7 +17,7 @@ export interface QueryCurrentPlanRequest {}
  */
 export interface QueryCurrentPlanResponse {
     /** plan is the current upgrade plan. */
-    plan?: Plan;
+    plan?: Plan | undefined;
 }
 
 /**
@@ -190,7 +190,9 @@ export const QueryCurrentPlanResponse = {
 
     toJSON(message: QueryCurrentPlanResponse): unknown {
         const obj: any = {};
-        message.plan !== undefined && (obj.plan = message.plan ? Plan.toJSON(message.plan) : undefined);
+        if (message.plan !== undefined) {
+            obj.plan = Plan.toJSON(message.plan);
+        }
         return obj;
     },
 
@@ -246,7 +248,9 @@ export const QueryAppliedPlanRequest = {
 
     toJSON(message: QueryAppliedPlanRequest): unknown {
         const obj: any = {};
-        message.name !== undefined && (obj.name = message.name);
+        if (message.name !== '') {
+            obj.name = message.name;
+        }
         return obj;
     },
 
@@ -302,7 +306,9 @@ export const QueryAppliedPlanResponse = {
 
     toJSON(message: QueryAppliedPlanResponse): unknown {
         const obj: any = {};
-        message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
+        if (!message.height.isZero()) {
+            obj.height = (message.height || Long.ZERO).toString();
+        }
         return obj;
     },
 
@@ -358,7 +364,9 @@ export const QueryUpgradedConsensusStateRequest = {
 
     toJSON(message: QueryUpgradedConsensusStateRequest): unknown {
         const obj: any = {};
-        message.lastHeight !== undefined && (obj.lastHeight = (message.lastHeight || Long.ZERO).toString());
+        if (!message.lastHeight.isZero()) {
+            obj.lastHeight = (message.lastHeight || Long.ZERO).toString();
+        }
         return obj;
     },
 
@@ -374,7 +382,7 @@ export const QueryUpgradedConsensusStateRequest = {
 };
 
 function createBaseQueryUpgradedConsensusStateResponse(): QueryUpgradedConsensusStateResponse {
-    return { upgradedConsensusState: new Uint8Array() };
+    return { upgradedConsensusState: new Uint8Array(0) };
 }
 
 export const QueryUpgradedConsensusStateResponse = {
@@ -410,14 +418,15 @@ export const QueryUpgradedConsensusStateResponse = {
 
     fromJSON(object: any): QueryUpgradedConsensusStateResponse {
         return {
-            upgradedConsensusState: isSet(object.upgradedConsensusState) ? bytesFromBase64(object.upgradedConsensusState) : new Uint8Array(),
+            upgradedConsensusState: isSet(object.upgradedConsensusState) ? bytesFromBase64(object.upgradedConsensusState) : new Uint8Array(0),
         };
     },
 
     toJSON(message: QueryUpgradedConsensusStateResponse): unknown {
         const obj: any = {};
-        message.upgradedConsensusState !== undefined &&
-            (obj.upgradedConsensusState = base64FromBytes(message.upgradedConsensusState !== undefined ? message.upgradedConsensusState : new Uint8Array()));
+        if (message.upgradedConsensusState.length !== 0) {
+            obj.upgradedConsensusState = base64FromBytes(message.upgradedConsensusState);
+        }
         return obj;
     },
 
@@ -427,7 +436,7 @@ export const QueryUpgradedConsensusStateResponse = {
 
     fromPartial<I extends Exact<DeepPartial<QueryUpgradedConsensusStateResponse>, I>>(object: I): QueryUpgradedConsensusStateResponse {
         const message = createBaseQueryUpgradedConsensusStateResponse();
-        message.upgradedConsensusState = object.upgradedConsensusState ?? new Uint8Array();
+        message.upgradedConsensusState = object.upgradedConsensusState ?? new Uint8Array(0);
         return message;
     },
 };
@@ -473,7 +482,9 @@ export const QueryModuleVersionsRequest = {
 
     toJSON(message: QueryModuleVersionsRequest): unknown {
         const obj: any = {};
-        message.moduleName !== undefined && (obj.moduleName = message.moduleName);
+        if (message.moduleName !== '') {
+            obj.moduleName = message.moduleName;
+        }
         return obj;
     },
 
@@ -531,10 +542,8 @@ export const QueryModuleVersionsResponse = {
 
     toJSON(message: QueryModuleVersionsResponse): unknown {
         const obj: any = {};
-        if (message.moduleVersions) {
-            obj.moduleVersions = message.moduleVersions.map((e) => (e ? ModuleVersion.toJSON(e) : undefined));
-        } else {
-            obj.moduleVersions = [];
+        if (message.moduleVersions?.length) {
+            obj.moduleVersions = message.moduleVersions.map((e) => ModuleVersion.toJSON(e));
         }
         return obj;
     },
@@ -635,7 +644,9 @@ export const QueryAuthorityResponse = {
 
     toJSON(message: QueryAuthorityResponse): unknown {
         const obj: any = {};
-        message.address !== undefined && (obj.address = message.address);
+        if (message.address !== '') {
+            obj.address = message.address;
+        }
         return obj;
     },
 
@@ -681,11 +692,12 @@ export interface Query {
     Authority(request: QueryAuthorityRequest): Promise<QueryAuthorityResponse>;
 }
 
+export const QueryServiceName = 'cosmos.upgrade.v1beta1.Query';
 export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'cosmos.upgrade.v1beta1.Query';
+        this.service = opts?.service || QueryServiceName;
         this.rpc = rpc;
         this.CurrentPlan = this.CurrentPlan.bind(this);
         this.AppliedPlan = this.AppliedPlan.bind(this);
@@ -728,10 +740,10 @@ interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }

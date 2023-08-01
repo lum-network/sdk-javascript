@@ -15,7 +15,7 @@ export interface QueryGrantsRequest {
     /** Optional, msg_type_url, when set, will query only grants matching given msg type. */
     msgTypeUrl: string;
     /** pagination defines an pagination for the request. */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /** QueryGrantsResponse is the response type for the Query/Authorizations RPC method. */
@@ -23,14 +23,14 @@ export interface QueryGrantsResponse {
     /** authorizations is a list of grants granted for grantee by granter. */
     grants: Grant[];
     /** pagination defines an pagination for the response. */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
 }
 
 /** QueryGranterGrantsRequest is the request type for the Query/GranterGrants RPC method. */
 export interface QueryGranterGrantsRequest {
     granter: string;
     /** pagination defines an pagination for the request. */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /** QueryGranterGrantsResponse is the response type for the Query/GranterGrants RPC method. */
@@ -38,14 +38,14 @@ export interface QueryGranterGrantsResponse {
     /** grants is a list of grants granted by the granter. */
     grants: GrantAuthorization[];
     /** pagination defines an pagination for the response. */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
 }
 
-/** QueryGranteeGrantsRequest is the request type for the Query/IssuedGrants RPC method. */
+/** QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method. */
 export interface QueryGranteeGrantsRequest {
     grantee: string;
     /** pagination defines an pagination for the request. */
-    pagination?: PageRequest;
+    pagination?: PageRequest | undefined;
 }
 
 /** QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method. */
@@ -53,7 +53,7 @@ export interface QueryGranteeGrantsResponse {
     /** grants is a list of grants granted to the grantee. */
     grants: GrantAuthorization[];
     /** pagination defines an pagination for the response. */
-    pagination?: PageResponse;
+    pagination?: PageResponse | undefined;
 }
 
 function createBaseQueryGrantsRequest(): QueryGrantsRequest {
@@ -132,10 +132,18 @@ export const QueryGrantsRequest = {
 
     toJSON(message: QueryGrantsRequest): unknown {
         const obj: any = {};
-        message.granter !== undefined && (obj.granter = message.granter);
-        message.grantee !== undefined && (obj.grantee = message.grantee);
-        message.msgTypeUrl !== undefined && (obj.msgTypeUrl = message.msgTypeUrl);
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (message.granter !== '') {
+            obj.granter = message.granter;
+        }
+        if (message.grantee !== '') {
+            obj.grantee = message.grantee;
+        }
+        if (message.msgTypeUrl !== '') {
+            obj.msgTypeUrl = message.msgTypeUrl;
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -207,12 +215,12 @@ export const QueryGrantsResponse = {
 
     toJSON(message: QueryGrantsResponse): unknown {
         const obj: any = {};
-        if (message.grants) {
-            obj.grants = message.grants.map((e) => (e ? Grant.toJSON(e) : undefined));
-        } else {
-            obj.grants = [];
+        if (message.grants?.length) {
+            obj.grants = message.grants.map((e) => Grant.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -282,8 +290,12 @@ export const QueryGranterGrantsRequest = {
 
     toJSON(message: QueryGranterGrantsRequest): unknown {
         const obj: any = {};
-        message.granter !== undefined && (obj.granter = message.granter);
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (message.granter !== '') {
+            obj.granter = message.granter;
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -353,12 +365,12 @@ export const QueryGranterGrantsResponse = {
 
     toJSON(message: QueryGranterGrantsResponse): unknown {
         const obj: any = {};
-        if (message.grants) {
-            obj.grants = message.grants.map((e) => (e ? GrantAuthorization.toJSON(e) : undefined));
-        } else {
-            obj.grants = [];
+        if (message.grants?.length) {
+            obj.grants = message.grants.map((e) => GrantAuthorization.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -428,8 +440,12 @@ export const QueryGranteeGrantsRequest = {
 
     toJSON(message: QueryGranteeGrantsRequest): unknown {
         const obj: any = {};
-        message.grantee !== undefined && (obj.grantee = message.grantee);
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+        if (message.grantee !== '') {
+            obj.grantee = message.grantee;
+        }
+        if (message.pagination !== undefined) {
+            obj.pagination = PageRequest.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -499,12 +515,12 @@ export const QueryGranteeGrantsResponse = {
 
     toJSON(message: QueryGranteeGrantsResponse): unknown {
         const obj: any = {};
-        if (message.grants) {
-            obj.grants = message.grants.map((e) => (e ? GrantAuthorization.toJSON(e) : undefined));
-        } else {
-            obj.grants = [];
+        if (message.grants?.length) {
+            obj.grants = message.grants.map((e) => GrantAuthorization.toJSON(e));
         }
-        message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+        if (message.pagination !== undefined) {
+            obj.pagination = PageResponse.toJSON(message.pagination);
+        }
         return obj;
     },
 
@@ -538,11 +554,12 @@ export interface Query {
     GranteeGrants(request: QueryGranteeGrantsRequest): Promise<QueryGranteeGrantsResponse>;
 }
 
+export const QueryServiceName = 'cosmos.authz.v1beta1.Query';
 export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'cosmos.authz.v1beta1.Query';
+        this.service = opts?.service || QueryServiceName;
         this.rpc = rpc;
         this.Grants = this.Grants.bind(this);
         this.GranterGrants = this.GranterGrants.bind(this);

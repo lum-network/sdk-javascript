@@ -16,7 +16,7 @@ export interface QueryParamsRequest {
 /** QueryParamsResponse is response type for the Query/Params RPC method. */
 export interface QueryParamsResponse {
     /** param defines the queried parameter. */
-    param?: ParamChange;
+    param?: ParamChange | undefined;
 }
 
 /**
@@ -102,8 +102,12 @@ export const QueryParamsRequest = {
 
     toJSON(message: QueryParamsRequest): unknown {
         const obj: any = {};
-        message.subspace !== undefined && (obj.subspace = message.subspace);
-        message.key !== undefined && (obj.key = message.key);
+        if (message.subspace !== '') {
+            obj.subspace = message.subspace;
+        }
+        if (message.key !== '') {
+            obj.key = message.key;
+        }
         return obj;
     },
 
@@ -160,7 +164,9 @@ export const QueryParamsResponse = {
 
     toJSON(message: QueryParamsResponse): unknown {
         const obj: any = {};
-        message.param !== undefined && (obj.param = message.param ? ParamChange.toJSON(message.param) : undefined);
+        if (message.param !== undefined) {
+            obj.param = ParamChange.toJSON(message.param);
+        }
         return obj;
     },
 
@@ -262,10 +268,8 @@ export const QuerySubspacesResponse = {
 
     toJSON(message: QuerySubspacesResponse): unknown {
         const obj: any = {};
-        if (message.subspaces) {
-            obj.subspaces = message.subspaces.map((e) => (e ? Subspace.toJSON(e) : undefined));
-        } else {
-            obj.subspaces = [];
+        if (message.subspaces?.length) {
+            obj.subspaces = message.subspaces.map((e) => Subspace.toJSON(e));
         }
         return obj;
     },
@@ -335,11 +339,11 @@ export const Subspace = {
 
     toJSON(message: Subspace): unknown {
         const obj: any = {};
-        message.subspace !== undefined && (obj.subspace = message.subspace);
-        if (message.keys) {
-            obj.keys = message.keys.map((e) => e);
-        } else {
-            obj.keys = [];
+        if (message.subspace !== '') {
+            obj.subspace = message.subspace;
+        }
+        if (message.keys?.length) {
+            obj.keys = message.keys;
         }
         return obj;
     },
@@ -371,11 +375,12 @@ export interface Query {
     Subspaces(request: QuerySubspacesRequest): Promise<QuerySubspacesResponse>;
 }
 
+export const QueryServiceName = 'cosmos.params.v1beta1.Query';
 export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'cosmos.params.v1beta1.Query';
+        this.service = opts?.service || QueryServiceName;
         this.rpc = rpc;
         this.Params = this.Params.bind(this);
         this.Subspaces = this.Subspaces.bind(this);

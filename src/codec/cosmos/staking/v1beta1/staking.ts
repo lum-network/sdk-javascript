@@ -4,6 +4,7 @@ import _m0 from 'protobufjs/minimal';
 import { Any } from '../../../google/protobuf/any';
 import { Duration } from '../../../google/protobuf/duration';
 import { Timestamp } from '../../../google/protobuf/timestamp';
+import { ValidatorUpdate } from '../../../tendermint/abci/types';
 import { Header } from '../../../tendermint/types/types';
 import { Coin } from '../../base/v1beta1/coin';
 
@@ -59,6 +60,49 @@ export function bondStatusToJSON(object: BondStatus): string {
     }
 }
 
+/** Infraction indicates the infraction a validator commited. */
+export enum Infraction {
+    /** INFRACTION_UNSPECIFIED - UNSPECIFIED defines an empty infraction. */
+    INFRACTION_UNSPECIFIED = 0,
+    /** INFRACTION_DOUBLE_SIGN - DOUBLE_SIGN defines a validator that double-signs a block. */
+    INFRACTION_DOUBLE_SIGN = 1,
+    /** INFRACTION_DOWNTIME - DOWNTIME defines a validator that missed signing too many blocks. */
+    INFRACTION_DOWNTIME = 2,
+    UNRECOGNIZED = -1,
+}
+
+export function infractionFromJSON(object: any): Infraction {
+    switch (object) {
+        case 0:
+        case 'INFRACTION_UNSPECIFIED':
+            return Infraction.INFRACTION_UNSPECIFIED;
+        case 1:
+        case 'INFRACTION_DOUBLE_SIGN':
+            return Infraction.INFRACTION_DOUBLE_SIGN;
+        case 2:
+        case 'INFRACTION_DOWNTIME':
+            return Infraction.INFRACTION_DOWNTIME;
+        case -1:
+        case 'UNRECOGNIZED':
+        default:
+            return Infraction.UNRECOGNIZED;
+    }
+}
+
+export function infractionToJSON(object: Infraction): string {
+    switch (object) {
+        case Infraction.INFRACTION_UNSPECIFIED:
+            return 'INFRACTION_UNSPECIFIED';
+        case Infraction.INFRACTION_DOUBLE_SIGN:
+            return 'INFRACTION_DOUBLE_SIGN';
+        case Infraction.INFRACTION_DOWNTIME:
+            return 'INFRACTION_DOWNTIME';
+        case Infraction.UNRECOGNIZED:
+        default:
+            return 'UNRECOGNIZED';
+    }
+}
+
 /**
  * HistoricalInfo contains header and validator information for a given block.
  * It is stored as part of staking module's state, which persists the `n` most
@@ -66,7 +110,7 @@ export function bondStatusToJSON(object: BondStatus): string {
  * (`n` is set by the staking module's `historical_entries` parameter).
  */
 export interface HistoricalInfo {
-    header?: Header;
+    header?: Header | undefined;
     valset: Validator[];
 }
 
@@ -86,9 +130,9 @@ export interface CommissionRates {
 /** Commission defines commission parameters for a given validator. */
 export interface Commission {
     /** commission_rates defines the initial commission rates to be used for creating a validator. */
-    commissionRates?: CommissionRates;
+    commissionRates?: CommissionRates | undefined;
     /** update_time is the last time the commission rate was changed. */
-    updateTime?: Date;
+    updateTime?: Date | undefined;
 }
 
 /** Description defines a validator description. */
@@ -119,7 +163,7 @@ export interface Validator {
     /** operator_address defines the address of the validator's operator; bech encoded in JSON. */
     operatorAddress: string;
     /** consensus_pubkey is the consensus public key of the validator, as a Protobuf Any. */
-    consensusPubkey?: Any;
+    consensusPubkey?: Any | undefined;
     /** jailed defined whether the validator has been jailed from bonded status or not. */
     jailed: boolean;
     /** status is the validator status (bonded/unbonding/unbonded). */
@@ -129,19 +173,23 @@ export interface Validator {
     /** delegator_shares defines total shares issued to a validator's delegators. */
     delegatorShares: string;
     /** description defines the description terms for the validator. */
-    description?: Description;
+    description?: Description | undefined;
     /** unbonding_height defines, if unbonding, the height at which this validator has begun unbonding. */
     unbondingHeight: Long;
     /** unbonding_time defines, if unbonding, the min time for the validator to complete unbonding. */
-    unbondingTime?: Date;
+    unbondingTime?: Date | undefined;
     /** commission defines the commission parameters. */
-    commission?: Commission;
+    commission?: Commission | undefined;
     /**
      * min_self_delegation is the validator's self declared minimum self delegation.
      *
      * Since: cosmos-sdk 0.46
      */
     minSelfDelegation: string;
+    /** strictly positive if this validator's unbonding has been stopped by external modules */
+    unbondingOnHoldRefCount: Long;
+    /** list of unbonding ids, each uniquely identifing an unbonding of this validator */
+    unbondingIds: Long[];
 }
 
 /** ValAddresses defines a repeated set of validator addresses. */
@@ -213,11 +261,15 @@ export interface UnbondingDelegationEntry {
     /** creation_height is the height which the unbonding took place. */
     creationHeight: Long;
     /** completion_time is the unix time for unbonding completion. */
-    completionTime?: Date;
+    completionTime?: Date | undefined;
     /** initial_balance defines the tokens initially scheduled to receive at completion. */
     initialBalance: string;
     /** balance defines the tokens to receive at completion. */
     balance: string;
+    /** Incrementing id that uniquely identifies this entry */
+    unbondingId: Long;
+    /** Strictly positive if this entry's unbonding has been stopped by external modules */
+    unbondingOnHoldRefCount: Long;
 }
 
 /** RedelegationEntry defines a redelegation object with relevant metadata. */
@@ -225,11 +277,15 @@ export interface RedelegationEntry {
     /** creation_height  defines the height which the redelegation took place. */
     creationHeight: Long;
     /** completion_time defines the unix time for redelegation completion. */
-    completionTime?: Date;
+    completionTime?: Date | undefined;
     /** initial_balance defines the initial balance when redelegation started. */
     initialBalance: string;
     /** shares_dst is the amount of destination-validator shares created by redelegation. */
     sharesDst: string;
+    /** Incrementing id that uniquely identifies this entry */
+    unbondingId: Long;
+    /** Strictly positive if this entry's unbonding has been stopped by external modules */
+    unbondingOnHoldRefCount: Long;
 }
 
 /**
@@ -247,10 +303,10 @@ export interface Redelegation {
     entries: RedelegationEntry[];
 }
 
-/** Params defines the parameters for the staking module. */
+/** Params defines the parameters for the x/staking module. */
 export interface Params {
     /** unbonding_time is the time duration of unbonding. */
-    unbondingTime?: Duration;
+    unbondingTime?: Duration | undefined;
     /** max_validators is the maximum number of validators. */
     maxValidators: number;
     /** max_entries is the max entries for either unbonding delegation or redelegation (per pair/trio). */
@@ -268,8 +324,8 @@ export interface Params {
  * balance in addition to shares which is more suitable for client responses.
  */
 export interface DelegationResponse {
-    delegation?: Delegation;
-    balance?: Coin;
+    delegation?: Delegation | undefined;
+    balance?: Coin | undefined;
 }
 
 /**
@@ -278,7 +334,7 @@ export interface DelegationResponse {
  * responses.
  */
 export interface RedelegationEntryResponse {
-    redelegationEntry?: RedelegationEntry;
+    redelegationEntry?: RedelegationEntry | undefined;
     balance: string;
 }
 
@@ -288,7 +344,7 @@ export interface RedelegationEntryResponse {
  * responses.
  */
 export interface RedelegationResponse {
-    redelegation?: Redelegation;
+    redelegation?: Redelegation | undefined;
     entries: RedelegationEntryResponse[];
 }
 
@@ -299,6 +355,14 @@ export interface RedelegationResponse {
 export interface Pool {
     notBondedTokens: string;
     bondedTokens: string;
+}
+
+/**
+ * ValidatorUpdates defines an array of abci.ValidatorUpdate objects.
+ * TODO: explore moving this to proto/cosmos/base to separate modules from tendermint dependence
+ */
+export interface ValidatorUpdates {
+    updates: ValidatorUpdate[];
 }
 
 function createBaseHistoricalInfo(): HistoricalInfo {
@@ -355,11 +419,11 @@ export const HistoricalInfo = {
 
     toJSON(message: HistoricalInfo): unknown {
         const obj: any = {};
-        message.header !== undefined && (obj.header = message.header ? Header.toJSON(message.header) : undefined);
-        if (message.valset) {
-            obj.valset = message.valset.map((e) => (e ? Validator.toJSON(e) : undefined));
-        } else {
-            obj.valset = [];
+        if (message.header !== undefined) {
+            obj.header = Header.toJSON(message.header);
+        }
+        if (message.valset?.length) {
+            obj.valset = message.valset.map((e) => Validator.toJSON(e));
         }
         return obj;
     },
@@ -441,9 +505,15 @@ export const CommissionRates = {
 
     toJSON(message: CommissionRates): unknown {
         const obj: any = {};
-        message.rate !== undefined && (obj.rate = message.rate);
-        message.maxRate !== undefined && (obj.maxRate = message.maxRate);
-        message.maxChangeRate !== undefined && (obj.maxChangeRate = message.maxChangeRate);
+        if (message.rate !== '') {
+            obj.rate = message.rate;
+        }
+        if (message.maxRate !== '') {
+            obj.maxRate = message.maxRate;
+        }
+        if (message.maxChangeRate !== '') {
+            obj.maxChangeRate = message.maxChangeRate;
+        }
         return obj;
     },
 
@@ -514,8 +584,12 @@ export const Commission = {
 
     toJSON(message: Commission): unknown {
         const obj: any = {};
-        message.commissionRates !== undefined && (obj.commissionRates = message.commissionRates ? CommissionRates.toJSON(message.commissionRates) : undefined);
-        message.updateTime !== undefined && (obj.updateTime = message.updateTime.toISOString());
+        if (message.commissionRates !== undefined) {
+            obj.commissionRates = CommissionRates.toJSON(message.commissionRates);
+        }
+        if (message.updateTime !== undefined) {
+            obj.updateTime = message.updateTime.toISOString();
+        }
         return obj;
     },
 
@@ -618,11 +692,21 @@ export const Description = {
 
     toJSON(message: Description): unknown {
         const obj: any = {};
-        message.moniker !== undefined && (obj.moniker = message.moniker);
-        message.identity !== undefined && (obj.identity = message.identity);
-        message.website !== undefined && (obj.website = message.website);
-        message.securityContact !== undefined && (obj.securityContact = message.securityContact);
-        message.details !== undefined && (obj.details = message.details);
+        if (message.moniker !== '') {
+            obj.moniker = message.moniker;
+        }
+        if (message.identity !== '') {
+            obj.identity = message.identity;
+        }
+        if (message.website !== '') {
+            obj.website = message.website;
+        }
+        if (message.securityContact !== '') {
+            obj.securityContact = message.securityContact;
+        }
+        if (message.details !== '') {
+            obj.details = message.details;
+        }
         return obj;
     },
 
@@ -654,6 +738,8 @@ function createBaseValidator(): Validator {
         unbondingTime: undefined,
         commission: undefined,
         minSelfDelegation: '',
+        unbondingOnHoldRefCount: Long.ZERO,
+        unbondingIds: [],
     };
 }
 
@@ -692,6 +778,14 @@ export const Validator = {
         if (message.minSelfDelegation !== '') {
             writer.uint32(90).string(message.minSelfDelegation);
         }
+        if (!message.unbondingOnHoldRefCount.isZero()) {
+            writer.uint32(96).int64(message.unbondingOnHoldRefCount);
+        }
+        writer.uint32(106).fork();
+        for (const v of message.unbondingIds) {
+            writer.uint64(v);
+        }
+        writer.ldelim();
         return writer;
     },
 
@@ -779,6 +873,30 @@ export const Validator = {
 
                     message.minSelfDelegation = reader.string();
                     continue;
+                case 12:
+                    if (tag !== 96) {
+                        break;
+                    }
+
+                    message.unbondingOnHoldRefCount = reader.int64() as Long;
+                    continue;
+                case 13:
+                    if (tag === 104) {
+                        message.unbondingIds.push(reader.uint64() as Long);
+
+                        continue;
+                    }
+
+                    if (tag === 106) {
+                        const end2 = reader.uint32() + reader.pos;
+                        while (reader.pos < end2) {
+                            message.unbondingIds.push(reader.uint64() as Long);
+                        }
+
+                        continue;
+                    }
+
+                    break;
             }
             if ((tag & 7) === 4 || tag === 0) {
                 break;
@@ -801,22 +919,52 @@ export const Validator = {
             unbondingTime: isSet(object.unbondingTime) ? fromJsonTimestamp(object.unbondingTime) : undefined,
             commission: isSet(object.commission) ? Commission.fromJSON(object.commission) : undefined,
             minSelfDelegation: isSet(object.minSelfDelegation) ? String(object.minSelfDelegation) : '',
+            unbondingOnHoldRefCount: isSet(object.unbondingOnHoldRefCount) ? Long.fromValue(object.unbondingOnHoldRefCount) : Long.ZERO,
+            unbondingIds: Array.isArray(object?.unbondingIds) ? object.unbondingIds.map((e: any) => Long.fromValue(e)) : [],
         };
     },
 
     toJSON(message: Validator): unknown {
         const obj: any = {};
-        message.operatorAddress !== undefined && (obj.operatorAddress = message.operatorAddress);
-        message.consensusPubkey !== undefined && (obj.consensusPubkey = message.consensusPubkey ? Any.toJSON(message.consensusPubkey) : undefined);
-        message.jailed !== undefined && (obj.jailed = message.jailed);
-        message.status !== undefined && (obj.status = bondStatusToJSON(message.status));
-        message.tokens !== undefined && (obj.tokens = message.tokens);
-        message.delegatorShares !== undefined && (obj.delegatorShares = message.delegatorShares);
-        message.description !== undefined && (obj.description = message.description ? Description.toJSON(message.description) : undefined);
-        message.unbondingHeight !== undefined && (obj.unbondingHeight = (message.unbondingHeight || Long.ZERO).toString());
-        message.unbondingTime !== undefined && (obj.unbondingTime = message.unbondingTime.toISOString());
-        message.commission !== undefined && (obj.commission = message.commission ? Commission.toJSON(message.commission) : undefined);
-        message.minSelfDelegation !== undefined && (obj.minSelfDelegation = message.minSelfDelegation);
+        if (message.operatorAddress !== '') {
+            obj.operatorAddress = message.operatorAddress;
+        }
+        if (message.consensusPubkey !== undefined) {
+            obj.consensusPubkey = Any.toJSON(message.consensusPubkey);
+        }
+        if (message.jailed === true) {
+            obj.jailed = message.jailed;
+        }
+        if (message.status !== 0) {
+            obj.status = bondStatusToJSON(message.status);
+        }
+        if (message.tokens !== '') {
+            obj.tokens = message.tokens;
+        }
+        if (message.delegatorShares !== '') {
+            obj.delegatorShares = message.delegatorShares;
+        }
+        if (message.description !== undefined) {
+            obj.description = Description.toJSON(message.description);
+        }
+        if (!message.unbondingHeight.isZero()) {
+            obj.unbondingHeight = (message.unbondingHeight || Long.ZERO).toString();
+        }
+        if (message.unbondingTime !== undefined) {
+            obj.unbondingTime = message.unbondingTime.toISOString();
+        }
+        if (message.commission !== undefined) {
+            obj.commission = Commission.toJSON(message.commission);
+        }
+        if (message.minSelfDelegation !== '') {
+            obj.minSelfDelegation = message.minSelfDelegation;
+        }
+        if (!message.unbondingOnHoldRefCount.isZero()) {
+            obj.unbondingOnHoldRefCount = (message.unbondingOnHoldRefCount || Long.ZERO).toString();
+        }
+        if (message.unbondingIds?.length) {
+            obj.unbondingIds = message.unbondingIds.map((e) => (e || Long.UZERO).toString());
+        }
         return obj;
     },
 
@@ -837,6 +985,8 @@ export const Validator = {
         message.unbondingTime = object.unbondingTime ?? undefined;
         message.commission = object.commission !== undefined && object.commission !== null ? Commission.fromPartial(object.commission) : undefined;
         message.minSelfDelegation = object.minSelfDelegation ?? '';
+        message.unbondingOnHoldRefCount = object.unbondingOnHoldRefCount !== undefined && object.unbondingOnHoldRefCount !== null ? Long.fromValue(object.unbondingOnHoldRefCount) : Long.ZERO;
+        message.unbondingIds = object.unbondingIds?.map((e) => Long.fromValue(e)) || [];
         return message;
     },
 };
@@ -882,10 +1032,8 @@ export const ValAddresses = {
 
     toJSON(message: ValAddresses): unknown {
         const obj: any = {};
-        if (message.addresses) {
-            obj.addresses = message.addresses.map((e) => e);
-        } else {
-            obj.addresses = [];
+        if (message.addresses?.length) {
+            obj.addresses = message.addresses;
         }
         return obj;
     },
@@ -955,8 +1103,12 @@ export const DVPair = {
 
     toJSON(message: DVPair): unknown {
         const obj: any = {};
-        message.delegatorAddress !== undefined && (obj.delegatorAddress = message.delegatorAddress);
-        message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
+        if (message.delegatorAddress !== '') {
+            obj.delegatorAddress = message.delegatorAddress;
+        }
+        if (message.validatorAddress !== '') {
+            obj.validatorAddress = message.validatorAddress;
+        }
         return obj;
     },
 
@@ -1013,10 +1165,8 @@ export const DVPairs = {
 
     toJSON(message: DVPairs): unknown {
         const obj: any = {};
-        if (message.pairs) {
-            obj.pairs = message.pairs.map((e) => (e ? DVPair.toJSON(e) : undefined));
-        } else {
-            obj.pairs = [];
+        if (message.pairs?.length) {
+            obj.pairs = message.pairs.map((e) => DVPair.toJSON(e));
         }
         return obj;
     },
@@ -1097,9 +1247,15 @@ export const DVVTriplet = {
 
     toJSON(message: DVVTriplet): unknown {
         const obj: any = {};
-        message.delegatorAddress !== undefined && (obj.delegatorAddress = message.delegatorAddress);
-        message.validatorSrcAddress !== undefined && (obj.validatorSrcAddress = message.validatorSrcAddress);
-        message.validatorDstAddress !== undefined && (obj.validatorDstAddress = message.validatorDstAddress);
+        if (message.delegatorAddress !== '') {
+            obj.delegatorAddress = message.delegatorAddress;
+        }
+        if (message.validatorSrcAddress !== '') {
+            obj.validatorSrcAddress = message.validatorSrcAddress;
+        }
+        if (message.validatorDstAddress !== '') {
+            obj.validatorDstAddress = message.validatorDstAddress;
+        }
         return obj;
     },
 
@@ -1157,10 +1313,8 @@ export const DVVTriplets = {
 
     toJSON(message: DVVTriplets): unknown {
         const obj: any = {};
-        if (message.triplets) {
-            obj.triplets = message.triplets.map((e) => (e ? DVVTriplet.toJSON(e) : undefined));
-        } else {
-            obj.triplets = [];
+        if (message.triplets?.length) {
+            obj.triplets = message.triplets.map((e) => DVVTriplet.toJSON(e));
         }
         return obj;
     },
@@ -1241,9 +1395,15 @@ export const Delegation = {
 
     toJSON(message: Delegation): unknown {
         const obj: any = {};
-        message.delegatorAddress !== undefined && (obj.delegatorAddress = message.delegatorAddress);
-        message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
-        message.shares !== undefined && (obj.shares = message.shares);
+        if (message.delegatorAddress !== '') {
+            obj.delegatorAddress = message.delegatorAddress;
+        }
+        if (message.validatorAddress !== '') {
+            obj.validatorAddress = message.validatorAddress;
+        }
+        if (message.shares !== '') {
+            obj.shares = message.shares;
+        }
         return obj;
     },
 
@@ -1325,12 +1485,14 @@ export const UnbondingDelegation = {
 
     toJSON(message: UnbondingDelegation): unknown {
         const obj: any = {};
-        message.delegatorAddress !== undefined && (obj.delegatorAddress = message.delegatorAddress);
-        message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
-        if (message.entries) {
-            obj.entries = message.entries.map((e) => (e ? UnbondingDelegationEntry.toJSON(e) : undefined));
-        } else {
-            obj.entries = [];
+        if (message.delegatorAddress !== '') {
+            obj.delegatorAddress = message.delegatorAddress;
+        }
+        if (message.validatorAddress !== '') {
+            obj.validatorAddress = message.validatorAddress;
+        }
+        if (message.entries?.length) {
+            obj.entries = message.entries.map((e) => UnbondingDelegationEntry.toJSON(e));
         }
         return obj;
     },
@@ -1349,7 +1511,14 @@ export const UnbondingDelegation = {
 };
 
 function createBaseUnbondingDelegationEntry(): UnbondingDelegationEntry {
-    return { creationHeight: Long.ZERO, completionTime: undefined, initialBalance: '', balance: '' };
+    return {
+        creationHeight: Long.ZERO,
+        completionTime: undefined,
+        initialBalance: '',
+        balance: '',
+        unbondingId: Long.UZERO,
+        unbondingOnHoldRefCount: Long.ZERO,
+    };
 }
 
 export const UnbondingDelegationEntry = {
@@ -1365,6 +1534,12 @@ export const UnbondingDelegationEntry = {
         }
         if (message.balance !== '') {
             writer.uint32(34).string(message.balance);
+        }
+        if (!message.unbondingId.isZero()) {
+            writer.uint32(40).uint64(message.unbondingId);
+        }
+        if (!message.unbondingOnHoldRefCount.isZero()) {
+            writer.uint32(48).int64(message.unbondingOnHoldRefCount);
         }
         return writer;
     },
@@ -1404,6 +1579,20 @@ export const UnbondingDelegationEntry = {
 
                     message.balance = reader.string();
                     continue;
+                case 5:
+                    if (tag !== 40) {
+                        break;
+                    }
+
+                    message.unbondingId = reader.uint64() as Long;
+                    continue;
+                case 6:
+                    if (tag !== 48) {
+                        break;
+                    }
+
+                    message.unbondingOnHoldRefCount = reader.int64() as Long;
+                    continue;
             }
             if ((tag & 7) === 4 || tag === 0) {
                 break;
@@ -1419,15 +1608,31 @@ export const UnbondingDelegationEntry = {
             completionTime: isSet(object.completionTime) ? fromJsonTimestamp(object.completionTime) : undefined,
             initialBalance: isSet(object.initialBalance) ? String(object.initialBalance) : '',
             balance: isSet(object.balance) ? String(object.balance) : '',
+            unbondingId: isSet(object.unbondingId) ? Long.fromValue(object.unbondingId) : Long.UZERO,
+            unbondingOnHoldRefCount: isSet(object.unbondingOnHoldRefCount) ? Long.fromValue(object.unbondingOnHoldRefCount) : Long.ZERO,
         };
     },
 
     toJSON(message: UnbondingDelegationEntry): unknown {
         const obj: any = {};
-        message.creationHeight !== undefined && (obj.creationHeight = (message.creationHeight || Long.ZERO).toString());
-        message.completionTime !== undefined && (obj.completionTime = message.completionTime.toISOString());
-        message.initialBalance !== undefined && (obj.initialBalance = message.initialBalance);
-        message.balance !== undefined && (obj.balance = message.balance);
+        if (!message.creationHeight.isZero()) {
+            obj.creationHeight = (message.creationHeight || Long.ZERO).toString();
+        }
+        if (message.completionTime !== undefined) {
+            obj.completionTime = message.completionTime.toISOString();
+        }
+        if (message.initialBalance !== '') {
+            obj.initialBalance = message.initialBalance;
+        }
+        if (message.balance !== '') {
+            obj.balance = message.balance;
+        }
+        if (!message.unbondingId.isZero()) {
+            obj.unbondingId = (message.unbondingId || Long.UZERO).toString();
+        }
+        if (!message.unbondingOnHoldRefCount.isZero()) {
+            obj.unbondingOnHoldRefCount = (message.unbondingOnHoldRefCount || Long.ZERO).toString();
+        }
         return obj;
     },
 
@@ -1441,12 +1646,21 @@ export const UnbondingDelegationEntry = {
         message.completionTime = object.completionTime ?? undefined;
         message.initialBalance = object.initialBalance ?? '';
         message.balance = object.balance ?? '';
+        message.unbondingId = object.unbondingId !== undefined && object.unbondingId !== null ? Long.fromValue(object.unbondingId) : Long.UZERO;
+        message.unbondingOnHoldRefCount = object.unbondingOnHoldRefCount !== undefined && object.unbondingOnHoldRefCount !== null ? Long.fromValue(object.unbondingOnHoldRefCount) : Long.ZERO;
         return message;
     },
 };
 
 function createBaseRedelegationEntry(): RedelegationEntry {
-    return { creationHeight: Long.ZERO, completionTime: undefined, initialBalance: '', sharesDst: '' };
+    return {
+        creationHeight: Long.ZERO,
+        completionTime: undefined,
+        initialBalance: '',
+        sharesDst: '',
+        unbondingId: Long.UZERO,
+        unbondingOnHoldRefCount: Long.ZERO,
+    };
 }
 
 export const RedelegationEntry = {
@@ -1462,6 +1676,12 @@ export const RedelegationEntry = {
         }
         if (message.sharesDst !== '') {
             writer.uint32(34).string(message.sharesDst);
+        }
+        if (!message.unbondingId.isZero()) {
+            writer.uint32(40).uint64(message.unbondingId);
+        }
+        if (!message.unbondingOnHoldRefCount.isZero()) {
+            writer.uint32(48).int64(message.unbondingOnHoldRefCount);
         }
         return writer;
     },
@@ -1501,6 +1721,20 @@ export const RedelegationEntry = {
 
                     message.sharesDst = reader.string();
                     continue;
+                case 5:
+                    if (tag !== 40) {
+                        break;
+                    }
+
+                    message.unbondingId = reader.uint64() as Long;
+                    continue;
+                case 6:
+                    if (tag !== 48) {
+                        break;
+                    }
+
+                    message.unbondingOnHoldRefCount = reader.int64() as Long;
+                    continue;
             }
             if ((tag & 7) === 4 || tag === 0) {
                 break;
@@ -1516,15 +1750,31 @@ export const RedelegationEntry = {
             completionTime: isSet(object.completionTime) ? fromJsonTimestamp(object.completionTime) : undefined,
             initialBalance: isSet(object.initialBalance) ? String(object.initialBalance) : '',
             sharesDst: isSet(object.sharesDst) ? String(object.sharesDst) : '',
+            unbondingId: isSet(object.unbondingId) ? Long.fromValue(object.unbondingId) : Long.UZERO,
+            unbondingOnHoldRefCount: isSet(object.unbondingOnHoldRefCount) ? Long.fromValue(object.unbondingOnHoldRefCount) : Long.ZERO,
         };
     },
 
     toJSON(message: RedelegationEntry): unknown {
         const obj: any = {};
-        message.creationHeight !== undefined && (obj.creationHeight = (message.creationHeight || Long.ZERO).toString());
-        message.completionTime !== undefined && (obj.completionTime = message.completionTime.toISOString());
-        message.initialBalance !== undefined && (obj.initialBalance = message.initialBalance);
-        message.sharesDst !== undefined && (obj.sharesDst = message.sharesDst);
+        if (!message.creationHeight.isZero()) {
+            obj.creationHeight = (message.creationHeight || Long.ZERO).toString();
+        }
+        if (message.completionTime !== undefined) {
+            obj.completionTime = message.completionTime.toISOString();
+        }
+        if (message.initialBalance !== '') {
+            obj.initialBalance = message.initialBalance;
+        }
+        if (message.sharesDst !== '') {
+            obj.sharesDst = message.sharesDst;
+        }
+        if (!message.unbondingId.isZero()) {
+            obj.unbondingId = (message.unbondingId || Long.UZERO).toString();
+        }
+        if (!message.unbondingOnHoldRefCount.isZero()) {
+            obj.unbondingOnHoldRefCount = (message.unbondingOnHoldRefCount || Long.ZERO).toString();
+        }
         return obj;
     },
 
@@ -1538,6 +1788,8 @@ export const RedelegationEntry = {
         message.completionTime = object.completionTime ?? undefined;
         message.initialBalance = object.initialBalance ?? '';
         message.sharesDst = object.sharesDst ?? '';
+        message.unbondingId = object.unbondingId !== undefined && object.unbondingId !== null ? Long.fromValue(object.unbondingId) : Long.UZERO;
+        message.unbondingOnHoldRefCount = object.unbondingOnHoldRefCount !== undefined && object.unbondingOnHoldRefCount !== null ? Long.fromValue(object.unbondingOnHoldRefCount) : Long.ZERO;
         return message;
     },
 };
@@ -1618,13 +1870,17 @@ export const Redelegation = {
 
     toJSON(message: Redelegation): unknown {
         const obj: any = {};
-        message.delegatorAddress !== undefined && (obj.delegatorAddress = message.delegatorAddress);
-        message.validatorSrcAddress !== undefined && (obj.validatorSrcAddress = message.validatorSrcAddress);
-        message.validatorDstAddress !== undefined && (obj.validatorDstAddress = message.validatorDstAddress);
-        if (message.entries) {
-            obj.entries = message.entries.map((e) => (e ? RedelegationEntry.toJSON(e) : undefined));
-        } else {
-            obj.entries = [];
+        if (message.delegatorAddress !== '') {
+            obj.delegatorAddress = message.delegatorAddress;
+        }
+        if (message.validatorSrcAddress !== '') {
+            obj.validatorSrcAddress = message.validatorSrcAddress;
+        }
+        if (message.validatorDstAddress !== '') {
+            obj.validatorDstAddress = message.validatorDstAddress;
+        }
+        if (message.entries?.length) {
+            obj.entries = message.entries.map((e) => RedelegationEntry.toJSON(e));
         }
         return obj;
     },
@@ -1748,12 +2004,24 @@ export const Params = {
 
     toJSON(message: Params): unknown {
         const obj: any = {};
-        message.unbondingTime !== undefined && (obj.unbondingTime = message.unbondingTime ? Duration.toJSON(message.unbondingTime) : undefined);
-        message.maxValidators !== undefined && (obj.maxValidators = Math.round(message.maxValidators));
-        message.maxEntries !== undefined && (obj.maxEntries = Math.round(message.maxEntries));
-        message.historicalEntries !== undefined && (obj.historicalEntries = Math.round(message.historicalEntries));
-        message.bondDenom !== undefined && (obj.bondDenom = message.bondDenom);
-        message.minCommissionRate !== undefined && (obj.minCommissionRate = message.minCommissionRate);
+        if (message.unbondingTime !== undefined) {
+            obj.unbondingTime = Duration.toJSON(message.unbondingTime);
+        }
+        if (message.maxValidators !== 0) {
+            obj.maxValidators = Math.round(message.maxValidators);
+        }
+        if (message.maxEntries !== 0) {
+            obj.maxEntries = Math.round(message.maxEntries);
+        }
+        if (message.historicalEntries !== 0) {
+            obj.historicalEntries = Math.round(message.historicalEntries);
+        }
+        if (message.bondDenom !== '') {
+            obj.bondDenom = message.bondDenom;
+        }
+        if (message.minCommissionRate !== '') {
+            obj.minCommissionRate = message.minCommissionRate;
+        }
         return obj;
     },
 
@@ -1827,8 +2095,12 @@ export const DelegationResponse = {
 
     toJSON(message: DelegationResponse): unknown {
         const obj: any = {};
-        message.delegation !== undefined && (obj.delegation = message.delegation ? Delegation.toJSON(message.delegation) : undefined);
-        message.balance !== undefined && (obj.balance = message.balance ? Coin.toJSON(message.balance) : undefined);
+        if (message.delegation !== undefined) {
+            obj.delegation = Delegation.toJSON(message.delegation);
+        }
+        if (message.balance !== undefined) {
+            obj.balance = Coin.toJSON(message.balance);
+        }
         return obj;
     },
 
@@ -1898,8 +2170,12 @@ export const RedelegationEntryResponse = {
 
     toJSON(message: RedelegationEntryResponse): unknown {
         const obj: any = {};
-        message.redelegationEntry !== undefined && (obj.redelegationEntry = message.redelegationEntry ? RedelegationEntry.toJSON(message.redelegationEntry) : undefined);
-        message.balance !== undefined && (obj.balance = message.balance);
+        if (message.redelegationEntry !== undefined) {
+            obj.redelegationEntry = RedelegationEntry.toJSON(message.redelegationEntry);
+        }
+        if (message.balance !== '') {
+            obj.balance = message.balance;
+        }
         return obj;
     },
 
@@ -1969,11 +2245,11 @@ export const RedelegationResponse = {
 
     toJSON(message: RedelegationResponse): unknown {
         const obj: any = {};
-        message.redelegation !== undefined && (obj.redelegation = message.redelegation ? Redelegation.toJSON(message.redelegation) : undefined);
-        if (message.entries) {
-            obj.entries = message.entries.map((e) => (e ? RedelegationEntryResponse.toJSON(e) : undefined));
-        } else {
-            obj.entries = [];
+        if (message.redelegation !== undefined) {
+            obj.redelegation = Redelegation.toJSON(message.redelegation);
+        }
+        if (message.entries?.length) {
+            obj.entries = message.entries.map((e) => RedelegationEntryResponse.toJSON(e));
         }
         return obj;
     },
@@ -2044,8 +2320,12 @@ export const Pool = {
 
     toJSON(message: Pool): unknown {
         const obj: any = {};
-        message.notBondedTokens !== undefined && (obj.notBondedTokens = message.notBondedTokens);
-        message.bondedTokens !== undefined && (obj.bondedTokens = message.bondedTokens);
+        if (message.notBondedTokens !== '') {
+            obj.notBondedTokens = message.notBondedTokens;
+        }
+        if (message.bondedTokens !== '') {
+            obj.bondedTokens = message.bondedTokens;
+        }
         return obj;
     },
 
@@ -2057,6 +2337,66 @@ export const Pool = {
         const message = createBasePool();
         message.notBondedTokens = object.notBondedTokens ?? '';
         message.bondedTokens = object.bondedTokens ?? '';
+        return message;
+    },
+};
+
+function createBaseValidatorUpdates(): ValidatorUpdates {
+    return { updates: [] };
+}
+
+export const ValidatorUpdates = {
+    encode(message: ValidatorUpdates, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        for (const v of message.updates) {
+            ValidatorUpdate.encode(v!, writer.uint32(10).fork()).ldelim();
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): ValidatorUpdates {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseValidatorUpdates();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.updates.push(ValidatorUpdate.decode(reader, reader.uint32()));
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): ValidatorUpdates {
+        return {
+            updates: Array.isArray(object?.updates) ? object.updates.map((e: any) => ValidatorUpdate.fromJSON(e)) : [],
+        };
+    },
+
+    toJSON(message: ValidatorUpdates): unknown {
+        const obj: any = {};
+        if (message.updates?.length) {
+            obj.updates = message.updates.map((e) => ValidatorUpdate.toJSON(e));
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<ValidatorUpdates>, I>>(base?: I): ValidatorUpdates {
+        return ValidatorUpdates.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<ValidatorUpdates>, I>>(object: I): ValidatorUpdates {
+        const message = createBaseValidatorUpdates();
+        message.updates = object.updates?.map((e) => ValidatorUpdate.fromPartial(e)) || [];
         return message;
     },
 };

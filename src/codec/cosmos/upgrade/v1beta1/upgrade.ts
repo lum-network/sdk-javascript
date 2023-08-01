@@ -25,11 +25,8 @@ export interface Plan {
      *
      * @deprecated
      */
-    time?: Date;
-    /**
-     * The height at which the upgrade must be performed.
-     * Only used if Time is not set.
-     */
+    time?: Date | undefined;
+    /** The height at which the upgrade must be performed. */
     height: Long;
     /**
      * Any application specific upgrade info to be included on-chain
@@ -43,7 +40,7 @@ export interface Plan {
      *
      * @deprecated
      */
-    upgradedClientState?: Any;
+    upgradedClientState?: Any | undefined;
 }
 
 /**
@@ -55,9 +52,12 @@ export interface Plan {
  * @deprecated
  */
 export interface SoftwareUpgradeProposal {
+    /** title of the proposal */
     title: string;
+    /** description of the proposal */
     description: string;
-    plan?: Plan;
+    /** plan of the proposal */
+    plan?: Plan | undefined;
 }
 
 /**
@@ -69,7 +69,9 @@ export interface SoftwareUpgradeProposal {
  * @deprecated
  */
 export interface CancelSoftwareUpgradeProposal {
+    /** title of the proposal */
     title: string;
+    /** description of the proposal */
     description: string;
 }
 
@@ -172,11 +174,21 @@ export const Plan = {
 
     toJSON(message: Plan): unknown {
         const obj: any = {};
-        message.name !== undefined && (obj.name = message.name);
-        message.time !== undefined && (obj.time = message.time.toISOString());
-        message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
-        message.info !== undefined && (obj.info = message.info);
-        message.upgradedClientState !== undefined && (obj.upgradedClientState = message.upgradedClientState ? Any.toJSON(message.upgradedClientState) : undefined);
+        if (message.name !== '') {
+            obj.name = message.name;
+        }
+        if (message.time !== undefined) {
+            obj.time = message.time.toISOString();
+        }
+        if (!message.height.isZero()) {
+            obj.height = (message.height || Long.ZERO).toString();
+        }
+        if (message.info !== '') {
+            obj.info = message.info;
+        }
+        if (message.upgradedClientState !== undefined) {
+            obj.upgradedClientState = Any.toJSON(message.upgradedClientState);
+        }
         return obj;
     },
 
@@ -260,9 +272,15 @@ export const SoftwareUpgradeProposal = {
 
     toJSON(message: SoftwareUpgradeProposal): unknown {
         const obj: any = {};
-        message.title !== undefined && (obj.title = message.title);
-        message.description !== undefined && (obj.description = message.description);
-        message.plan !== undefined && (obj.plan = message.plan ? Plan.toJSON(message.plan) : undefined);
+        if (message.title !== '') {
+            obj.title = message.title;
+        }
+        if (message.description !== '') {
+            obj.description = message.description;
+        }
+        if (message.plan !== undefined) {
+            obj.plan = Plan.toJSON(message.plan);
+        }
         return obj;
     },
 
@@ -333,8 +351,12 @@ export const CancelSoftwareUpgradeProposal = {
 
     toJSON(message: CancelSoftwareUpgradeProposal): unknown {
         const obj: any = {};
-        message.title !== undefined && (obj.title = message.title);
-        message.description !== undefined && (obj.description = message.description);
+        if (message.title !== '') {
+            obj.title = message.title;
+        }
+        if (message.description !== '') {
+            obj.description = message.description;
+        }
         return obj;
     },
 
@@ -404,8 +426,12 @@ export const ModuleVersion = {
 
     toJSON(message: ModuleVersion): unknown {
         const obj: any = {};
-        message.name !== undefined && (obj.name = message.name);
-        message.version !== undefined && (obj.version = (message.version || Long.UZERO).toString());
+        if (message.name !== '') {
+            obj.name = message.name;
+        }
+        if (!message.version.isZero()) {
+            obj.version = (message.version || Long.UZERO).toString();
+        }
         return obj;
     },
 

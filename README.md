@@ -98,6 +98,14 @@ As of [v0.40](https://github.com/cosmos/cosmos-sdk/releases/tag/v0.40.0), the Co
 
 ### Acquire the definition files
 
+First you will need to have the `buf` CLI installed globally on your machine.
+
+On Mac via Homebrew for exemple:
+```bash
+brew install bufbuild/buf/buf
+```
+Then
+
 ```bash
 yarn get-proto
 ```

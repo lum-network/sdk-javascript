@@ -12,16 +12,31 @@ export const protobufPackage = 'cosmos.auth.v1beta1';
  */
 export interface BaseAccount {
     address: string;
-    pubKey?: Any;
+    pubKey?: Any | undefined;
     accountNumber: Long;
     sequence: Long;
 }
 
 /** ModuleAccount defines an account for modules that holds coins on a pool. */
 export interface ModuleAccount {
-    baseAccount?: BaseAccount;
+    baseAccount?: BaseAccount | undefined;
     name: string;
     permissions: string[];
+}
+
+/**
+ * ModuleCredential represents a unclaimable pubkey for base accounts controlled by modules.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface ModuleCredential {
+    /** module_name is the name of the module used for address derivation (passed into address.Module). */
+    moduleName: string;
+    /**
+     * derivation_keys is for deriving a module account address (passed into address.Module)
+     * adding more keys creates sub-account addresses (passed into address.Derive)
+     */
+    derivationKeys: Uint8Array[];
 }
 
 /** Params defines the parameters for the auth module. */
@@ -109,10 +124,18 @@ export const BaseAccount = {
 
     toJSON(message: BaseAccount): unknown {
         const obj: any = {};
-        message.address !== undefined && (obj.address = message.address);
-        message.pubKey !== undefined && (obj.pubKey = message.pubKey ? Any.toJSON(message.pubKey) : undefined);
-        message.accountNumber !== undefined && (obj.accountNumber = (message.accountNumber || Long.UZERO).toString());
-        message.sequence !== undefined && (obj.sequence = (message.sequence || Long.UZERO).toString());
+        if (message.address !== '') {
+            obj.address = message.address;
+        }
+        if (message.pubKey !== undefined) {
+            obj.pubKey = Any.toJSON(message.pubKey);
+        }
+        if (!message.accountNumber.isZero()) {
+            obj.accountNumber = (message.accountNumber || Long.UZERO).toString();
+        }
+        if (!message.sequence.isZero()) {
+            obj.sequence = (message.sequence || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -195,12 +218,14 @@ export const ModuleAccount = {
 
     toJSON(message: ModuleAccount): unknown {
         const obj: any = {};
-        message.baseAccount !== undefined && (obj.baseAccount = message.baseAccount ? BaseAccount.toJSON(message.baseAccount) : undefined);
-        message.name !== undefined && (obj.name = message.name);
-        if (message.permissions) {
-            obj.permissions = message.permissions.map((e) => e);
-        } else {
-            obj.permissions = [];
+        if (message.baseAccount !== undefined) {
+            obj.baseAccount = BaseAccount.toJSON(message.baseAccount);
+        }
+        if (message.name !== '') {
+            obj.name = message.name;
+        }
+        if (message.permissions?.length) {
+            obj.permissions = message.permissions;
         }
         return obj;
     },
@@ -214,6 +239,81 @@ export const ModuleAccount = {
         message.baseAccount = object.baseAccount !== undefined && object.baseAccount !== null ? BaseAccount.fromPartial(object.baseAccount) : undefined;
         message.name = object.name ?? '';
         message.permissions = object.permissions?.map((e) => e) || [];
+        return message;
+    },
+};
+
+function createBaseModuleCredential(): ModuleCredential {
+    return { moduleName: '', derivationKeys: [] };
+}
+
+export const ModuleCredential = {
+    encode(message: ModuleCredential, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+        if (message.moduleName !== '') {
+            writer.uint32(10).string(message.moduleName);
+        }
+        for (const v of message.derivationKeys) {
+            writer.uint32(18).bytes(v!);
+        }
+        return writer;
+    },
+
+    decode(input: _m0.Reader | Uint8Array, length?: number): ModuleCredential {
+        const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseModuleCredential();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if (tag !== 10) {
+                        break;
+                    }
+
+                    message.moduleName = reader.string();
+                    continue;
+                case 2:
+                    if (tag !== 18) {
+                        break;
+                    }
+
+                    message.derivationKeys.push(reader.bytes());
+                    continue;
+            }
+            if ((tag & 7) === 4 || tag === 0) {
+                break;
+            }
+            reader.skipType(tag & 7);
+        }
+        return message;
+    },
+
+    fromJSON(object: any): ModuleCredential {
+        return {
+            moduleName: isSet(object.moduleName) ? String(object.moduleName) : '',
+            derivationKeys: Array.isArray(object?.derivationKeys) ? object.derivationKeys.map((e: any) => bytesFromBase64(e)) : [],
+        };
+    },
+
+    toJSON(message: ModuleCredential): unknown {
+        const obj: any = {};
+        if (message.moduleName !== '') {
+            obj.moduleName = message.moduleName;
+        }
+        if (message.derivationKeys?.length) {
+            obj.derivationKeys = message.derivationKeys.map((e) => base64FromBytes(e));
+        }
+        return obj;
+    },
+
+    create<I extends Exact<DeepPartial<ModuleCredential>, I>>(base?: I): ModuleCredential {
+        return ModuleCredential.fromPartial(base ?? {});
+    },
+
+    fromPartial<I extends Exact<DeepPartial<ModuleCredential>, I>>(object: I): ModuleCredential {
+        const message = createBaseModuleCredential();
+        message.moduleName = object.moduleName ?? '';
+        message.derivationKeys = object.derivationKeys?.map((e) => e) || [];
         return message;
     },
 };
@@ -311,11 +411,21 @@ export const Params = {
 
     toJSON(message: Params): unknown {
         const obj: any = {};
-        message.maxMemoCharacters !== undefined && (obj.maxMemoCharacters = (message.maxMemoCharacters || Long.UZERO).toString());
-        message.txSigLimit !== undefined && (obj.txSigLimit = (message.txSigLimit || Long.UZERO).toString());
-        message.txSizeCostPerByte !== undefined && (obj.txSizeCostPerByte = (message.txSizeCostPerByte || Long.UZERO).toString());
-        message.sigVerifyCostEd25519 !== undefined && (obj.sigVerifyCostEd25519 = (message.sigVerifyCostEd25519 || Long.UZERO).toString());
-        message.sigVerifyCostSecp256k1 !== undefined && (obj.sigVerifyCostSecp256k1 = (message.sigVerifyCostSecp256k1 || Long.UZERO).toString());
+        if (!message.maxMemoCharacters.isZero()) {
+            obj.maxMemoCharacters = (message.maxMemoCharacters || Long.UZERO).toString();
+        }
+        if (!message.txSigLimit.isZero()) {
+            obj.txSigLimit = (message.txSigLimit || Long.UZERO).toString();
+        }
+        if (!message.txSizeCostPerByte.isZero()) {
+            obj.txSizeCostPerByte = (message.txSizeCostPerByte || Long.UZERO).toString();
+        }
+        if (!message.sigVerifyCostEd25519.isZero()) {
+            obj.sigVerifyCostEd25519 = (message.sigVerifyCostEd25519 || Long.UZERO).toString();
+        }
+        if (!message.sigVerifyCostSecp256k1.isZero()) {
+            obj.sigVerifyCostSecp256k1 = (message.sigVerifyCostSecp256k1 || Long.UZERO).toString();
+        }
         return obj;
     },
 
@@ -333,6 +443,50 @@ export const Params = {
         return message;
     },
 };
+
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
+    if (typeof globalThis !== 'undefined') {
+        return globalThis;
+    }
+    if (typeof self !== 'undefined') {
+        return self;
+    }
+    if (typeof window !== 'undefined') {
+        return window;
+    }
+    if (typeof global !== 'undefined') {
+        return global;
+    }
+    throw 'Unable to locate global object';
+})();
+
+function bytesFromBase64(b64: string): Uint8Array {
+    if (tsProtoGlobalThis.Buffer) {
+        return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, 'base64'));
+    } else {
+        const bin = tsProtoGlobalThis.atob(b64);
+        const arr = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; ++i) {
+            arr[i] = bin.charCodeAt(i);
+        }
+        return arr;
+    }
+}
+
+function base64FromBytes(arr: Uint8Array): string {
+    if (tsProtoGlobalThis.Buffer) {
+        return tsProtoGlobalThis.Buffer.from(arr).toString('base64');
+    } else {
+        const bin: string[] = [];
+        arr.forEach((byte) => {
+            bin.push(String.fromCharCode(byte));
+        });
+        return tsProtoGlobalThis.btoa(bin.join(''));
+    }
+}
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 

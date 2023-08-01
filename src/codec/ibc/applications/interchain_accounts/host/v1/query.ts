@@ -11,7 +11,7 @@ export interface QueryParamsRequest {}
 /** QueryParamsResponse is the response type for the Query/Params RPC method. */
 export interface QueryParamsResponse {
     /** params defines the parameters of the module. */
-    params?: Params;
+    params?: Params | undefined;
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -99,7 +99,9 @@ export const QueryParamsResponse = {
 
     toJSON(message: QueryParamsResponse): unknown {
         const obj: any = {};
-        message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+        if (message.params !== undefined) {
+            obj.params = Params.toJSON(message.params);
+        }
         return obj;
     },
 
@@ -120,11 +122,12 @@ export interface Query {
     Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
 }
 
+export const QueryServiceName = 'ibc.applications.interchain_accounts.host.v1.Query';
 export class QueryClientImpl implements Query {
     private readonly rpc: Rpc;
     private readonly service: string;
     constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || 'ibc.applications.interchain_accounts.host.v1.Query';
+        this.service = opts?.service || QueryServiceName;
         this.rpc = rpc;
         this.Params = this.Params.bind(this);
     }

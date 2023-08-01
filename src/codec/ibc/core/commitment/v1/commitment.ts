@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal';
-import { CommitmentProof } from '../../../../proofs';
+import { CommitmentProof } from '../../../../cosmos/ics23/v1/proofs';
 
 export const protobufPackage = 'ibc.core.commitment.v1';
 
@@ -43,7 +43,7 @@ export interface MerkleProof {
 }
 
 function createBaseMerkleRoot(): MerkleRoot {
-    return { hash: new Uint8Array() };
+    return { hash: new Uint8Array(0) };
 }
 
 export const MerkleRoot = {
@@ -78,12 +78,14 @@ export const MerkleRoot = {
     },
 
     fromJSON(object: any): MerkleRoot {
-        return { hash: isSet(object.hash) ? bytesFromBase64(object.hash) : new Uint8Array() };
+        return { hash: isSet(object.hash) ? bytesFromBase64(object.hash) : new Uint8Array(0) };
     },
 
     toJSON(message: MerkleRoot): unknown {
         const obj: any = {};
-        message.hash !== undefined && (obj.hash = base64FromBytes(message.hash !== undefined ? message.hash : new Uint8Array()));
+        if (message.hash.length !== 0) {
+            obj.hash = base64FromBytes(message.hash);
+        }
         return obj;
     },
 
@@ -93,13 +95,13 @@ export const MerkleRoot = {
 
     fromPartial<I extends Exact<DeepPartial<MerkleRoot>, I>>(object: I): MerkleRoot {
         const message = createBaseMerkleRoot();
-        message.hash = object.hash ?? new Uint8Array();
+        message.hash = object.hash ?? new Uint8Array(0);
         return message;
     },
 };
 
 function createBaseMerklePrefix(): MerklePrefix {
-    return { keyPrefix: new Uint8Array() };
+    return { keyPrefix: new Uint8Array(0) };
 }
 
 export const MerklePrefix = {
@@ -134,12 +136,14 @@ export const MerklePrefix = {
     },
 
     fromJSON(object: any): MerklePrefix {
-        return { keyPrefix: isSet(object.keyPrefix) ? bytesFromBase64(object.keyPrefix) : new Uint8Array() };
+        return { keyPrefix: isSet(object.keyPrefix) ? bytesFromBase64(object.keyPrefix) : new Uint8Array(0) };
     },
 
     toJSON(message: MerklePrefix): unknown {
         const obj: any = {};
-        message.keyPrefix !== undefined && (obj.keyPrefix = base64FromBytes(message.keyPrefix !== undefined ? message.keyPrefix : new Uint8Array()));
+        if (message.keyPrefix.length !== 0) {
+            obj.keyPrefix = base64FromBytes(message.keyPrefix);
+        }
         return obj;
     },
 
@@ -149,7 +153,7 @@ export const MerklePrefix = {
 
     fromPartial<I extends Exact<DeepPartial<MerklePrefix>, I>>(object: I): MerklePrefix {
         const message = createBaseMerklePrefix();
-        message.keyPrefix = object.keyPrefix ?? new Uint8Array();
+        message.keyPrefix = object.keyPrefix ?? new Uint8Array(0);
         return message;
     },
 };
@@ -195,10 +199,8 @@ export const MerklePath = {
 
     toJSON(message: MerklePath): unknown {
         const obj: any = {};
-        if (message.keyPath) {
-            obj.keyPath = message.keyPath.map((e) => e);
-        } else {
-            obj.keyPath = [];
+        if (message.keyPath?.length) {
+            obj.keyPath = message.keyPath;
         }
         return obj;
     },
@@ -255,10 +257,8 @@ export const MerkleProof = {
 
     toJSON(message: MerkleProof): unknown {
         const obj: any = {};
-        if (message.proofs) {
-            obj.proofs = message.proofs.map((e) => (e ? CommitmentProof.toJSON(e) : undefined));
-        } else {
-            obj.proofs = [];
+        if (message.proofs?.length) {
+            obj.proofs = message.proofs.map((e) => CommitmentProof.toJSON(e));
         }
         return obj;
     },
@@ -274,10 +274,10 @@ export const MerkleProof = {
     },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }

@@ -21,7 +21,7 @@ export interface PrivKey {
 }
 
 function createBasePubKey(): PubKey {
-    return { key: new Uint8Array() };
+    return { key: new Uint8Array(0) };
 }
 
 export const PubKey = {
@@ -56,12 +56,14 @@ export const PubKey = {
     },
 
     fromJSON(object: any): PubKey {
-        return { key: isSet(object.key) ? bytesFromBase64(object.key) : new Uint8Array() };
+        return { key: isSet(object.key) ? bytesFromBase64(object.key) : new Uint8Array(0) };
     },
 
     toJSON(message: PubKey): unknown {
         const obj: any = {};
-        message.key !== undefined && (obj.key = base64FromBytes(message.key !== undefined ? message.key : new Uint8Array()));
+        if (message.key.length !== 0) {
+            obj.key = base64FromBytes(message.key);
+        }
         return obj;
     },
 
@@ -71,13 +73,13 @@ export const PubKey = {
 
     fromPartial<I extends Exact<DeepPartial<PubKey>, I>>(object: I): PubKey {
         const message = createBasePubKey();
-        message.key = object.key ?? new Uint8Array();
+        message.key = object.key ?? new Uint8Array(0);
         return message;
     },
 };
 
 function createBasePrivKey(): PrivKey {
-    return { key: new Uint8Array() };
+    return { key: new Uint8Array(0) };
 }
 
 export const PrivKey = {
@@ -112,12 +114,14 @@ export const PrivKey = {
     },
 
     fromJSON(object: any): PrivKey {
-        return { key: isSet(object.key) ? bytesFromBase64(object.key) : new Uint8Array() };
+        return { key: isSet(object.key) ? bytesFromBase64(object.key) : new Uint8Array(0) };
     },
 
     toJSON(message: PrivKey): unknown {
         const obj: any = {};
-        message.key !== undefined && (obj.key = base64FromBytes(message.key !== undefined ? message.key : new Uint8Array()));
+        if (message.key.length !== 0) {
+            obj.key = base64FromBytes(message.key);
+        }
         return obj;
     },
 
@@ -127,15 +131,15 @@ export const PrivKey = {
 
     fromPartial<I extends Exact<DeepPartial<PrivKey>, I>>(object: I): PrivKey {
         const message = createBasePrivKey();
-        message.key = object.key ?? new Uint8Array();
+        message.key = object.key ?? new Uint8Array(0);
         return message;
     },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }

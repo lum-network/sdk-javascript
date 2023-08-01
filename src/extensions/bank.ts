@@ -8,7 +8,7 @@ import { createProtobufRpcClient } from './utils';
 export interface BankExtension {
     readonly bank: {
         readonly balance: (address: string, denom: string) => Promise<Coin>;
-        readonly allBalances: (address: string) => Promise<Coin[]>;
+        readonly allBalances: (address: string, resolveDenom?: boolean) => Promise<Coin[]>;
         readonly totalSupply: () => Promise<Coin[]>;
         readonly supplyOf: (denom: string) => Promise<Coin>;
     };
@@ -23,12 +23,12 @@ export function setupBankExtension(base: QueryClient): BankExtension {
     return {
         bank: {
             balance: async (address: string, denom: string) => {
-                const { balance } = await queryService.Balance({ address: address, denom: denom });
+                const { balance } = await queryService.Balance({ address, denom });
                 assert(balance);
                 return balance;
             },
-            allBalances: async (address: string) => {
-                const { balances } = await queryService.AllBalances({ address: address });
+            allBalances: async (address: string, resolveDenom = false) => {
+                const { balances } = await queryService.AllBalances({ address, resolveDenom });
                 return balances;
             },
             totalSupply: async () => {

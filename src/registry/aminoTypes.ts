@@ -12,14 +12,15 @@ import { AminoMsg, Coin } from '@cosmjs/amino';
 import Long from 'long';
 
 import { MsgVote } from '../codec/cosmos/gov/v1/tx';
-import { MsgDeposit as MsgDepositDfract } from '../codec/lum-network/dfract/tx';
+import { MsgDeposit as MsgDepositDfract } from '../codec/lum/network/dfract/tx';
 import {
     MsgDeposit as MsgMillionsDeposit,
+    MsgDepositEdit as MsgMillionsDepositEdit,
     MsgDepositRetry as MsgMillionsDepositRetry,
     MsgWithdrawDeposit as MsgMillionsWithdrawDeposit,
     MsgWithdrawDepositRetry as MsgMillionsWithdrawDepositRetry,
     MsgClaimPrize as MsgMillionsClaimPrize,
-} from '../codec/lum-network/millions/tx';
+} from '../codec/lum/network/millions/tx';
 
 export interface AminoMsgGovVote extends AminoMsg {
     readonly type: 'cosmos-sdk/v1/MsgVote';
@@ -47,6 +48,17 @@ export interface AminoMsgMillionsDeposit extends AminoMsg {
         readonly winner_address: string;
         readonly is_sponsor?: boolean; // force ignore false values to allow signing (not set in proto encoding)
         readonly amount: Coin;
+    };
+}
+
+export interface AminoMsgMillionsDepositEdit extends AminoMsg {
+    readonly type: 'lum-network/millions/MsgDepositEdit';
+    readonly value: {
+        readonly pool_id: string;
+        readonly deposit_id: string;
+        readonly depositor_address: string;
+        readonly winner_address: string;
+        readonly is_sponsor?: boolean; // force ignore false values to allow signing (not set in proto encoding)
     };
 }
 
@@ -151,6 +163,25 @@ const createMillionsAminoConverters = (): AminoConverters => ({
             winnerAddress: winner_address,
             isSponsor: is_sponsor === true,
             amount: amount,
+        }),
+    },
+    '/lum.network.millions.MsgDepositEdit': {
+        aminoType: 'lum-network/millions/MsgDepositEdit',
+        toAmino: ({ poolId, depositId, depositorAddress, winnerAddress, isSponsor }: MsgMillionsDepositEdit): AminoMsgMillionsDepositEdit['value'] => {
+            return {
+                pool_id: poolId.toString(),
+                deposit_id: depositId.toString(),
+                depositor_address: depositorAddress,
+                winner_address: winnerAddress,
+                is_sponsor: isSponsor ? true : undefined,
+            };
+        },
+        fromAmino: ({ pool_id, deposit_id, depositor_address, winner_address, is_sponsor }: AminoMsgMillionsDepositEdit['value']): MsgMillionsDepositEdit => ({
+            poolId: Long.fromString(pool_id),
+            depositId: Long.fromString(deposit_id),
+            depositorAddress: depositor_address,
+            winnerAddress: winner_address,
+            isSponsor: is_sponsor === true,
         }),
     },
     '/lum.network.millions.MsgDepositRetry': {
