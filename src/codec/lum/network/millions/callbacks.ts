@@ -56,8 +56,7 @@ export interface DelegateCallback {
 
 export interface UndelegateCallback {
     poolId: Long;
-    withdrawalId: Long;
-    splitDelegations: SplitDelegation[];
+    withdrawalIds: Long[];
 }
 
 export interface RedelegateCallback {
@@ -258,7 +257,7 @@ export const DelegateCallback = {
 };
 
 function createBaseUndelegateCallback(): UndelegateCallback {
-    return { poolId: Long.UZERO, withdrawalId: Long.UZERO, splitDelegations: [] };
+    return { poolId: Long.UZERO, withdrawalIds: [] };
 }
 
 export const UndelegateCallback = {
@@ -266,12 +265,11 @@ export const UndelegateCallback = {
         if (!message.poolId.isZero()) {
             writer.uint32(8).uint64(message.poolId);
         }
-        if (!message.withdrawalId.isZero()) {
-            writer.uint32(16).uint64(message.withdrawalId);
+        writer.uint32(34).fork();
+        for (const v of message.withdrawalIds) {
+            writer.uint64(v);
         }
-        for (const v of message.splitDelegations) {
-            SplitDelegation.encode(v!, writer.uint32(26).fork()).ldelim();
-        }
+        writer.ldelim();
         return writer;
     },
 
@@ -289,20 +287,23 @@ export const UndelegateCallback = {
 
                     message.poolId = reader.uint64() as Long;
                     continue;
-                case 2:
-                    if (tag !== 16) {
-                        break;
+                case 4:
+                    if (tag === 32) {
+                        message.withdrawalIds.push(reader.uint64() as Long);
+
+                        continue;
                     }
 
-                    message.withdrawalId = reader.uint64() as Long;
-                    continue;
-                case 3:
-                    if (tag !== 26) {
-                        break;
+                    if (tag === 34) {
+                        const end2 = reader.uint32() + reader.pos;
+                        while (reader.pos < end2) {
+                            message.withdrawalIds.push(reader.uint64() as Long);
+                        }
+
+                        continue;
                     }
 
-                    message.splitDelegations.push(SplitDelegation.decode(reader, reader.uint32()));
-                    continue;
+                    break;
             }
             if ((tag & 7) === 4 || tag === 0) {
                 break;
@@ -315,8 +316,7 @@ export const UndelegateCallback = {
     fromJSON(object: any): UndelegateCallback {
         return {
             poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
-            withdrawalId: isSet(object.withdrawalId) ? Long.fromValue(object.withdrawalId) : Long.UZERO,
-            splitDelegations: Array.isArray(object?.splitDelegations) ? object.splitDelegations.map((e: any) => SplitDelegation.fromJSON(e)) : [],
+            withdrawalIds: Array.isArray(object?.withdrawalIds) ? object.withdrawalIds.map((e: any) => Long.fromValue(e)) : [],
         };
     },
 
@@ -325,11 +325,8 @@ export const UndelegateCallback = {
         if (!message.poolId.isZero()) {
             obj.poolId = (message.poolId || Long.UZERO).toString();
         }
-        if (!message.withdrawalId.isZero()) {
-            obj.withdrawalId = (message.withdrawalId || Long.UZERO).toString();
-        }
-        if (message.splitDelegations?.length) {
-            obj.splitDelegations = message.splitDelegations.map((e) => SplitDelegation.toJSON(e));
+        if (message.withdrawalIds?.length) {
+            obj.withdrawalIds = message.withdrawalIds.map((e) => (e || Long.UZERO).toString());
         }
         return obj;
     },
@@ -341,8 +338,7 @@ export const UndelegateCallback = {
     fromPartial<I extends Exact<DeepPartial<UndelegateCallback>, I>>(object: I): UndelegateCallback {
         const message = createBaseUndelegateCallback();
         message.poolId = object.poolId !== undefined && object.poolId !== null ? Long.fromValue(object.poolId) : Long.UZERO;
-        message.withdrawalId = object.withdrawalId !== undefined && object.withdrawalId !== null ? Long.fromValue(object.withdrawalId) : Long.UZERO;
-        message.splitDelegations = object.splitDelegations?.map((e) => SplitDelegation.fromPartial(e)) || [];
+        message.withdrawalIds = object.withdrawalIds?.map((e) => Long.fromValue(e)) || [];
         return message;
     },
 };
