@@ -228,7 +228,7 @@ const computeDFractDistribution = async (clt: LumClient, balancesPath: string, a
     }
     const rawTx = {
         body: {
-            messages: [{"@type": "/cosmos.bank.v1beta1.MsgMultiSend", inputs: input, outputs: outputs}],
+            messages: [{"@type": "/cosmos.bank.v1beta1.MsgMultiSend", inputs: [input], outputs: outputs}],
             memo: '',
             timeout_height: '0',
             extension_options: [],
