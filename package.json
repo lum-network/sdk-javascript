@@ -40,7 +40,9 @@
         "preget-proto": "rm -rf proto",
         "get-proto": "COSMOS_REF=1236c529873343a1967780774aa40f05c6d12f0e ICS_23_REF=cea74ba58ffbf87154701cd5959184acedf09cd6 IBC_REF=78be372cf9b33242c0ca3f0e48d4d156842e5941 LUM_REF=v1.5.2 sh ./scripts/get-proto.sh",
         "define-proto": "sh ./scripts/define-proto.sh",
-        "postdefine-proto": "prettier --write \"src/codec/**/*.ts\""
+        "postdefine-proto": "prettier --write \"src/codec/**/*.ts\"",
+        "millions:export": "npx ts-node ./scripts/index.ts millions export",
+        "dfract:sunset-distrib": "npx ts-node ./scripts/index.ts dfract sunset-distrib"
     },
     "dependencies": {
         "@cosmjs/amino": "0.31.0",
